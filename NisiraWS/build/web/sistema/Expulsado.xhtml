@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:pm="http://primefaces.org/mobile"
+        contentType="text/html"
+        renderKitId="PRIMEFACES_MOBILE">
+
+
+    <pm:page title="Advertencia">
+
+        <pm:view id="Menu" swatch="c" >
+            <pm:header title="Advertencia" swatch="a" fixed="true" transient="true" >
+                <script type="text/javascript" src="../js/validadispositivo.js"></script>
+                <script type="text/javascript">//<![CDATA[ 
+
+                    var pagina = "CerrarSesion.xhtml"
+                    function redireccionar()
+                    {
+                        location.href = pagina
+                    }
+
+                    var pepe;
+                    function ini() {
+                        pepe = setTimeout("redireccionar()", 1 * 5000); // 5 segundos
+                    }
+                    
+                    //]]>  
+                </script>
+                
+
+
+            </pm:header>
+            <body onload="ini()" onkeypress="parar()">   </body>
+            <pm:content>
+
+                <center>
+                    <img border="0" height="15%" width="30%" src="../../images/warning.png"/>
+                    <h2>Lo sentimos usted fue expulsado del Sistema por el Administrador</h2>
+                </center>
+
+
+
+                <br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br>
+
+            </pm:content>
+            <pm:footer swatch="a" fixed="true">
+                <h1 style="font-size: x-small" >© 2013 <img border="0" height="10px" src="../images/logoWeb.png"/> Nisira Systems SAC </h1>         
+            </pm:footer> 
+        </pm:view>
+    </pm:page>
+</f:view>
+
+

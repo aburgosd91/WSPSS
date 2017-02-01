@@ -1,0 +1,60 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                >
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        
+        <h:form style="font-size: 15px" id="datos">
+            #{moduloEdtAction.llenarArbol()}
+            <p:panelGrid columns="2" styleClass="bordePanelGrid" columnClasses="no-border, no-border">
+                <f:facet name="header">
+                    <p:outputLabel value="Control de Modulos"/>
+                </f:facet>
+                <p:panelGrid id="tree" columns="1" styleClass="bordePanelGrid" columnClasses="no-border, no-border">
+                    <p:panelGrid style="font-size: 11px" columns="3" layout="grid" columnClasses="no-border, no-border">
+                        <p:commandButton update=":datos:datosTree"  value="Nuevo"  actionListener="#{moduloEdtAction.nuevo_contenido_pagina_productos()}"/>
+                        <p:commandButton update=":datos,:datos:datosTree"  value="Borrar"  actionListener="#{moduloEdtAction.borrar_contenido_pagina_productos()}"/>
+                    </p:panelGrid>
+                    <p:tree style="min-height:  380px !important; width: 100%"  id="arbol" 
+                            value="#{moduloEdtAction.patriarca}" var="ar"  
+                            selectionMode="single"  
+                            selection="#{moduloEdtAction.nodoSeleccionado}" 
+                            dynamic="true">  
+                        <p:ajax event="select" update=":datos:datosTree" listener="#{moduloEdtAction.onNodeSelect}" />  
+                        <p:treeNode expandedIcon="ui-icon-folder-open"  
+                                    collapsedIcon="ui-icon-folder-collapsed" >  
+                            <h:outputText value="#{ar[2]}" />  
+                        </p:treeNode>  
+                    </p:tree>
+                </p:panelGrid>
+                
+                <p:panelGrid id="datosTree" columns="2">
+                    <h:outputLabel value="Id: " />
+                    <h:inputText  disabled="true"  value="#{moduloEdtAction.nodoS[0]}" />
+                    <h:outputLabel value="Titulo " />
+                    <h:inputText    value="#{moduloEdtAction.nodoS[1]}" />
+                    <h:outputLabel value="Descripcion " />
+                    <h:inputTextarea cols="60" rows="6"   value="#{moduloEdtAction.nodoS[2]}" />
+                    <h:outputLabel value="Mostrar: " />
+                    <h:selectOneMenu value="#{moduloEdtAction.nodoS[3]}">  
+                        <f:selectItem itemLabel="Si" itemValue="1" />  
+                        <f:selectItem itemLabel="No" itemValue="0" />  
+                    </h:selectOneMenu>
+                    <h:outputLabel value="Icono: " />
+                    <h:inputText    value="#{moduloEdtAction.nodoS[4]}" />
+                    <h:outputLabel value="Ruta Imagen: " />
+                    <h:inputText    value="#{moduloEdtAction.nodoS[5]}" />
+                    <h:outputLabel value="Comando: " />
+                    <h:inputText    value="#{moduloEdtAction.nodoS[6]}" />
+                    <p:commandButton update=":datos" value="Grabar"  actionListener="#{moduloEdtAction.grabar_tg30wbmodulo()}"  />
+                </p:panelGrid>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false" escape="false" />
+        </h:form>
+    </ui:define>
+</ui:composition>

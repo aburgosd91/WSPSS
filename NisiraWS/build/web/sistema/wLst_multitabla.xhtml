@@ -1,0 +1,104 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <p:dialog modal="true" widgetVar="statusDialog" header=".: Nisira MRP :." draggable="false" closable="false" resizable="false">
+            <img src="../img/ajax-loader1.gif" />
+        </p:dialog>
+        <script type="text/javascript">
+            function start() {
+                PF('statusDialog').show();
+            }
+
+            function stop() {
+                PF('statusDialog').hide();
+            }
+        </script>
+        <h:form id="datos">
+            #{multitablaAction.buscarTodo()}  
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
+                <cmp:barra_lst bean="#{multitablaAction}" mostrar_opciones="true" />
+                <p:dataTable id="tbl" var="listMultitablaTabla" value="#{multitablaAction.listaDatos}" widgetVar="tbl" filteredValue="#{multitablaAction.filtroDatos}"
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                             paginator="true" rows="15" style="margin-bottom:20px;text-align: center;" selectionMode="single" selection="#{multitablaAction.datoSeleccionado}" rowKey="#{listMultitablaTabla.TABLA_ID}" resizableColumns="true">
+                    <p:ajax event="rowSelect" listener="#{multitablaAction.onRowSelect}"  />
+                    <f:facet name="header">
+                        <h:outputText value="#{multitablaAction.tituloHead}" />
+                    </f:facet>
+                    <p:column style="width:10%;" sortBy="#{listMultitablaTabla.TABLA_ID}">
+                        <f:facet name="header">
+                            <h:outputText value="ID" />
+                        </f:facet>
+                        <h:outputText value="#{listMultitablaTabla.TABLA_ID}" />
+                    </p:column>
+                    <p:column style="width:10%;" sortBy="#{listMultitablaTabla.VALOR}">
+                        <f:facet name="header" >
+                            <h:outputText value="VALOR" />
+                        </f:facet>
+                        <h:outputText value="#{listMultitablaTabla.VALOR}" />
+                    </p:column>
+                    <p:column style="width:60%;" filterBy="#{listMultitablaTabla.DESCRIPCION}" filterMatchMode="contains" sortBy="#{listMultitablaTabla.DESCRIPCION}">
+                        <f:facet name="header" >
+                            <h:outputText value="DESCRIPCION" />
+                        </f:facet>
+                        <h:outputText value="#{listMultitablaTabla.DESCRIPCION}" />
+                    </p:column>
+                    <p:column style="width:30%;" sortBy="#{listMultitablaTabla.ABREV}">
+                        <f:facet name="header" >
+                            <h:outputText value="Abreviatura" />
+                        </f:facet>
+                        <h:outputText value="#{listMultitablaTabla.ABREV}" />
+                    </p:column>
+                    <p:column style="width:30%;" filterBy="#{listMultitablaTabla.ESTADO}">
+                        <f:facet name="header">
+                            <h:outputText value="ESTADO"/>
+                        </f:facet>
+                        <f:facet name="filter">
+                            <p:selectOneButton onchange="PF('tbl').filter()">
+                                <f:converter converterId="javax.faces.Boolean" />
+                                <f:selectItem  itemLabel="Activo" itemValue="true" />
+                                <f:selectItem itemLabel="Inactivo" itemValue="false" />
+                            </p:selectOneButton>
+                        </f:facet>
+                        <h:graphicImage value="../images/img/#{listMultitablaTabla.ESTADO?'activo':'inactivo'}.png"/>
+                        <h:outputText value="#{listMultitablaTabla.ESTADO?'Activo':'Inactivo'}" />
+                    </p:column>
+                </p:dataTable>  
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{multitablaAction}" ventana="LST" /> 
+            <p:dialog header="Importar Datos de Excel" resizable="false" widgetVar="dlgImportExcel" width="600px" height="450px" closeOnEscape="#{multitablaAction.listMultitablaTablaUp.clear()}">
+                <div style="text-align: center; padding: 5px;">
+                    <p:fileUpload style="width: 100%" fileUploadListener="#{multitablaAction.upExcel}" allowTypes="/(\.|\/)(xls|xlsx)$/" sizeLimit="100000" label="Seleccionar Excel" uploadLabel="Procesar" cancelLabel="Cancelar" update=":datos:tblImport"/>
+                </div>                
+                <p:dataTable style="width: 100%; font-size: 11px" id="tblImport" var="ve" value="#{multitablaAction.listMultitablaTablaUp}" 
+                             rowKey="#{ve.DESCRIPCION}"  
+                             emptyMessage="#{titulos.noRegistros}"
+                             paginatorAlwaysVisible="false"
+                             paginator="true"
+                             rows="12"
+                             styleClass="mystyle"
+                             sortOrder="descending">
+                    <p:column style="width: 20px;padding: 3px !important;text-align: center" headerText="Código">  
+                        <h:outputText value="#{ve.DESCRIPCION}" escape="false"/>
+                    </p:column>
+                    <p:column style="width: 100px;padding: 3px !important" headerText="Descripción">  
+                        <h:outputText value="#{ve.ABREV}" escape="false"/>
+                    </p:column>
+                </p:dataTable>
+                <div style="text-align: center; padding: 5px">
+                    <p:commandButton value="Limpiar Cuadro" ajax="true" icon="ui-icon-disk" actionListener="#{multitablaAction.listMultitablaTablaUp.clear()}" update="tblImport"/>
+                    <p:commandButton value="Grabar Registros" ajax="true" icon="ui-icon-disk" actionListener="#{multitablaAction.saveExcel}" update="tblImport,growl" onclick="PrimeFaces.monitorDownload(start, stop);"/>
+                </div>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,65 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">
+            #{clieprovAction.buscarTodo()}
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">                
+                <cmp:barra_lst bean="#{clieprovAction}" mostrar_opciones="true" />
+                <p:dataTable id="tbl" var="listaClieprov" value="#{clieprovAction.listaDatos}" widgetVar="listaClieprov" 
+                             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                             paginator="true" rows="25" style="margin-bottom:20px" selectionMode="single" selection="#{clieprovAction.datoSeleccionado}" rowKey="#{listaClieprov.idclieprov}" resizableColumns="true">
+                    <f:facet name="header">
+                        <h:outputText value="#{clieprovAction.tituloHead}" />
+                    </f:facet>  
+                    <p:column style="width:15%;" filterBy="#{listaClieprov.dni}" filterMatchMode="contains" sortBy="#{listaClieprov.dni}">
+                        <f:facet name="header">
+                            <h:outputText value="DOCUMENTO" />
+                        </f:facet>
+                        <h:outputText value="#{listaClieprov.dni}" />
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{listaClieprov.apellidopaterno}" filterMatchMode="contains" sortBy="#{listaClieprov.apellidopaterno}">
+                        <f:facet name="header">
+                            <h:outputText value="AP. PATERNO" />
+                        </f:facet>
+                        <h:outputText value="#{listaClieprov.apellidopaterno}" />
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{listaClieprov.apellidomaterno}" filterMatchMode="contains" sortBy="#{listaClieprov.apellidomaterno}">
+                        <f:facet name="header">
+                            <h:outputText value="AP. MATERNO" />
+                        </f:facet>
+                        <h:outputText value="#{listaClieprov.apellidomaterno}" />
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{listaClieprov.nombres}" filterMatchMode="contains" sortBy="#{listaClieprov.nombres}">
+                        <f:facet name="header">
+                            <h:outputText value="NOMBRES" />
+                        </f:facet>
+                        <h:outputText value="#{listaClieprov.nombres}" />
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{listaDatos.estado}">
+                        <f:facet name="header">
+                            <h:outputText value="ESTADO"/>
+                        </f:facet>
+                        <f:facet name="filter">
+                            <p:selectOneButton onchange="PF('listaClieprov').filter()">
+                                <f:converter converterId="javax.faces.Boolean" />
+                                <f:selectItem  itemLabel="Activo" itemValue="true"/>
+                                <f:selectItem itemLabel="Inactivo" itemValue="false"/>
+                            </p:selectOneButton>
+                        </f:facet>
+                        <h:graphicImage value="../images/img/#{listaClieprov.estado==1?'activo':'inactivo'}.png"/>
+                        <h:outputText value="#{listaClieprov.estado==1?'Activo':'Inactivo'}" />
+                    </p:column>
+                </p:dataTable>  
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mmDialogElimina_lst id="cmpDialog" bean="#{clieprovAction}" ventana="LST" />
+        </h:form>
+    </ui:define>
+</ui:composition>

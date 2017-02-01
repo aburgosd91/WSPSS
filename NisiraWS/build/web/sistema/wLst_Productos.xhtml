@@ -1,0 +1,39 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">
+            #{productosAction.buscarTodo()}
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">                
+                <cmp:barra_lst bean="#{productosAction}" mostrar_opciones="true" />
+                <p:dataTable id="tbl" var="listaProductos" value="#{productosAction.listaDatos}" widgetVar="listaProductos" 
+                             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                             paginator="true" rows="25" style="margin-bottom:20px" selectionMode="single" selection="#{productosAction.datoSeleccionado}" rowKey="#{listaProductos.idproducto}" resizableColumns="true">
+                    <f:facet name="header">
+                        <h:outputText value="#{productosAction.tituloHead}" />
+                    </f:facet> 
+                    <p:column style="width:15%;" filterBy="#{listaProductos.idproducto}" filterMatchMode="contains" sortBy="#{listaProductos.idproducto}">
+                        <f:facet name="header">
+                            <h:outputText value="ID" />
+                        </f:facet>
+                        <h:outputText value="#{listaProductos.idproducto}" />
+                    </p:column>
+                    <p:column style="width:45%;" filterBy="#{listaProductos.descripcion}" filterMatchMode="contains" sortBy="#{listaProductos.descripcion}">
+                        <f:facet name="header">
+                            <h:outputText value="DESCRIPCIÓN" />
+                        </f:facet>
+                        <h:outputText value="#{listaProductos.descripcion}" />
+                    </p:column>
+                </p:dataTable>  
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />            
+            <cmp:mmDialogElimina_lst id="cmpDialog" bean="#{productosAction}" ventana="LST" />
+        </h:form>
+    </ui:define>
+</ui:composition>

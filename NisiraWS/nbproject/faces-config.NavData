@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Scene Scope="Project" version="2">
+    <Scope Scope="Faces Configuration Only">
+        <Node id="sistema/menu.xhtml" x="1400" y="1650" zoom="true"/>
+        <Node id="index.xhtml" x="2150" y="1050" zoom="true"/>
+    </Scope>
+    <Scope Scope="Project">
+        <Node id="escritorio.xhtml" x="2900" y="900" zoom="true"/>
+        <Node id="index.xhtml" x="2150" y="1050" zoom="true"/>
+        <Node id="resources/cmp/barra_lst.xhtml" x="3400" y="300" zoom="true"/>
+        <Node id="welcomePrimefaces.xhtml" x="400" y="1350" zoom="true"/>
+        <Node id="sistema/wLst_multitabla.xhtml" x="400" y="450" zoom="true"/>
+        <Node id="sistema/ctrluser_edt_privilegio_sucursal.xhtml" x="150" y="1200" zoom="true"/>
+        <Node id="sistema/menu.xhtml" x="1400" y="1650" zoom="true"/>
+        <Node id="sistema/CerrarSesion.xhtml" x="900" y="600" zoom="true"/>
+        <Node id="resources/cmp/mbarra_lst.xhtml" x="3400" y="450" zoom="true"/>
+        <Node id="resources/cmp/mmDialogElimina_lst.xhtml" x="2650" y="300" zoom="true"/>
+        <Node id="sistema/ctrluster_edt_privilegio_modulo.xhtml" x="1150" y="1500" zoom="true"/>
+        <Node id="resources/cmp/barra_mnt.xhtml" x="2400" y="300" zoom="true"/>
+        <Node id="sistema/principal.xhtml" x="2150" y="750" zoom="true"/>
+        <Node id="sistema/wMnt_multitabla.xhtml" x="650" y="1500" zoom="true"/>
+        <Node id="resources/cmp/mDialogElimina_lst.xhtml" x="150" y="1050" zoom="true"/>
+        <Node id="sistema/ctrluser_edt_modulo.xhtml" x="650" y="150" zoom="true"/>
+        <Node id="mindex.xhtml" x="650" y="750" zoom="true"/>
+        <Node id="sistema/ctrluser_edt_menu.xhtml" x="650" y="1050" zoom="true"/>
+        <Node id="sistema/Expulsado.xhtml" x="4150" y="150" zoom="true"/>
+        <Node id="resources/cmp/mbarra_mnt.xhtml" x="1900" y="600" zoom="true"/>
+        <Node id="sistema/templatebanco.xhtml" x="150" y="2250" zoom="true"/>
+        <Node id="sistema/ctrluster_edt_privilegio_menu.xhtml" x="900" y="150" zoom="true"/>
+        <Node id="sistema/cntVista.xhtml" x="2900" y="150" zoom="true"/>
+    </Scope>
+    <Scope Scope="All Faces Configurations"/>
+</Scene>

@@ -1,0 +1,144 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+    <h:head>
+        <body onload="ini()" onkeypress="parar()" onclick="parar()">  </body>
+        
+         <script type="text/javascript">//<![CDATA[ 
+
+                    var pagina = "CerrarSesion.xhtml"
+                    function redireccionar()
+                    {
+                        location.href = pagina
+                    }
+
+                    var pepe;
+                    function ini() {
+                        pepe = setTimeout("redireccionar()", 5 * 60000); // 5 segundos
+                    }
+                    function parar() {
+                        clearTimeout(pepe);
+                        pepe = setTimeout("redireccionar()", 5 * 60000); // 5 segundos
+                    }
+                    //]]>  
+                </script>
+        
+        
+        
+        
+        <script type="text/javascript">//<![CDATA[ 
+            var device = navigator.userAgent
+
+            if (device.match(/Iphone/i) || device.match(/Ipod/i) || device.match(/Android/i) || device.match(/J2ME/i) || device.match(/BlackBerry/i) || device.match(/iPhone|iPad|iPod/i) || device.match(/Opera Mini/i) || device.match(/IEMobile/i) || device.match(/Mobile/i) || device.match(/HTC/i))
+            {
+
+
+            }
+            else
+            {
+                window.location = "http://www.nisira.com.pe/";
+            }
+//]]>  
+
+        </script>
+        
+        <script type="text/javascript">//<![CDATA[ 
+
+                    var pagina = "CerrarSesion.xhtml"
+                    function redireccionar()
+                    {
+                        location.href = pagina
+                    }
+                    setTimeout("redireccionar()", 5000);
+                    //]]>  
+                </script>
+        
+        <script type="text/javascript">//<![CDATA[ 
+
+                    var pagina = "CerrarSesion.xhtml"
+                    function redireccionar()
+                    {
+                        location.href = pagina
+                    }
+                    
+                    var pepe;
+                    function ini() {
+                        pepe = setTimeout("redireccionar()", 10000); // 5 segundos
+                    }
+                    function parar() {
+                        clearTimeout(pepe);
+                        pepe = setTimeout("redireccionar()", 10000); // 5 segundos
+                    }
+                    //]]>  
+                </script>
+        
+        <body onload="ini()" onkeypress="parar()" onclick="parar()">
+                
+            </body>
+        
+        <script type="text/javascript">//<![CDATA[ 
+                    var pagina = "CerrarSesion.xhtml"
+                    var inactivityTime = function() {
+                        var t;
+                        window.onload = ini;
+                        document.onmousemove = parar;
+                        document.onkeypress = parar;
+                        
+                        function redireccionar()
+                        {
+                            location.href = pagina
+                        }
+
+                        var pepe;
+                        function ini() {
+                            pepe = setTimeout("redireccionar()", 10000); // 5 segundos
+                        }
+                        function parar() {
+                            clearTimeout(pepe);
+                            pepe = setTimeout("redireccionar()", 10000); // 5 segundos
+                        }
+                    }
+                    //]]>  
+                </script>
+location.href = "CerrarSesion.xhtml"
+       
+
+<script type="text/javascript">//<![CDATA[ 
+
+                    dominio = "NisiraWebMovilOrdenes/faces/sistema/ordencompra.xhtml"
+                    if (opener && (opener.location.host == dominio || opener.location.host=="localhost:8080/"+dominio)) {
+                       self.close();
+                        
+                    }
+                    else {
+                         window.onbeforeunload = confirmaSalida;
+                            function confirmaSalida()   {
+
+                            return "Vas a abandonar esta pagina. Si has hecho algun cambio sin grabar vas a perder todos los datos.";
+                                    }
+
+                    
+                    }
+
+                    //]]>  
+                </script>
+
+        
+
+    </h:head>
+
+    <h:body>
+
+       
+
+    </h:body>
+    <!--    <script>devuelve_cumpleanos_xmes();</script>-->
+</html>
+

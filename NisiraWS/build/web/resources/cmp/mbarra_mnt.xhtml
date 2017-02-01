@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:pm="http://primefaces.org/mobile"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <f:view renderKitId="PRIMEFACES_MOBILE"/>
+
+
+    <!-- INTERFACE -->
+    <cc:interface>
+        <cc:attribute name="bean" />
+    </cc:interface>
+
+    <!-- IMPLEMENTATION -->
+    <cc:implementation>
+        <p:toolbar>
+            <f:facet name="left">
+                <h:panelGrid  id="botones" cellpadding="0" cellspacing="0"  columns="12">
+                    <p:commandButton rendered="#{cc.attrs.bean.anuevo==1?true:false}" value="Nuevo" ajax="true" actionListener="#{cc.attrs.bean.doNuevo()}" disabled="#{!cc.attrs.bean.barraVista}" icon="ui-icon-document"/>    
+                    <p:commandButton rendered="#{cc.attrs.bean.aedtiar==1?true:false}" value="Editar" ajax="true" actionListener="#{cc.attrs.bean.doEditar()}" disabled="#{!cc.attrs.bean.barraVista}" icon="ui-icon-pencil" update=":datos" />
+                    <p:commandButton rendered="#{cc.attrs.bean.aanular==1?true:false}" disabled="#{!cc.attrs.bean.barraVista}"  update=":datos:growl,:datos:cmpDialog:lbl_opcion" value="Anular" actionListener="#{cc.attrs.bean.opcionEliminarDocumento('ANULAR','MNT')}" icon="ui-icon-closethick"/> 
+                    <p:commandButton rendered="#{cc.attrs.bean.aeliminar==1?true:false}" disabled="#{!cc.attrs.bean.barraVista}"  update=":datos:growl,:datos:cmpDialog:lbl_opcion" value="Eliminar" actionListener="#{cc.attrs.bean.opcionEliminarDocumento('ELIMINAR','MNT')}" icon="ui-icon-trash"/> 
+                    <p:commandButton rendered="#{cc.attrs.bean.agrabar==1?true:false}" value="Grabar" ajax="true" actionListener="#{cc.attrs.bean.doGrabar()}" disabled="#{cc.attrs.bean.barraVista}"  icon="ui-icon-disk" update=":datos"/>
+                    <p:commandButton value="Cancelar" ajax="true" actionListener="#{cc.attrs.bean.doCancelar()}" disabled="#{cc.attrs.bean.barraVista}"  icon="ui-icon-disk" update=":datos"/>
+                    <p:separator/>
+                    <p:commandButton value="Ver Lista" ajax="true" actionListener="#{cc.attrs.bean.doVerLista()}" disabled="#{!cc.attrs.bean.barraVista}"  icon="ui-icon-disk" update=":datos"/>
+                </h:panelGrid>
+            </f:facet>  
+        </p:toolbar>
+
+
+
+
+    </cc:implementation>
+
+</html>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <title>Vista</title>
+        <style type="text/css">
+            .ui-widget {
+                font-size: 90%;
+            }
+        </style>
+    </h:head>
+
+    <h:body>
+        <h:form>
+            <p:dataTable var="car" value="#{cntVistaAction.datos}" 
+                         paginator="true"
+                         rows="7"
+                         resizableColumns="true"
+                         style="width: 100%;font-size: 11px;height: 100%">
+                <p:column headerText="Vista" filterBy="#{car}" filterMatchMode="contains" filterStyle="width: 75%" style="width: 80%;padding: 3px !important;text-align: center">
+                    <h:outputText value="#{car}" />
+                </p:column>
+                <p:column headerText="Ver" style="text-align: center">
+                    <p:commandButton icon="ui-icon-check" actionListener="#{cntVistaAction.selectFromDialog(car)}" />
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </h:body>
+
+</html>

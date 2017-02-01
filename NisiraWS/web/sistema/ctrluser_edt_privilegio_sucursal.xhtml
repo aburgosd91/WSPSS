@@ -1,0 +1,81 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form style="font-size: 12px" id="datos">
+            <p:panelGrid columns="2" styleClass="bordePanelGrid" columnClasses="no-border, no-border">
+                <f:facet name="header">
+                    <p:outputLabel style="font-size: 14px" value="Control de Privilegios de Sucursal"/>
+                </f:facet>
+                <h:panelGrid style="vertical-align: top !important" columns="1">
+                    <h:outputLabel value="#{privilegioEdtAction.llenarArbol()}" id="llenarA" />
+                    <p:tree style="min-height:  380px !important"  id="arbol" value="#{privilegioEdtAction.patriarca}" var="ar"  
+                            selectionMode="single"  
+                            selection="#{privilegioEdtAction.nodoSeleccionado}">  
+                        <p:ajax event="select" update=":datos:datosTree" listener="#{privilegioEdtAction.onNodeSelect}"/>
+                        <p:treeNode expandedIcon="ui-icon-folder-open"  
+                                    collapsedIcon="ui-icon-folder-collapsed">  
+                            <h:outputText value="#{ar[0]}" /> -  <h:outputText value="#{ar[1]}"/> 
+                        </p:treeNode>  
+                    </p:tree>
+                </h:panelGrid>
+                <h:panelGrid style="vertical-align: top !important" bgcolor="white" id="datosTree" columns="1"> 
+                    <h:panelGrid style="vertical-align: top !important;font-size: 11px" columns="3">
+                        <p:commandButton update=":datos:datosTree,:datos:growl"  value="Grabar"  actionListener="#{privilegioEdtAction.grabar_tg30wbmenu()}"  />
+
+                    </h:panelGrid>
+
+                    <h:panelGrid columns="6" 
+                                 style="padding: 0px !important;
+                                 background: white !important;
+                                 background-color: white !important;
+                                 font-size: 12px;text-align: left;font-weight: bold"
+                                 >
+                        <h:panelGrid width="40" >Elegido </h:panelGrid>
+                        <h:panelGrid width="200" > Empresa </h:panelGrid>
+                        <h:panelGrid width="200" > Sucursal </h:panelGrid>
+
+
+                    </h:panelGrid>
+                    <p:dataGrid   styleClass="dataGridNoticias"   id="tabla000" var="i" value="#{privilegioEdtAction.lista_seleccion}" 
+                                  columns="1"     
+                                  rows="50"
+                                  paginator="true"
+
+                                  paginatorAlwaysVisible="false"
+                                  emptyMessage="No Entradas Registradas"
+                                  >  
+
+                        <h:column  >
+
+                            <h:panelGrid  columns="5" style="padding: 0px !important;background: white !important;background-color: white !important;border-bottom: 1px solid orange">
+
+                                <h:panelGrid style="text-align: center" width="40" columns="1">
+                                    <h:selectBooleanCheckbox  value="#{i[0]}" />
+                                </h:panelGrid>
+                                <h:panelGrid width="200" columns="2">
+
+                                    <h:outputText value="#{i[2]}" />
+                                </h:panelGrid>
+                                <h:panelGrid width="200" columns="2">
+
+                                    <h:outputText value="#{i[4]}" />
+                                </h:panelGrid>
+
+
+                            </h:panelGrid>
+                        </h:column> 
+                    </p:dataGrid>
+
+                </h:panelGrid>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false" escape="false" />
+        </h:form>
+        <!--   -->
+    </ui:define>
+</ui:composition>

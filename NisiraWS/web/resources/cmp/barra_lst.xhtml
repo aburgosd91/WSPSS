@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      >
+
+    <!-- INTERFACE -->
+    <cc:interface>
+        <cc:attribute name="bean" />
+        <cc:attribute name="mostrar_opciones" />
+    </cc:interface>
+
+    <!-- IMPLEMENTATION -->
+    <cc:implementation>
+        <script type="text/javascript">
+            function start() {
+                PF('statusDialog').show();
+            }
+
+            function stop() {
+                PF('statusDialog').hide();
+            }
+        </script>
+        <p:toolbar style="font-size: 11px !important;background-color: rgb(232,235,241)">
+            <p:toolbarGroup align="left">
+                <h:panelGrid  id="botones" cellpadding="0" cellspacing="0"  columns="12">
+                    <p:commandButton rendered="#{cc.attrs.bean.anuevo==1?true:false}" value="Nuevo" ajax="true" actionListener="#{cc.attrs.bean.doNuevo()}" icon="ui-icon-nuevo"/>
+                    <p:commandButton rendered="#{cc.attrs.bean.aedtiar==1?true:false}" update=":datos:growl" value="Editar" ajax="true" actionListener="#{cc.attrs.bean.doEditar_lista()}" icon="ui-icon-edit" />
+                    <p:commandButton rendered="#{cc.attrs.bean.aanular==1?true:false}" update="botones,:datos:growl,:datos:cmpDialog:lbl_opcion" value="Anular" actionListener="#{cc.attrs.bean.opcionEliminarDocumento('ANULAR','LST')}" icon="ui-icon-closethick" /> 
+                    <p:commandButton rendered="#{cc.attrs.bean.aeliminar==1?true:false}" update="botones,:datos:growl,:datos:cmpDialog:lbl_opcion" value="Eliminar" actionListener="#{cc.attrs.bean.opcionEliminarDocumento('ELIMINAR','LST')}" icon="ui-icon-eliminar" /> 
+                    <p:commandButton value="Exportar" ajax="false" image="ui-icon-excel">
+                        <p:dataExporter type="xls" target="datos:tbl" fileName="Tabla"/>
+                    </p:commandButton>
+                </h:panelGrid>  
+
+            </p:toolbarGroup>
+            <p:toolbarGroup rendered="#{cc.attrs.mostrar_opciones}" align="right">                    
+                <p:menuButton value="Opciones">
+                    <p:menuitem value="&nbsp;Formato de Importación" ajax="false" icon="ui-icon-circle-arrow-n" onclick="PrimeFaces.monitorDownload(start, stop);">
+                        <p:fileDownload value="#{cc.attrs.bean.downFormatExcel()}"/>
+                    </p:menuitem>
+                    <p:menuitem value="&nbsp;Importar Datos Excel" ajax="true" icon="ui-icon-disk" onclick="PF('dlgImportExcel').show();"/>
+                </p:menuButton>
+            </p:toolbarGroup>
+        </p:toolbar>
+    </cc:implementation>
+
+</html>

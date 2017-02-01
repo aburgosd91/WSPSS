@@ -1,0 +1,59 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">
+            #{consumidorAction.buscarTodo()}
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">                
+                <cmp:barra_lst bean="#{consumidorAction}" mostrar_opciones="true" />
+                <p:dataTable id="tbl" var="listaConsumidor" value="#{consumidorAction.listaDatos}" widgetVar="listaConsumidor" 
+                             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                             paginator="true" rows="25" style="margin-bottom:20px" selectionMode="single" selection="#{consumidorAction.datoSeleccionado}" rowKey="#{listaConsumidor.idconsumidor}" resizableColumns="true">
+                    <f:facet name="header">
+                        <h:outputText value="#{consumidorAction.tituloHead}" />
+                    </f:facet>  
+                    <p:column style="width:30%;" filterBy="#{listaConsumidor.descripcion}" filterMatchMode="contains" sortBy="#{listaConsumidor.descripcion}">
+                        <f:facet name="header">
+                            <h:outputText value="DESCRIPCIÓN" />
+                        </f:facet>
+                        <h:outputText value="#{listaConsumidor.descripcion}" />
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{listaConsumidor.marca}" filterMatchMode="contains" sortBy="#{listaConsumidor.marca}">
+                        <f:facet name="header">
+                            <h:outputText value="MARCA" />
+                        </f:facet>
+                        <h:outputText value="#{listaConsumidor.marca}" />
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{listaConsumidor.placa}" filterMatchMode="contains" sortBy="#{listaConsumidor.placa}">
+                        <f:facet name="header">
+                            <h:outputText value="PLACA" />
+                        </f:facet>
+                        <h:outputText value="#{listaConsumidor.placa}" />
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{listaDatos.estado}">
+                        <f:facet name="header">
+                            <h:outputText value="ESTADO"/>
+                        </f:facet>
+                        <f:facet name="filter">
+                            <p:selectOneButton onchange="PF('listaConsumidor').filter()">
+                                <f:converter converterId="javax.faces.Boolean" />
+                                <f:selectItem  itemLabel="Activo" itemValue="true"/>
+                                <f:selectItem itemLabel="Inactivo" itemValue="false"/>
+                            </p:selectOneButton>
+                        </f:facet>
+                        <h:graphicImage value="../images/img/#{listaConsumidor.estado==1?'activo':'inactivo'}.png"/>
+                        <h:outputText value="#{listaConsumidor.estado==1?'Activo':'Inactivo'}" />
+                    </p:column>
+                </p:dataTable>  
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mmDialogElimina_lst id="cmpDialog" bean="#{consumidorAction}" ventana="LST" />
+        </h:form>
+    </ui:define>
+</ui:composition>

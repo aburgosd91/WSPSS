@@ -1,0 +1,93 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                >
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">       
+        <h:form style="font-size: 15px" id="datos">
+             #{menuEdtAction.llenarCatalogo()}
+            <p:panelGrid columns="2" styleClass="bordePanelGrid" columnClasses="no-border, no-border">
+                <f:facet name="header">
+                    <p:outputLabel value="Control de Menus"/>
+                </f:facet>
+                <p:panelGrid columns="1" styleClass="bordePanelGrid" columnClasses="no-border, no-border">
+                    <p:panelGrid columns="2" columnClasses="no-border, no-border">
+                        <p:outputLabel value="Modulos: "/>
+                        <p:selectOneMenu value="#{menuEdtAction.tipo_arbol}">  
+                            <f:selectItems value="#{menuEdtAction.lista_tg30wbmodulo}" var="est" itemValue="#{est[0]}" itemLabel="#{est[1]}"/>
+                            <p:ajax listener="#{menuEdtAction.llenarArbol()}" update=":datos:arbol,:datos:datosTree" />
+                        </p:selectOneMenu> 
+                    </p:panelGrid>
+                    <h:outputLabel value="#{menuEdtAction.llenarArbol()}" id="llenarA" />
+                    <p:panelGrid style="font-size: 11px" columns="3" layout="grid" columnClasses="no-border, no-border">
+                        <p:commandButton update=":datos:datosTree"  value="Nuevo"  actionListener="#{menuEdtAction.nuevo_contenido_pagina_productos()}"/>
+                        <p:commandButton update=":datos:datosTree"  value="Nuevo Secundario"  actionListener="#{menuEdtAction.nuevo_Secundario_contenido_pagina_productos()}" />
+                        <p:commandButton update=":datos,:datos:datosTree"  value="Borrar"  actionListener="#{menuEdtAction.borrar_contenido_pagina_productos()}"/>
+                    </p:panelGrid>
+                    <p:tree style="min-height:  380px !important; width: 100%"  id="arbol" 
+                            value="#{menuEdtAction.patriarca}" var="ar"  
+                            selectionMode="single"  
+                            selection="#{menuEdtAction.nodoSeleccionado}" 
+                            dynamic="true">  
+                        <p:ajax event="select" update=":datos:datosTree" listener="#{menuEdtAction.onNodeSelect}" />  
+                        <p:treeNode expandedIcon="ui-icon-folder-open"  
+                                    collapsedIcon="ui-icon-folder-collapsed" >  
+                            <h:outputText value="#{ar[3]}" />  
+                        </p:treeNode>  
+                    </p:tree>
+                </p:panelGrid>
+                
+                <p:panelGrid id="datosTree" columns="2">
+                    <h:outputLabel value="Id: " />
+                    <h:panelGrid columns="3">
+                        <h:inputText size="3" disabled="true" value="#{menuEdtAction.nodoS[0]}" />
+                        <h:outputLabel value="Jerarquia: " />
+                        <h:inputText  size="40"  disabled="true" value="#{menuEdtAction.return_descripcion(menuEdtAction.nodoS[1])}" />
+                    </h:panelGrid>
+                    <h:outputLabel value="Tipo: " />
+                    <h:inputText  disabled="true"  value="#{menuEdtAction.nodoS[2]}" />
+                    <h:outputLabel value="Titulo: " />
+                    <h:inputText    value="#{menuEdtAction.nodoS[3]}" />
+                    <h:outputLabel value="Contenido: " />
+                    <h:inputTextarea cols="60" rows="6"   value="#{menuEdtAction.nodoS[4]}" />
+                    <h:outputLabel value="Ruta Imagen: " />
+                    <h:inputText     value="#{menuEdtAction.nodoS[5]}" />
+                    <h:outputLabel value="Icono: " />
+                    <h:inputText     value="#{menuEdtAction.nodoS[7]}" />
+                    <h:outputLabel value="Mostrar: " />
+                    <h:selectOneMenu value="#{menuEdtAction.nodoS[18]}">  
+                        <f:selectItem itemLabel="Si" itemValue="1" />  
+                        <f:selectItem itemLabel="No" itemValue="0" />  
+                    </h:selectOneMenu>
+                    <h:outputLabel value="Orden: " />
+                    <h:inputText     value="#{menuEdtAction.nodoS[11]}" />
+                    <h:outputLabel value="Url: " />
+                     <h:selectOneMenu value="#{menuEdtAction.nodoS[12]}">  
+                            <f:selectItem itemLabel="" itemValue="" />
+                            <f:selectItems value="#{menuEdtAction.catalogoXHTML}" var="url" itemLabel="#{url}" itemValue="#{url}" />
+                     </h:selectOneMenu>
+                    <h:outputLabel value="Sub-menu: " />
+                    <h:selectOneMenu value="#{menuEdtAction.nodoS[17]}">  
+                        <f:selectItem itemLabel="Si" itemValue="1" />  
+                        <f:selectItem itemLabel="No" itemValue="0" />  
+                    </h:selectOneMenu>  
+                    <h:outputLabel value="Style: " />
+                    <h:panelGrid columns="3" columnClasses="no-border, no-border">
+                        <h:inputText     value="#{menuEdtAction.nodoS[15]}" />
+                        <h:outputLabel value="StyleClass: " />
+                        <h:inputText     value="#{menuEdtAction.nodoS[16]}" />
+                    </h:panelGrid>
+                    <h:outputLabel value="Comando: " />
+                    <h:inputText     value="#{menuEdtAction.nodoS[13]}" />
+                    <p:commandButton update=":datos,:datos:datosTree" value="Grabar"  actionListener="#{menuEdtAction.grabar_tg30wbmenu()}"  />
+                </p:panelGrid>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false" escape="false" />
+        </h:form>
+        <!--        -->
+    </ui:define>
+</ui:composition>

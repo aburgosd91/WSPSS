@@ -1,0 +1,47 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">            
+            #{ordenservicioclienteAction.buscarTodo()}  
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
+                <cmp:barra_lst bean="#{ordenservicioclienteAction}" mostrar_opciones="true" />
+                <p:dataTable  id="tbl" var="listOrdenServicioCliente" value="#{ordenservicioclienteAction.listaDatos}" filteredValue="#{ordenservicioclienteAction.filtroDatos}"  widgetVar="listOrdenServicioCliente" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                              paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{ordenservicioclienteAction.datoSeleccionado}" rowKey="#{listOrdenServicioCliente.idordenservicio}" resizableColumns="true">
+                    <f:facet name="header">
+                        <h:outputText value="#{ordenservicioclienteAction.tituloHead}" />   
+                    </f:facet>
+                    <p:column headerText="Documento" style="width:30%;" >
+                        <h:outputText value="#{listOrdenServicioCliente.iddocumento}-#{listOrdenServicioCliente.serie}-#{listOrdenServicioCliente.numero}" />
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{listOrdenServicioCliente.fecha}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.fecha}">
+                        <f:facet name="header">
+                            <h:outputText value="Fecha" />
+                        </f:facet>
+                        <h:outputText value="#{listOrdenServicioCliente.fecha}">
+                            <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Contenedor" style="width:30%;" filterBy="#{listOrdenServicioCliente.nrocontenedor}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.nrocontenedor}">
+                        <h:outputText value="#{listOrdenServicioCliente.nrocontenedor}" />
+                    </p:column>
+                    <p:column headerText="Precinto" style="width:30%;" filterBy="#{listOrdenServicioCliente.nroprecinto}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.nroprecinto}">
+                        <h:outputText value="#{listOrdenServicioCliente.nroprecinto}" />
+                    </p:column>
+                    <p:column headerText="Servicio" style="width:30%;" filterBy="#{listOrdenServicioCliente.ro_oservicio}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.ro_oservicio}">
+                        <h:outputText value="#{listOrdenServicioCliente.nro_oservicio}" />
+                    </p:column>
+                </p:dataTable>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{ordenservicioclienteAction}" ventana="LST" />
+        </h:form>
+    </ui:define>    
+</ui:composition>

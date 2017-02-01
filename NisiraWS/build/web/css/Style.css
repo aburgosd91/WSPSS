@@ -1,0 +1,49 @@
+/* 
+    Document   : Style
+    Created on : 28/06/2013, 09:03:32 AM
+    Author     : Antenor
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+root { 
+    display: block;
+    margin-top: -5px;
+}
+
+.tablaaa{
+   background-color: #939393;
+   color: #939393;
+   
+}
+.tablaaa tr, .tablaaa td {
+    border:  none;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    
+   
+}
+.sombreado1{
+    width: 30%;
+    font-weight: bold;
+    color: darkorange; 
+    background-color: #F8F8F8;
+}  
+.sombreado2{
+    width: 75%;
+    font-weight: bold;
+    color: black; 
+    background-color: #F8F8F8;
+} 
+.ultimo1{
+    font-weight: bold;
+    color: blue; 
+    font-size: 22px; 
+    width: 30%;
+}
+.ultimo2{
+    font-weight: bold;
+    font-size: 18px; 
+    width: 70%;
+    
+}

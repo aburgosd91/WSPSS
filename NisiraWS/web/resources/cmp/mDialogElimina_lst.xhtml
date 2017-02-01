@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      >
+
+    <!-- INTERFACE -->
+    <cc:interface>
+        <cc:attribute name="bean" />
+        <cc:attribute name="ventana" />
+    </cc:interface>
+
+    <!-- IMPLEMENTATION -->
+    <cc:implementation>
+
+        <p:dialog  header="Mensaje" widgetVar="dialog_aviso" modal="true"> 
+            <h:outputText escape="false" id="lbl_mensaje" value=""/>
+            <br/><br/>
+            <center>
+                <p:commandButton value="Cerrar" onclick="PF('dialog_aviso').hide();"  icon="ui-icon-circle-check"/>
+            </center>
+        </p:dialog>
+
+        <p:dialog id="mdialogElimina" resizable="false" width="300" height="70" header="Advertencia" widgetVar="dialogeliminar" modal="true"> 
+            <p:ajaxStatus   styleClass="estatusajax" style="position: absolute ; top:-20px;left: 75%">
+                <f:facet name="start">  
+                    <h:graphicImage value="../img/ajaxLoader4.gif" />  
+                </f:facet>                  
+            </p:ajaxStatus>
+            <h:outputText id="lbl_opcion" style="font-weight: bold;" value="Está seguro de #{cc.attrs.bean.opc_anular_eliminar} registro? "/>
+            <br/><br/>
+            <center>
+                <p:commandButton  update="datos" value="Si" action="#{cc.attrs.bean.eliminar()}" icon="ui-icon-circle-check"/>
+                <p:commandButton  value="No"  onclick="PF('dialogeliminar').hide()" icon="ui-icon-circle-close"/>
+            </center>
+        </p:dialog>
+
+
+
+
+    </cc:implementation>
+
+</html>

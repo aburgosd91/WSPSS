@@ -1,0 +1,102 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <p:messages id="messages" autoUpdate="true" closable="true" style="font-size:10px"/><br/>
+        <h:form id="FormularioMultitabla" style="width:100%;position:relative;">
+            <p:toolbar>
+                <f:facet name="right">
+                    <p:commandButton value="Grabar" ajax="true" actionListener="#{multitablaAction.doGrabar()}" image="ui-icon-grabar" rendered="#{multitablaAction.agrabar==1?true:false}"/>
+                    <p:commandButton value="Cancelar" image="ui-icon-cancelar" process="@this" actionListener="#{multitablaAction.doVerLista()}" update="FormularioMultitabla" />
+                </f:facet>
+            </p:toolbar>
+            <br/>
+            <p:panelGrid columns="2" columnClasses="no-border, no-border,no-border">
+                <p:outputLabel value="Id: " />
+                <p:panelGrid columns="7" columnClasses="no-border, no-border, no-border , no-border, no-border, no-border, no-border">
+                    <p:inputText size="3" disabled="true" value="#{multitablaAction.datoEdicion.TABLA_ID}" />
+                    <p:outputLabel value="N° Tabla: " />
+                    <p:inputText size="3" disabled="true" value="#{multitablaAction.datoEdicion.VALOR}" />
+                    <p:outputLabel for="descripcion"  value="Descripcion:" />
+                    <p:inputTextarea id="descripcion" cols="60" rows="2" required="true" value="#{multitablaAction.datoEdicion.DESCRIPCION}" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                    </p:inputTextarea>
+                    <p:outputLabel for="abreviatura"  value="Abreviatura:" />
+                    <p:inputText id="abreviatura" size="3" value="#{multitablaAction.datoEdicion.ABREV}" onkeyup="javascript:this.value=this.value.toUpperCase();"/>
+                </p:panelGrid>
+                <h:outputText value="Estado?:" />
+                <p:selectBooleanCheckbox value="#{multitablaAction.datoEdicion.ESTADO}" />
+            </p:panelGrid>
+        </h:form>
+        <p:fieldset legend="Detalle Multitabla" toggleable="true" toggleSpeed="500" style="margin-bottom:20px">
+            <h:form id="datos">
+               #{multitablaAction.getRecordDetalleMultitabla()}
+                <p:panelGrid id="principal" columns="2" columnClasses="no-border, no-border">
+                    <p:panelGrid style="font-size: 12px;text-align:center;" id="panel1" columns="1" columnClasses="no-border, no-border">
+                        <p:dataTable id="tbl" var="listDetalleMultitablaTabla" value="#{multitablaAction.listDetalleMultitablaTabla}" widgetVar="listDetalleMultitablaTabla" filteredValue="#{multitablaAction.filtroDetalleMultitablaTabla}"
+                            paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+                            paginator="true" paginatorPosition="top" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{multitablaAction.selectDetalleMultitablaTabla}" rowKey="#{listDetalleMultitablaTabla.VALOR}">
+                            <p:ajax event="rowSelect" listener="#{multitablaAction.onRowSelectMultitablaDetalle}" update="datos:tbl" />
+                            <p:ajax event="rowUnselect" listener="#{multitablaAction.onRowUnselectMultitablaDetalle}" update="datos:tbl" />
+                            <f:facet name="{Comandos}">
+                                <p:commandButton value="Nuevo" ajax="true" image="ui-icon-nuevo" onclick="PF('dlgnew_dmultitabla').show()" rendered="#{multitablaAction.anuevo==1?true:false}"/>
+                                <p:commandButton value="Eliminar" ajax="true" image="ui-icon-eliminar" actionListener="#{multitablaAction.InhabilitarTablaDetalle()}" rendered="#{multitablaAction.aeliminar==1?true:false}"/>
+                            </f:facet>
+                            <f:facet name="{Exporters}">
+                                <p:commandButton value="Excel" ajax="false" image="ui-icon-excel">
+                                <p:dataExporter type="xls" target="tbl" fileName="listDetalleMultitablaTabla"/>
+                                </p:commandButton>
+                            </f:facet>
+                            <p:column style="width:30%;" filterBy="#{listDetalleMultitablaTabla.VALOR}" filterMatchMode="contains" sortBy="#{listDetalleMultitablaTabla.VALOR}">
+                               <f:facet name="header" >
+                                   <h:outputText value="ID" />
+                               </f:facet>
+                                <h:outputText value="#{listDetalleMultitablaTabla.VALOR}" />
+                           </p:column>
+                            <p:column style="width:50%;" filterBy="#{listDetalleMultitablaTabla.DESCRIPCION}" filterMatchMode="contains" sortBy="#{listDetalleMultitablaTabla.DESCRIPCION}">
+                               <f:facet name="header" >
+                                   <h:outputText value="DESCRIPCIÓN" />
+                               </f:facet>
+                               <h:outputText value="#{listDetalleMultitablaTabla.DESCRIPCION}" />
+                           </p:column>
+                           <p:column style="width:10%;" filterBy="#{listDetalleMultitablaTabla.ABREV}" filterMatchMode="contains" sortBy="#{listDetalleMultitablaTabla.ABREV}">
+                               <f:facet name="header" >
+                                   <h:outputText value="ABREVIATURA" />
+                               </f:facet>
+                                <h:outputText value="#{listDetalleMultitablaTabla.ABREV}" />
+                           </p:column>
+                        </p:dataTable>  
+                    </p:panelGrid>
+                </p:panelGrid>
+            </h:form>
+        </p:fieldset>
+        <p:dialog id="dlgnew_dmultitabla" header="..::Nuevo Item::." widgetVar="dlgnew_dmultitabla" modal="true" showEffect="popup" closable="false">
+            <h:form id="FormularioNuevoTablaDetalle">
+                <p:messages id="messagesNewAlmacen" autoUpdate="true" closable="true" style="font-size:10px"/>
+                <p:panelGrid columns="1" columnClasses="no-border" style="width: 400px">
+                    <p:panelGrid columns="2" columnClasses="no-border, no-border" style="width: 100%">
+                        <p:outputLabel for="descripcionD"  value="Descripción" />
+                        <p:inputTextarea id="descripcionD" cols="60" rows="2" required="true" value="#{multitablaAction.variableDetalleMultitabla.DESCRIPCION}" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                        </p:inputTextarea>
+                        <p:outputLabel for="abreviaturaD"  value="Abreviatura:"/>
+                        <p:inputText id="abreviaturaD" size="3" value="#{multitablaAction.variableDetalleMultitabla.ABREV}" onkeyup="javascript:this.value=this.value.toUpperCase();"/>
+                    </p:panelGrid>
+                    <br/>
+                    <p:toolbar style="width: 100%">
+                        <f:facet name="right">
+                            <p:commandButton value="Grabar" ajax="true" actionListener="#{multitablaAction.agregarDetalleMultitabla()}" image="ui-icon-grabar" />
+                            <p:commandButton value="Cancelar" process="@this" update="FormularioNuevoTablaDetalle"  image="ui-icon-cancelar" onclick="PF('dlgnew_dmultitabla').hide()">
+                                <p:resetInput target="FormularioNuevoTablaDetalle" />
+                            </p:commandButton>
+                        </f:facet>
+                    </p:toolbar>                         
+                </p:panelGrid> 
+            </h:form>                 
+        </p:dialog>
+    </ui:define>
+</ui:composition>

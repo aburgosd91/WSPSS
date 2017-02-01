@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pm="http://primefaces.org/mobile">
+    <f:view renderKitId="PRIMEFACES_MOBILE" />  
+
+    <h:head>
+        <f:loadBundle basename="titulos" var="titulos" />
+    </h:head>
+    <h:body>
+        #{logueoAction.es_movil()}
+        <pm:page title="Inicio de Sesión" id="page01">        
+            <pm:header title="Iniciar Sesión" swatch="a" fixed="true" >
+                <script type="text/javascript" src="js/validadispositivo.js"></script>
+                <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/validadispositivo.js"></script>
+
+                <link rel="apple-touch-icon-precomposed" sizes="144x144" href="images/apple-touch-icon.png"></link>
+                <link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/apple-touch-icon.png"></link>
+                <link rel="apple-touch-icon-precomposed" sizes="72x72" href="images/apple-touch-icon.png"></link>
+                <link rel="apple-touch-icon-precomposed" href="images/apple-touch-icon.png"> </link>
+            </pm:header>
+            <pm:content>
+                <h:outputLabel value="#{logueoAction.Iniciar()}" />
+                <h:form id="frmlogueo" >
+                    <p:selectOneMenu id="cbobasedatos" style="width: 100%" value="#{logueoAction.conexion}">
+                        <f:ajax listener="#{logueoAction.cargarEmpresas()}"/>
+                        <f:selectItem itemLabel="Seleccione Base Datos" itemValue="nada"/>
+                        <f:selectItems value="#{logueoAction.hashmap_basedatos}" />
+                    </p:selectOneMenu>
+                    
+                    <p:selectOneMenu id="cboempresa" style="width: 100%" value="#{logueoAction.idempresa}"> 
+                        <f:selectItem itemLabel="Seleccione Empresa" itemValue="nada"/>
+                        <f:selectItems value="#{logueoAction.hashmap_empresas}" />
+                    </p:selectOneMenu>
+                        
+                    <b><h:outputLabel style="color: blue" value="#{titulos.index_usuario}"  /> </b>
+                    <h:inputText id="usuario" value="#{logueoAction.usuarioBean.IDUSUARIO}" required="false" label="Usuario" style="width: 100%">
+                        <f:validateBean/>
+                        <f:ajax render="usuarioError"/>
+                    </h:inputText>
+                    <h:message id="usuarioError" for="usuario" errorClass="error"/>
+
+                    <b><h:outputLabel style="color:blue" value="#{titulos.index_clave}"  /> </b>
+                    <h:inputSecret id="password" value="#{logueoAction.usuarioBean.PASSWORD}" required="false" label="Contraseña" style="width: 100%">
+                        <f:validateBean/>
+                        <f:ajax render="passwordError"/>
+                    </h:inputSecret>
+                    <h:message id="passwordError" for="password" errorClass="error"/>
+
+                    <p:commandButton value="Ingresar" action="#{logueoAction.loguear}" update="frmlogueo" style="width: 100%">
+                        <f:attribute name="swatch" value="a" />
+                    </p:commandButton>
+                    <h:outputLabel style="color: red" id="msjError" styleClass="errorMsje" value="#{logueoAction.mensaje}"   />
+                </h:form>
+
+                <a href="http://www.nisira.com.pe" target="_new">
+                    <center><img border="0" height="65px" src="#{facesContext.externalContext.requestContextPath}/images/logoVar.png"/></center>
+                    
+                    <!--<center><img border="0" height="65px" src="http://soporte.nisira.com.pe:8069/NisiraWebIncidencias/logoVar.png"/></center>-->
+                </a>
+                <br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br>
+            </pm:content>
+            <pm:footer swatch="a" fixed="true">
+                <h1 style="font-size: x-small" >© 2013 <img border="0" height="10px" src="#{facesContext.externalContext.requestContextPath}/images/logoWeb.png"/> Nisira Systems SAC </h1>         
+            </pm:footer>
+
+        </pm:page>
+    </h:body>
+</html>
