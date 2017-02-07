@@ -52,7 +52,7 @@
                                             <p:ajax event="dialogReturn" listener="#{cotizacionventasAction.valorClieprov}" update="cntClie"/>
                                         </p:commandButton>
                                         <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{cotizacionventasAction.datoEdicion.idclieprov}" disabled="#{!cotizacionventasAction.edicion}"/>
-                                        <p:inputText size="50" readonly="true" value="#{cotizacionventasAction.datoEdicion.razonsocial}" disabled="#{!cotizacionventasAction.edicion}"/>
+                                        <p:inputText size="50" readonly="true" value="#{cotizacionventasAction.datoEdicion.razon_social}" disabled="#{!cotizacionventasAction.edicion}"/>
                                     </h:panelGrid>
                                 </p:panelGrid>
                             </div>
@@ -60,7 +60,7 @@
                                 <p:panelGrid  columns="2" columnClasses="no-border, no-border" >
                                     <p:outputLabel value="Fecha" escape="false"/>
                                     <p:panelGrid  columns="3" columnClasses="no-border, no-border, no-border" >
-                                        <p:calendar id="button1" value="#{cotizacionventasAction.datoEdicion.fecharegistro}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="#{!cotizacionventasAction.edicion}">
+                                        <p:calendar id="button1" value="#{cotizacionventasAction.datoEdicion.fecha}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="#{!cotizacionventasAction.edicion}">
                                             <!--<p:ajax event="dateSelect" listener="{planventaAction.updateCampañas}" update="lstCampaña"/>-->
                                         </p:calendar>
                                         <p:outputLabel for="estado"  value="Estado:" />
@@ -100,17 +100,17 @@
                                     </f:facet>
                                     <h:outputText value="#{lstdcotizacionventas.idproducto}" />
                                 </p:column>
-                                <p:column style="width:25%;" filterBy="#{lstdcotizacionventas.producto}" filterMatchMode="contains" sortBy="#{lstdcotizacionventas.producto}">
+                                <p:column style="width:25%;" filterBy="#{lstdcotizacionventas.descripcion}" filterMatchMode="contains" sortBy="#{lstdcotizacionventas.descripcion}">
                                     <f:facet name="header" >
                                         <h:outputText value="Descripción Producto" />
                                     </f:facet>
-                                    <h:outputText value="#{lstdcotizacionventas.producto}" />
+                                    <h:outputText value="#{lstdcotizacionventas.descripcion}" />
                                 </p:column>
-                                <p:column style="width:15%;" filterBy="#{lstdcotizacionventas.idpresentacion}" filterMatchMode="contains" sortBy="#{lstdcotizacionventas.idpresentacion}">
+                                <p:column style="width:15%;" filterBy="#{lstdcotizacionventas.idmedida}" filterMatchMode="contains" sortBy="#{lstdcotizacionventas.idmedida}">
                                     <f:facet name="header" >
                                         <h:outputText value="U.M." />
                                     </f:facet>
-                                    <h:outputText value="#{lstdcotizacionventas.idpresentacion}" />
+                                    <h:outputText value="#{lstdcotizacionventas.idmedida}" />
                                 </p:column>
                                 <p:column style="width:10%;" filterBy="#{lstdcotizacionventas.cantidad}" filterMatchMode="contains" sortBy="#{lstdcotizacionventas.cantidad}">
                                     <f:facet name="header" >
@@ -120,45 +120,15 @@
                                 </p:column>
                                 <p:column style="width:15%;" filterBy="#{lstdcotizacionventas.precio}" filterMatchMode="contains" sortBy="#{lstdcotizacionventas.precio}">
                                     <f:facet name="header" >
-                                        <h:outputText value="P.Unitario" />
+                                        <h:outputText value="Precio" />
                                     </f:facet>
                                     <h:outputText value="#{lstdcotizacionventas.precio}" />
                                 </p:column>
-                                <p:column style="width:20%;" filterBy="#{lstdcotizacionventas.subtotalsindscto}" filterMatchMode="contains" sortBy="#{lstdcotizacionventas.subtotalsindscto}">
-                                    <f:facet name="header" >
-                                        <h:outputText value="Subtotal" />
-                                    </f:facet>
-                                    <h:outputText value="#{lstdcotizacionventas.subtotalsindscto}" />
-                                </p:column>
-                                <p:column style="width:20%;" filterBy="#{lstdcotizacionventas.porcentajedscto1}" filterMatchMode="contains" sortBy="#{lstdcotizacionventas.porcentajedscto1}">
-                                    <f:facet name="header" >
-                                        <h:outputText value="%Dscto 1" />
-                                    </f:facet>
-                                    <h:outputText value="#{lstdcotizacionventas.porcentajedscto1}" />
-                                </p:column>
-                                <p:column style="width:20%;" filterBy="#{lstdcotizacionventas.porcentajedscto2}" filterMatchMode="contains" sortBy="#{lstdcotizacionventas.porcentajedscto2}">
-                                    <f:facet name="header" >
-                                        <h:outputText value="%Dscto 2" />
-                                    </f:facet>
-                                    <h:outputText value="#{lstdcotizacionventas.porcentajedscto2}" />
-                                </p:column>
-                                <p:column style="width:20%;" filterBy="#{lstdcotizacionventas.porcentajedscto3}" filterMatchMode="contains" sortBy="#{lstdcotizacionventas.porcentajedscto2}">
-                                    <f:facet name="header" >
-                                        <h:outputText value="%Dscto 3" />
-                                    </f:facet>
-                                    <h:outputText value="#{lstdcotizacionventas.porcentajedscto3}" />
-                                </p:column>
-                                <p:column style="width:20%;" filterBy="#{lstdcotizacionventas.descuento}" filterMatchMode="contains" sortBy="#{lstdcotizacionventas.porcentajedscto2}">
+                                <p:column style="width:15%;" filterBy="#{lstdcotizacionventas.descuento}" filterMatchMode="contains" sortBy="#{lstdcotizacionventas.descuento}">
                                     <f:facet name="header" >
                                         <h:outputText value="Descuento" />
                                     </f:facet>
                                     <h:outputText value="#{lstdcotizacionventas.descuento}" />
-                                </p:column>
-                                <p:column style="width:20%;" filterBy="#{lstdcotizacionventas.impuesto_i}" filterMatchMode="contains" sortBy="#{lstdcotizacionventas.impuesto_i}">
-                                    <f:facet name="header" >
-                                        <h:outputText value="%Impuesto" />
-                                    </f:facet>
-                                    <h:outputText value="#{lstdcotizacionventas.impuesto_i}" />
                                 </p:column>
                                 <p:column style="width:20%;" filterBy="#{lstdcotizacionventas.impuesto}" filterMatchMode="contains" sortBy="#{lstdcotizacionventas.impuesto}">
                                     <f:facet name="header" >
@@ -182,15 +152,19 @@
                         </p:fieldset>
                         <p:toolbar>
                             <f:facet name="right">
-                                <p:outputLabel value="Total M.N.:" />
-                                <p:inputNumber id="timporte" value="#{cotizacionventasAction.datoEdicion.importe}" />
-                                <p:outputLabel value="Total M.E.:" />
-                                <p:inputNumber id="timpuesto" value="#{cotizacionventasAction.datoEdicion.impuesto}" />
+                                <p:outputLabel value="Sub Total:" />
+                                <p:inputNumber id="tsubtotal" value="#{cotizacionventasAction.datoEdicion.subtotalsindscto}" />
+                                <p:outputLabel value="Total Descuento :" />
+                                <p:inputNumber id="tdescuento" value="#{cotizacionventasAction.datoEdicion.descuento}" />
+                                <p:outputLabel value="Igv :" />
+                                <p:inputNumber id="tigv" value="#{cotizacionventasAction.datoEdicion.impuesto}" />
+                                <p:outputLabel value="Total :" />
+                                <p:inputNumber id="ttotal" value="#{cotizacionventasAction.datoEdicion.importe}" />
                             </f:facet>
                         </p:toolbar> 
                         <p:dialog id="dlgnew_dcotizacionventas" header="..::Detalle::." widgetVar="dlgnew_dcotizacionventas" modal="true" showEffect="popup" closable="false">
                             <p:panelGrid columns="1" columnClasses="no-border">
-                                <p:panelGrid columns="2" columnClasses="no-border, no-border,no-border">
+                                <p:panelGrid columns="2" columnClasses="no-border, no-border">
                                     <p:outputLabel value="Id: " />
                                     <p:panelGrid columns="3" columnClasses="no-border, no-border, no-border">
                                         <p:inputText size="3" disabled="true" value="#{cotizacionventasAction.dcotizacionventas.idcotizacionv}" />
@@ -199,44 +173,35 @@
                                     </p:panelGrid>
                                     <p:outputLabel value="Producto" escape="false" />
                                     <h:panelGrid id="cntProducto" cellpadding="0" cellspacing="0" columns="3">
-                                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{cotizacionventasAction.verCntClieprov}" 
+                                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{cotizacionventasAction.verCntProducto()}" 
                                                          disabled="#{!cotizacionventasAction.edicion}"  icon="ui-icon-search">
-                                            <p:ajax event="dialogReturn" listener="#{cotizacionventasAction.valorClieprovDetalle}" update="cntProveedor"/>
+                                            <p:ajax event="dialogReturn" listener="#{cotizacionventasAction.valorProducto}" update="cntProducto,dprecio,
+                                                    ddescuento,dimpuesto,importe"/>
                                         </p:commandButton>
-                                        <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{cotizacionventasAction.dcotizacionventas.idclieprov}" disabled="#{!cotizacionventasAction.edicion}"/>
-                                        <p:inputText size="50" readonly="true" value="#{cotizacionventasAction.dcotizacionventas.razonsocial}" disabled="#{!cotizacionventasAction.edicion}"/>
+                                        <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{cotizacionventasAction.dcotizacionventas.idproducto}" disabled="#{!cotizacionventasAction.edicion}"/>
+                                        <p:inputText size="50" readonly="true" value="#{cotizacionventasAction.dcotizacionventas.producto}" disabled="#{!cotizacionventasAction.edicion}"/>
                                     </h:panelGrid>
-                                    <p:outputLabel value="Destino Adq." escape="false" />
-                                    <h:panelGrid id="cntDestinoadquisicion" cellpadding="0" cellspacing="0" columns="3">
-                                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{cotizacionventasAction.verCntDestinoadquisicion()}" disabled="#{!cotizacionventasAction.edicion}"  icon="ui-icon-search">
-                                            <p:ajax event="dialogReturn" listener="#{cotizacionventasAction.valorDestinoadquisicion}" update="cntDestinoadquisicion"/>
-                                        </p:commandButton>
-                                        <p:inputText  style="text-align: center" size="3" readonly="true"  value="#{cotizacionventasAction.dcotizacionventas.iddestino}"/>
-                                        <p:inputText size="41" readonly="true" value="#{cotizacionventasAction.dcotizacionventas.destinoadquisicion}" />
-                                    </h:panelGrid>
-                                    <p:outputLabel for="diddocumento" value="Documento:" />
-                                    <p:inputText id="diddocumento" maxlength="3" size="10" value="#{cotizacionventasAction.dcotizacionventas.iddocumento}" />
-                                    <p:outputLabel for="dserie" value="Serie:" />
-                                    <p:inputText id="dserie" maxlength="3" size="10" value="#{cotizacionventasAction.dcotizacionventas.serie}" />
-                                    <p:outputLabel for="dnumero" value="Número:" />
-                                    <p:inputText id="dnumero" maxlength="7" size="10" value="#{cotizacionventasAction.dcotizacionventas.numero}" />
-                                    <p:outputLabel for="base" value="Base:" />
-                                    <p:inputNumber id="base" value="#{cotizacionventasAction.dcotizacionventas.afecto}" />
-                                    <p:outputLabel for="inafecto" value="Inafecto:" />
-                                    <p:inputNumber id="inafecto" value="#{cotizacionventasAction.dcotizacionventas.inafecto}" />
-                                    <p:outputLabel for="impto" value="%Impto:" />
-                                    <p:inputNumber id="impto" value="#{cotizacionventasAction.dcotizacionventas.pimpuesto}" />
-                                    <p:outputLabel for="impuesto" value="Impuesto:" />
-                                    <p:inputNumber id="impuesto" value="#{cotizacionventasAction.dcotizacionventas.impuesto}" />
+                                    <p:outputLabel for="impto" value="Cantidad :"/>
+                                    <p:inputNumber id="impto" value="#{cotizacionventasAction.dcotizacionventas.cantidad}" />
+                                    <p:outputLabel for="dprecio" value="P.U. :"/>
+                                    <p:inputNumber id="dprecio" value="#{cotizacionventasAction.dcotizacionventas.precio}" />
+                                    <p:outputLabel for="ddescuento" value="Descuento:" />
+                                    <p:inputNumber id="ddescuento" value="#{cotizacionventasAction.dcotizacionventas.descuento}" />
+                                    
+                                    <p:outputLabel for="dimpuesto" value="Impuesto:" />
+                                    <p:inputNumber id="dimpuesto" value="#{cotizacionventasAction.dcotizacionventas.impuesto}" />
+                                    
                                     <p:outputLabel for="importe" value="Total:" />
                                     <p:inputNumber id="importe" value="#{cotizacionventasAction.dcotizacionventas.importe}" />
+                                    
                                     <p:outputLabel for="dglosa" value="Glosa:" />
-                                    <p:inputTextarea id="dglosa" rows="2" cols="40" value="#{cotizacionventasAction.dcotizacionventas.glosa}" />
+                                    <p:inputTextarea id="dglosa" rows="2" cols="40" value="#{cotizacionventasAction.dcotizacionventas.observaciones}" />
                                 </p:panelGrid>
                                 <br/>
                                 <p:toolbar>
                                     <f:facet name="right">
-                                        <p:commandButton value="Grabar" ajax="true" actionListener="#{cotizacionventasAction.grabarDordenliquidaciongasto()}" image="ui-icon-grabar" update="datos:growl"/>
+                                        <p:commandButton value="Grabar" ajax="true" actionListener="#{cotizacionventasAction.grabarDcotizacionventa()}" 
+                                                         image="ui-icon-grabar" update="datos:growl"/>
                                         <p:commandButton value="Cancelar" process="@this"  image="ui-icon-cancelar" onclick="PF('dlgnew_dcotizacionventas').hide()" />
                                     </f:facet>
                                 </p:toolbar>                          

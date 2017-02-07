@@ -8,6 +8,7 @@ import com.nisira.core.EConexion;
 import com.nisira.core.entity.Almacen;
 import com.nisira.core.entity.ConfigWeb;
 import com.nisira.core.entity.Sucursal;
+import com.nisira.core.util.CoreUtil;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -227,14 +228,16 @@ public class Constantes {
         configWeb.setImgplant("plano_planta1.png");
         Constantes.CrearConfigOrigen();
     }
+    /*CORREGIR*/
     public  static void setConexionORM(String db){
+        ArrayList<String> lista_solution=CoreUtil.valoresBase();/*Obtener Datos de solution.ini*/
         EConexion e = new EConexion();
-        e.BASEDATOS = db;
-        e.CLAVE = "amadeus2010";
+        e.BASEDATOS = lista_solution.get(4);/*BASE DATOS*/
+        e.CLAVE = ClaveMovil.Desencriptar_ASCII(lista_solution.get(3));//"amadeus2010";
         e.INSTANCIA = "";
-        e.USUARIO = "sa";
+        e.USUARIO = lista_solution.get(2).trim();//"sa";
         //e.SERVIDOR = "localhost";
-        e.SERVIDOR = "69.64.88.9";
+        e.SERVIDOR = lista_solution.get(0).trim();//"10.250.50.88";
         e.TIPO = "MSSQL";
         com.nisira.core.CoreUtil.conexiones.put("default", e);
     }

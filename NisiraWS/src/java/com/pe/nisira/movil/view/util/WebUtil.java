@@ -480,4 +480,14 @@ public class WebUtil {
         List<? extends Object> object = (List<? extends Object>)gson.fromJson(obj, oClase);
         return object;
     }
+    /************** AGREGADO 06/02/2017 **************/
+    public static String SimpleDateFormatN1(Date fecha){
+        if(fecha!=null){
+            SimpleDateFormat  f = new SimpleDateFormat("yyyy-MM-dd");
+            String stringFecha = f.format(fecha);
+            return stringFecha;
+        }else{
+            return null;
+        }
+    }
 }

@@ -5,6 +5,7 @@
  */
 package com.pe.nisira.movil.view.action;
 
+import com.nisira.core.NisiraORMException;
 import com.nisira.core.dao.ClieprovDao;
 import com.nisira.core.dao.CotizacionventasDao;
 import com.nisira.core.dao.DcotizacionventasDao;
@@ -14,6 +15,7 @@ import com.nisira.core.dao.EstadosDao;
 import com.nisira.core.dao.MonedasDao;
 import com.nisira.core.dao.MultitablaDao;
 import com.nisira.core.dao.NumemisorDao;
+import com.nisira.core.dao.ProductoDao;
 import com.nisira.core.dao.SucursalesDao;
 import com.nisira.core.dao.TcambioDao;
 import com.nisira.core.entity.Almacen;
@@ -25,6 +27,7 @@ import com.nisira.core.entity.Dordenliquidaciongasto;
 import com.nisira.core.entity.Estados;
 import com.nisira.core.entity.Multitabla;
 import com.nisira.core.entity.Numemisor;
+import com.nisira.core.entity.Producto;
 import com.nisira.core.entity.Sucursal;
 import com.nisira.core.util.ConstantesBD;
 import static com.pe.nisira.movil.view.action.AbstactListAction.modalOptions;
@@ -75,6 +78,7 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
     private TcambioDao tcambioDao;
     private MonedasDao monedasDao;
     private SucursalesDao sucursalesDao;
+    private ProductoDao productoDao;
     /*************************************ENTITY***************************************/
     private Dcotizacionventas dcotizacionventas;
     private Dcotizacionventas selectdcotizacionventas; 
@@ -83,6 +87,7 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
     private String mensaje;
     private Estados selecEstados;
     private Clieprov selectClieprov;
+    private Producto selectProducto;
     /**********************************CONTROLADOR********************************/
     private boolean botonEditarDcotizacionventas;
     private boolean botonEliminarDcotizacionventas;    
@@ -100,7 +105,7 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
         /********************DAO*******************/
         cotizacionventasDao = new CotizacionventasDao();
         dcotizacionventasDao = new DcotizacionventasDao();
-        
+        estadosDao = new EstadosDao();
         docDao = new DocumentosDao();
         numemisorDao = new NumemisorDao();
         clieprovDao = new ClieprovDao();
@@ -108,8 +113,9 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
         tcambioDao=new TcambioDao();
         monedasDao=new MonedasDao();
         sucursalesDao=new SucursalesDao();
+        productoDao = new ProductoDao();
         /********************ENTITY****************/
-        
+        setDcotizacionventas(new Dcotizacionventas());
         /********************ARRAY****************/
         lstdcotizacionventas = new ArrayList<Dcotizacionventas>();
         listDocumentos = new ArrayList<Documentos>();
@@ -140,6 +146,8 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
         mensaje = "";
         setLstdcotizacionventas(new ArrayList<Dcotizacionventas>());
         listMultitabla = new ArrayList<Multitabla>();
+        setDcotizacionventas(new Dcotizacionventas());
+        productoDao = new ProductoDao();
         actualiza_ventana("wMnt_Cotizacionventas");
         return "";
     }
@@ -155,54 +163,35 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
 //        getDatoEdicion().setUsrcreacion(user.getIDUSUARIO());
 
     }
-
+    public boolean esVistaValida() {
+        if (getDatoEdicion().getIdclieprov().isEmpty() & getDatoEdicion().getRazon_social().isEmpty()) {
+            WebUtil.MensajeAdvertencia("Seleccione Cliente");
+            return false;
+        }
+        if (getLstdcotizacionventas().size() == 0) {
+            WebUtil.MensajeAdvertencia("Ingrese Detalle de cotización");
+            return false;
+        }
+        return true;
+    }
     @Override
     public void grabar() {
         try {
-//            if (esVistaValida()) {
-//                getDatoEdicion().setFechaprogramacion(new Timestamp(fechaprogramaciont.getTime()));
-//                getDatoEdicion().setFechaejecucion(new Timestamp(fechaejecuciont.getTime()));
-//                if (fechafinalizaciont != null) {
-//                    getDatoEdicion().setFechafinalizacion(new Timestamp(fechafinalizaciont.getTime()));
-//                }
-//                getDatoEdicion().setNumero(numero);
-//                getDatoEdicion().setIDMONTACARGA(Integer.valueOf(mo.getIDMONTACARGA()));
-//
-//                /*REESTRUCTURACION*/
-//                String i = "";
-////                String i = cotizacionventasDao.grabar(getDatoEdicion());/*CABECERA*/
-//                int in = 1;
-//                for (DZonaAccesorio dz : lstzonaAcc) {
-//                    DprogramacionTareaPartida dp = new DprogramacionTareaPartida();
-//                    if (dz.isAsignado()) {
-//                        dp.setIdempresa(dz.getIDEMPRESA());
-//                        dp.setIdsucursal(dz.getIDSUCURSAL());
-//                        dp.setIdprogramaciontarea(i);
-//                        dp.setItem(in);
-//                        dp.setIdproceso(getDatoEdicion().getIdproceso());
-//                        dp.setIdzona(dz.getIDZONA());
-//                        dp.setIdalmacen(null);
-//                        dp.setIdaccesorio(dz.getIDACCESORIO());
-//                        dp.setIdpaleta(null);
-//                        dp.setIdubicacion(null);
-//                        lstdprogtpart.add(dp);
-//                        in++;
-//                    }
-//                }
-//                if (lstdprogtpart.isEmpty()) {
-//                    WebUtil.MensajeAdvertencia("Seleccione Programaciones de llenado");
-//                } else {
-//                    /*NUEVO GUARDAR TOTAL*/
-//                    i = cotizacionventasDao.grabar(getDatoEdicion(), lstdprogtpart, slcdprogtlleg);
-//                    getDatoEdicion().setIdprogramaciontarea(i);
-//                    setMensaje(WebUtil.exitoRegistrar("Programación Tarea Recepeción Materia Prima ", i));
-//                    WebUtil.info(getMensaje());
-//                    notificacionEnvio(i, String.valueOf(getDatoEdicion().getIDMONTACARGA()));
-//                }
-//            }
+            if (esVistaValida()) {
+                /*DATOS INICIALES*/
+                getDatoEdicion().setNumero(numero);
+                if(getLadd()==1)
+                    mensaje=getCotizacionventasDao().grabar(1, getDatoEdicion(), getLstdcotizacionventas());
+                else
+                    mensaje=getCotizacionventasDao().grabar(2, getDatoEdicion(), getLstdcotizacionventas());
+                setMensaje(WebUtil.exitoRegistrar("Cotización Venta ", mensaje));
+                WebUtil.info(getMensaje());
+                RequestContext.getCurrentInstance().update("datos");
+                //RequestContext.getCurrentInstance().update("datos:lstdordenliquidaciongasto");
+            }
         } catch (Exception ex) {
             setMensaje(ex.getMessage() + "\n" + ex.getLocalizedMessage());
-            Logger.getLogger(CotizacionesAction.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(OrdenliquidaciongastoAction.class.getName()).log(Level.SEVERE, null, ex);
             WebUtil.fatal(mensaje);
         }
     }
@@ -224,11 +213,11 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
     }
     public void findetalle() throws Exception {
         try{
-            listDocumentos=docDao.getOrdenServicio(user.getIDEMPRESA());
+            listDocumentos=docDao.getCotizacionVenta(user.getIDEMPRESA());
             listNumemisor=numemisorDao.listarPorDocWeb(user.getIDEMPRESA(), listDocumentos.get(0).getIddocumento());
             numero=listNumemisor.get(0).getNumero();
             listEstado = estadosDao.listarPorEmpresaWeb(user.getIDEMPRESA(),listDocumentos.get(0).getIddocumento());
-            lstdcotizacionventas = dcotizacionventasDao.getListDCotizacionWeb(user.getIDEMPRESA(),getDatoEdicion().getIdcondventa());
+            lstdcotizacionventas = dcotizacionventasDao.getListDCotizacionWeb(user.getIDEMPRESA(),getDatoEdicion().getIdcotizacionv());
             RequestContext.getCurrentInstance().update("datos");
             RequestContext.getCurrentInstance().update("datos:lstdordenliquidaciongasto");
         }catch(Exception ex){
@@ -250,7 +239,7 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
         }
 
     }
-    public String agregarItemDordenservicio(){
+    public String agregarItemDcotizacionventa(){
         int dato = 1;
         int may=-999999999;
         for(Dcotizacionventas obj:getLstdcotizacionventas()){
@@ -280,14 +269,50 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
         getDatoEdicion().setIdclieprov(selectClieprov.getIdclieprov());
         getDatoEdicion().setRazon_social(selectClieprov.getRazonsocial());
     }
+    public void verCntProducto() {
+        RequestContext.getCurrentInstance().openDialog("cntProducto", modalOptions, null);
+    }
+    public void valorProducto(SelectEvent event) {
+        try {
+            this.setSelectProducto((Producto) event.getObject());
+            getDcotizacionventas().setIdproducto(selectProducto.getIdproducto());
+            getDcotizacionventas().setProducto(selectProducto.getDescripcion());
+            getDcotizacionventas().setDescripcion(selectProducto.getDescripcion());
+            getDcotizacionventas().setIdmedida(selectProducto.getIdmedida());
+            /************ CONSULTAR PRECIOS ,IGV  ****************/
+            ArrayList<Double> arrayDouble = productoDao.precioVenta(user.getIDEMPRESA(), getDatoEdicion().getIdsucursal(), getDcotizacionventas().getIdproducto(),
+                    getDatoEdicion().getIdmoneda(),WebUtil.SimpleDateFormatN1(getDatoEdicion().getFecha()));
+            ArrayList<Object> arrayObject = productoDao.returnImpuestoxproducto(user.getIDEMPRESA(), 
+                    getDcotizacionventas().getIdproducto(),WebUtil.SimpleDateFormatN1(getDatoEdicion().getFecha()));
+            /******************************************************/
+            if(!arrayDouble.isEmpty()){
+                getDcotizacionventas().setPrecio(arrayDouble.get(0).floatValue());
+            }
+            if(!arrayObject.isEmpty()){
+                getDcotizacionventas().setImpuesto_i(((Double)arrayObject.get(2)).floatValue());
+            }
+            /********* CÁLCULOS *********/
+            getDcotizacionventas().setImpuesto((getDcotizacionventas().getImpuesto_i()/100)*getDcotizacionventas().getPrecio()*getDcotizacionventas().getCantidad());
+            getDcotizacionventas().setImporte((getDcotizacionventas().getPrecio()*getDcotizacionventas().getCantidad())-
+                    getDcotizacionventas().getDescuento()+getDcotizacionventas().getImpuesto());
+            
+        } catch (NisiraORMException ex) {
+            Logger.getLogger(CotizacionesAction.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return;
+    }
     public void nuevoDcotizacionventas() {
         setDcotizacionventas(new Dcotizacionventas());
         getDcotizacionventas().setIdempresa(user.getIDEMPRESA());
         getDcotizacionventas().setIdcotizacionv(getDatoEdicion().getIdcotizacionv());
-        getDcotizacionventas().setItem(agregarItemDordenservicio());
+        getDcotizacionventas().setItem(agregarItemDcotizacionventa());
+        getDcotizacionventas().setPrecio(0.0f);
+        getDcotizacionventas().setCantidad(1.0f);
+        getDcotizacionventas().setDescuento(0.0f);
         getDcotizacionventas().setImpuesto(0.0f);
         getDcotizacionventas().setImporte(0.0f);
         getDcotizacionventas().setFechacreacion(getDatoEdicion().getFecha());
+        getDcotizacionventas().setObservaciones("");
         RequestContext.getCurrentInstance().update("datos:dlgnew_dcotizacionventas");
         RequestContext.getCurrentInstance().execute("PF('dlgnew_dcotizacionventas').show()");
     }
@@ -296,6 +321,7 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
         RequestContext.getCurrentInstance().update("datos:dlgnew_dcotizacionventas");
         RequestContext.getCurrentInstance().execute("PF('dlgnew_dcotizacionventas').show()");
     }
+    
     public void eliminarDcotizacionventas() {
         try {
             lstdcotizacionventas.remove(selectdcotizacionventas);
@@ -305,6 +331,43 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
         }
     }
     
+    public void grabarDcotizacionventa(){
+        int pos=lstdcotizacionventas.indexOf(dcotizacionventas);
+        /***********CALCULOS*************/
+        getDcotizacionventas().setImpuesto((getDcotizacionventas().getImpuesto_i()/100)*getDcotizacionventas().getPrecio()*getDcotizacionventas().getCantidad());
+        getDcotizacionventas().setImporte((getDcotizacionventas().getPrecio()*getDcotizacionventas().getCantidad())-
+                getDcotizacionventas().getDescuento()+getDcotizacionventas().getImpuesto());
+        if(pos==-1)
+            lstdcotizacionventas.add(dcotizacionventas);
+        else 
+            lstdcotizacionventas.set(pos, dcotizacionventas);
+        
+        
+        calcularTotales();
+        RequestContext.getCurrentInstance().update("datos:lstdcotizacionventas");
+        RequestContext.getCurrentInstance().update("datos:dlgnew_dcotizacionventas");
+        RequestContext.getCurrentInstance().update("datos:tsubtotal");
+        RequestContext.getCurrentInstance().update("datos:tdescuento");
+        RequestContext.getCurrentInstance().update("datos:tigv");
+        RequestContext.getCurrentInstance().update("datos:ttotal");
+        RequestContext.getCurrentInstance().execute("PF('dlgnew_dcotizacionventas').hide()");
+    }
+    public void calcularTotales(){
+        Double subtotalsindscto=0.0d;
+        Double descuento=0.0d;
+        Double impuesto=0.0d;
+        Double importe=0.0d;
+        for(Dcotizacionventas obj : lstdcotizacionventas){
+            subtotalsindscto +=obj.getCantidad()*obj.getPrecio();
+            descuento+=obj.getDescuento();
+            impuesto+=obj.getImpuesto();
+            importe+=(obj.getCantidad()*obj.getPrecio())-obj.getDescuento()+obj.getImpuesto();
+        }
+        getDatoEdicion().setSubtotalsindscto(subtotalsindscto.floatValue());
+        getDatoEdicion().setDescuento(descuento.floatValue());
+        getDatoEdicion().setImpuesto(impuesto.floatValue());
+        getDatoEdicion().setImporte(importe.floatValue());
+    }
     public void buscar_filtrofecha() {
         try {
             this.mensaje = "";
@@ -328,6 +391,7 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
             mensaje = WebUtil.mensajeError();
             WebUtil.error(mensaje);
         }
+        return;
     }
     
     public UsuarioBean getUser() {
@@ -718,6 +782,20 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
      */
     public void setBotonEliminarDcotizacionventas(boolean botonEliminarDcotizacionventas) {
         this.botonEliminarDcotizacionventas = botonEliminarDcotizacionventas;
+    }
+
+    /**
+     * @return the selectProducto
+     */
+    public Producto getSelectProducto() {
+        return selectProducto;
+    }
+
+    /**
+     * @param selectProducto the selectProducto to set
+     */
+    public void setSelectProducto(Producto selectProducto) {
+        this.selectProducto = selectProducto;
     }
 
 }

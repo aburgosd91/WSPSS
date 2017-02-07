@@ -41,15 +41,16 @@ import java.util.logging.Logger;
 @WebService(serviceName = "WebServiceNisira")
 public class WebServiceNisira{         
     public void setConexion(String db){
+        ArrayList<String> lista_solution=com.nisira.core.util.CoreUtil.valoresBase();/*Obtener Datos de solution.ini*/
         EConexion e = new EConexion();
-        e.BASEDATOS = db;
-        e.CLAVE = "amadeus2010";
+        e.BASEDATOS = lista_solution.get(4);/*BASE DATOS*/
+        e.CLAVE = ClaveMovil.Desencriptar_ASCII(lista_solution.get(3));//"amadeus2010";
         e.INSTANCIA = "";
-        e.USUARIO = "sa";
+        e.USUARIO = lista_solution.get(2).trim();//"sa";
         //e.SERVIDOR = "localhost";
-        e.SERVIDOR = "69.64.88.9";
+        e.SERVIDOR = lista_solution.get(0).trim();//"10.250.50.88";
         e.TIPO = "MSSQL";
-        CoreUtil.conexiones.put("default", e);
+        com.nisira.core.CoreUtil.conexiones.put("default", e);
     }
     /**
      * This is a sample web service operation
@@ -72,7 +73,7 @@ public class WebServiceNisira{
             String idempresa = WebMethodNisira.cargarEmpresas(conexion).getIdempresa();
             ConstantesBD.setIDEMPRESA(idempresa);
             UsuarioDao usuariodao =new UsuarioDao();
-            Usuario usuario= usuariodao.getSesionUsuario(idempresa,user,ClaveMovil.Encriptar_ASCII(password));
+            Usuario usuario= usuariodao.getSesionUsuario(idempresa,user, ClaveMovil.Encriptar_ASCII(password));
             if(usuario !=null){
                 if(type.trim().equals("JSON")){
                     result = WebUtil.objectGson(1,usuario);
