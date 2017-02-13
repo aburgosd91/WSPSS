@@ -676,6 +676,47 @@ public class WebServiceNisira{
         return result;             
     }
     
-    
+    /*SINCRONIZACION DOCUMENTOS*/
+    @WebMethod(operationName = "METHOD_SYNCRO_ORDENSERVICIOCLIENTE")
+    public String METHOD_SYNCRO_ORDENSERVICIOCLIENTE(@WebParam(name = "type") String type,
+            @WebParam(name = "xml_ordenserviciocliente") String xml_ordenserviciocliente){
+        String result=null;
+        try {
+            String conexion = WebMethodNisira.cargarBaseDatos();
+            setConexion(conexion);
+            String idempresa = WebMethodNisira.cargarEmpresas(conexion).getIdempresa();
+            ConstantesBD.setIDEMPRESA(idempresa);
+            
+            
+            OrdenservicioclienteDao ordenservicioclienteDao = new OrdenservicioclienteDao();
+            
+            List<Ordenserviciocliente> list = (List<Ordenserviciocliente>) WebUtil.stringObject("com.nisira.core.entity.Ordenserviciocliente", xml_ordenserviciocliente);
+            if(list !=null){
+                if(type.trim().equals("JSON")){
+                    for(Ordenserviciocliente datos:list){
+                        result = ordenservicioclienteDao.syncro_movil(datos);
+                    }
+                }
+                if(type.trim().equals("XML")){
+                    for(Ordenserviciocliente datos:list){
+                        result = ordenservicioclienteDao.syncro_movil(datos);
+                    }
+                }
+            }
+            else
+            {
+                result = "ERROR";
+            }
+            
+        } catch (NisiraORMException  ex) {
+            Logger.getLogger(WebServiceNisira.class.getName()).log(Level.SEVERE, null, ex);
+            result = "ERROR :"+ex.getMessage();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(WebServiceNisira.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(WebServiceNisira.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
+    }
 
  }

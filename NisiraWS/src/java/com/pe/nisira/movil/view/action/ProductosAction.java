@@ -172,5 +172,10 @@ public class ProductosAction extends AbstactListAction<Productos> implements Ser
         this.filtroProductos = filtroProductos;
     }
 
+    @Override
+    public String buscarFiltro() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 
 }

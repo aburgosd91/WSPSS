@@ -12,14 +12,20 @@
         <h:form id="datos">            
             #{ordenservicioclienteAction.buscarTodo()}  
             <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
-                <cmp:barra_lst bean="#{ordenservicioclienteAction}" mostrar_opciones="true" />
+                <cmp:barra_lst bean="#{ordenservicioclienteAction}" mostrar_opciones="false" cfgfiltro="true"/>
                 <p:dataTable  id="tbl" var="listOrdenServicioCliente" value="#{ordenservicioclienteAction.listaDatos}" filteredValue="#{ordenservicioclienteAction.filtroDatos}"  widgetVar="listOrdenServicioCliente" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
                               paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{ordenservicioclienteAction.datoSeleccionado}" rowKey="#{listOrdenServicioCliente.idordenservicio}" resizableColumns="true">
                     <f:facet name="header">
                         <h:outputText value="#{ordenservicioclienteAction.tituloHead}" />   
                     </f:facet>
-                    <p:column headerText="Documento" style="width:30%;" >
+                    <p:column headerText="Nro. Documento" style="width:30%;" >
                         <h:outputText value="#{listOrdenServicioCliente.iddocumento}-#{listOrdenServicioCliente.serie}-#{listOrdenServicioCliente.numero}" />
+                    </p:column>
+                    <p:column headerText="Doc." style="width:30%;" filterBy="#{listOrdenServicioCliente.idclieprov}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.idclieprov}">
+                        <h:outputText value="#{listOrdenServicioCliente.idclieprov}" />
+                    </p:column>
+                    <p:column headerText="Razón" style="width:30%;" filterBy="#{listOrdenServicioCliente.razonsocial}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.razonsocial}">
+                        <h:outputText value="#{listOrdenServicioCliente.razonsocial}" />
                     </p:column>
                     <p:column style="width:20%;" filterBy="#{listOrdenServicioCliente.fecha}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.fecha}">
                         <f:facet name="header">

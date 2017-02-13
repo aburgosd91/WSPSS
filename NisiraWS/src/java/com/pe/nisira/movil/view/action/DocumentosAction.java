@@ -198,5 +198,10 @@ public class DocumentosAction extends AbstactListAction<Documentos> implements S
         this.daoNumemisor = daoNumemisor;
     }
 
+    @Override
+    public String buscarFiltro() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 
 }

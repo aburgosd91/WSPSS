@@ -49,8 +49,9 @@ public class LogueoAction implements Serializable {
     public String conexion;
     public String idempresa;
     private List<Empresa> listEmpresa;
-    public HashMap<String, String> hashmap_empresas;
-    public HashMap<String, String> hashmap_basedatos;
+    
+    private List<String> hashmap_empresas;
+    private List<String> hashmap_basedatos;
     private String h;
     private String w;
 
@@ -67,8 +68,8 @@ public class LogueoAction implements Serializable {
         mensaje= "";
         conexion = "";
         idempresa  ="";
-        hashmap_empresas =  new HashMap<String, String>();    
-        hashmap_basedatos =  new HashMap<String, String>();    
+        setHashmap_empresas(new ArrayList<>());    
+        setHashmap_basedatos(new ArrayList<>());    
         cargarBaseDatos(); 
     }
     
@@ -81,10 +82,14 @@ public class LogueoAction implements Serializable {
            cadena_basedatos = cadena_basedatos.replace("=", "");
            
            String[] lista_basedatos =  cadena_basedatos.split(",");
-            hashmap_basedatos  = new HashMap<String, String>();
+            setHashmap_basedatos(new ArrayList<>()); 
             for(String basedatos : lista_basedatos){
-                hashmap_basedatos.put(basedatos,basedatos);
-            }       
+                getHashmap_basedatos().add(basedatos);
+            }
+            if(!getHashmap_basedatos().isEmpty()){
+                conexion=getHashmap_basedatos().get(0);
+                cargarEmpresas();
+            }
             RequestContext.getCurrentInstance().update("page01:frmlogueo:cbobasedatos");
        } 
        catch (Exception ex) {
@@ -97,6 +102,8 @@ public class LogueoAction implements Serializable {
            Constantes.setConexionORM(conexion);
            EmpresaDao empresadao = new EmpresaDao();
            listEmpresa=empresadao.listar();
+           if(!listEmpresa.isEmpty())
+               idempresa=listEmpresa.get(0).getIdempresa();
            RequestContext.getCurrentInstance().update("page01:frmlogueo:cboempresa");
        } 
        catch (Exception ex) {
@@ -120,14 +127,11 @@ public class LogueoAction implements Serializable {
             }
             else {
                 this.mensaje = "";
-                System.out.println("antes conexion");
                 ConstantesBD.setBDCONECCION(conexion);
                 ConstantesBD.setIDEMPRESA(idempresa);
-                System.out.println("despues de conexion");
                 //Constantes.setConexionORM(Constantes.conexionORM);
                 UsuarioDao usuariodao =new UsuarioDao(true);
                 Usuario usuario= usuariodao.getSesionUsuario(idempresa,usuarioBean.getIDUSUARIO(),ClaveMovil.Encriptar_ASCII(usuarioBean.getPASSWORD())); 
-                System.out.println("despues de valida");
                 if (usuario != null) {
                     //List<Privilegios> listaPrivilegios = privilegiosService.filtrar(usuarioBean.getIdusuario());
                     //System.out.println("despues de privilegio");
@@ -180,6 +184,7 @@ public class LogueoAction implements Serializable {
                             return "";
                         } else {
                             this.mensaje = "Número de licencias sobrepasado consulte con un asesor de ventas para adquirir más licencias";
+                            WebUtil.MensajeError(this.mensaje);
                         }
 
                     /*
@@ -188,10 +193,13 @@ public class LogueoAction implements Serializable {
                     }*/
                 } else {
                     this.mensaje = "Usuario no existe o clave incorrecta";
+                    WebUtil.MensajeError(this.mensaje);
                 }
             }
         } catch (Exception ex) {
             log.error(ex, ex);
+            this.mensaje =ex.getMessage();
+            WebUtil.MensajeError(this.mensaje);
         }
 
         return "";
@@ -237,13 +245,6 @@ public class LogueoAction implements Serializable {
         this.idempresa = idempresa;
     }
 
-    public HashMap<String, String> getHashmap_empresas() {
-        return hashmap_empresas;
-    }
-
-    public void setHashmap_empresas(HashMap<String, String> hashmap_empresas) {
-        this.hashmap_empresas = hashmap_empresas;
-    }
     public void es_movil() throws IOException {
         ExternalContext ctx = FacesContext.getCurrentInstance().getExternalContext();
         String ctxPath = ((ServletContext) ctx.getContext()).getContextPath();
@@ -276,14 +277,6 @@ public class LogueoAction implements Serializable {
         }
     }
 
-    public HashMap<String, String> getHashmap_basedatos() {
-        return hashmap_basedatos;
-    }
-
-    public void setHashmap_basedatos(HashMap<String, String> hashmap_basedatos) {
-        this.hashmap_basedatos = hashmap_basedatos;
-    }
-
     /**
      * @return the listEmpresa
      */
@@ -312,6 +305,34 @@ public class LogueoAction implements Serializable {
 
     public void setW(String w) {
         this.w = w;
+    }
+
+    /**
+     * @return the hashmap_empresas
+     */
+    public List<String> getHashmap_empresas() {
+        return hashmap_empresas;
+    }
+
+    /**
+     * @param hashmap_empresas the hashmap_empresas to set
+     */
+    public void setHashmap_empresas(List<String> hashmap_empresas) {
+        this.hashmap_empresas = hashmap_empresas;
+    }
+
+    /**
+     * @return the hashmap_basedatos
+     */
+    public List<String> getHashmap_basedatos() {
+        return hashmap_basedatos;
+    }
+
+    /**
+     * @param hashmap_basedatos the hashmap_basedatos to set
+     */
+    public void setHashmap_basedatos(List<String> hashmap_basedatos) {
+        this.hashmap_basedatos = hashmap_basedatos;
     }
 
     

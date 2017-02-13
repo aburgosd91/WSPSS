@@ -9,20 +9,9 @@
     <ui:define name="metadata">
     </ui:define>
     <ui:define name="body">
-        <h:form id="datos">  
-            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
-                <cmp:barra_lst bean="#{cotizacionventasAction}" mostrar_opciones="false" />
-                <p:toolbar style="font-size: 11px !important;background-color: rgb(232,235,241)">  
-                    <p:toolbarGroup align="right">
-                        <h:panelGrid columns="8" >
-                            <h:outputLabel value="Desde:" />
-                            <p:calendar id="fdesde" value="#{cotizacionventasAction.fecha_ini}" pattern="dd/MM/yyyy" mask="true" /> 
-                            <h:outputLabel value="Hasta:" />
-                            <p:calendar id="fhasta" value="#{cotizacionventasAction.fecha_fin}" pattern="dd/MM/yyyy" mask="true" /> 
-                            <p:commandButton ajax="true" value="Mostrar" action="#{cotizacionventasAction.buscar_filtrofecha()}" update="tbl"/>
-                        </h:panelGrid> 
-                    </p:toolbarGroup>
-                </p:toolbar>
+        <h:form id="datos"> 
+            <p:panelGrid columns="1" columnClasses="no-border, no-border">
+                <cmp:barra_lst bean="#{cotizacionventasAction}" mostrar_opciones="false" cfgfiltro="true"/>
                 <p:dataTable  id="tbl" var="listCotizacionventas" value="#{cotizacionventasAction.listaDatos}" filteredValue="#{cotizacionventasAction.filtroDatos}"  widgetVar="listCotizacionventas" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
                               paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{cotizacionventasAction.datoSeleccionado}" rowKey="#{listCotizacionventas.idcotizacionv}" resizableColumns="true">
                     <f:facet name="header">

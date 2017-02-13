@@ -82,4 +82,9 @@ public class EmpesaAction extends AbstactListAction<Empresa> implements Serializ
         this.mensaje = mensaje;
     }
 
+    @Override
+    public String buscarFiltro() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

@@ -11,6 +11,7 @@ import com.pe.nisira.movil.view.util.WebUtil;
 import com.pe.nisira.movil.view.util.menuDao;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +43,9 @@ public abstract class AbstactListAction<T> {
     private int agrabar;
     private int aanular;
     private int aeliminar;
+    /*FILTRO*/
+    private Date desde;
+    private Date hasta;
     /*ESTADOS*/
     /*
         (0)VISTA
@@ -63,7 +67,17 @@ public abstract class AbstactListAction<T> {
         modalGoogleMapOptions.put("resizable", false);
         modalGoogleMapOptions.put("contentHeight", 550);
         modalGoogleMapOptions.put("includeViewParams", true);
-
+        /*************************************************************/
+    }
+    public void lista_accion_filtro(String form){
+        try {
+            ExternalContext ctx = FacesContext.getCurrentInstance().getExternalContext();
+            String ctxPath = ((ServletContext) ctx.getContext()).getContextPath();
+            this.lst_name = form;
+            ctx.redirect(ctxPath + "/faces/sistema/" + lst_name + ".xhtml");
+        } catch (Exception ex) {
+            Logger.getLogger(AbstactListAction.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     public void actualiza_ventana(String form_edicion) {
         try {
@@ -95,6 +109,7 @@ public abstract class AbstactListAction<T> {
                     this.agrabar=Integer.parseInt(a[3]);
                     this.aanular=Integer.parseInt(a[4]);
                     this.aeliminar=Integer.parseInt(a[5]);
+                    
                 }
             }
         }
@@ -103,13 +118,15 @@ public abstract class AbstactListAction<T> {
                 ctx.redirect(ctxPath + "/faces/sistema/" + form + ".xhtml");
             }else{
                  ctx.redirect(ctxPath + "/faces/sistema/" + lst_name + ".xhtml");
+                 /************************************************/
+                 doVerFiltro();
             }
         } else {
             ctx.redirect(ctxPath + "/faces/sistema/principal.xhtml");
         }
 
     }
-    public boolean initacceso(String form) {
+    public boolean initacceso(String form) throws IOException {
         boolean access = false;
         for (String[] a : ((UsuarioBean) WebUtil.getObjetoSesion(Constantes.SESION_USUARIO)).getAccess()) {            
             if(a[0]!=null){
@@ -124,8 +141,17 @@ public abstract class AbstactListAction<T> {
                 }
             }
         }
+        /********************* FECHA ********************/
+        desde=new Date();
+        hasta=new Date();
+        
         return access;
     }
+    public void doVerFiltro() throws IOException {
+        buscarFiltro();
+        this.ladd = 0;
+    }
+    
     public void doNuevo() throws IOException {
         nuevo();
         pag_acceso(this.edt_name);
@@ -187,6 +213,9 @@ public abstract class AbstactListAction<T> {
     public boolean isBarraVista() {
         return this.ladd == 0;
     }
+    
+    public abstract String buscarFiltro();
+    
     public abstract void buscarTodo();
 
     public abstract String getIniciar();
@@ -316,6 +345,34 @@ public abstract class AbstactListAction<T> {
 
     public void setFiltroDatos(List<T> filtroDatos) {
         this.filtroDatos = filtroDatos;
+    }
+
+    /**
+     * @return the desde
+     */
+    public Date getDesde() {
+        return desde;
+    }
+
+    /**
+     * @param desde the desde to set
+     */
+    public void setDesde(Date desde) {
+        this.desde = desde;
+    }
+
+    /**
+     * @return the hasta
+     */
+    public Date getHasta() {
+        return hasta;
+    }
+
+    /**
+     * @param hasta the hasta to set
+     */
+    public void setHasta(Date hasta) {
+        this.hasta = hasta;
     }
     
 }

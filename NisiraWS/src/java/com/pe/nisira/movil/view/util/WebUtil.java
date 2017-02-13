@@ -57,7 +57,7 @@ import org.primefaces.model.UploadedFile;
 public class WebUtil {
     public static final String[] strMonths = new String[]{
 						"Enero",
-						"Febebro",
+						"Febrero",
 						"Marzo",
 						"Abril",
 						"Mayo",
@@ -69,6 +69,10 @@ public class WebUtil {
 						"Noviembre",
 						"Diciembre"};
     /********************************GENERACION DISTRIBUCION ALMACEN********************************************/
+    public static String idGeneradoDos(int id){
+        if(id<10) return "0"+id;
+        else return String.valueOf(id);
+    }
     public static String idGeneradoTres(int id){
         if(id<10) return "00"+id;
         else if(id<100) return "0"+id;

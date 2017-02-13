@@ -152,5 +152,10 @@ public class ConsumidorAction extends AbstactListAction<Consumidor> implements S
         this.filtroConsumidor = filtroConsumidor;
     }
 
+    @Override
+    public String buscarFiltro() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 
 }

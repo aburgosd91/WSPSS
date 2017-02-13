@@ -150,5 +150,10 @@ public class Cargos_personalAction extends AbstactListAction<Cargos_personal> im
         this.filtroCargos_personal = filtroCargos_personal;
     }
 
+    @Override
+    public String buscarFiltro() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 
 }

@@ -6,6 +6,7 @@
 package com.pe.nisira.movil.view.action;
 
 import com.nisira.core.NisiraORMException;
+import com.nisira.core.dao.AlmacenesDao;
 import com.nisira.core.dao.ClieprovDao;
 import com.nisira.core.dao.CotizacionventasDao;
 import com.nisira.core.dao.DcotizacionventasDao;
@@ -19,17 +20,23 @@ import com.nisira.core.dao.ProductoDao;
 import com.nisira.core.dao.SucursalesDao;
 import com.nisira.core.dao.TcambioDao;
 import com.nisira.core.entity.Almacen;
+import com.nisira.core.entity.Almacenes;
 import com.nisira.core.entity.Clieprov;
 import com.nisira.core.entity.Cotizacionventas;
 import com.nisira.core.entity.Dcotizacionventas;
 import com.nisira.core.entity.Documentos;
 import com.nisira.core.entity.Dordenliquidaciongasto;
 import com.nisira.core.entity.Estados;
+import com.nisira.core.entity.Forma_pago;
+import com.nisira.core.entity.Monedas;
 import com.nisira.core.entity.Multitabla;
 import com.nisira.core.entity.Numemisor;
 import com.nisira.core.entity.Producto;
 import com.nisira.core.entity.Sucursal;
+import com.nisira.core.entity.Sucursales;
+import com.nisira.core.entity.Tcambio;
 import com.nisira.core.util.ConstantesBD;
+import com.nisira.core.util.CoreUtil;
 import static com.pe.nisira.movil.view.action.AbstactListAction.modalOptions;
 import com.pe.nisira.movil.view.bean.UsuarioBean;
 import com.pe.nisira.movil.view.util.Constantes;
@@ -38,6 +45,7 @@ import com.pe.nisira.movil.view.util.WebUtil;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -59,14 +67,16 @@ import org.primefaces.event.SelectEvent;
 @SessionScoped
 public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
     /*********************************LISTAS*******************************************/
-    private List<Sucursal> listSucursal;
-    private List<Almacen> listAlmacen;
+    private List<Sucursales> listSucursales;
+    private List<Almacenes> listAlmacenes;
     private List<Clieprov> listClieprov;
     private List<Documentos> listDocumentos;
     private List<Numemisor> listNumemisor;
     private List<Dcotizacionventas> lstdcotizacionventas;
     private List<Multitabla> listMultitabla;
     private List<Estados> listEstado;
+    private ArrayList<String> lista_solution;
+    private List<Monedas> listMoneda;
     /*************************************DAO***************************************/
     private CotizacionventasDao cotizacionventasDao;
     private DcotizacionventasDao dcotizacionventasDao;
@@ -78,6 +88,7 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
     private TcambioDao tcambioDao;
     private MonedasDao monedasDao;
     private SucursalesDao sucursalesDao;
+    private AlmacenesDao alamcenesDao;
     private ProductoDao productoDao;
     /*************************************ENTITY***************************************/
     private Dcotizacionventas dcotizacionventas;
@@ -88,12 +99,18 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
     private Estados selecEstados;
     private Clieprov selectClieprov;
     private Producto selectProducto;
+    private Forma_pago selectForma_pago;
+    private Sucursales selectSucursales;
+    private Almacen selectAlmacen;
     /**********************************CONTROLADOR********************************/
     private boolean botonEditarDcotizacionventas;
     private boolean botonEliminarDcotizacionventas;    
-    
-    private Date fecha_ini = new Date();//ManejadorFechas.getFechaActualFormateada("ddMMyyyy");
-    private Date fecha_fin = new Date();//ManejadorFechas.getFechaActualFormateada("ddMMyyyy");
+    private String periodoBase;
+    private String periodoDisenio;
+    private String mesNumeroDisenio;
+    private String mesNombreDisenio;
+    private Date fecha_ini;//ManejadorFechas.getFechaActualFormateada("ddMMyyyy");
+    private Date fecha_fin;//ManejadorFechas.getFechaActualFormateada("ddMMyyyy");
     public CotizacionesAction() {
         /*****************CONFIGURACION****************/
         user = (UsuarioBean) WebUtil.getObjetoSesion(Constantes.SESION_USUARIO);
@@ -114,6 +131,7 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
         monedasDao=new MonedasDao();
         sucursalesDao=new SucursalesDao();
         productoDao = new ProductoDao();
+        alamcenesDao = new AlmacenesDao();
         /********************ENTITY****************/
         setDcotizacionventas(new Dcotizacionventas());
         /********************ARRAY****************/
@@ -123,14 +141,29 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
         listEstado = new ArrayList<Estados>();
         listClieprov = new ArrayList<Clieprov>();
         listMultitabla = new ArrayList<Multitabla>();
-        buscar_filtrofecha();
+        listMoneda = new ArrayList<>();        
+        /***********************************************/
+        fecha_ini = new Date();
+        fecha_fin = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy");
+        periodoBase=dateFormat.format(new Date())+WebUtil.idGeneradoDos((new Date()).getMonth()+1);
+        periodoDisenio=dateFormat.format(new Date());
+        mesNumeroDisenio=WebUtil.idGeneradoDos((new Date()).getMonth()+1);
+        mesNombreDisenio=WebUtil.strMonths[(new Date()).getMonth()];
+        try {
+            listAlmacenes = alamcenesDao.getPorEmpresaSucursal(user.getIDEMPRESA(),Constantes.getIDSUCURSALGENERAL());
+        } catch (NisiraORMException ex) {
+            Logger.getLogger(CotizacionesAction.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(CotizacionesAction.class.getName()).log(Level.SEVERE, null, ex);
+        }
         actualiza_ventana("wMnt_Cotizacionventas");
     }
 
     @Override
     public void buscarTodo() {
         try {
-            getIniciar();
+            //getIniciar();
             //setListaDatos(getCotizacionventasDao().listarPorEmpresaWeb(user.getIDEMPRESA()));
             buscar_filtrofecha();
         } catch (Exception ex) {
@@ -140,15 +173,31 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
 
     @Override
     public String getIniciar() {
-        setCotizacionventasDao(new CotizacionventasDao());
-        user = (UsuarioBean) WebUtil.getObjetoSesion(Constantes.SESION_USUARIO);
-        numero = "";
-        mensaje = "";
-        setLstdcotizacionventas(new ArrayList<Dcotizacionventas>());
-        listMultitabla = new ArrayList<Multitabla>();
-        setDcotizacionventas(new Dcotizacionventas());
-        productoDao = new ProductoDao();
-        actualiza_ventana("wMnt_Cotizacionventas");
+        try {
+            setCotizacionventasDao(new CotizacionventasDao());
+            user = (UsuarioBean) WebUtil.getObjetoSesion(Constantes.SESION_USUARIO);
+            numero = "";
+            mensaje = "";
+            listMultitabla = new ArrayList<Multitabla>();
+            setDcotizacionventas(new Dcotizacionventas());
+            productoDao = new ProductoDao();
+            /*********************************DAO*******************************************/
+            setLstdcotizacionventas(new ArrayList<Dcotizacionventas>());
+            setDocDao(new DocumentosDao());
+            setNumemisorDao(new NumemisorDao());
+            setClieprovDao(new ClieprovDao());
+            setEstadosDao(new EstadosDao());
+            sucursalesDao = new SucursalesDao();
+            /**********************************CONFIGURACION********************************/
+            lista_solution=CoreUtil.valoresBase();
+            listAlmacenes = alamcenesDao.getPorEmpresaSucursal(user.getIDEMPRESA(),Constantes.getIDSUCURSALGENERAL());
+            listMoneda = monedasDao.getListMonedasWeb();
+            actualiza_ventana("wMnt_Cotizacionventas");
+        } catch (NisiraORMException ex) {
+            Logger.getLogger(CotizacionesAction.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(CotizacionesAction.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return "";
     }
 
@@ -156,8 +205,38 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
     public void nuevo() {
         getIniciar();
         setDatoEdicion(new Cotizacionventas());
-//        getDatoEdicion().setIdempresa(Integer.parseInt(user.getIDEMPRESA()));
-//        getDatoEdicion().setIdsucursal(Integer.parseInt(Constantes.getIDSUCURSALGENERAL()));
+        getDatoEdicion().setIdempresa(user.getIDEMPRESA());
+        getDatoEdicion().setIdsucursal(Constantes.getIDSUCURSALGENERAL());
+        if(!listAlmacenes.isEmpty())
+            getDatoEdicion().setIdalmacen(listAlmacenes.get(0).getIdalmacen());
+        getDatoEdicion().setFecha(new Date());
+        getDatoEdicion().setFechavigencia(new Date());
+        getDatoEdicion().setIdemisor(lista_solution.get(5));
+        getDatoEdicion().setPeriodo(periodoDisenio);
+        getDatoEdicion().setMes(mesNombreDisenio);
+        getDatoEdicion().setSubtotalsindscto(0.0f);
+        getDatoEdicion().setDescuento(0.0f);
+        getDatoEdicion().setVventa(0.0f);
+        getDatoEdicion().setImpuesto(0.0f);
+        getDatoEdicion().setImporte(0.0f);
+        try {
+            /*CONSULTAS A BD*/
+            String sucursal = sucursalesDao.getPorEmpresaSucursal(user.getIDEMPRESA(),Constantes.IDSUCURSALGENERAL).getDescripcion();
+            getDatoEdicion().setSucursal(sucursal);
+            String emisor= emisorDao.getPorClavePrimariaWeb(user.getIDEMPRESA(), getDatoEdicion().getIdemisor()).getDescripcion();
+            getDatoEdicion().setEmisor(emisor);
+            if(!listMoneda.isEmpty()){
+                Monedas monedas = listMoneda.get(0);
+                getDatoEdicion().setIdmoneda(monedas.getIdmoneda());
+                getDatoEdicion().setMoneda(monedas.getDescripcion());
+            }
+            Tcambio tcambio=tcambioDao.getPorFecha(WebUtil.SimpleDateFormatN1(getDatoEdicion().getFecha()));
+            if(tcambio!=null)getDatoEdicion().setTcambio(tcambio.getT_compra());
+        } catch (NisiraORMException ex) {
+            Logger.getLogger(OrdenliquidaciongastoAction.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(OrdenliquidaciongastoAction.class.getName()).log(Level.SEVERE, null, ex);
+        }
 //        getDatoEdicion().setEstado(1);
 //        getDatoEdicion().setTipotarea(0);
 //        getDatoEdicion().setUsrcreacion(user.getIDUSUARIO());
@@ -180,14 +259,20 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
             if (esVistaValida()) {
                 /*DATOS INICIALES*/
                 getDatoEdicion().setNumero(numero);
-                if(getLadd()==1)
-                    mensaje=getCotizacionventasDao().grabar(1, getDatoEdicion(), getLstdcotizacionventas());
-                else
-                    mensaje=getCotizacionventasDao().grabar(2, getDatoEdicion(), getLstdcotizacionventas());
+                getDatoEdicion().setPeriodo(periodoBase);
+                if(getLadd()==1){
+                    mensaje=getCotizacionventasDao().grabar(1, getDatoEdicion(), getLstdcotizacionventas(),user.getIDUSUARIO());
+                    if(mensaje!=null)
+                        if(mensaje.trim().length()==15)
+                            getDatoEdicion().setIdcotizacionv(mensaje.trim());
+                }
+                else{
+                    mensaje=getCotizacionventasDao().grabar(2, getDatoEdicion(), getLstdcotizacionventas(),user.getIDUSUARIO());
+                }
                 setMensaje(WebUtil.exitoRegistrar("Cotización Venta ", mensaje));
                 WebUtil.info(getMensaje());
                 RequestContext.getCurrentInstance().update("datos");
-                //RequestContext.getCurrentInstance().update("datos:lstdordenliquidaciongasto");
+                //RequestContext.getCurrentInstance().update("datos:lstdcotizacionventas");
             }
         } catch (Exception ex) {
             setMensaje(ex.getMessage() + "\n" + ex.getLocalizedMessage());
@@ -195,7 +280,6 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
             WebUtil.fatal(mensaje);
         }
     }
-
     @Override
     public void eliminar() {
         try {
@@ -209,21 +293,28 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
         } catch (Exception ex) {
             Logger.getLogger(CotizacionesAction.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
     public void findetalle() throws Exception {
         try{
+            if(getLadd()==2){/*EDITAR*/
+                periodoBase=getDatoEdicion().getPeriodo();
+                periodoDisenio=getDatoEdicion().getPeriodo().substring(0, 4);
+                mesNumeroDisenio=getDatoEdicion().getPeriodo().substring(4);
+                mesNombreDisenio=WebUtil.strMonths[Integer.parseInt(getDatoEdicion().getPeriodo().substring(4))-1];
+                getDatoEdicion().setPeriodo(periodoDisenio);
+                getDatoEdicion().setMes(mesNombreDisenio);
+            }
             listDocumentos=docDao.getCotizacionVenta(user.getIDEMPRESA());
             listNumemisor=numemisorDao.listarPorDocWeb(user.getIDEMPRESA(), listDocumentos.get(0).getIddocumento());
             numero=listNumemisor.get(0).getNumero();
-            listEstado = estadosDao.listarPorEmpresaWeb(user.getIDEMPRESA(),listDocumentos.get(0).getIddocumento());
+            listEstado = estadosDao.listarPorEmpresaWeb(user.getIDEMPRESA(),"edt_cotizacionventa");
             lstdcotizacionventas = dcotizacionventasDao.getListDCotizacionWeb(user.getIDEMPRESA(),getDatoEdicion().getIdcotizacionv());
+            listMoneda = monedasDao.getListMonedasWeb();
             RequestContext.getCurrentInstance().update("datos");
-            RequestContext.getCurrentInstance().update("datos:lstdordenliquidaciongasto");
+            RequestContext.getCurrentInstance().update("datos:lstdcotizacionventas");
         }catch(Exception ex){
-            Logger.getLogger(OrdenliquidaciongastoAction.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CotizacionesAction.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
     }
     public void oncDocChange() throws Exception {
         listNumemisor = numemisorDao.listarPorDocWeb(user.getIDEMPRESA(), getDatoEdicion().getIddocumento());
@@ -254,7 +345,6 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
         
         return WebUtil.idGeneradoTres(may);
     }
-
     public void onRowSelectDordenservicio(SelectEvent event) throws IOException {
         setBotonEditarDcotizacionventas(false);
         setBotonEliminarDcotizacionventas(false);
@@ -262,7 +352,7 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
     }
     /*** responsable ***/
     public void verCntClieprov() {
-        RequestContext.getCurrentInstance().openDialog("cntClieprovPersonal", modalOptions, null);
+        RequestContext.getCurrentInstance().openDialog("cntClieprov", modalOptions, null);
     }
     public void valorClieprov(SelectEvent event) {
         this.selectClieprov = (Clieprov) event.getObject();
@@ -280,16 +370,21 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
             getDcotizacionventas().setDescripcion(selectProducto.getDescripcion());
             getDcotizacionventas().setIdmedida(selectProducto.getIdmedida());
             /************ CONSULTAR PRECIOS ,IGV  ****************/
-            ArrayList<Double> arrayDouble = productoDao.precioVenta(user.getIDEMPRESA(), getDatoEdicion().getIdsucursal(), getDcotizacionventas().getIdproducto(),
-                    getDatoEdicion().getIdmoneda(),WebUtil.SimpleDateFormatN1(getDatoEdicion().getFecha()));
+            ArrayList<Double> arrayDouble = new ArrayList<>();
+//                    productoDao.precioVenta(user.getIDEMPRESA(), getDatoEdicion().getIdsucursal(), getDcotizacionventas().getIdproducto(),
+//                    getDatoEdicion().getIdmoneda(),WebUtil.SimpleDateFormatN1(getDatoEdicion().getFecha()));
             ArrayList<Object> arrayObject = productoDao.returnImpuestoxproducto(user.getIDEMPRESA(), 
                     getDcotizacionventas().getIdproducto(),WebUtil.SimpleDateFormatN1(getDatoEdicion().getFecha()));
             /******************************************************/
             if(!arrayDouble.isEmpty()){
                 getDcotizacionventas().setPrecio(arrayDouble.get(0).floatValue());
+            }else{
+                getDcotizacionventas().setPrecio(0.0f);
             }
             if(!arrayObject.isEmpty()){
                 getDcotizacionventas().setImpuesto_i(((Double)arrayObject.get(2)).floatValue());
+            }else{
+                getDcotizacionventas().setImpuesto_i(0.0f);
             }
             /********* CÁLCULOS *********/
             getDcotizacionventas().setImpuesto((getDcotizacionventas().getImpuesto_i()/100)*getDcotizacionventas().getPrecio()*getDcotizacionventas().getCantidad());
@@ -321,7 +416,22 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
         RequestContext.getCurrentInstance().update("datos:dlgnew_dcotizacionventas");
         RequestContext.getCurrentInstance().execute("PF('dlgnew_dcotizacionventas').show()");
     }
-    
+    public void verCntFormaPago() {
+        RequestContext.getCurrentInstance().openDialog("cntForma_pago", modalOptions, null);
+    }
+    public void valorFormaPago(SelectEvent event) {
+        this.selectForma_pago = (Forma_pago) event.getObject();
+        getDatoEdicion().setIdfpago(selectForma_pago.getIdfpago());
+        getDatoEdicion().setFormapago(selectForma_pago.getDescripcion());
+    }
+    public void verCntAlmacenar() {
+        RequestContext.getCurrentInstance().openDialog("cntAlmacenar", modalOptions, null);
+    }
+    public void valorAlmacenar(SelectEvent event) {
+        this.selectForma_pago = (Forma_pago) event.getObject();
+        getDatoEdicion().setIdfpago(selectForma_pago.getIdfpago());
+        getDatoEdicion().setFormapago(selectForma_pago.getDescripcion());
+    }
     public void eliminarDcotizacionventas() {
         try {
             lstdcotizacionventas.remove(selectdcotizacionventas);
@@ -330,7 +440,6 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
             Logger.getLogger(OrdenliquidaciongastoAction.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
     public void grabarDcotizacionventa(){
         int pos=lstdcotizacionventas.indexOf(dcotizacionventas);
         /***********CALCULOS*************/
@@ -352,6 +461,18 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
         RequestContext.getCurrentInstance().update("datos:ttotal");
         RequestContext.getCurrentInstance().execute("PF('dlgnew_dcotizacionventas').hide()");
     }
+    public void calcularDetalleTotal(){
+        Double subtotalsindscto=0.0d;
+        Double descuento=0.0d;
+        Double impuesto=0.0d;
+        Double importe=0.0d;
+        subtotalsindscto+=getDcotizacionventas().getCantidad()*getDcotizacionventas().getPrecio();
+        descuento+=getDcotizacionventas().getDescuento();
+        impuesto+=subtotalsindscto*(getDcotizacionventas().getImpuesto_i()/100);
+        importe+=subtotalsindscto-descuento+impuesto;
+        getDcotizacionventas().setImpuesto(impuesto.floatValue());
+        getDcotizacionventas().setImporte(importe.floatValue());
+    }
     public void calcularTotales(){
         Double subtotalsindscto=0.0d;
         Double descuento=0.0d;
@@ -372,8 +493,8 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
         try {
             this.mensaje = "";
             SimpleDateFormat  f = new SimpleDateFormat("yyyy-MM-dd");
-            String f_ini = f.format(getFecha_ini());
-            String f_fin = f.format(getFecha_fin());
+            String f_ini = f.format(getDesde());
+            String f_fin = f.format(getHasta());
             f_ini = f_ini.replace("-", "");
             f_fin = f_fin.replace("-", "");
 //            if (f_ini.length() == 8 && f_fin.length() == 8) {
@@ -384,13 +505,15 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
 //                f_fin = "";
 //            }
             setListaDatos(getCotizacionventasDao().listarPorEmpresaWebFiltroFecha(user.getIDEMPRESA(),f_ini,f_fin));
-            RequestContext.getCurrentInstance().update("datos");
-            RequestContext.getCurrentInstance().update("datos:tbl");
             //   filtrar();
+            RequestContext.getCurrentInstance().update("datos");
+//            RequestContext.getCurrentInstance().execute("javascript:location.reload()");
         } catch (Exception e) {
             mensaje = WebUtil.mensajeError();
             WebUtil.error(mensaje);
         }
+//        RequestContext.getCurrentInstance().update("datos");
+        RequestContext.getCurrentInstance().update("datos:tbl");
         return;
     }
     
@@ -437,29 +560,29 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
     /**
      * @return the listSucursal
      */
-    public List<Sucursal> getListSucursal() {
-        return listSucursal;
+    public List<Sucursales> getListSucursal() {
+        return listSucursales;
     }
 
     /**
      * @param listSucursal the listSucursal to set
      */
-    public void setListSucursal(List<Sucursal> listSucursal) {
-        this.listSucursal = listSucursal;
+    public void setListSucursal(List<Sucursales> listSucursal) {
+        this.listSucursales = listSucursal;
     }
 
     /**
      * @return the listAlmacen
      */
-    public List<Almacen> getListAlmacen() {
-        return listAlmacen;
+    public List<Almacenes> getListAlmacen() {
+        return listAlmacenes;
     }
 
     /**
      * @param listAlmacen the listAlmacen to set
      */
-    public void setListAlmacen(List<Almacen> listAlmacen) {
-        this.listAlmacen = listAlmacen;
+    public void setListAlmacenes(List<Almacenes> listAlmacenes) {
+        this.listAlmacenes= listAlmacenes;
     }
 
     /**
@@ -798,4 +921,75 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
         this.selectProducto = selectProducto;
     }
 
+    /**
+     * @return the selectForma_pago
+     */
+    public Forma_pago getSelectForma_pago() {
+        return selectForma_pago;
+    }
+
+    /**
+     * @param selectForma_pago the selectForma_pago to set
+     */
+    public void setSelectForma_pago(Forma_pago selectForma_pago) {
+        this.selectForma_pago = selectForma_pago;
+    }
+
+    /**
+     * @return the selectAlmacen
+     */
+    public Almacen getSelectAlmacen() {
+        return selectAlmacen;
+    }
+
+    /**
+     * @param selectAlmacen the selectAlmacen to set
+     */
+    public void setSelectAlmacen(Almacen selectAlmacen) {
+        this.selectAlmacen = selectAlmacen;
+    }
+
+    @Override
+    public String buscarFiltro(){
+        try {
+            this.mensaje = "";
+            SimpleDateFormat  f = new SimpleDateFormat("yyyy-MM-dd");
+            String f_ini = f.format(getDesde());
+            String f_fin = f.format(getHasta());
+            f_ini = f_ini.replace("-", "");
+            f_fin = f_fin.replace("-", "");
+//            if (f_ini.length() == 8 && f_fin.length() == 8) {
+//                f_ini = f_ini.substring(4) + f_ini.substring(2, 4) + f_ini.substring(0, 2);
+//                f_fin = f_fin.substring(4) + f_fin.substring(2, 4) + f_fin.substring(0, 2);
+//            } else {
+//                f_ini = "";
+//                f_fin = "";
+//            }
+            setListaDatos(getCotizacionventasDao().listarPorEmpresaWebFiltroFecha(user.getIDEMPRESA(),f_ini,f_fin));
+            //   filtrar();
+            RequestContext.getCurrentInstance().update("datos:tbl");
+//            RequestContext.getCurrentInstance().execute("javascript:location.reload()");
+        } catch (Exception e) {
+            mensaje = WebUtil.mensajeError();
+            WebUtil.error(mensaje);
+        }
+//        RequestContext.getCurrentInstance().update("datos");
+        RequestContext.getCurrentInstance().update("datos:tbl");
+        lista_accion_filtro("wLst_Cotizacionventas");
+        return "";
+    }
+
+    /**
+     * @return the listMoneda
+     */
+    public List<Monedas> getListMoneda() {
+        return listMoneda;
+    }
+
+    /**
+     * @param listMoneda the listMoneda to set
+     */
+    public void setListMoneda(List<Monedas> listMoneda) {
+        this.listMoneda = listMoneda;
+    }
 }

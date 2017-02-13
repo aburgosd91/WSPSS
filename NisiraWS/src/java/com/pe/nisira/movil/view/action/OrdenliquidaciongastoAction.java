@@ -194,7 +194,7 @@ public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidac
                 getDatoEdicion().setIdmoneda(monedas.getIdmoneda());
                 getDatoEdicion().setMoneda(monedas.getDescripcion());
             }
-            Tcambio tcambio=tcambioDao.getPorFecha(getDatoEdicion().getFecha());
+            Tcambio tcambio=tcambioDao.getPorFecha(WebUtil.SimpleDateFormatN1(getDatoEdicion().getFecha()));
             if(tcambio!=null)getDatoEdicion().setTcambio(tcambio.getT_compra());
         } catch (NisiraORMException ex) {
             Logger.getLogger(OrdenliquidaciongastoAction.class.getName()).log(Level.SEVERE, null, ex);
@@ -255,7 +255,7 @@ public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidac
             listDocumentos=docDao.getOrdenServicio(user.getIDEMPRESA());
             listNumemisor=numemisorDao.listarPorDocWeb(user.getIDEMPRESA(), listDocumentos.get(0).getIddocumento());
             numero=listNumemisor.get(0).getNumero();
-            listEstado = estadosDao.listarPorEmpresaWeb(user.getIDEMPRESA(),listDocumentos.get(0).getIddocumento());
+            listEstado = estadosDao.listarPorEmpresaWeb(user.getIDEMPRESA(),null);
             lstdordenliquidaciongasto = dordenliquidaciongastoDao.listarPorOrdenliquidaciongastoWeb(user.getIDEMPRESA(),getDatoEdicion().getIdorden());
             RequestContext.getCurrentInstance().update("datos");
             RequestContext.getCurrentInstance().update("datos:lstdordenliquidaciongasto");
@@ -784,6 +784,11 @@ public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidac
      */
     public void setSucursalesDao(SucursalesDao sucursalesDao) {
         this.sucursalesDao = sucursalesDao;
+    }
+
+    @Override
+    public String buscarFiltro() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

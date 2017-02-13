@@ -151,5 +151,10 @@ public class DocreferenciaAction extends AbstactListAction<Docreferencia> implem
         this.filtroDocreferencia = filtroDocreferencia;
     }
 
+    @Override
+    public String buscarFiltro() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 
 }

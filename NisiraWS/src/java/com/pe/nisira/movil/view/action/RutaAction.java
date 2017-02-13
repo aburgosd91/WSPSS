@@ -203,4 +203,9 @@ public class RutaAction extends AbstactListAction<Ruta> implements Serializable 
         this.selectLugarDestino = selectLugarDestino;
     }
 
+    @Override
+    public String buscarFiltro() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }
