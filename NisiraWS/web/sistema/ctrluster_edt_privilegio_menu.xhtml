@@ -8,7 +8,7 @@
     <ui:define name="metadata">
     </ui:define>
     <ui:define name="body">
-        <h:form style="font-size: 12px" id="datos">
+        <h:form style="font-size: 12px;" id="datos" >
             <p:panelGrid columns="2" styleClass="bordePanelGrid" columnClasses="no-border, no-border">
                 <f:facet name="header">
                     <p:outputLabel style="font-size: 14px" value="Control de Privilegios de Menu"/>
@@ -38,17 +38,17 @@
                         <p:ajax event="select" update=":datos:datosTree" listener="#{privilegioEdtMenuAction.onNodeSelect}" />  
                         <p:treeNode expandedIcon="ui-icon-folder-open"  
                                     collapsedIcon="ui-icon-folder-collapsed" >  
-                            <h:outputText value="#{ar[3]}" />  
+                            <h:outputText value="#{ar[3]}"/>  
                         </p:treeNode>  
                     </p:tree>
                 </p:panelGrid>
-                <h:panelGrid style="vertical-align: top !important" bgcolor="white" id="datosTree" columns="1"> 
+                <h:panelGrid style="vertical-align: top !important; width: 100%" bgcolor="white" id="datosTree" columns="1"> 
                     <h:panelGrid style="vertical-align: top !important;font-size: 11px" columns="3">
                         <p:commandButton update=":datos:datosTree,:datos:growl"  value="Grabar"  actionListener="#{privilegioEdtMenuAction.grabar_tg30wbmenu()}"  />
 
                     </h:panelGrid>
 
-                    <h:panelGrid columns="6" 
+                    <h:panelGrid columns="7" 
                                  style="padding: 0px !important;
                                  background: white !important;
                                  background-color: white !important;
@@ -60,6 +60,7 @@
                         <h:panelGrid width="40" > Eliminar </h:panelGrid>
                         <h:panelGrid width="40" > Anular </h:panelGrid>
                         <h:panelGrid width="40" > Grabar </h:panelGrid>
+                        <h:panelGrid width="40" > Cerrar </h:panelGrid>
                     </h:panelGrid>
                     <p:dataGrid   styleClass="dataGridNoticias"   id="tabla000" var="i" value="#{privilegioEdtMenuAction.lista_seleccion}" 
                                   columns="1"     
@@ -67,12 +68,9 @@
                                   paginator="true"
 
                                   paginatorAlwaysVisible="false"
-                                  emptyMessage="No Entradas Registradas"
-                                  >  
-
-                        <h:column  >
-
-                            <h:panelGrid  columns="8" style="padding: 0px !important;background: white !important;background-color: white !important;border-bottom: 1px solid orange">
+                                  emptyMessage="No Entradas Registradas">  
+                        <h:column>
+                            <h:panelGrid  columns="8" style="padding: 0px !important;background: white !important;background-color: white !important;border-bottom: 1px solid orange;width: 100%">
 
                                 <h:panelGrid style="text-align: center" width="40" columns="1">
                                     <h:selectBooleanCheckbox  value="#{i[0]}" />
@@ -91,6 +89,9 @@
                                 </h:panelGrid>
                                 <h:panelGrid style="text-align: center" width="40" columns="1">
                                     <h:selectBooleanCheckbox  value="#{i[7]}" />
+                                </h:panelGrid>
+                                <h:panelGrid style="text-align: center" width="40" columns="1">
+                                    <h:selectBooleanCheckbox  value="#{i[8]}" />
                                 </h:panelGrid>
                             </h:panelGrid>
                         </h:column> 

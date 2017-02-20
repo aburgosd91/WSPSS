@@ -10,11 +10,13 @@
     </ui:define>
     <ui:define name="body">
         <h:form id="datos">            
-            #{ordenservicioclienteAction.buscarTodo()}  
             <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
                 <cmp:barra_lst bean="#{ordenservicioclienteAction}" mostrar_opciones="false" cfgfiltro="true"/>
                 <p:dataTable  id="tbl" var="listOrdenServicioCliente" value="#{ordenservicioclienteAction.listaDatos}" filteredValue="#{ordenservicioclienteAction.filtroDatos}"  widgetVar="listOrdenServicioCliente" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
-                              paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{ordenservicioclienteAction.datoSeleccionado}" rowKey="#{listOrdenServicioCliente.idordenservicio}" resizableColumns="true">
+                              paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" 
+                              selection="#{ordenservicioclienteAction.datoSeleccionado}" 
+                              rowKey="#{listOrdenServicioCliente.idordenservicio}"
+                              resizableColumns="true">
                     <f:facet name="header">
                         <h:outputText value="#{ordenservicioclienteAction.tituloHead}" />   
                     </f:facet>
@@ -43,6 +45,9 @@
                     </p:column>
                     <p:column headerText="Servicio" style="width:30%;" filterBy="#{listOrdenServicioCliente.ro_oservicio}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.ro_oservicio}">
                         <h:outputText value="#{listOrdenServicioCliente.nro_oservicio}" />
+                    </p:column>
+                    <p:column headerText="Estado" style="width:30%;" filterBy="#{listOrdenServicioCliente.estado}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.estado}">
+                        <h:outputText value="#{listOrdenServicioCliente.estado}" />
                     </p:column>
                 </p:dataTable>
             </p:panelGrid>

@@ -1,0 +1,54 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">
+            #{estructuracostosrecursoAction.buscarTodo()}
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">                
+                <cmp:barra_lst bean="#{estructuracostosrecursoAction}" mostrar_opciones="false" />
+                <p:dataTable id="tbl" var="listaEstructura_costos_clieprov" value="#{estructuracostosrecursoAction.listaDatos}" widgetVar="listaEstructura_costos_clieprov" 
+                             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" 
+                             paginatorPosition="top"
+                             paginator="true" rows="25" style="margin-bottom:20px" selectionMode="single" 
+                             selection="#{estructuracostosrecursoAction.datoSeleccionado}" 
+                             rowKey="#{listaEstructura_costos_clieprov.idclieprov}" resizableColumns="true">
+                    <f:facet name="header">
+                        <h:outputText value="#{estructuracostosrecursoAction.tituloHead}" />
+                    </f:facet>  
+                    <p:column style="width:15%;" filterBy="#{listaEstructura_costos_clieprov.codigo}" filterMatchMode="contains" sortBy="#{listaEstructura_costos_clieprov.codigo}">
+                        <f:facet name="header">
+                            <h:outputText value="CÓDIGO" />
+                        </f:facet>
+                        <h:outputText value="#{listaEstructura_costos_clieprov.codigo}" />
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{listaEstructura_costos_clieprov.estructuracostos}" filterMatchMode="contains" sortBy="#{listaEstructura_costos_clieprov.estructuracostos}">
+                        <f:facet name="header">
+                            <h:outputText value="ESTRUCTURA COSTOS" />
+                        </f:facet>
+                        <h:outputText value="#{listaEstructura_costos_clieprov.estructuracostos}" />
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{listaEstructura_costos_clieprov.idclieprov}" filterMatchMode="contains" sortBy="#{listaEstructura_costos_clieprov.idclieprov}">
+                        <f:facet name="header">
+                            <h:outputText value="DOCUMENTO" />
+                        </f:facet>
+                        <h:outputText value="#{listaEstructura_costos_clieprov.idclieprov}" />
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{listaEstructura_costos_clieprov.razon_social}" filterMatchMode="contains" sortBy="#{listaEstructura_costos_clieprov.razon_social}">
+                        <f:facet name="header">
+                            <h:outputText value="RAZÓN" />
+                        </f:facet>
+                        <h:outputText value="#{listaEstructura_costos_clieprov.razon_social}" />
+                    </p:column>
+                </p:dataTable>  
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mmDialogElimina_lst id="cmpDialog" bean="#{estructuracostosrecursoAction}" ventana="LST" />
+        </h:form>
+    </ui:define>
+</ui:composition>

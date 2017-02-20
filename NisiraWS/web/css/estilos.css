@@ -1045,11 +1045,17 @@ background: #003946 !important;
 .ui-icon-map {
     background: url("../img/map.png")  no-repeat top left !important;;
 }
+.ui-icon-envio {
+    background: url("../images/send.png")  no-repeat top left !important;;
+}
 .ui-icon-nuevo {
     background: url("../images/img/add.png")  no-repeat top left !important;;
 }
 .ui-icon-eliminar {
     background: url("../images/img/fuera.png")  no-repeat top left !important;;
+}
+.ui-icon-cerrar {
+    background: url("../images/img/close.png")  no-repeat top left !important;;
 }
 .ui-icon-grabar {
     background: url("../images/img/save.png")  no-repeat top left !important;;

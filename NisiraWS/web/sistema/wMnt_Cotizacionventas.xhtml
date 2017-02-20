@@ -55,6 +55,17 @@
                                         <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{cotizacionventasAction.datoEdicion.idclieprov}" disabled="#{!cotizacionventasAction.edicion}"/>
                                         <p:inputText size="50" readonly="true" value="#{cotizacionventasAction.datoEdicion.razon_social}" disabled="#{!cotizacionventasAction.edicion}"/>
                                     </h:panelGrid>
+                                    <p:outputLabel value="Contacto:" escape="false" />
+                                    <h:panelGrid id="cntContactosClieprov" cellpadding="0" cellspacing="0" columns="3">
+                                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{cotizacionventasAction.verCntContactosClieprov()}" 
+                                                         disabled="#{!cotizacionventasAction.edicion}"  icon="ui-icon-search">
+                                            <p:ajax event="dialogReturn" listener="#{cotizacionventasAction.valorContactosClieprov}" update="cntContactosClieprov,contacto_email"/>
+                                        </p:commandButton>
+                                        <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{cotizacionventasAction.datoEdicion.item_contacto}" disabled="#{!cotizacionventasAction.edicion}"/>
+                                        <p:inputText size="50" readonly="true" value="#{cotizacionventasAction.datoEdicion.contacto}" disabled="#{!cotizacionventasAction.edicion}"/>
+                                    </h:panelGrid>
+                                    <p:outputLabel value="Email:" escape="false" />
+                                    <p:inputText id="contacto_email" size="50" readonly="true" value="#{cotizacionventasAction.datoEdicion.contacto_email}" disabled="#{!cotizacionventasAction.edicion}"/>
                                     <p:outputLabel value="Sucursal"/>
                                     <p:panelGrid  columns="2" columnClasses="no-border, no-border" >
                                         <p:inputText  style="text-align: left;margin-left: 0px;" size="15" readonly="true"  value="#{cotizacionventasAction.datoEdicion.idsucursal}" disabled="#{!cotizacionventasAction.edicion}"/>
@@ -83,10 +94,19 @@
                                             <f:selectItems value="#{cotizacionventasAction.listEstado}" var="tipoEstado" itemLabel="#{tipoEstado.descripcion}" itemValue="#{tipoEstado.idestado}" />
                                         </p:selectOneMenu>
                                     </p:panelGrid>
+                                    <p:outputLabel value="Tipo Servicio" escape="false"/>
+                                    <p:selectOneMenu id="idtiposerrvicio" value="#{cotizacionventasAction.datoEdicion.idtiposervicio}" style="width:70px" disabled="#{!cotizacionventasAction.edicion}">
+                                        <f:selectItems value="#{cotizacionventasAction.listWtiposervicio}" var="tiposervicio" itemLabel="#{tiposervicio.descripcion}" itemValue="#{tiposervicio.idtiposervicio}"/>
+                                    </p:selectOneMenu>
                                     <p:outputLabel value="Fecha V." escape="false"/>
-                                    <p:calendar id="button2" style="text-align: left" size="15" value="#{cotizacionventasAction.datoEdicion.fechavigencia}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="#{!cotizacionventasAction.edicion}">
+                                    <p:panelGrid  columns="3" columnClasses="no-border, no-border, no-border" >
+                                        <p:calendar id="button2" style="text-align: left" size="15" value="#{cotizacionventasAction.datoEdicion.fechavigencia}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="#{!cotizacionventasAction.edicion}">
                                         <!--<p:ajax event="dateSelect" listener="{planventaAction.updateCampañas}" update="lstCampaña"/>-->
-                                    </p:calendar>
+                                        </p:calendar>
+                                        <p:commandButton id="btnEnvio" value="Envio" ajax="true" image="ui-icon-envio" actionListener="#{cotizacionventasAction.envioCorreo()}" />
+                                        <p:commandButton id="btnPdf" value="Pdf" ajax="true" image="ui-icon-pdf" actionListener="#{cotizacionventasAction.PDF_cotizacion()}" />
+                                    </p:panelGrid>
+                                    
                                     <p:outputLabel value="Almacen" escape="false"/>
                                     <p:selectOneMenu id="idalmacen" value="#{cotizacionventasAction.datoEdicion.idalmacen}" style="width:70px" disabled="#{!cotizacionventasAction.edicion}">
                                         <f:selectItems value="#{cotizacionventasAction.listAlmacen}" var="almacen" itemLabel="#{almacen.descripcion}" itemValue="#{almacen.idalmacen}"/>
@@ -192,6 +212,93 @@
                                 <p:inputNumber id="ttotal" value="#{cotizacionventasAction.datoEdicion.importe}" decimalPlaces="2"/>
                             </f:facet>
                         </p:toolbar> 
+                        <p:fieldset legend="Estructura Costos"  style="width: 100%">
+                            <p:tabView id="tabs">
+                                <p:ajax event="tabChange" listener="#{cotizacionventasAction.onSPTabChange}" />
+                                <p:tab id="tab_destructura_costos_recursos" title="Detalle Recursos">
+                                    <p:dataTable id="list" var="listDestructura_costos_recursos" resizableColumns="true" value="#{cotizacionventasAction.listDestructura_costos_recursos}" widgetVar="listDestructura_costos_recursos"
+                                        paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                        paginator="true" paginatorPosition="top" rows="15" style="margin-bottom:20px" selectionMode="single" rowKey="#{listDestructura_costos_recursos.item}">
+                                            <p:column style="width:10%;" filterBy="#{listDestructura_costos_recursos.item}" filterMatchMode="contains" sortBy="#{listDestructura_costos_recursos.item}">
+                                               <f:facet name="header">
+                                                   <h:outputText value="N°"/>
+                                               </f:facet>
+                                               <h:outputText value="#{listDestructura_costos_recursos.item}"/>
+                                            </p:column>
+                                            <p:column style="width:15%;" filterBy="#{listDestructura_costos_recursos.tipo_recurso}" filterMatchMode="contains" sortBy="#{listDestructura_costos_recursos.tipo_recurso}">
+                                               <f:facet name="header" >
+                                                   <h:outputText value="Tipo Rec." />
+                                               </f:facet>
+                                               <h:outputText value="#{listDestructura_costos_recursos.tipo_recurso}" />
+                                           </p:column>
+                                           <p:column style="width:55%;" filterBy="#{listDestructura_costos_recursos.descripcion}" filterMatchMode="contains" sortBy="#{listDestructura_costos_recursos.descripcion}">
+                                               <f:facet name="header" >
+                                                   <h:outputText value="Descripción" />
+                                               </f:facet>
+                                               <h:outputText value="#{listDestructura_costos_recursos.descripcion}" />
+                                           </p:column>
+                                           <p:column style="width:10%;" filterBy="#{listDestructura_costos_recursos.cantidad}" filterMatchMode="contains" sortBy="#{listDestructura_costos_recursos.cantidad}">
+                                               <f:facet name="header" >
+                                                   <h:outputText value="Cantidad" />
+                                               </f:facet>
+                                               <h:outputText value="#{listDestructura_costos_recursos.cantidad}">
+                                                   <f:convertNumber pattern="#0.00" />
+                                               </h:outputText>
+                                           </p:column>
+                                           <p:column style="width:15%;" filterBy="#{listDestructura_costos_recursos.costo}" filterMatchMode="contains" sortBy="#{listDestructura_costos_recursos.costo}">
+                                               <f:facet name="header" >
+                                                   <h:outputText value="Costo" />
+                                               </f:facet>
+                                               <h:outputText value="#{listDestructura_costos_recursos.costo}">
+                                                   <f:convertNumber pattern="#0.00" />
+                                               </h:outputText>
+                                           </p:column>
+                                        </p:dataTable>
+                                    <p:layout style="min-width:100%;min-height:200px">
+                                        <p:layoutUnit position="center">
+                                        </p:layoutUnit>
+                                        <p:layoutUnit position="east" resizable="true" size="300" minSize="200" maxSize="300">
+                                            <p:panelGrid columns="2" columnClasses="no-border,no-border" >
+                                                <p:outputLabel value="Sub Total:" />
+                                                <p:inputNumber id="subtotal_ecosto" readonly="true" value="#{cotizacionventasAction.subtotal_ecosto}" decimalPlaces="2"/>
+                                                <p:outputLabel value="G.O.:" />
+                                                <p:inputNumber id="go_ecosto" readonly="true" value="#{cotizacionventasAction.go_ecosto}" decimalPlaces="2"/>
+                                                <p:outputLabel value="G.A.:" />
+                                                <p:inputNumber id="ga_ecosto" readonly="true" value="#{cotizacionventasAction.ga_ecosto}" decimalPlaces="2"/>
+                                                <p:outputLabel value="U.:" />
+                                                <p:inputNumber id="u_ecosto" readonly="true" value="#{cotizacionventasAction.u_ecosto}" decimalPlaces="2"/>
+                                                <p:outputLabel value="Total:" />
+                                                <p:inputNumber id="total_ecosto" readonly="true" value="#{cotizacionventasAction.total_ecosto}" decimalPlaces="2"/>
+                                            </p:panelGrid>
+                                        </p:layoutUnit>
+                                    </p:layout>
+                                </p:tab>
+                                <p:tab id="tab_estructura_costos_mano_obra" title="Detalle Mano Obra">
+                                    <p:dataTable id="listEstructura_costos_mano_obra" var="listEstructura_costos_mano_obra" value="#{cotizacionventasAction.listEstructura_costos_mano_obra}" widgetVar="listEstructura_costos_mano_obra"
+                                        paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                        resizableColumns="true" paginator="true" paginatorPosition="top" rows="15" style="margin-bottom:20px" selectionMode="single" rowKey="#{listEstructura_costos_mano_obra.item}">
+                                            <p:column style="width:10%;" filterBy="#{listEstructura_costos_mano_obra.item}" filterMatchMode="contains" sortBy="#{listEstructura_costos_mano_obra.item}">
+                                               <f:facet name="header">
+                                                   <h:outputText value="N°"/>
+                                               </f:facet>
+                                               <h:outputText value="#{listEstructura_costos_mano_obra.item}"/>
+                                            </p:column>
+                                            <p:column style="width:15%;" filterBy="#{listEstructura_costos_mano_obra.idcargo}" filterMatchMode="contains" sortBy="#{listEstructura_costos_mano_obra.idcargo}">
+                                               <f:facet name="header" >
+                                                   <h:outputText value="Cod.Cargo" />
+                                               </f:facet>
+                                               <h:outputText value="#{listEstructura_costos_mano_obra.idcargo}" />
+                                           </p:column>
+                                            <p:column style="width:65%;" filterBy="#{listEstructura_costos_mano_obra.cargo}" filterMatchMode="contains" sortBy="#{listEstructura_costos_mano_obra.cargo}">
+                                               <f:facet name="header" >
+                                                   <h:outputText value="Cargo" />
+                                               </f:facet>
+                                               <h:outputText value="#{listEstructura_costos_mano_obra.cargo}" />
+                                           </p:column>
+                                        </p:dataTable> 
+                                </p:tab>
+                            </p:tabView>
+                        </p:fieldset>
                         <p:dialog id="dlgnew_dcotizacionventas" header="..::Detalle::." widgetVar="dlgnew_dcotizacionventas" modal="true" showEffect="popup" closable="false">
                             <p:panelGrid columns="1" columnClasses="no-border">
                                 <p:panelGrid columns="2" columnClasses="no-border, no-border">

@@ -9,6 +9,7 @@ import com.pe.nisira.movil.view.bean.UsuarioBean;
 import com.pe.nisira.movil.view.util.Constantes;
 import com.pe.nisira.movil.view.util.WebUtil;
 import com.pe.nisira.movil.view.util.menuDao;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,6 +21,19 @@ import java.util.logging.Logger;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperPrintManager;
+import net.sf.jasperreports.engine.export.oasis.JROdsExporter;
+import net.sf.jasperreports.engine.export.oasis.JROdtExporter;
+import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
+import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
+import net.sf.jasperreports.view.JasperViewer;
 import org.primefaces.context.RequestContext;
 
 /**
@@ -28,6 +42,10 @@ import org.primefaces.context.RequestContext;
  * @param <T>
  */
 public abstract class AbstactListAction<T> {
+
+    private String NombreReporte;
+    private String NombreArchivo;
+    private Map<String, Object> ParamsReport;
     private String tituloHead;
     private String lst_name;
     private String edt_name;
@@ -43,6 +61,7 @@ public abstract class AbstactListAction<T> {
     private int agrabar;
     private int aanular;
     private int aeliminar;
+    private int acerrar;
     /*FILTRO*/
     private Date desde;
     private Date hasta;
@@ -54,12 +73,20 @@ public abstract class AbstactListAction<T> {
     */
     protected static Map<String, Object> modalOptions;
     protected static Map<String, Object> modalGoogleMapOptions;
+    protected static Map<String, Object> modalParamsOptions;
     static {
         modalOptions = new HashMap<String, Object>();
         modalOptions.put("modal", true);
         modalOptions.put("draggable", true);
         modalOptions.put("resizable", false);
         modalOptions.put("contentHeight", 400);
+        /************************************************************/
+        modalParamsOptions = new HashMap<String, Object>();
+        modalParamsOptions.put("modal", true);
+        modalParamsOptions.put("draggable", true);
+        modalParamsOptions.put("resizable", false);
+        modalParamsOptions.put("contentHeight", 400);
+        modalParamsOptions.put("includeViewParams", true);
         /************************************************************/
         modalGoogleMapOptions = new HashMap<String, Object>();
         modalGoogleMapOptions.put("modal", true);
@@ -109,6 +136,7 @@ public abstract class AbstactListAction<T> {
                     this.agrabar=Integer.parseInt(a[3]);
                     this.aanular=Integer.parseInt(a[4]);
                     this.aeliminar=Integer.parseInt(a[5]);
+                    this.setAcerrar(Integer.parseInt(a[6]));
                     
                 }
             }
@@ -138,6 +166,7 @@ public abstract class AbstactListAction<T> {
                     this.agrabar=Integer.parseInt(a[3]);
                     this.aanular=Integer.parseInt(a[4]);
                     this.aeliminar=Integer.parseInt(a[5]);
+                    this.acerrar=Integer.parseInt(a[6]);
                 }
             }
         }
@@ -209,7 +238,10 @@ public abstract class AbstactListAction<T> {
     public void doCancelar() {
         this.ladd = 0;
     }
-
+    public void doCerrar(){
+        cerrar();
+        this.ladd = 0;
+    }
     public boolean isBarraVista() {
         return this.ladd == 0;
     }
@@ -225,6 +257,33 @@ public abstract class AbstactListAction<T> {
     public abstract void grabar();
 
     public abstract void eliminar();
+    
+    public abstract void cerrar();
+    
+    public abstract  JRDataSource getDataSourceReport();
+    
+    /*CONFIGURACIÓN REPORTE*/
+    public JasperPrint getPrintReport() {
+
+        String reporte = Constantes.ARCHIVO_DESTINO + File.separator + getNombreReporte() + ".jrxml";
+        String reporte_compilado = Constantes.ARCHIVO_DESTINO + File.separator + getNombreReporte() + ".jasper";
+        try {
+            File f = new File(reporte_compilado);
+            if (!f.isFile()) {
+                    JasperCompileManager.compileReportToFile(reporte, reporte_compilado);
+            }
+            // final JasperReport report =
+            // JasperCompileManager.compileReport(reporte);
+            JasperPrint jasperPrint = JasperFillManager.fillReport(reporte_compilado, getParamsReport(),
+                            getDataSourceReport());
+            jasperPrint.setName(getNombreArchivo());
+            return jasperPrint;
+        } catch (Exception e) {
+                e.printStackTrace();
+                //JOptionPane.showMessageDialog(Inicio.mainF, "No se pudo abrir el archivo: " + reporte);
+                return null;
+        }
+    }
     
     public String getLst_name() {
         return lst_name;
@@ -374,5 +433,238 @@ public abstract class AbstactListAction<T> {
     public void setHasta(Date hasta) {
         this.hasta = hasta;
     }
-    
+    /**
+     * @return the acerrar
+     */
+    public int getAcerrar() {
+        return acerrar;
+    }
+
+    /**
+     * @param acerrar the acerrar to set
+     */
+    public void setAcerrar(int acerrar) {
+        this.acerrar = acerrar;
+    }
+
+    /**
+     * @return the NombreReporte
+     */
+    public String getNombreReporte() {
+        return NombreReporte;
+    }
+
+    /**
+     * @param NombreReporte the NombreReporte to set
+     */
+    public void setNombreReporte(String NombreReporte) {
+        this.NombreReporte = NombreReporte;
+    }
+
+    /**
+     * @return the NombreArchivo
+     */
+    public String getNombreArchivo() {
+        return NombreArchivo;
+    }
+
+    /**
+     * @param NombreArchivo the NombreArchivo to set
+     */
+    public void setNombreArchivo(String NombreArchivo) {
+        this.NombreArchivo = NombreArchivo;
+    }
+
+    /**
+     * @return the ParamsReport
+     */
+    public Map<String, Object> getParamsReport() {
+        return ParamsReport;
+    }
+
+    /**
+     * @param ParamsReport the ParamsReport to set
+     */
+    public void setParamsReport(Map<String, Object> ParamsReport) {
+        this.ParamsReport = ParamsReport;
+    }
+    /***************** REPORTE ******************/
+    //PARA IMPRIMIR
+    public void doImprimir() {
+        JasperPrint print = getPrintReport();
+        if (print != null) {
+            try {
+                JasperPrintManager.printReport(print, true);
+            } catch (JRException e) {
+                    e.printStackTrace();
+            }
+        }
+    }
+	
+    //PARA VISTA PREVIA
+//    @Override
+//    public void doPrevio() {
+//            esperarProceso();
+//
+//            JasperPrint print = getPrintReport();
+//
+//            if (print != null) {
+//                    JasperViewer jv = new JasperViewer(print, false);
+//                    jv.setTitle("Vista Previa de " + getNombreArchivo());
+//                    jv.setIconImage(new ImageIcon(AbstractDocForm.class.getResource("/resources/nisiralogo.png")).getImage());
+//                    jv.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+//                    jv.setVisible(true);
+//            }
+//    }
+
+//    //EXPORTAR
+//
+    // A WORD
+//    public void doExportaWord() {
+//
+//            JasperPrint print = getPrintReport();
+//
+//            File file = getPathSaveFile(".docx", "docx");
+//
+//            if (print != null) {
+//                    // File doc = new File(getExportar() + ".docx");
+//
+//                JRDocxExporter exporter = new JRDocxExporter();
+//                exporter.setExporterInput(new SimpleExporterInput(print));
+//                exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
+//                try {
+//                        exporter.exportReport();
+//                } catch (JRException e) {
+//                        e.printStackTrace();
+//                }
+//            }
+//    };
+//	
+//    // A ODS
+//    public void doExportaOds() {
+//        JasperPrint print = getPrintReport();
+//        File file = getPathSaveFile(".ods", "ods");
+//        if (print != null && file != null) {
+//                // File doc = new File(getExportar() + ".ods");
+//
+//                JROdsExporter exporter = new JROdsExporter();
+//                exporter.setExporterInput(new SimpleExporterInput(print));
+//                exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
+//                try {
+//                        exporter.exportReport();
+//                } catch (JRException e) {
+//                        e.printStackTrace();
+//                }
+//        }
+//    };
+//
+//    // A ODT
+//    public void doExportaOdt() {
+//
+//        JasperPrint print = getPrintReport();
+//
+//        // File doc = new File(getExportar() + ".odt");
+//        File file = getPathSaveFile(".odt", "odt");
+//
+//        if (print != null && file != null) {
+//
+//                JROdtExporter exporter = new JROdtExporter();
+//                exporter.setExporterInput(new SimpleExporterInput(print));
+//                exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(file.getAbsolutePath()));
+//                try {
+//                        exporter.exportReport();
+//                } catch (JRException e) {
+//                        e.printStackTrace();
+//                }
+//        }
+//    };
+//	
+//    //A PDF
+//    public void doExportaPDF() {
+//
+//        File file = getPathSaveFile(".pdf", "pdf");
+//
+//        JasperPrint print = getPrintReport();
+//
+//        if (print != null && file != null) {
+//                // final String target = getExportar() + ".pdf";
+//                try {
+//                        JasperExportManager.exportReportToPdfFile(print, file.getAbsolutePath());
+//                } catch (JRException e) {
+//                        e.printStackTrace();
+//                }
+//        }
+//    };
+//	
+//    // A EXCEL
+//    public void doExportaExcel() {
+//
+//        File file = getPathSaveFile(".xlsx", "xlsx");
+//        if (file != null) {
+//                JasperPrint print = getPrintReport();
+//
+//                if (print != null) {
+//
+//                        JRXlsxExporter exporter = new JRXlsxExporter();
+//                        exporter.setExporterInput(new SimpleExporterInput(print));
+//                        exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
+//                        try {
+//                                exporter.exportReport();
+//                        } catch (JRException e) {
+//                                e.printStackTrace();
+//                        }
+//                }
+//        }
+//    };
+    /*
+    ESTE METODO LO USO PARA QUE ELIJA UNA RUTA DEL ARCHIVO
+    CON MENSAJE PARA REEMPLAZAR, SI ES WEB DEBERÍAS DARLE UNA
+    RUTA POR DEFECTO, Y LUEGO DESCARGAR EL ARCHIVO
+    */
+//    private File getPathSaveFile(String ext, String dsc_ext) {
+//        FileNameExtensionFilter filtro = new FileNameExtensionFilter(ext, dsc_ext);
+//
+//        JFileChooser chooser = new JFileChooser();
+//        chooser.setDialogType(JFileChooser.SAVE_DIALOG);
+//
+//        chooser.setSelectedFile(new File(getNombreArchivo() + ext));
+//        chooser.setFileFilter(filtro);
+//
+//        String destinationFileName;
+//        if (chooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+//            boolean doExport = true;
+//
+//            boolean overrideExistingFile = false;
+//
+//            File destinationFile = new File(chooser.getSelectedFile().getAbsolutePath());
+//
+//            destinationFileName = destinationFile.getAbsolutePath();
+//
+//            if (!destinationFileName.endsWith(ext)) {
+//                    destinationFile = new File(destinationFileName + ext);
+//            }
+//            while (doExport && destinationFile.exists() && !overrideExistingFile) {
+//
+//                overrideExistingFile = (UtilMensajes.mensaje_sino("REEMPLAZAR_ARCHIVO") == 0);
+//
+//                if (!overrideExistingFile) {
+//                        if (chooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+//                                destinationFile = new File(chooser.getSelectedFile().getAbsolutePath());
+//                                destinationFileName = destinationFile.getAbsolutePath();
+//                                if (!destinationFileName.endsWith(ext)) {
+//                                        destinationFile = new File(destinationFileName + ext);
+//                                }
+//                        } else {
+//                                doExport = false;
+//                        }
+//                }
+//            }
+//
+//            if (doExport) {
+//                    return destinationFile;
+//            }
+//    }
+//    return null;
+//
+//    }
 }

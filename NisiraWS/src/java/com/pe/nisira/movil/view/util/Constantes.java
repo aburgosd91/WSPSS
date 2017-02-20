@@ -30,6 +30,7 @@ import javax.faces.bean.ViewScoped;
 @ViewScoped
 
 public class Constantes {
+    public static String ARCHIVO_DESTINO="C:\\cotizacionesPDF\\";  // 
     public static String SYSCONFIGPATH="configweb.properties";
     public static String conexionORM="";
     public static ConfigWeb configWeb;
@@ -53,7 +54,6 @@ public class Constantes {
     public static String IDMODULOGENERAL;
     public static String IDSUCURSALGENERAL;
     public static String IDEMPRESAGENERAL;
-    public static String ARCHIVO_DESTINO="D:\\cotizacionesPDF\\";  // 
     public static String NEWIDSUCURSALGENERAL="sucursalGeneral";
     public static String NEWIDEMPRESAGENERAL="empresaGeneral";
     /**************************************************************************/

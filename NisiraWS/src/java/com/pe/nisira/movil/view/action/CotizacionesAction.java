@@ -10,23 +10,35 @@ import com.nisira.core.dao.AlmacenesDao;
 import com.nisira.core.dao.ClieprovDao;
 import com.nisira.core.dao.CotizacionventasDao;
 import com.nisira.core.dao.DcotizacionventasDao;
+import com.nisira.core.dao.Destructura_costos_recursosDao;
 import com.nisira.core.dao.DocumentosDao;
 import com.nisira.core.dao.EmisorDao;
 import com.nisira.core.dao.EstadosDao;
+import com.nisira.core.dao.Estructura_costosDao;
+import com.nisira.core.dao.Estructura_costos_clieprovDao;
+import com.nisira.core.dao.Estructura_costos_mano_obraDao;
 import com.nisira.core.dao.MonedasDao;
 import com.nisira.core.dao.MultitablaDao;
+import com.nisira.core.dao.NSRResultSet;
 import com.nisira.core.dao.NumemisorDao;
 import com.nisira.core.dao.ProductoDao;
 import com.nisira.core.dao.SucursalesDao;
 import com.nisira.core.dao.TcambioDao;
+import com.nisira.core.dao.WtiposervicioDao;
 import com.nisira.core.entity.Almacen;
 import com.nisira.core.entity.Almacenes;
 import com.nisira.core.entity.Clieprov;
+import com.nisira.core.entity.Contactosclieprov;
 import com.nisira.core.entity.Cotizacionventas;
 import com.nisira.core.entity.Dcotizacionventas;
+import com.nisira.core.entity.Destructura_costos_recursos;
 import com.nisira.core.entity.Documentos;
 import com.nisira.core.entity.Dordenliquidaciongasto;
 import com.nisira.core.entity.Estados;
+import com.nisira.core.entity.Estructura_costos;
+import com.nisira.core.entity.Estructura_costos_clieprov;
+import com.nisira.core.entity.Estructura_costos_mano_obra;
+import com.nisira.core.entity.Estructura_costos_producto;
 import com.nisira.core.entity.Forma_pago;
 import com.nisira.core.entity.Monedas;
 import com.nisira.core.entity.Multitabla;
@@ -35,29 +47,45 @@ import com.nisira.core.entity.Producto;
 import com.nisira.core.entity.Sucursal;
 import com.nisira.core.entity.Sucursales;
 import com.nisira.core.entity.Tcambio;
+import com.nisira.core.entity.Wtiposervicio;
 import com.nisira.core.util.ConstantesBD;
 import com.nisira.core.util.CoreUtil;
 import static com.pe.nisira.movil.view.action.AbstactListAction.modalOptions;
 import com.pe.nisira.movil.view.bean.UsuarioBean;
 import com.pe.nisira.movil.view.util.Constantes;
 import com.pe.nisira.movil.view.util.ManejadorFechas;
+import com.pe.nisira.movil.view.util.NSRDataSource;
 import com.pe.nisira.movil.view.util.WebUtil;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletResponse;
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import org.primefaces.component.tabview.TabView;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.event.TabChangeEvent;
 
 /**
  *
@@ -66,6 +94,7 @@ import org.primefaces.event.SelectEvent;
 @ManagedBean(name = "cotizacionventasAction")
 @SessionScoped
 public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
+    
     /*********************************LISTAS*******************************************/
     private List<Sucursales> listSucursales;
     private List<Almacenes> listAlmacenes;
@@ -77,6 +106,11 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
     private List<Estados> listEstado;
     private ArrayList<String> lista_solution;
     private List<Monedas> listMoneda;
+    private List<Wtiposervicio> listWtiposervicio;
+    private List<Estructura_costos_clieprov> listEstructura_costos_clieprov;
+    private List<Estructura_costos> listEstructura_costos;
+    private List<Destructura_costos_recursos> listDestructura_costos_recursos;
+    private List<Estructura_costos_mano_obra> listEstructura_costos_mano_obra;
     /*************************************DAO***************************************/
     private CotizacionventasDao cotizacionventasDao;
     private DcotizacionventasDao dcotizacionventasDao;
@@ -90,6 +124,11 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
     private SucursalesDao sucursalesDao;
     private AlmacenesDao alamcenesDao;
     private ProductoDao productoDao;
+    private WtiposervicioDao wtiposervicioDao; 
+    private Estructura_costos_clieprovDao estructura_costos_clieprovDao;
+    private Estructura_costosDao estructura_costosDao;
+    private Destructura_costos_recursosDao destructura_costos_recursosDao;
+    private Estructura_costos_mano_obraDao estructura_costos_mano_obraDao;
     /*************************************ENTITY***************************************/
     private Dcotizacionventas dcotizacionventas;
     private Dcotizacionventas selectdcotizacionventas; 
@@ -98,10 +137,15 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
     private String mensaje;
     private Estados selecEstados;
     private Clieprov selectClieprov;
+    private Contactosclieprov selectContactosClieprov;
     private Producto selectProducto;
     private Forma_pago selectForma_pago;
     private Sucursales selectSucursales;
     private Almacen selectAlmacen;
+    private Estructura_costos_clieprov selectEstructura_costos_clieprov;
+    private Estructura_costos selectEstructura_costos;
+    private Destructura_costos_recursos selectDestructura_costos_recursos;
+    private Estructura_costos_mano_obra selectEstructura_costos_mano_obra;
     /**********************************CONTROLADOR********************************/
     private boolean botonEditarDcotizacionventas;
     private boolean botonEliminarDcotizacionventas;    
@@ -111,6 +155,13 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
     private String mesNombreDisenio;
     private Date fecha_ini;//ManejadorFechas.getFechaActualFormateada("ddMMyyyy");
     private Date fecha_fin;//ManejadorFechas.getFechaActualFormateada("ddMMyyyy");
+    private int indexTab;
+    private TabView tabView; 
+    private Float subtotal_ecosto;
+    private Float go_ecosto;
+    private Float ga_ecosto;
+    private Float u_ecosto;
+    private Float total_ecosto;
     public CotizacionesAction() {
         /*****************CONFIGURACION****************/
         user = (UsuarioBean) WebUtil.getObjetoSesion(Constantes.SESION_USUARIO);
@@ -132,6 +183,11 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
         sucursalesDao=new SucursalesDao();
         productoDao = new ProductoDao();
         alamcenesDao = new AlmacenesDao();
+        wtiposervicioDao = new WtiposervicioDao();
+        estructura_costos_clieprovDao = new Estructura_costos_clieprovDao();
+        estructura_costosDao = new Estructura_costosDao();
+        destructura_costos_recursosDao = new Destructura_costos_recursosDao();
+        estructura_costos_mano_obraDao = new Estructura_costos_mano_obraDao();
         /********************ENTITY****************/
         setDcotizacionventas(new Dcotizacionventas());
         /********************ARRAY****************/
@@ -141,7 +197,12 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
         listEstado = new ArrayList<Estados>();
         listClieprov = new ArrayList<Clieprov>();
         listMultitabla = new ArrayList<Multitabla>();
-        listMoneda = new ArrayList<>();        
+        listMoneda = new ArrayList<>();
+        listWtiposervicio = new ArrayList<>();
+        listEstructura_costos_clieprov = new ArrayList<>();
+        listEstructura_costos = new ArrayList<>();
+        listDestructura_costos_recursos = new ArrayList<>();
+        listEstructura_costos_mano_obra = new ArrayList<>();
         /***********************************************/
         fecha_ini = new Date();
         fecha_fin = new Date();
@@ -150,8 +211,14 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
         periodoDisenio=dateFormat.format(new Date());
         mesNumeroDisenio=WebUtil.idGeneradoDos((new Date()).getMonth()+1);
         mesNombreDisenio=WebUtil.strMonths[(new Date()).getMonth()];
+        subtotal_ecosto = 0.0f;
+        go_ecosto = 0.0f;
+        ga_ecosto = 0.0f;
+        u_ecosto = 0.0f;
+        total_ecosto = 0.0f;
         try {
             listAlmacenes = alamcenesDao.getPorEmpresaSucursal(user.getIDEMPRESA(),Constantes.getIDSUCURSALGENERAL());
+            listWtiposervicio = wtiposervicioDao.listarPorEmpresaWeb(user.getIDEMPRESA());
         } catch (NisiraORMException ex) {
             Logger.getLogger(CotizacionesAction.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
@@ -181,6 +248,11 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
             listMultitabla = new ArrayList<Multitabla>();
             setDcotizacionventas(new Dcotizacionventas());
             productoDao = new ProductoDao();
+            setSubtotal_ecosto((Float) 0.0f);
+            setGo_ecosto((Float) 0.0f);
+            setGa_ecosto((Float) 0.0f);
+            setU_ecosto((Float) 0.0f);
+            total_ecosto = 0.0f;
             /*********************************DAO*******************************************/
             setLstdcotizacionventas(new ArrayList<Dcotizacionventas>());
             setDocDao(new DocumentosDao());
@@ -188,10 +260,17 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
             setClieprovDao(new ClieprovDao());
             setEstadosDao(new EstadosDao());
             sucursalesDao = new SucursalesDao();
+            /*********************************ArrayList*******************************************/
+            listEstructura_costos_clieprov = new ArrayList<>();
+            listEstructura_costos = new ArrayList<>();
+            listDestructura_costos_recursos = new ArrayList<>();
+            listEstructura_costos_mano_obra = new ArrayList<>();
+            listWtiposervicio = new ArrayList<>();
             /**********************************CONFIGURACION********************************/
             lista_solution=CoreUtil.valoresBase();
             listAlmacenes = alamcenesDao.getPorEmpresaSucursal(user.getIDEMPRESA(),Constantes.getIDSUCURSALGENERAL());
             listMoneda = monedasDao.getListMonedasWeb();
+            listWtiposervicio = wtiposervicioDao.listarPorEmpresaWeb(user.getIDEMPRESA());
             actualiza_ventana("wMnt_Cotizacionventas");
         } catch (NisiraORMException ex) {
             Logger.getLogger(CotizacionesAction.class.getName()).log(Level.SEVERE, null, ex);
@@ -294,6 +373,9 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
             Logger.getLogger(CotizacionesAction.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    public void envioCorreo(){
+        
+    }
     public void findetalle() throws Exception {
         try{
             if(getLadd()==2){/*EDITAR*/
@@ -303,6 +385,15 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
                 mesNombreDisenio=WebUtil.strMonths[Integer.parseInt(getDatoEdicion().getPeriodo().substring(4))-1];
                 getDatoEdicion().setPeriodo(periodoDisenio);
                 getDatoEdicion().setMes(mesNombreDisenio);
+                /* CONSULTAR ESTRUCTURA COSTOS CLIEPROV*/
+                List<Estructura_costos_clieprov> listestcos_clieprov = estructura_costos_clieprovDao.listarPorEmpresaWebXclieprov(user.getIDEMPRESA(),
+                        getDatoEdicion().getIdclieprov());
+                if(!listestcos_clieprov.isEmpty()){
+                    selectEstructura_costos_clieprov=listestcos_clieprov.get(0);
+                }else{
+                    mensaje = "No existe registro <ESTRUCTURA_COSTOS_CLIEPROV>";
+                    WebUtil.error(mensaje);
+                }
             }
             listDocumentos=docDao.getCotizacionVenta(user.getIDEMPRESA());
             listNumemisor=numemisorDao.listarPorDocWeb(user.getIDEMPRESA(), listDocumentos.get(0).getIddocumento());
@@ -349,15 +440,60 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
         setBotonEditarDcotizacionventas(false);
         setBotonEliminarDcotizacionventas(false);
         RequestContext.getCurrentInstance().update("datos:lstdcotizacionventas");
+        /**** CONFIGURACION ESTRUCTURA COSTOS*****/
+        if(getSelectEstructura_costos_clieprov()!=null){
+            try {
+                List<Estructura_costos> lstEstructuracostos=estructura_costosDao.listarPorEmpresaWebXcodigo(user.getIDEMPRESA(),
+                    getSelectEstructura_costos_clieprov().getCodigo());
+                if(!lstEstructuracostos.isEmpty()){
+                    Estructura_costos obj = lstEstructuracostos.get(0);
+                    setListDestructura_costos_recursos(destructura_costos_recursosDao.listarPorEmpresaWebXProducto(obj.getIdempresa(), obj.getCodigo(),getSelectdcotizacionventas().getIdproducto()));
+                    setListEstructura_costos_mano_obra(estructura_costos_mano_obraDao.listarPorEmpresaWebXproducto(obj.getIdempresa(), obj.getCodigo(),getSelectdcotizacionventas().getIdproducto()));
+                    calculosTotales_estructuracostos();
+                    RequestContext.getCurrentInstance().update("datos:tabs");
+                    //tabView.setActiveIndex(indexTab);
+                }else{
+                    /*SIN ESTRUCTURA DE COSTOS*/
+                }
+            } catch (NisiraORMException ex) {
+                Logger.getLogger(CotizacionesAction.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
     /*** responsable ***/
     public void verCntClieprov() {
         RequestContext.getCurrentInstance().openDialog("cntClieprov", modalOptions, null);
     }
     public void valorClieprov(SelectEvent event) {
-        this.selectClieprov = (Clieprov) event.getObject();
-        getDatoEdicion().setIdclieprov(selectClieprov.getIdclieprov());
-        getDatoEdicion().setRazon_social(selectClieprov.getRazonsocial());
+        try {
+            this.selectClieprov = (Clieprov) event.getObject();
+            getDatoEdicion().setIdclieprov(selectClieprov.getIdclieprov());
+            getDatoEdicion().setRazon_social(selectClieprov.getRazonsocial());
+            /* CONSULTAR ESTRUCTURA COSTOS CLIEPROV*/
+            List<Estructura_costos_clieprov> listestcos_clieprov = estructura_costos_clieprovDao.listarPorEmpresaWebXclieprov(user.getIDEMPRESA(),
+                    getDatoEdicion().getIdclieprov());
+            if(!listestcos_clieprov.isEmpty()){
+                selectEstructura_costos_clieprov=listestcos_clieprov.get(0);
+            }else{
+                mensaje = "No existe registro <ESTRUCTURA_COSTOS_CLIEPROV>";
+                WebUtil.error(mensaje);
+            }
+        } catch (NisiraORMException ex) {
+            Logger.getLogger(CotizacionesAction.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public void verCntContactosClieprov() {
+        Map<String, List<String>> params = new HashMap<String, List<String>>();
+        List<String> values = new ArrayList<String>();
+        values.add(getDatoEdicion().getIdclieprov());
+        params.put("idcliente",values);
+        RequestContext.getCurrentInstance().openDialog("cntContactosClieprov", modalParamsOptions, params);
+    }
+    public void valorContactosClieprov(SelectEvent event) {
+        this.selectContactosClieprov = (Contactosclieprov) event.getObject();
+        getDatoEdicion().setItem_contacto(selectContactosClieprov.getItem());
+        getDatoEdicion().setContacto(selectContactosClieprov.getNombre());
+        getDatoEdicion().setContacto_email(selectContactosClieprov.getEmail());
     }
     public void verCntProducto() {
         RequestContext.getCurrentInstance().openDialog("cntProducto", modalOptions, null);
@@ -370,14 +506,22 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
             getDcotizacionventas().setDescripcion(selectProducto.getDescripcion());
             getDcotizacionventas().setIdmedida(selectProducto.getIdmedida());
             /************ CONSULTAR PRECIOS ,IGV  ****************/
-            ArrayList<Double> arrayDouble = new ArrayList<>();
+            /*** EVALUAR ****/
+//            ArrayList<Double> arrayDouble = new ArrayList<>();
 //                    productoDao.precioVenta(user.getIDEMPRESA(), getDatoEdicion().getIdsucursal(), getDcotizacionventas().getIdproducto(),
 //                    getDatoEdicion().getIdmoneda(),WebUtil.SimpleDateFormatN1(getDatoEdicion().getFecha()));
             ArrayList<Object> arrayObject = productoDao.returnImpuestoxproducto(user.getIDEMPRESA(), 
                     getDcotizacionventas().getIdproducto(),WebUtil.SimpleDateFormatN1(getDatoEdicion().getFecha()));
             /******************************************************/
-            if(!arrayDouble.isEmpty()){
-                getDcotizacionventas().setPrecio(arrayDouble.get(0).floatValue());
+            Double preciounitario = destructura_costos_recursosDao.getPrecioUnitarioXestructuracostos(
+                    selectEstructura_costos_clieprov.getIdempresa(), selectEstructura_costos_clieprov.getCodigo());
+//            if(!arrayDouble.isEmpty()){
+//                getDcotizacionventas().setPrecio(arrayDouble.get(0).floatValue());
+//            }else{
+//                getDcotizacionventas().setPrecio(0.0f);
+//            }
+            if(preciounitario!=0.0d){
+                getDcotizacionventas().setPrecio(preciounitario.floatValue());
             }else{
                 getDcotizacionventas().setPrecio(0.0f);
             }
@@ -489,6 +633,34 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
         getDatoEdicion().setImpuesto(impuesto.floatValue());
         getDatoEdicion().setImporte(importe.floatValue());
     }
+    public void calculosTotales_estructuracostos(){
+        Float subtotal_ec=0.0f;
+        Float go_ec=0.0f;
+        Float ga_ec=0.0f;
+        Float u_ec=0.0f;
+        Float total_ec=0.0f;
+        int item=0;
+        if(!getListDestructura_costos_recursos().isEmpty()){
+            subtotal_ec=getListDestructura_costos_recursos().get(0).getSubtotal();
+            total_ec=getListDestructura_costos_recursos().get(0).getPu();
+            for(Destructura_costos_recursos ob : getListDestructura_costos_recursos()){
+                if(ob.getEs_porcentaje()==1.0f){
+                    switch(item){
+                        case 0:go_ec=ob.getPorcentaje();break;
+                        case 1:ga_ec=ob.getPorcentaje();break;
+                        case 2:u_ec=ob.getPorcentaje();break;
+                    }
+                    item++;
+                }
+            }
+        }
+        /*RESULTADOS*/
+        this.setSubtotal_ecosto(subtotal_ec);
+        this.setGo_ecosto(go_ec);
+        this.setGa_ecosto(ga_ec);
+        this.setU_ecosto(u_ec);
+        this.total_ecosto = getSelectdcotizacionventas().getPrecio();
+    }
     public void buscar_filtrofecha() {
         try {
             this.mensaje = "";
@@ -516,7 +688,13 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
         RequestContext.getCurrentInstance().update("datos:tbl");
         return;
     }
-    
+    /************** CONFIGURACIÓN TAB*******************/
+    public void onSPTabChange(TabChangeEvent event) 
+    {   
+        setTabView((TabView) event.getComponent());
+        setIndexTab(getTabView().getActiveIndex());
+//        tabView.setActiveIndex(0);
+    }
     public UsuarioBean getUser() {
         return user;
     }
@@ -991,5 +1169,353 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
      */
     public void setListMoneda(List<Monedas> listMoneda) {
         this.listMoneda = listMoneda;
+    }
+
+    @Override
+    public void cerrar() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    /**
+     * @return the listEstructura_costos_clieprov
+     */
+    public List<Estructura_costos_clieprov> getListEstructura_costos_clieprov() {
+        return listEstructura_costos_clieprov;
+    }
+
+    /**
+     * @param listEstructura_costos_clieprov the listEstructura_costos_clieprov to set
+     */
+    public void setListEstructura_costos_clieprov(List<Estructura_costos_clieprov> listEstructura_costos_clieprov) {
+        this.listEstructura_costos_clieprov = listEstructura_costos_clieprov;
+    }
+
+    /**
+     * @return the selectEstructura_costos_clieprov
+     */
+    public Estructura_costos_clieprov getSelectEstructura_costos_clieprov() {
+        return selectEstructura_costos_clieprov;
+    }
+
+    /**
+     * @param selectEstructura_costos_clieprov the selectEstructura_costos_clieprov to set
+     */
+    public void setSelectEstructura_costos_clieprov(Estructura_costos_clieprov selectEstructura_costos_clieprov) {
+        this.selectEstructura_costos_clieprov = selectEstructura_costos_clieprov;
+    }
+
+    /**
+     * @return the selectEstructura_costos
+     */
+    public Estructura_costos getSelectEstructura_costos() {
+        return selectEstructura_costos;
+    }
+
+    /**
+     * @param selectEstructura_costos the selectEstructura_costos to set
+     */
+    public void setSelectEstructura_costos(Estructura_costos selectEstructura_costos) {
+        this.selectEstructura_costos = selectEstructura_costos;
+    }
+
+    /**
+     * @return the selectDestructura_costos_recursos
+     */
+    public Destructura_costos_recursos getSelectDestructura_costos_recursos() {
+        return selectDestructura_costos_recursos;
+    }
+
+    /**
+     * @param selectDestructura_costos_recursos the selectDestructura_costos_recursos to set
+     */
+    public void setSelectDestructura_costos_recursos(Destructura_costos_recursos selectDestructura_costos_recursos) {
+        this.selectDestructura_costos_recursos = selectDestructura_costos_recursos;
+    }
+
+    /**
+     * @return the selectEstructura_costos_mano_obra
+     */
+    public Estructura_costos_mano_obra getSelectEstructura_costos_mano_obra() {
+        return selectEstructura_costos_mano_obra;
+    }
+
+    /**
+     * @param selectEstructura_costos_mano_obra the selectEstructura_costos_mano_obra to set
+     */
+    public void setSelectEstructura_costos_mano_obra(Estructura_costos_mano_obra selectEstructura_costos_mano_obra) {
+        this.selectEstructura_costos_mano_obra = selectEstructura_costos_mano_obra;
+    }
+
+    /**
+     * @return the estructura_costos_clieprovDao
+     */
+    public Estructura_costos_clieprovDao getEstructura_costos_clieprovDao() {
+        return estructura_costos_clieprovDao;
+    }
+
+    /**
+     * @param estructura_costos_clieprovDao the estructura_costos_clieprovDao to set
+     */
+    public void setEstructura_costos_clieprovDao(Estructura_costos_clieprovDao estructura_costos_clieprovDao) {
+        this.estructura_costos_clieprovDao = estructura_costos_clieprovDao;
+    }
+
+    /**
+     * @return the estructura_costosDao
+     */
+    public Estructura_costosDao getEstructura_costosDao() {
+        return estructura_costosDao;
+    }
+
+    /**
+     * @param estructura_costosDao the estructura_costosDao to set
+     */
+    public void setEstructura_costosDao(Estructura_costosDao estructura_costosDao) {
+        this.estructura_costosDao = estructura_costosDao;
+    }
+
+    /**
+     * @return the destructura_costos_recursosDao
+     */
+    public Destructura_costos_recursosDao getDestructura_costos_recursosDao() {
+        return destructura_costos_recursosDao;
+    }
+
+    /**
+     * @param destructura_costos_recursosDao the destructura_costos_recursosDao to set
+     */
+    public void setDestructura_costos_recursosDao(Destructura_costos_recursosDao destructura_costos_recursosDao) {
+        this.destructura_costos_recursosDao = destructura_costos_recursosDao;
+    }
+
+    /**
+     * @return the estructura_costos_mano_obraDao
+     */
+    public Estructura_costos_mano_obraDao getEstructura_costos_mano_obraDao() {
+        return estructura_costos_mano_obraDao;
+    }
+
+    /**
+     * @param estructura_costos_mano_obraDao the estructura_costos_mano_obraDao to set
+     */
+    public void setEstructura_costos_mano_obraDao(Estructura_costos_mano_obraDao estructura_costos_mano_obraDao) {
+        this.estructura_costos_mano_obraDao = estructura_costos_mano_obraDao;
+    }
+
+    /**
+     * @return the listEstructura_costos
+     */
+    public List<Estructura_costos> getListEstructura_costos() {
+        return listEstructura_costos;
+    }
+
+    /**
+     * @param listEstructura_costos the listEstructura_costos to set
+     */
+    public void setListEstructura_costos(List<Estructura_costos> listEstructura_costos) {
+        this.listEstructura_costos = listEstructura_costos;
+    }
+
+    /**
+     * @return the listDestructura_costos_recursos
+     */
+    public List<Destructura_costos_recursos> getListDestructura_costos_recursos() {
+        return listDestructura_costos_recursos;
+    }
+
+    /**
+     * @param listDestructura_costos_recursos the listDestructura_costos_recursos to set
+     */
+    public void setListDestructura_costos_recursos(List<Destructura_costos_recursos> listDestructura_costos_recursos) {
+        this.listDestructura_costos_recursos = listDestructura_costos_recursos;
+    }
+
+    /**
+     * @return the listEstructura_costos_mano_obra
+     */
+    public List<Estructura_costos_mano_obra> getListEstructura_costos_mano_obra() {
+        return listEstructura_costos_mano_obra;
+    }
+
+    /**
+     * @param listEstructura_costos_mano_obra the listEstructura_costos_mano_obra to set
+     */
+    public void setListEstructura_costos_mano_obra(List<Estructura_costos_mano_obra> listEstructura_costos_mano_obra) {
+        this.listEstructura_costos_mano_obra = listEstructura_costos_mano_obra;
+    }
+
+    /**
+     * @return the indexTab
+     */
+    public int getIndexTab() {
+        return indexTab;
+    }
+
+    /**
+     * @param indexTab the indexTab to set
+     */
+    public void setIndexTab(int indexTab) {
+        this.indexTab = indexTab;
+    }
+
+    /**
+     * @return the tabView
+     */
+    public TabView getTabView() {
+        return tabView;
+    }
+
+    /**
+     * @param tabView the tabView to set
+     */
+    public void setTabView(TabView tabView) {
+        this.tabView = tabView;
+    }
+
+    /**
+     * @return the subtotal_ecosto
+     */
+    public Float getSubtotal_ecosto() {
+        return subtotal_ecosto;
+    }
+
+    /**
+     * @param subtotal_ecosto the subtotal_ecosto to set
+     */
+    public void setSubtotal_ecosto(Float subtotal_ecosto) {
+        this.subtotal_ecosto = subtotal_ecosto;
+    }
+
+    /**
+     * @return the go_ecosto
+     */
+    public Float getGo_ecosto() {
+        return go_ecosto;
+    }
+
+    /**
+     * @param go_ecosto the go_ecosto to set
+     */
+    public void setGo_ecosto(Float go_ecosto) {
+        this.go_ecosto = go_ecosto;
+    }
+
+    /**
+     * @return the ga_ecosto
+     */
+    public Float getGa_ecosto() {
+        return ga_ecosto;
+    }
+
+    /**
+     * @param ga_ecosto the ga_ecosto to set
+     */
+    public void setGa_ecosto(Float ga_ecosto) {
+        this.ga_ecosto = ga_ecosto;
+    }
+
+    /**
+     * @return the u_ecosto
+     */
+    public Float getU_ecosto() {
+        return u_ecosto;
+    }
+
+    /**
+     * @param u_ecosto the u_ecosto to set
+     */
+    public void setU_ecosto(Float u_ecosto) {
+        this.u_ecosto = u_ecosto;
+    }
+
+    /**
+     * @return the total_ecosto
+     */
+    public Float getTotal_ecosto() {
+        return total_ecosto;
+    }
+
+    /**
+     * @param total_ecosto the total_ecosto to set
+     */
+    public void setTotal_ecosto(Float total_ecosto) {
+        this.total_ecosto = total_ecosto;
+    }
+
+    /**
+     * @return the listWtiposervicio
+     */
+    public List<Wtiposervicio> getListWtiposervicio() {
+        return listWtiposervicio;
+    }
+
+    /**
+     * @param listWtiposervicio the listWtiposervicio to set
+     */
+    public void setListWtiposervicio(List<Wtiposervicio> listWtiposervicio) {
+        this.listWtiposervicio = listWtiposervicio;
+    }
+
+    /**
+     * @return the wtiposervicioDao
+     */
+    public WtiposervicioDao getWtiposervicioDao() {
+        return wtiposervicioDao;
+    }
+
+    /**
+     * @param wtiposervicioDao the wtiposervicioDao to set
+     */
+    public void setWtiposervicioDao(WtiposervicioDao wtiposervicioDao) {
+        this.wtiposervicioDao = wtiposervicioDao;
+    }
+
+    /**
+     * @return the selectContactosClieprov
+     */
+    public Contactosclieprov getSelectContactosClieprov() {
+        return selectContactosClieprov;
+    }
+
+    /**
+     * @param selectContactosClieprov the selectContactosClieprov to set
+     */
+    public void setSelectContactosClieprov(Contactosclieprov selectContactosClieprov) {
+        this.selectContactosClieprov = selectContactosClieprov;
+    }
+
+    @Override
+    public JRDataSource getDataSourceReport() {
+        NSRResultSet rs;
+        try {
+            //cabecera -> ¨parametro
+            rs = cotizacionventasDao.getConsultaRepote(user.getIDEMPRESA(), getDatoEdicion().getIdcotizacionv());
+            return new NSRDataSource(rs);
+        } catch (NisiraORMException e) {
+            WebUtil.MensajeError(e.getMessage());
+        }
+        return null;
+    }
+    public void PDF_cotizacion() {
+        try {
+                FacesContext context = FacesContext.getCurrentInstance();
+                ExternalContext ext = context.getExternalContext();
+                setNombreReporte("RPT_COTIZACION_001");
+                setNombreArchivo("FORMATO_COTIZACION_001");
+                JasperPrint jasperPrint = getPrintReport();
+                HttpServletResponse resp = (HttpServletResponse) ext.getResponse();
+                resp.setContentType("application/pdf");
+                String filename = "RPT_COTIZACION_001.pdf";
+                resp.addHeader("Content-Disposition", "inline; filename=" + filename); // En la misma pantalla
+                //  resp.addHeader("Content-Disposition", "attachmed; filename=" + filename); // Para que lo guardes
+                JasperExportManager.exportReportToPdfStream(jasperPrint, resp.getOutputStream());
+                context.getApplication().getStateManager().saveView(context);
+                context.responseComplete();
+        } catch (Exception ex) {
+            System.out.println(ex.toString());
+//            this.estiloMensaje = Constantes.ESTILO_MENSAJE_ERROR;
+            mensaje = WebUtil.mensajeError();
+            WebUtil.MensajeError(mensaje);
+        }
     }
 }
