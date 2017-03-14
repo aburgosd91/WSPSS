@@ -1126,7 +1126,7 @@ public class menuDao extends Conexion {
         List<String[]> lista = new ArrayList<String[]>();
         boolean datos = false;
         try {
-            String sql = "web_buscar_tg30wbmenu";
+            String sql = "web_buscar_tg30wbmenu_pss";
             //  cn = obtenerConexionJTDS();
             cn = obtenerConexionJTDS();
             cl = cn.prepareCall("{CALL " + sql + " (?,?,?,?)}");

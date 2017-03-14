@@ -47,7 +47,7 @@ public class WebMethodNisira implements Serializable {
         try {
            Constantes.conexionORM=conexion;
            Constantes.setConexionORM(conexion);
-           EmpresaDao empresadao = new EmpresaDao();
+           EmpresaDao empresadao = new EmpresaDao(true);
            List<Empresa> listEmpresa=empresadao.listar();
            if(listEmpresa.size()>0){
                empresa=listEmpresa.get(0);

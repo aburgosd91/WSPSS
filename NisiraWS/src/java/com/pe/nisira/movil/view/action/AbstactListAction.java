@@ -25,6 +25,7 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -45,7 +46,7 @@ public abstract class AbstactListAction<T> {
 
     private String NombreReporte;
     private String NombreArchivo;
-    private Map<String, Object> ParamsReport;
+    private static Map<String, Object> ParamsReport;
     private String tituloHead;
     private String lst_name;
     private String edt_name;
@@ -53,6 +54,7 @@ public abstract class AbstactListAction<T> {
     private List<T> filtroDatos;
     private T datoSeleccionado;
     private T datoEdicion;
+    private boolean lvalidate;
     private int ladd;
     private String opc_anular_eliminar;
     private String pagina;
@@ -95,13 +97,14 @@ public abstract class AbstactListAction<T> {
         modalGoogleMapOptions.put("contentHeight", 550);
         modalGoogleMapOptions.put("includeViewParams", true);
         /*************************************************************/
+        ParamsReport = new HashMap<>();
     }
     public void lista_accion_filtro(String form){
         try {
             ExternalContext ctx = FacesContext.getCurrentInstance().getExternalContext();
             String ctxPath = ((ServletContext) ctx.getContext()).getContextPath();
             this.lst_name = form;
-            ctx.redirect(ctxPath + "/faces/sistema/" + lst_name + ".xhtml");
+            ctx.redirect(ctxPath + "/sistema/" + lst_name + ".xhtml");
         } catch (Exception ex) {
             Logger.getLogger(AbstactListAction.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -116,7 +119,7 @@ public abstract class AbstactListAction<T> {
             listaDatos = new ArrayList<T>();
             filtroDatos = new ArrayList<T>();
             if (!initacceso(lst_name)) {
-                ctx.redirect(ctxPath + "/faces/sistema/principal.xhtml");
+                ctx.redirect(ctxPath + "/sistema/principal.xhtml");
             }
         } catch (Exception ex) {
             Logger.getLogger(AbstactListAction.class.getName()).log(Level.SEVERE, null, ex);
@@ -143,14 +146,14 @@ public abstract class AbstactListAction<T> {
         }
         if (access == true) {
             if((form.startsWith("wMnt_")|| form.startsWith("edt_"))){
-                ctx.redirect(ctxPath + "/faces/sistema/" + form + ".xhtml");
+                ctx.redirect(ctxPath + "/sistema/" + form + ".xhtml");
             }else{
-                 ctx.redirect(ctxPath + "/faces/sistema/" + lst_name + ".xhtml");
+                 ctx.redirect(ctxPath + "/sistema/" + lst_name + ".xhtml");
                  /************************************************/
                  doVerFiltro();
             }
         } else {
-            ctx.redirect(ctxPath + "/faces/sistema/principal.xhtml");
+            ctx.redirect(ctxPath + "/sistema/principal.xhtml");
         }
 
     }
@@ -186,9 +189,11 @@ public abstract class AbstactListAction<T> {
         pag_acceso(this.edt_name);
         this.ladd = 1;
     }
+    /*** CONFIGURACIÓN ****/
     public void doGrabar() {
         grabar();
-        this.ladd = 0;
+        if(this.lvalidate)
+            this.ladd = 0;
     }
     public boolean isEdicion() {
         return this.ladd >= 1;
@@ -262,20 +267,45 @@ public abstract class AbstactListAction<T> {
     
     public abstract  JRDataSource getDataSourceReport();
     
+    public abstract  JRDataSource getDataSourceReport_lst();
     /*CONFIGURACIÓN REPORTE*/
     public JasperPrint getPrintReport() {
 
-        String reporte = Constantes.ARCHIVO_DESTINO + File.separator + getNombreReporte() + ".jrxml";
-        String reporte_compilado = Constantes.ARCHIVO_DESTINO + File.separator + getNombreReporte() + ".jasper";
+        String reporte = Constantes.FORMATO_REPORTE + File.separator + getNombreReporte() + ".jrxml";
+        String reporte_compilado = Constantes.FORMATO_REPORTE + File.separator + getNombreReporte() + ".jasper";
         try {
             File f = new File(reporte_compilado);
             if (!f.isFile()) {
-                    JasperCompileManager.compileReportToFile(reporte, reporte_compilado);
+                JasperCompileManager.compileReportToFile(reporte, reporte_compilado);
             }
             // final JasperReport report =
             // JasperCompileManager.compileReport(reporte);
+            getParamsReport().put(JRParameter.IS_IGNORE_PAGINATION, true);
             JasperPrint jasperPrint = JasperFillManager.fillReport(reporte_compilado, getParamsReport(),
                             getDataSourceReport());
+            jasperPrint.setName(getNombreArchivo());
+            return jasperPrint;
+        } catch (Exception e) {
+                e.printStackTrace();
+                //JOptionPane.showMessageDialog(Inicio.mainF, "No se pudo abrir el archivo: " + reporte);
+                return null;
+        }
+    }
+    
+    public JasperPrint getPrintReport_list() {
+
+        String reporte = Constantes.FORMATO_REPORTE + File.separator + getNombreReporte() + ".jrxml";
+        String reporte_compilado = Constantes.FORMATO_REPORTE + File.separator + getNombreReporte() + ".jasper";
+        try {
+            File f = new File(reporte_compilado);
+            if (!f.isFile()) {
+                JasperCompileManager.compileReportToFile(reporte, reporte_compilado);
+            }
+            // final JasperReport report =
+            // JasperCompileManager.compileReport(reporte);
+            getParamsReport().put(JRParameter.IS_IGNORE_PAGINATION, true);
+            JasperPrint jasperPrint = JasperFillManager.fillReport(reporte_compilado, getParamsReport(),
+                            getDataSourceReport_lst());
             jasperPrint.setName(getNombreArchivo());
             return jasperPrint;
         } catch (Exception e) {
@@ -667,4 +697,18 @@ public abstract class AbstactListAction<T> {
 //    return null;
 //
 //    }
+
+    /**
+     * @return the lvalidate
+     */
+    public boolean isLvalidate() {
+        return lvalidate;
+    }
+
+    /**
+     * @param lvalidate the lvalidate to set
+     */
+    public void setLvalidate(boolean lvalidate) {
+        this.lvalidate = lvalidate;
+    }
 }

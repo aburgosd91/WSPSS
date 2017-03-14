@@ -45,6 +45,17 @@
                                     <p:inputText id="nroprecinto" style="width: 200px !important;" value="#{ordenservicioclienteAction.datoEdicion.nroprecinto}" disabled="#{!ordenservicioclienteAction.edicion}"/>
                                     <p:outputLabel for="nro_oservicio"  value="Nro Servicio:" />
                                     <p:inputText id="nro_oservicio" style="width: 200px !important;" value="#{ordenservicioclienteAction.datoEdicion.nro_oservicio}" disabled="#{!ordenservicioclienteAction.edicion}"/>
+                                    <p:outputLabel value="Glosa" escape="false"/>
+                                    <p:inputTextarea rows="2" cols="50" value="#{ordenservicioclienteAction.datoEdicion.glosa}" disabled="#{!ordenservicioclienteAction.edicion}"/>
+                                    <p:outputLabel value="Operario:" escape="false" />
+                                    <h:panelGrid id="cntPersonalOperario" cellpadding="0" cellspacing="0" columns="3">
+                                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{ordenservicioclienteAction.verCntClieprovPersonal}" 
+                                                         disabled="#{!ordenservicioclienteAction.edicion}"  icon="ui-icon-search">
+                                            <p:ajax event="dialogReturn" listener="#{ordenservicioclienteAction.valorOperario}" update="cntPersonalOperario"/>
+                                        </p:commandButton>
+                                        <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{ordenservicioclienteAction.datoEdicion.idoperario}"/>
+                                        <p:inputText size="50" readonly="true" value="#{ordenservicioclienteAction.datoEdicion.operario}" />
+                                    </h:panelGrid>
                                 </p:panelGrid>
                             </div>
                             <div class="ui-grid-col-6">
@@ -267,7 +278,7 @@
                                     </p:panelGrid>
                                     <p:outputLabel value="Vehículo" escape="false" />
                                     <h:panelGrid id="cntConsumidor" cellpadding="0" cellspacing="0" columns="3">
-                                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{ordenservicioclienteAction.verCntConsumidor()}" icon="ui-icon-search" disabled="true">
+                                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{ordenservicioclienteAction.verCntConsumidor()}" icon="ui-icon-search">
                                             <p:ajax event="dialogReturn" listener="#{ordenservicioclienteAction.valorConsumidor}" update="cntConsumidor"/>
                                         </p:commandButton>
                                         <p:inputText  style="text-align: center" size="3" readonly="true"  value="#{ordenservicioclienteAction.dordenserviciocliente.idvehiculo}" />
@@ -464,7 +475,7 @@
                     <p:dialog id="dlgnew_cotizacionventas" header="..:: COTIZACIÓN VENTAS ::." widgetVar="dlgnew_cotizacionventas" modal="true" showEffect="popup" closable="false">
                         <p:toolbar>
                             <f:facet name="right">
-                                <p:commandButton value="Asignar" ajax="true" actionListener="#{ordenservicioclienteAction.addDocreferencia()}" image="ui-icon-right"/>
+                                <p:commandButton value="Asignar" ajax="true" image="ui-icon-right" actionListener="#{ordenservicioclienteAction.addDocreferencia()}"/>
                                 <p:commandButton value="Cancelar" process="@this"  image="ui-icon-cancelar" onclick="PF('dlgnew_cotizacionventas').hide()" />
                             </f:facet>
                         </p:toolbar> 
@@ -474,7 +485,9 @@
                                         var="cotizacionventas" 
                                         selection="#{ordenservicioclienteAction.selectCotizacionventas}" 
                                        rowKey="#{cotizacionventas.idcotizacionv}" 
-                                       rows="10"
+                                       paginator="true" paginatorPosition="top" 
+                                       paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                       rows="8"
                                        resizableColumns="true" 
                                        style="width: 100%">
                                 <p:ajax event="rowSelectRadio" listener="#{ordenservicioclienteAction.onCheckCotizacionventa()}" update="datos:dcotizacionventas"/>

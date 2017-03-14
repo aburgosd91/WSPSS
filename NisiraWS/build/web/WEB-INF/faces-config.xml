@@ -19,7 +19,6 @@
         <param-name>primefaces.SKIN</param-name>
         <param-value>none</param-value>
     </context-param>
-  
     <application>
         <view-handler>com.pe.nisira.movil.view.listener.SeguridadViewHandler</view-handler>
         <action-listener>org.primefaces.application.DialogActionListener</action-listener>

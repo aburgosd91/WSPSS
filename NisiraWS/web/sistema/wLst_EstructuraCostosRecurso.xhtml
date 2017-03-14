@@ -12,38 +12,38 @@
             #{estructuracostosrecursoAction.buscarTodo()}
             <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">                
                 <cmp:barra_lst bean="#{estructuracostosrecursoAction}" mostrar_opciones="false" />
-                <p:dataTable id="tbl" var="listaEstructura_costos_clieprov" value="#{estructuracostosrecursoAction.listaDatos}" widgetVar="listaEstructura_costos_clieprov" 
+                <p:dataTable id="tbl" var="listaEstructura_costos" value="#{estructuracostosrecursoAction.listaDatos}" widgetVar="listaEstructura_costos" 
                              paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" 
                              paginatorPosition="top"
                              paginator="true" rows="25" style="margin-bottom:20px" selectionMode="single" 
                              selection="#{estructuracostosrecursoAction.datoSeleccionado}" 
-                             rowKey="#{listaEstructura_costos_clieprov.idclieprov}" resizableColumns="true">
+                             rowKey="#{listaEstructura_costos.codigo}" resizableColumns="true">
                     <f:facet name="header">
                         <h:outputText value="#{estructuracostosrecursoAction.tituloHead}" />
                     </f:facet>  
-                    <p:column style="width:15%;" filterBy="#{listaEstructura_costos_clieprov.codigo}" filterMatchMode="contains" sortBy="#{listaEstructura_costos_clieprov.codigo}">
+                    <p:column style="width:10%;" filterBy="#{listaEstructura_costos.codigo}" filterMatchMode="contains" sortBy="#{listaEstructura_costos.codigo}">
                         <f:facet name="header">
                             <h:outputText value="CÓDIGO" />
                         </f:facet>
-                        <h:outputText value="#{listaEstructura_costos_clieprov.codigo}" />
+                        <h:outputText value="#{listaEstructura_costos.codigo}" />
                     </p:column>
-                    <p:column style="width:20%;" filterBy="#{listaEstructura_costos_clieprov.estructuracostos}" filterMatchMode="contains" sortBy="#{listaEstructura_costos_clieprov.estructuracostos}">
+                    <p:column style="width:40%;" filterBy="#{listaEstructura_costos.descripcion}" filterMatchMode="contains" sortBy="#{listaEstructura_costos.descripcion}">
                         <f:facet name="header">
                             <h:outputText value="ESTRUCTURA COSTOS" />
                         </f:facet>
-                        <h:outputText value="#{listaEstructura_costos_clieprov.estructuracostos}" />
+                        <h:outputText value="#{listaEstructura_costos.descripcion}" />
                     </p:column>
-                    <p:column style="width:20%;" filterBy="#{listaEstructura_costos_clieprov.idclieprov}" filterMatchMode="contains" sortBy="#{listaEstructura_costos_clieprov.idclieprov}">
+                    <p:column style="width:15%;" filterBy="#{listaEstructura_costos.idclieprov}" filterMatchMode="contains" sortBy="#{listaEstructura_costos.idclieprov}">
                         <f:facet name="header">
-                            <h:outputText value="DOCUMENTO" />
+                            <h:outputText value="Ruc" />
                         </f:facet>
-                        <h:outputText value="#{listaEstructura_costos_clieprov.idclieprov}" />
+                        <h:outputText value="#{listaEstructura_costos.idclieprov}" />
                     </p:column>
-                    <p:column style="width:20%;" filterBy="#{listaEstructura_costos_clieprov.razon_social}" filterMatchMode="contains" sortBy="#{listaEstructura_costos_clieprov.razon_social}">
+                    <p:column style="width:25%;" filterBy="#{listaEstructura_costos.cliente}" filterMatchMode="contains" sortBy="#{listaEstructura_costos.cliente}">
                         <f:facet name="header">
-                            <h:outputText value="RAZÓN" />
+                            <h:outputText value="Razón" />
                         </f:facet>
-                        <h:outputText value="#{listaEstructura_costos_clieprov.razon_social}" />
+                        <h:outputText value="#{listaEstructura_costos.cliente}" />
                     </p:column>
                 </p:dataTable>  
             </p:panelGrid>

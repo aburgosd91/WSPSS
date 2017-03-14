@@ -21,7 +21,7 @@
                   modal="true" closable="false" width="400" visible="false">
             <h:outputText value="#{titulos.mensaje_caducada}" />
             <input id="confirmBackToLogin" type="button" value="#{titulos.boton_caducada}"
-                   onclick="window.location = '#{facesContext.externalContext.requestContextPath}/faces/sistema/CerrarSesion.xhtml';" />
+                   onclick="window.location = '#{facesContext.externalContext.requestContextPath}/sistema/CerrarSesion.xhtml';" />
         </p:dialog>
         <h:form id="formtema" >
             #{menu_general.llenarModulo()}

@@ -1,0 +1,41 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">
+            <cmp:barra_mnt bean="#{mUsuarioAction}"/>
+            <p:panelGrid style="width: 100%" id="principal" columns="1" columnClasses="no-border, no-border">    
+                <f:facet name="header">
+                    <p:outputLabel value="#{mUsuarioAction.tituloHead}"/>
+                </f:facet>
+                <p:panelGrid columns="2" columnClasses="no-border, no-border">
+                    <p:outputLabel value ="Usuario"/>
+                    <p:panelGrid id="cntUser" columns="3" columnClasses="no-border, no-border,no-border">
+                        <p:inputText size="10" readonly="true" value="#{mUsuarioAction.datoEdicion.idusuario}" />
+                        <p:inputText size="41" readonly="true" value="#{mUsuarioAction.datoEdicion.usuario}" />
+                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{mUsuarioAction.verCntUsuario()}" disabled="#{!mUsuarioAction.edicion}"  icon="ui-icon-search">
+                            <p:ajax event="dialogReturn" listener="#{mUsuarioAction.valorUsuario}" update="cntUser"/>
+                        </p:commandButton>
+                    </p:panelGrid>
+                    <p:outputLabel value ="Cliente"/>
+                    <p:panelGrid id="cntClieprov" columns="3" columnClasses="no-border, no-border, no-border">
+                        <p:inputText size="10" readonly="true" value="#{mUsuarioAction.datoEdicion.idclieprov}" />
+                        <p:inputText size="41" readonly="true" value="#{mUsuarioAction.datoEdicion.cliente}" />
+                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{mUsuarioAction.verCntClieprovAppmovil()}" disabled="#{!mUsuarioAction.edicion}"  icon="ui-icon-search">
+                            <p:ajax event="dialogReturn" listener="#{mUsuarioAction.valorClieprovAppmovil}" update="cntClieprov"/>
+                        </p:commandButton>
+                    </p:panelGrid>                  
+                </p:panelGrid>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{mUsuarioAction}" ventana="MNT" />
+        </h:form>
+    </ui:define>
+</ui:composition>

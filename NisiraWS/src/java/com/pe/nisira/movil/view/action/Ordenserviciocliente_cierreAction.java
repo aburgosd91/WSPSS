@@ -890,4 +890,9 @@ public class Ordenserviciocliente_cierreAction extends AbstactListAction<Ordense
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public JRDataSource getDataSourceReport_lst() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

@@ -1,0 +1,93 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">            
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
+                <cmp:barra_lst bean="#{table_rpt_liquidacion_pssAction}" mostrar_opciones="false" cfgfiltro="true"/>
+                <p:dataTable  id="tbl" var="listTable_rpt_liquidacion_pss" value="#{table_rpt_liquidacion_pssAction.listaDatos}" 
+                              filteredValue="#{table_rpt_liquidacion_pssAction.filtroDatos}"  
+                              widgetVar="listTable_rpt_liquidacion_pss" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                              paginator="true" rows="15" style="margin-bottom:20px" 
+                              selection="#{table_rpt_liquidacion_pssAction.selectListTable_rpt_liquidacion_pss}"  
+                              rowKey="#{listTable_rpt_liquidacion_pss.campo1}" 
+                              resizableColumns="true" 
+                              rowSelectMode="checkbox">
+                    <p:column headerText="" selectionMode="multiple" style="width:16px;text-align:center"/>
+                    <f:facet name="header">
+                        <h:outputText value="#{table_rpt_liquidacion_pssAction.tituloHead}" />   
+                    </f:facet>
+                    <p:column headerText="Campo" style="width:30%;" >
+                        <h:outputText value="#{listTable_rpt_liquidacion_pss.campo2}" />
+                    </p:column>
+                    <p:column headerText="Campo" style="width:30%;" >
+                        <h:outputText value="#{listTable_rpt_liquidacion_pss.campo3}" />
+                    </p:column>
+                    <p:column headerText="Campo" style="width:30%;" >
+                        <h:outputText value="#{listTable_rpt_liquidacion_pss.campo4}" />
+                    </p:column>
+                    <p:column headerText="Campo" style="width:30%;" >
+                        <h:outputText value="#{listTable_rpt_liquidacion_pss.campo5}" />
+                    </p:column>
+                    <p:column headerText="Campo" style="width:30%;" >
+                        <h:outputText value="#{listTable_rpt_liquidacion_pss.campo6}" />
+                    </p:column>
+                    <p:column headerText="Campo" style="width:30%;" >
+                        <h:outputText value="#{listTable_rpt_liquidacion_pss.campo7}" />
+                    </p:column>
+                    <p:column headerText="Campo" style="width:30%;" >
+                        <h:outputText value="#{listTable_rpt_liquidacion_pss.campo8}" />
+                    </p:column>
+                    <p:column headerText="Campo" style="width:30%;" >
+                        <h:outputText value="#{listTable_rpt_liquidacion_pss.campo9}" />
+                    </p:column>
+                    <p:column headerText="Campo" style="width:30%;" >
+                        <h:outputText value="#{listTable_rpt_liquidacion_pss.campo10}" />
+                    </p:column>
+                    <p:column headerText="Campo" style="width:30%;" >
+                        <h:outputText value="#{listTable_rpt_liquidacion_pss.campo11}" />
+                    </p:column>
+                    <p:column headerText="Campo" style="width:30%;" >
+                        <h:outputText value="#{listTable_rpt_liquidacion_pss.campo12}" />
+                    </p:column>
+                    <p:column headerText="Campo" style="width:30%;" >
+                        <h:outputText value="#{listTable_rpt_liquidacion_pss.campo13}" />
+                    </p:column>
+                    <p:column headerText="Campo" style="width:30%;" >
+                        <h:outputText value="#{listTable_rpt_liquidacion_pss.campo14}" />
+                    </p:column>
+                    <p:column headerText="Campo" style="width:30%;" >
+                        <h:outputText value="#{listTable_rpt_liquidacion_pss.campo15}" />
+                    </p:column>
+                    <p:column headerText="Campo" style="width:30%;" >
+                        <h:outputText value="#{listTable_rpt_liquidacion_pss.campo16}" />
+                    </p:column>
+                    <p:column headerText="Campo" style="width:30%;" >
+                        <h:outputText value="#{listTable_rpt_liquidacion_pss.campo17}" />
+                    </p:column>
+                    <p:column headerText="Campo" style="width:30%;" >
+                        <h:outputText value="#{listTable_rpt_liquidacion_pss.campo18}" />
+                    </p:column>
+                    <p:column headerText="Campo" style="width:30%;" >
+                        <h:outputText value="#{listTable_rpt_liquidacion_pss.campo19}" />
+                    </p:column>
+                    <p:column headerText="Campo" style="width:30%;" >
+                        <h:outputText value="#{listTable_rpt_liquidacion_pss.campo20}" />
+                    </p:column>
+                    <p:column headerText="Campo" style="width:30%;" >
+                        <h:outputText value="#{listTable_rpt_liquidacion_pss.campo21}" />
+                    </p:column>
+                </p:dataTable>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{table_rpt_liquidacion_pssAction}" ventana="LST" />
+        </h:form>
+    </ui:define>    
+</ui:composition>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <f:metadata>
+        <f:viewParam name="codigo_estructura" value="#{cntEstructura_Costos_ProductoAction.codigo_estructura}"/>
+    </f:metadata>
+    <h:head>
+        <title>Estructura Costos Producto</title>
+        <style type="text/css">
+            .ui-widget {
+                font-size: 90%;
+            }
+        </style>
+    </h:head>
+    <h:body>
+        <h:form>
+            #{cntEstructura_Costos_ProductoAction.cargarDatos()}
+            <p:dataTable var="car" value="#{cntEstructura_Costos_ProductoAction.datos}" 
+                         paginator="true"
+                         rows="7"
+                         resizableColumns="true"
+                         style="width: 100%;font-size: 11px;height: 100%"
+                         >
+                <p:column headerText="Código" filterBy="#{car.item}" filterMatchMode="contains" filterStyle="width: 75%" style="width: 10%;padding: 3px !important;text-align: center">
+                    <h:outputText value="#{car.item}" />
+                </p:column>
+                <p:column headerText="Código" filterBy="#{car.idproducto}" filterMatchMode="contains" filterStyle="width: 75%" style="width: 20%;padding: 3px !important;text-align: center">
+                    <h:outputText value="#{car.idproducto}" />
+                </p:column>
+                <p:column headerText="Descripción" filterBy="#{car.descripcion}" filterMatchMode="contains" filterStyle="width: 75%" style="width: 50%;padding: 3px !important;text-align: center">
+                    <h:outputText value="#{car.descripcion}" />
+                </p:column>
+                <p:column headerText="Ver" style="text-align: center">
+                    <p:commandButton icon="ui-icon-check" actionListener="#{cntEstructura_Costos_ProductoAction.selectFromDialog(car)}" />
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </h:body>
+</html>

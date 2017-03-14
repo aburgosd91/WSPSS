@@ -41,8 +41,44 @@
                     <p:column headerText="Fecha Vigencia" style="width:30%;" filterBy="#{listCotizacionventas.fechavigencia}" filterMatchMode="contains" sortBy="#{listCotizacionventas.fechavigencia}">
                         <h:outputText value="#{listCotizacionventas.fechavigencia}" />
                     </p:column>
+                    <p:column headerText="Estado" style="width:30%;background-color:#{listCotizacionventas.color_estado};" 
+                              filterBy="#{listCotizacionventas.estado}" filterMatchMode="contains" sortBy="#{listCotizacionventas.estado}">
+                        <h:outputText value="#{listCotizacionventas.estado}" />
+                    </p:column>
+                    <p:column style="width:9%">
+                        <h:commandButton value="PDF" action="#{cotizacionventasAction.PDF_cotizacion_listado()}" title="Pdf">
+                            <f:setPropertyActionListener value="#{listCotizacionventas}" target="#{cotizacionventasAction.selectCotizacionventas_local}" />
+                       </h:commandButton>
+                   </p:column>
+                    <p:column style="width:15%">
+                        <h:commandButton value="ENVIO" action="#{cotizacionventasAction.envioCorreo_open()}" title="Envio Correo">
+                            <f:setPropertyActionListener value="#{listCotizacionventas}" target="#{cotizacionventasAction.selectCotizacionventas_local}" />
+                       </h:commandButton>
+                   </p:column>
                 </p:dataTable>
             </p:panelGrid>
+            <p:dialog id="dlg_pdf" header="..:: Cotización N° #{cotizacionventasAction.selectCotizacionventas_local.serie} -
+                      #{cotizacionventasAction.selectCotizacionventas_local.numero} ::.." 
+                      widgetVar="dlg_pdf" modal="true" showEffect="popup" maximizable="true" closable="true" height="410px" width="600px">
+                <object type="application/pdf" data="../ARCHIVO_NISIRA_WEB/#{cotizacionventasAction.filename}?pfdrid_c=true" height="99%" width="99%">
+                    Navegador no puede mostrar, favor descargue <a href="../ARCHIVO_NISIRA_WEB/#{cotizacionventasAction.filename}">click</a> to download pdf instead.
+                </object>
+                <br/>                        
+            </p:dialog>
+            <p:dialog id="dlg_envio" header="..:: Cotización N° #{cotizacionventasAction.selectCotizacionventas_local.serie} -
+                      #{cotizacionventasAction.selectCotizacionventas_local.numero} ::.." 
+                      widgetVar="dlg_envio" modal="true" showEffect="popup" maximizable="true" closable="true" height="410px" width="600px">
+                <p:panelGrid columns="3" columnClasses="no-border, no-border, no-border">
+                    <p:outputLabel value="Email:"/>
+                    <p:inputTextarea id="contacto_email" cols="50" rows="2" value="#{cotizacionventasAction.selectCotizacionventas_local.contacto_email}"/>
+                    <p:commandButton id="btnEnvio" value="Envio" ajax="true" image="ui-icon-envio" actionListener="#{cotizacionventasAction.envioCorreo_listado()}" />
+                </p:panelGrid>
+                <object type="application/pdf" data="../ARCHIVO_NISIRA_WEB/#{cotizacionventasAction.filename}?pfdrid_c=true" height="82%" width="99%">
+                    Navegador no puede mostrar, favor descargue <a href="../ARCHIVO_NISIRA_WEB/#{cotizacionventasAction.filename}">click</a> to download pdf instead.
+                </object>
+                <br/> 
+                <br/>                        
+            </p:dialog>
             <p:growl id="growl" life="4000" showDetail="false"  />
             <cmp:mDialogElimina_lst id="cmpDialog" bean="#{cotizacionventasAction}" ventana="LST" />
         </h:form>

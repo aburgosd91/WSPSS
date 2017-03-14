@@ -16,129 +16,322 @@
                 <f:facet name="header">
                     <p:outputLabel value="#{estructuracostosrecursoAction.tituloHead}"/>
                 </f:facet>
-                <div class="ui-grid ">
+                <div class="ui-grid">
                     <div class="ui-grid-row">
                         <p:fieldset legend="Datos" style="width: 100%" >
-                            <div class="ui-grid-col-6">
-                                <p:panelGrid  columns="2" columnClasses="no-border, no-border" style="width: 100%">
-                                    <p:outputLabel value="Estructura Costos:" escape="false" />
-                                    <h:panelGrid cellpadding="0" cellspacing="0" columns="2">
-                                        <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{estructuracostosrecursoAction.datoEdicion.codigo}" disabled="#{!estructuracostosrecursoAction.edicion}"/>
-                                        <p:inputText size="50" readonly="true" value="#{estructuracostosrecursoAction.datoEdicion.estructuracostos}" disabled="#{!estructuracostosrecursoAction.edicion}"/>
-                                    </h:panelGrid>
-                                </p:panelGrid>
-                            </div>
-                            <div class="ui-grid-col-6">
-                                <p:panelGrid  columns="2" columnClasses="no-border, no-border" >
-                                    <p:outputLabel value="Cliente:" escape="false" />
-                                    <h:panelGrid cellpadding="0" cellspacing="0" columns="2">
-                                        <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{estructuracostosrecursoAction.datoEdicion.idclieprov}" disabled="#{!estructuracostosrecursoAction.edicion}"/>
-                                        <p:inputText size="50" readonly="true" value="#{estructuracostosrecursoAction.datoEdicion.razon_social}" disabled="#{!estructuracostosrecursoAction.edicion}"/>
-                                    </h:panelGrid>
-                                </p:panelGrid>
-                            </div> 
+                            <p:panelGrid  columns="2" columnClasses="no-border, no-border" style="width: 40%">
+                                <p:outputLabel value="Código:" escape="false" />
+                                <p:inputText  style="text-align: left" size="15" value="#{estructuracostosrecursoAction.datoEdicion.codigo}" disabled="true"/>
+                                <p:outputLabel value="Descripción:" escape="false" />
+                                <p:inputTextarea cols="55" rows="2" readonly="#{!estructuracostosrecursoAction.edicion}" value="#{estructuracostosrecursoAction.datoEdicion.descripcion}" disabled="#{!estructuracostosrecursoAction.edicion}"/>
+                                <p:outputLabel value="Nombre - Corto:" escape="false" />
+                                <p:inputText  style="text-align: left" size="35" readonly="#{!estructuracostosrecursoAction.edicion}"  value="#{estructuracostosrecursoAction.datoEdicion.nombre_corto}" disabled="#{!estructuracostosrecursoAction.edicion}"/>
+                                <p:outputLabel value="Moneda" escape="false"/>
+                                <p:selectOneMenu id="idmoneda" value="#{estructuracostosrecursoAction.datoEdicion.idmoneda}" style="width:70px" disabled="#{!estructuracostosrecursoAction.edicion}">
+                                    <f:selectItems value="#{estructuracostosrecursoAction.listMoneda}" var="moneda" itemLabel="#{moneda.descripcion}" itemValue="#{moneda.idmoneda}"/>
+                                </p:selectOneMenu>
+                            </p:panelGrid>
                         </p:fieldset> 
                     </div>
-                    <div class="ui-grid-row">
-                        <p:fieldset legend="Detalle Estructura Costos - Producto"  style="width: 100%">
-                            <p:dataTable id="listEstructura_costos_producto" var="listEstructura_costos_producto" value="#{estructuracostosrecursoAction.listEstructura_costos_producto}" widgetVar="listEstructura_costos_producto"
-                             paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
-                             paginator="true" paginatorPosition="top" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{estructuracostosrecursoAction.selectEstructura_costos_producto}" rowKey="#{listEstructura_costos_producto.idproducto}">
-                                <p:ajax event="rowSelect" listener="#{estructuracostosrecursoAction.onRowSelectEstructura_costos_producto}" />
-                                <p:column style="width:10%;" filterBy="#{listEstructura_costos_producto.idproducto}" filterMatchMode="contains" sortBy="#{listEstructura_costos_producto.idproducto}">
-                                    <f:facet name="header">
-                                        <h:outputText value="Cod. Producto"/>
+                    <div class="ui-g">
+                        <div class="ui-g-6">
+                            <p:fieldset legend="Detalle Estructura Costos - Producto"  style="width: 100%">
+                                <p:dataTable id="listEstructura_costos_producto" var="listEstructura_costos_producto" value="#{estructuracostosrecursoAction.listEstructura_costos_producto}" widgetVar="listEstructura_costos_producto"
+                                 paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                 paginator="true" paginatorPosition="top" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{estructuracostosrecursoAction.selectEstructura_costos_producto}" rowKey="#{listEstructura_costos_producto.numerador}">
+                                    <p:ajax event="rowSelect" listener="#{estructuracostosrecursoAction.onRowSelectEstructura_costos_producto}" />
+                                    <f:facet name="{Comandos}">
+                                        <p:commandButton value="Nuevo" ajax="true" image="ui-icon-nuevo" actionListener="#{estructuracostosrecursoAction.nuevoEstructuraCostosProducto()}" />
+                                        <p:commandButton value="Editar" ajax="true" image="ui-icon-edit" actionListener="#{estructuracostosrecursoAction.editarEstructuraCostosProducto()}" disabled="#{estructuracostosrecursoAction.botonEditarEstructura_costos_producto}"/> 
+                                        <p:commandButton value="Eliminar" ajax="true" image="ui-icon-eliminar" actionListener="#{estructuracostosrecursoAction.eliminarEstructuraCostosProducto()}" disabled="#{estructuracostosrecursoAction.botonEditarEstructura_costos_producto}"/>
                                     </f:facet>
-                                    <h:outputText value="#{listEstructura_costos_producto.idproducto}"/>
-                                </p:column>
-                                <p:column style="width:15%;" filterBy="#{listEstructura_costos_producto.producto}" filterMatchMode="contains" sortBy="#{listEstructura_costos_producto.producto}">
-                                    <f:facet name="header" >
-                                        <h:outputText value="Producto" />
-                                    </f:facet>
-                                    <h:outputText value="#{listEstructura_costos_producto.producto}" />
-                                </p:column>
-                                <p:column style="width:15%;" filterBy="#{listEstructura_costos_producto.descripcion}" filterMatchMode="contains" sortBy="#{listEstructura_costos_producto.descripcion}">
-                                    <f:facet name="header" >
-                                        <h:outputText value="Descripción" />
-                                    </f:facet>
-                                    <h:outputText value="#{listEstructura_costos_producto.descripcion}" />
-                                </p:column>
-                            </p:dataTable>  
-                        </p:fieldset>
-                    </div>
-                    <div class="ui-grid-row">
-                        <p:fieldset legend="Detalle Estructura Costos - Recurso"  style="width: 100%">
-                            <p:dataTable id="listDestructura_costos_recursos" var="listDestructura_costos_recursos" 
-                                         value="#{estructuracostosrecursoAction.listDestructura_costos_recursos}" 
-                                         widgetVar="listDestructura_costos_recursos"
-                             paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
-                             paginator="true" paginatorPosition="top" rows="15" style="margin-bottom:20px"  
-                             rowKey="#{listDestructura_costos_recursos.item}" editable="true" editMode="cell">
-                                <p:ajax event="cellEdit" listener="#{estructuracostosrecursoAction.onCellEdit}" update=":form:msgs" />
-                                <p:column style="width:10%;" filterBy="#{listDestructura_costos_recursos.item}" filterMatchMode="contains" sortBy="#{listDestructura_costos_recursos.item}">
-                                    <f:facet name="header">
-                                        <h:outputText value="N°"/>
-                                    </f:facet>
-                                    <h:outputText value="#{listDestructura_costos_recursos.item}"/>
-                                 </p:column>
-                                 <p:column style="width:15%;" filterBy="#{listDestructura_costos_recursos.tipo_recurso}" filterMatchMode="contains" sortBy="#{listDestructura_costos_recursos.tipo_recurso}">
-                                    <f:facet name="header" >
-                                        <h:outputText value="Tipo Rec." />
-                                    </f:facet>
-                                    <h:outputText value="#{listDestructura_costos_recursos.tipo_recurso}" />
-                                </p:column>
-                                <p:column style="width:55%;" filterBy="#{listDestructura_costos_recursos.descripcion}" filterMatchMode="contains" sortBy="#{listDestructura_costos_recursos.descripcion}">
-                                    <f:facet name="header" >
-                                        <h:outputText value="Descripción" />
-                                    </f:facet>
-                                    <h:outputText value="#{listDestructura_costos_recursos.descripcion}" />
-                                </p:column>
-                                <p:column style="width:10%;" headerText="Cantidad" filterBy="#{listDestructura_costos_recursos.cantidad}" filterMatchMode="contains" sortBy="#{listDestructura_costos_recursos.cantidad}">
-                                    <p:cellEditor>
-                                        <f:facet name="output">
-                                            <h:outputText value="#{listDestructura_costos_recursos.cantidad}">
-                                                <f:convertNumber pattern="#0.00" />
-                                            </h:outputText>
+                                    <p:column style="width:10%;" filterBy="#{listEstructura_costos_producto.numerador}" filterMatchMode="contains" sortBy="#{listEstructura_costos_producto.numerador}">
+                                        <f:facet name="header">
+                                            <h:outputText value="N°"/>
                                         </f:facet>
-                                        <f:facet name="input">
-                                            <p:inputNumber value="#{listDestructura_costos_recursos.cantidad}" decimalPlaces="2">
-                                            </p:inputNumber>
+                                        <h:outputText value="#{listEstructura_costos_producto.numerador}"/>
+                                    </p:column>
+                                    <p:column style="width:10%;" filterBy="#{listEstructura_costos_producto.item}" filterMatchMode="contains" sortBy="#{listEstructura_costos_producto.item}">
+                                        <f:facet name="header">
+                                            <h:outputText value="Item"/>
                                         </f:facet>
-                                    </p:cellEditor>
-                                </p:column>
-                                <p:column style="width:15%;" headerText="Costo" filterBy="#{listDestructura_costos_recursos.costo}" filterMatchMode="contains" sortBy="#{listDestructura_costos_recursos.costo}">
-                                    <p:cellEditor>
-                                        <f:facet name="output">
-                                            <h:outputText value="#{listDestructura_costos_recursos.costo}">
-                                                <f:convertNumber pattern="#0.00" />
-                                            </h:outputText>
+                                        <h:outputText value="#{listEstructura_costos_producto.item}"/>
+                                    </p:column>
+                                    <p:column style="width:10%;" filterBy="#{listEstructura_costos_producto.idproducto}" filterMatchMode="contains" sortBy="#{listEstructura_costos_producto.idproducto}">
+                                        <f:facet name="header">
+                                            <h:outputText value="Cod. Producto"/>
                                         </f:facet>
-                                        <f:facet name="input">
-                                            <p:inputNumber value="#{listDestructura_costos_recursos.costo}" decimalPlaces="2">
-                                            </p:inputNumber>
+                                        <h:outputText value="#{listEstructura_costos_producto.idproducto}"/>
+                                    </p:column>
+                                    <p:column style="width:15%;" filterBy="#{listEstructura_costos_producto.producto}" filterMatchMode="contains" sortBy="#{listEstructura_costos_producto.producto}">
+                                        <f:facet name="header" >
+                                            <h:outputText value="Producto" />
                                         </f:facet>
-                                    </p:cellEditor>
-                                </p:column>
-                            </p:dataTable>
-                            <p:layout style="min-width:100%;min-height:200px">
-                                <p:layoutUnit position="center">
-                                </p:layoutUnit>
-                                <p:layoutUnit position="east" resizable="true" size="300" minSize="200" maxSize="300">
-                                    <p:panelGrid columns="2" columnClasses="no-border,no-border" >
-                                        <p:outputLabel value="Sub Total:" />
-                                        <p:inputNumber id="subtotal_ecosto" readonly="true" value="#{estructuracostosrecursoAction.subtotal_ecosto}" decimalPlaces="2"/>
-                                        <p:outputLabel value="G.O.:" />
-                                        <p:inputNumber id="go_ecosto" readonly="true" value="#{estructuracostosrecursoAction.go_ecosto}" decimalPlaces="2"/>
-                                        <p:outputLabel value="G.A.:" />
-                                        <p:inputNumber id="ga_ecosto" readonly="true" value="#{estructuracostosrecursoAction.ga_ecosto}" decimalPlaces="2"/>
-                                        <p:outputLabel value="U.:" />
-                                        <p:inputNumber id="u_ecosto" readonly="true" value="#{estructuracostosrecursoAction.u_ecosto}" decimalPlaces="2"/>
-                                        <p:outputLabel value="Total:" />
-                                        <p:inputNumber id="total_ecosto" readonly="true" value="#{estructuracostosrecursoAction.total_ecosto}" decimalPlaces="2"/>
+                                        <h:outputText value="#{listEstructura_costos_producto.producto}" />
+                                    </p:column>
+                                    <p:column style="width:15%;" filterBy="#{listEstructura_costos_producto.descripcion}" filterMatchMode="contains" sortBy="#{listEstructura_costos_producto.descripcion}">
+                                        <f:facet name="header" >
+                                            <h:outputText value="Descripción" />
+                                        </f:facet>
+                                        <h:outputText value="#{listEstructura_costos_producto.descripcion}" />
+                                    </p:column>
+                                </p:dataTable>  
+                            </p:fieldset>
+                            <p:dialog id="dlgnew_estructura_costos_producto" header="..::Estrcutura - Costos - Producto::." widgetVar="dlgnew_estructura_costos_producto" modal="true" showEffect="popup" closable="false">
+                                <p:panelGrid columns="1" columnClasses="no-border">
+                                    <p:panelGrid columns="2" columnClasses="no-border, no-border">
+                                        <p:outputLabel value="Código: " />
+                                        <p:inputText size="15" disabled="true" value="#{estructuracostosrecursoAction.estructura_costos_producto.codigo}" />
+                                        <p:outputLabel value="Producto:" escape="false" />
+                                        <h:panelGrid id="cntProducto" cellpadding="0" cellspacing="0" columns="3">
+                                            <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{estructuracostosrecursoAction.verCntProducto()}" 
+                                                             disabled="#{!estructuracostosrecursoAction.edicion}"  icon="ui-icon-search">
+                                                <p:ajax event="dialogReturn" listener="#{estructuracostosrecursoAction.valorProducto}" update="cntProducto"/>
+                                            </p:commandButton>
+                                            <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{estructuracostosrecursoAction.estructura_costos_producto.idproducto}" disabled="#{!estructuracostosrecursoAction.edicion}"/>
+                                            <p:inputText size="50" readonly="true" value="#{estructuracostosrecursoAction.estructura_costos_producto.producto}" disabled="#{!estructuracostosrecursoAction.edicion}"/>
+                                        </h:panelGrid>
+                                        <p:outputLabel value="Descripción:" escape="false" />
+                                        <p:inputTextarea cols="50" rows="2" value="#{estructuracostosrecursoAction.estructura_costos_producto.descripcion}" disabled="#{!estructuracostosrecursoAction.edicion}"/>
                                     </p:panelGrid>
-                                </p:layoutUnit>
-                            </p:layout>
-                        </p:fieldset>
+                                    <br/>
+                                    <p:toolbar>
+                                        <f:facet name="right">
+                                            <p:commandButton value="Grabar" ajax="true" actionListener="#{estructuracostosrecursoAction.grabarEstructuraCostosProducto()}" 
+                                                             image="ui-icon-grabar" update="datos:growl"/>
+                                            <p:commandButton value="Cancelar" process="@this"  image="ui-icon-cancelar" onclick="PF('dlgnew_estructura_costos_producto').hide()" />
+                                        </f:facet>
+                                    </p:toolbar>                          
+                                </p:panelGrid>                      
+                            </p:dialog>
+                            <p:tabView id="tabs">
+                                <p:ajax event="tabChange" listener="#{estructuracostosrecursoAction.onSPTabChange}" />
+                                <p:tab id="tab_Destructura_costos_recurso" title="Detalle Estructura Costos - Recurso">
+                                    <p:dataTable id="listDestructura_costos_recursos" var="listDestructura_costos_recursos" 
+                                            value="#{estructuracostosrecursoAction.listDestructura_costos_recursos}" 
+                                            widgetVar="listDestructura_costos_recursos"
+                                            paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                            paginator="true" paginatorPosition="top" rows="15" style="margin-bottom:20px" selection="#{estructuracostosrecursoAction.selectDestructura_costos_recursos}" 
+                                            rowKey="#{listDestructura_costos_recursos.item}" editable="true" editMode="cell">
+                                               <p:ajax event="rowSelectRadio" listener="#{estructuracostosrecursoAction.onRowSelectDestructura_costos_recursos}" />
+                                               <p:ajax event="cellEdit" listener="#{estructuracostosrecursoAction.onCellEdit}"/>
+                                               <p:ajax event="rowEdit" listener="#{estructuracostosrecursoAction.onRowEdit}"/>
+                                               <f:facet name="{Comandos}">
+                                                   <p:commandButton value="Calcular" ajax="true" image="ui-icon-reload" actionListener="#{estructuracostosrecursoAction.actualizarDestructuraCostosRecurso()}" disabled="#{estructuracostosrecursoAction.botonNuevoDestructura_costos_recurso}"/>
+                                                   <p:commandButton value="Agregar" ajax="true" image="ui-icon-nuevo" actionListener="#{estructuracostosrecursoAction.agregarDestructuraCostosRecurso()}" disabled="#{estructuracostosrecursoAction.botonNuevoDestructura_costos_recurso}"/>
+                                                   <p:commandButton value="Eliminar" ajax="true" image="ui-icon-eliminar" actionListener="#{estructuracostosrecursoAction.eliminarDestructuraCostosRecurso()}" disabled="#{estructuracostosrecursoAction.botonEliminarDestructura_costos_recurso}"/>
+                                               </f:facet>
+                                               <p:column selectionMode="single" style="width:16px;text-align:center"/>
+                                               <p:column style="width:10%;" filterBy="#{listDestructura_costos_recursos.item}" filterMatchMode="contains" sortBy="#{listDestructura_costos_recursos.item}">
+                                                   <f:facet name="header">
+                                                       <h:outputText value="N°"/>
+                                                   </f:facet>
+                                                   <h:outputText value="#{listDestructura_costos_recursos.item}"/>
+                                                </p:column>
+                                                <p:column style="width:15%;" headerText="Tip. Rec." filterBy="#{listDestructura_costos_recursos.tipo_recurso}" filterMatchMode="contains" sortBy="#{listDestructura_costos_recursos.tipo_recurso}">
+                                                    <p:cellEditor>
+                                                       <f:facet name="output"><h:outputText value="#{listDestructura_costos_recursos.tipo_recurso}" /></f:facet>
+                                                       <f:facet name="input">
+                                                           <h:selectOneMenu value="#{listDestructura_costos_recursos.tipo_recurso}" style="width:100%">
+                                                               <f:selectItems value="#{estructuracostosrecursoAction.lstTipoRecurso}" var="tr" itemLabel="#{tr}" itemValue="#{tr}" />
+                                                           </h:selectOneMenu>
+                                                       </f:facet>
+                                                   </p:cellEditor>
+                                               </p:column>
+                                               <p:column style="width:55%;" headerText="Descripción" filterBy="#{listDestructura_costos_recursos.descripcion}" filterMatchMode="contains" sortBy="#{listDestructura_costos_recursos.descripcion}">
+                                                   <p:cellEditor>
+                                                       <f:facet name="output">
+                                                           <h:outputText value="#{listDestructura_costos_recursos.descripcion}"/>
+                                                       </f:facet>
+                                                       <f:facet name="input">
+                                                           <p:inputText value="#{listDestructura_costos_recursos.descripcion}" style="width:100%"/>
+                                                       </f:facet>
+                                                   </p:cellEditor>
+                                               </p:column>
+                                               <p:column style="width:10%;" headerText="Cantidad" filterBy="#{listDestructura_costos_recursos.cantidad}" filterMatchMode="contains" sortBy="#{listDestructura_costos_recursos.cantidad}">
+                                                   <p:cellEditor>
+                                                       <f:facet name="output">
+                                                           <h:outputText value="#{listDestructura_costos_recursos.cantidad}">
+                                                               <f:convertNumber pattern="#0.00" />
+                                                           </h:outputText>
+                                                       </f:facet>
+                                                       <f:facet name="input">
+                                                           <p:inputNumber value="#{listDestructura_costos_recursos.cantidad}" decimalPlaces="2">
+                                                           </p:inputNumber>
+                                                       </f:facet>
+                                                   </p:cellEditor>
+                                               </p:column>
+                                               <p:column style="width:15%;" headerText="Costo" filterBy="#{listDestructura_costos_recursos.costo}" filterMatchMode="contains" sortBy="#{listDestructura_costos_recursos.costo}">
+                                                   <p:cellEditor>
+                                                       <f:facet name="output">
+                                                           <h:outputText value="#{listDestructura_costos_recursos.costo}">
+                                                               <f:convertNumber pattern="#0.00" />
+                                                           </h:outputText>
+                                                       </f:facet>
+                                                       <f:facet name="input">
+                                                           <p:inputNumber value="#{listDestructura_costos_recursos.costo}" decimalPlaces="2">
+                                                           </p:inputNumber>
+                                                       </f:facet>
+                                                   </p:cellEditor>
+                                               </p:column>
+                                               <p:column style="width:15%;" headerText="Es_Porcentaje" filterBy="#{listDestructura_costos_recursos.es_porcentaje}" filterMatchMode="contains" sortBy="#{listDestructura_costos_recursos.es_porcentaje}">
+                                                    <p:cellEditor>
+                                                       <f:facet name="output"><h:outputText value="#{listDestructura_costos_recursos.es_porcentaje}" /></f:facet>
+                                                       <f:facet name="input">
+                                                           <h:selectOneMenu value="#{listDestructura_costos_recursos.es_porcentaje}" style="width:100%">
+                                                               <f:selectItems value="#{estructuracostosrecursoAction.lstEs_porcentaje}" var="tp" itemLabel="#{tp.descripcion}" itemValue="#{tp.id}" />
+                                                           </h:selectOneMenu>
+                                                       </f:facet>
+                                                   </p:cellEditor>
+                                               </p:column>
+                                               <p:column style="width:15%;" headerText="U.M." filterBy="#{listDestructura_costos_recursos.idmedida}" filterMatchMode="contains" sortBy="#{listDestructura_costos_recursos.idmedida}">
+                                                    <p:cellEditor>
+                                                       <f:facet name="output"><h:outputText value="#{listDestructura_costos_recursos.idmedida}" /></f:facet>
+                                                       <f:facet name="input">
+                                                           <h:selectOneMenu value="#{listDestructura_costos_recursos.idmedida}" style="width:100%">
+                                                               <f:selectItems value="#{estructuracostosrecursoAction.listUnimedida}" var="tp" itemLabel="#{tp.descripcion}" itemValue="#{tp.idmedida}" />
+                                                           </h:selectOneMenu>
+                                                       </f:facet>
+                                                   </p:cellEditor>
+                                               </p:column>
+                                           </p:dataTable>
+                                    <p:layout style="min-width:100%;min-height:200px">
+                                        <p:layoutUnit position="center">
+                                        </p:layoutUnit>
+                                        <p:layoutUnit position="east" resizable="true" size="300" minSize="200" maxSize="300">
+                                            <p:panelGrid columns="2" columnClasses="no-border,no-border" >
+                                                <p:outputLabel value="Sub Total:" />
+                                                <p:inputNumber id="subtotal_ecosto" readonly="true" value="#{estructuracostosrecursoAction.subtotal_ecosto}" decimalPlaces="2"/>
+                                                <p:outputLabel value="G.O.:" />
+                                                <p:inputNumber id="go_ecosto" readonly="true" value="#{estructuracostosrecursoAction.go_ecosto}" decimalPlaces="2"/>
+                                                <p:outputLabel value="G.A.:" />
+                                                <p:inputNumber id="ga_ecosto" readonly="true" value="#{estructuracostosrecursoAction.ga_ecosto}" decimalPlaces="2"/>
+                                                <p:outputLabel value="U.:" />
+                                                <p:inputNumber id="u_ecosto" readonly="true" value="#{estructuracostosrecursoAction.u_ecosto}" decimalPlaces="2"/>
+                                                <p:outputLabel value="Ajuste:" />
+                                                <p:inputNumber id="ajuste_ecosto" value="#{estructuracostosrecursoAction.ajuste_ecosto}" decimalPlaces="2"/>
+                                                <p:outputLabel value="Total:" />
+                                                <p:inputNumber id="total_ecosto" readonly="true" value="#{estructuracostosrecursoAction.total_ecosto}" decimalPlaces="2"/>
+                                            </p:panelGrid>
+                                        </p:layoutUnit>
+                                    </p:layout>
+                                </p:tab>
+                                <p:tab id="tab_Estructura_costos_mano_obra" title="Detalle Estructura Costos - Mano -Obra">
+                                    <p:dataTable id="listEstructura_costos_mano_obra" var="listEstructura_costos_mano_obra" value="#{estructuracostosrecursoAction.listEstructura_costos_mano_obra}" widgetVar="listEstructura_costos_mano_obra"
+                                     paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                     paginator="true" paginatorPosition="top" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{estructuracostosrecursoAction.selecteEstructura_costos_mano_obra}" rowKey="#{listEstructura_costos_mano_obra.item}">
+                                        <p:ajax event="rowSelect" listener="#{estructuracostosrecursoAction.onRowSelectEstructura_costos_mano_obra}" />
+                                        <f:facet name="{Comandos}">
+                                            <p:commandButton value="Nuevo" ajax="true" image="ui-icon-nuevo" actionListener="#{estructuracostosrecursoAction.nuevoEstructuraCostosManoObra()}" />
+                                            <p:commandButton value="Editar" ajax="true" image="ui-icon-edit" actionListener="#{estructuracostosrecursoAction.editarEstructuraCostosManoObra()}" disabled="#{estructuracostosrecursoAction.botonEditarEstructura_costos_mano_obra}"/> 
+                                            <p:commandButton value="Eliminar" ajax="true" image="ui-icon-eliminar" actionListener="#{estructuracostosrecursoAction.eliminarEstructuraCostosManoObra()}" disabled="#{estructuracostosrecursoAction.botonEditarEstructura_costos_mano_obra}"/>
+                                        </f:facet>
+                                        <p:column style="width:10%;" filterBy="#{listEstructura_costos_mano_obra.item}" filterMatchMode="contains" sortBy="#{listEstructura_costos_mano_obra.item}">
+                                            <f:facet name="header">
+                                                <h:outputText value="N°"/>
+                                            </f:facet>
+                                            <h:outputText value="#{listEstructura_costos_mano_obra.item}"/>
+                                        </p:column>
+                                        <p:column style="width:15%;" filterBy="#{listEstructura_costos_mano_obra.idcargo}" filterMatchMode="contains" sortBy="#{listEstructura_costos_mano_obra.idcargo}">
+                                            <f:facet name="header" >
+                                                <h:outputText value="Cod. Cargo" />
+                                            </f:facet>
+                                            <h:outputText value="#{listEstructura_costos_mano_obra.idcargo}" />
+                                        </p:column>
+                                        <p:column style="width:15%;" filterBy="#{listEstructura_costos_mano_obra.cargo}" filterMatchMode="contains" sortBy="#{listEstructura_costos_mano_obra.cargo}">
+                                            <f:facet name="header" >
+                                                <h:outputText value="Cargo" />
+                                            </f:facet>
+                                            <h:outputText value="#{listEstructura_costos_mano_obra.cargo}" />
+                                        </p:column>
+                                        <p:column style="width:10%;" filterBy="#{listEstructura_costos_mano_obra.costo}" filterMatchMode="contains" sortBy="#{listEstructura_costos_mano_obra.costo}">
+                                            <f:facet name="header" >
+                                                <h:outputText value="Costo" />
+                                            </f:facet>
+                                            <h:outputText value="#{listEstructura_costos_mano_obra.costo}">
+                                                <f:convertNumber pattern="#0.00" />
+                                            </h:outputText>
+                                        </p:column>
+                                    </p:dataTable>
+                                </p:tab>
+                            </p:tabView>
+                            <p:dialog id="dlgnew_estructura_costos_mano_obra" header="..::Estructura - Costos - Mano - Obra::." widgetVar="dlgnew_estructura_costos_mano_obra" modal="true" showEffect="popup" closable="false">
+                                <p:panelGrid columns="1" columnClasses="no-border">
+                                    <p:panelGrid columns="2" columnClasses="no-border, no-border">
+                                        <p:outputLabel value="N°: " />
+                                        <p:inputText size="15" disabled="true" value="#{estructuracostosrecursoAction.estructura_costos_mano_obra.item}" />
+                                        <p:outputLabel value="Cargo:" escape="false" />
+                                        <h:panelGrid id="cntCargospersonal" cellpadding="0" cellspacing="0" columns="3">
+                                            <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{estructuracostosrecursoAction.verCntCargos_personal()}" 
+                                                             disabled="#{!estructuracostosrecursoAction.edicion}" icon="ui-icon-search">
+                                                <p:ajax event="dialogReturn" listener="#{estructuracostosrecursoAction.valorCargos_personal}" update="cntCargospersonal"/>
+                                            </p:commandButton>
+                                            <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{estructuracostosrecursoAction.estructura_costos_mano_obra.idcargo}"/>
+                                            <p:inputText size="50" readonly="true" value="#{estructuracostosrecursoAction.estructura_costos_mano_obra.cargo}" />
+                                        </h:panelGrid>
+                                    </p:panelGrid>
+                                    <br/>
+                                    <p:toolbar>
+                                        <f:facet name="right">
+                                            <p:commandButton value="Grabar" ajax="true" actionListener="#{estructuracostosrecursoAction.grabarEstructuraCostosManoObra()}" 
+                                                             image="ui-icon-grabar" update="datos:growl"/>
+                                            <p:commandButton value="Cancelar" process="@this"  image="ui-icon-cancelar" onclick="PF('dlgnew_estructura_costos_mano_obra').hide()" />
+                                        </f:facet>
+                                    </p:toolbar>                          
+                                </p:panelGrid>                      
+                            </p:dialog>
+                        </div>
+                        <div class="ui-g-6">
+                            <p:fieldset legend="Detalle Estructura Costos - Clieprov"  style="width: 100%">
+                                <p:dataTable id="listEstructura_costos_clieprov" var="listEstructura_costos_clieprov" value="#{estructuracostosrecursoAction.listEstructura_costos_clieprov}" widgetVar="listEstructura_costos_clieprov"
+                                 paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                 paginator="true" paginatorPosition="top" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{estructuracostosrecursoAction.selectEstructura_costos_clieprov}" rowKey="#{listEstructura_costos_clieprov.idclieprov}">
+                                    <p:ajax event="rowSelect" listener="#{estructuracostosrecursoAction.onRowSelectEstructura_costos_clieprov}" />
+                                    <f:facet name="{Comandos}">
+                                        <p:commandButton value="Nuevo" ajax="true" image="ui-icon-nuevo" actionListener="#{estructuracostosrecursoAction.nuevoEstructuraCostosClieprov()}" />
+                                        <p:commandButton value="Editar" ajax="true" image="ui-icon-edit" actionListener="#{estructuracostosrecursoAction.editarEstructuraCostosClieprov()}" disabled="#{estructuracostosrecursoAction.botonEditarEstructura_costos_clieprov}"/> 
+                                        <p:commandButton value="Eliminar" ajax="true" image="ui-icon-eliminar" actionListener="#{estructuracostosrecursoAction.eliminarEstructuraCostosClieprov()}" disabled="#{estructuracostosrecursoAction.botonEditarEstructura_costos_clieprov}"/>
+                                    </f:facet>
+                                    <p:column style="width:10%;" filterBy="#{listEstructura_costos_clieprov.idclieprov}" filterMatchMode="contains" sortBy="#{listEstructura_costos_clieprov.idclieprov}">
+                                        <f:facet name="header">
+                                            <h:outputText value="Cod. Cliente"/>
+                                        </f:facet>
+                                        <h:outputText value="#{listEstructura_costos_clieprov.idclieprov}"/>
+                                    </p:column>
+                                    <p:column style="width:15%;" filterBy="#{listEstructura_costos_clieprov.razon_social}" filterMatchMode="contains" sortBy="#{listEstructura_costos_clieprov.razon_social}">
+                                        <f:facet name="header" >
+                                            <h:outputText value="Razón" />
+                                        </f:facet>
+                                        <h:outputText value="#{listEstructura_costos_clieprov.razon_social}" />
+                                    </p:column>
+                                </p:dataTable>  
+                            </p:fieldset>
+                            <p:dialog id="dlgnew_estructura_costos_clieprov" header="..::Estrcutura - Costos - Clieprov::." widgetVar="dlgnew_estructura_costos_clieprov" modal="true" showEffect="popup" closable="false">
+                                <p:panelGrid columns="1" columnClasses="no-border">
+                                    <p:panelGrid columns="2" columnClasses="no-border, no-border">
+                                        <p:outputLabel value="Código: " />
+                                        <p:inputText size="15" disabled="true" value="#{estructuracostosrecursoAction.estructura_costos_clieprov.codigo}" />
+                                        <p:outputLabel value="Cliente:" escape="false" />
+                                        <h:panelGrid id="cntClie" cellpadding="0" cellspacing="0" columns="3">
+                                            <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{estructuracostosrecursoAction.verCntClieprov}" 
+                                                             disabled="#{!estructuracostosrecursoAction.edicion}"  icon="ui-icon-search">
+                                                <p:ajax event="dialogReturn" listener="#{estructuracostosrecursoAction.valorClieprov}" update="cntClie"/>
+                                            </p:commandButton>
+                                            <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{estructuracostosrecursoAction.estructura_costos_clieprov.idclieprov}" disabled="#{!estructuracostosrecursoAction.edicion}"/>
+                                            <p:inputText size="50" readonly="true" value="#{estructuracostosrecursoAction.estructura_costos_clieprov.razon_social}" disabled="#{!estructuracostosrecursoAction.edicion}"/>
+                                        </h:panelGrid>
+                                    </p:panelGrid>
+                                    <br/>
+                                    <p:toolbar>
+                                        <f:facet name="right">
+                                            <p:commandButton value="Grabar" ajax="true" actionListener="#{estructuracostosrecursoAction.grabarEstructuraCostosClieprov()}" 
+                                                             image="ui-icon-grabar" update="datos:growl"/>
+                                            <p:commandButton value="Cancelar" process="@this"  image="ui-icon-cancelar" onclick="PF('dlgnew_estructura_costos_clieprov').hide()" />
+                                        </f:facet>
+                                    </p:toolbar>                          
+                                </p:panelGrid>                      
+                            </p:dialog>
+                        </div>
                     </div>
                 </div>
             </p:panelGrid>

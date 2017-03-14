@@ -210,9 +210,9 @@ public class ClaveMovil {
         return desencriptado;
     }
     public static void main(String[] args) {
-        String cadena="Š“©‰‰Ë¤Up[";
+        String cadena="~èÁÁóÜÉì¿ãªÁ";
 //        String encrypt=Encriptar_ASCII(cadena);
-        String desencripter=Desencriptar_ASCII(cadena);
+        String desencripter=Desencriptar_ant(cadena);
 //        System.out.println("encrypted string:" + encrypt);
         System.out.println("decrypted value:" + desencripter);
     }

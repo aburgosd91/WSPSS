@@ -7,6 +7,7 @@ package com.pe.nisira.movil.view.util;
 import com.nisira.core.EConexion;
 import com.nisira.core.entity.Almacen;
 import com.nisira.core.entity.ConfigWeb;
+import com.nisira.core.entity.Configsmtp;
 import com.nisira.core.entity.Sucursal;
 import com.nisira.core.util.CoreUtil;
 import java.io.File;
@@ -30,7 +31,10 @@ import javax.faces.bean.ViewScoped;
 @ViewScoped
 
 public class Constantes {
-    public static String ARCHIVO_DESTINO="C:\\cotizacionesPDF\\";  // 
+    public static Configsmtp configsmtp;
+    public static String FORMATO_REPORTE=CoreUtil.valoresBase().get(6);
+    public static String ARCHIVO_REPORTE=CoreUtil.valoresBase().get(7);
+    //"C:\\cotizacionesPDF\\";  // 
     public static String SYSCONFIGPATH="configweb.properties";
     public static String conexionORM="";
     public static ConfigWeb configWeb;

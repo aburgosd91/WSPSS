@@ -25,8 +25,12 @@ public class NSRDataSource implements JRDataSource {
 		
 		int idx = nsrresulset.getColumnIndex(jrf.getName());
 
+                if(idx ==-1)
+                {
+                    throw new JRException("No se encontro la columna : " + jrf.getName());
+                }                
 		Class<?> clase = nsrresulset.getClassFormColumn(jrf.getName());
-
+                
 		if (clase == String.class) {
 			try {
 				return nsrresulset.getString(counter, idx);

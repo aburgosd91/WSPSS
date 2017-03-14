@@ -8,15 +8,18 @@ package com.pe.nisira.movil.view.action;
 import com.nisira.core.NisiraORMException;
 import com.nisira.core.dao.AlmacenesDao;
 import com.nisira.core.dao.ClieprovDao;
+import com.nisira.core.dao.ConfigsmtpDao;
 import com.nisira.core.dao.CotizacionventasDao;
 import com.nisira.core.dao.DcotizacionventasDao;
 import com.nisira.core.dao.Destructura_costos_recursosDao;
+import com.nisira.core.dao.Destructura_costos_recursos_cotizacionventasDao;
 import com.nisira.core.dao.DocumentosDao;
 import com.nisira.core.dao.EmisorDao;
 import com.nisira.core.dao.EstadosDao;
 import com.nisira.core.dao.Estructura_costosDao;
 import com.nisira.core.dao.Estructura_costos_clieprovDao;
 import com.nisira.core.dao.Estructura_costos_mano_obraDao;
+import com.nisira.core.dao.Estructura_costos_mano_obra_cotizacionventasDao;
 import com.nisira.core.dao.MonedasDao;
 import com.nisira.core.dao.MultitablaDao;
 import com.nisira.core.dao.NSRResultSet;
@@ -27,17 +30,21 @@ import com.nisira.core.dao.TcambioDao;
 import com.nisira.core.dao.WtiposervicioDao;
 import com.nisira.core.entity.Almacen;
 import com.nisira.core.entity.Almacenes;
+import com.nisira.core.entity.Cargos_personal;
 import com.nisira.core.entity.Clieprov;
+import com.nisira.core.entity.Configsmtp;
 import com.nisira.core.entity.Contactosclieprov;
 import com.nisira.core.entity.Cotizacionventas;
 import com.nisira.core.entity.Dcotizacionventas;
 import com.nisira.core.entity.Destructura_costos_recursos;
+import com.nisira.core.entity.Destructura_costos_recursos_cotizacionventas;
 import com.nisira.core.entity.Documentos;
 import com.nisira.core.entity.Dordenliquidaciongasto;
 import com.nisira.core.entity.Estados;
 import com.nisira.core.entity.Estructura_costos;
 import com.nisira.core.entity.Estructura_costos_clieprov;
 import com.nisira.core.entity.Estructura_costos_mano_obra;
+import com.nisira.core.entity.Estructura_costos_mano_obra_cotizacionventas;
 import com.nisira.core.entity.Estructura_costos_producto;
 import com.nisira.core.entity.Forma_pago;
 import com.nisira.core.entity.Monedas;
@@ -53,10 +60,12 @@ import com.nisira.core.util.CoreUtil;
 import static com.pe.nisira.movil.view.action.AbstactListAction.modalOptions;
 import com.pe.nisira.movil.view.bean.UsuarioBean;
 import com.pe.nisira.movil.view.util.Constantes;
+import com.pe.nisira.movil.view.util.EnviarDocumentos;
 import com.pe.nisira.movil.view.util.ManejadorFechas;
 import com.pe.nisira.movil.view.util.NSRDataSource;
 import com.pe.nisira.movil.view.util.WebUtil;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -82,8 +91,11 @@ import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
+import org.primefaces.component.datatable.DataTable;
 import org.primefaces.component.tabview.TabView;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.CellEditEvent;
+import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
 
@@ -96,6 +108,8 @@ import org.primefaces.event.TabChangeEvent;
 public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
     
     /*********************************LISTAS*******************************************/
+    private List<String> lstTipoRecurso;
+    private List<Es_PorcentajeCombo> lstEs_porcentaje;
     private List<Sucursales> listSucursales;
     private List<Almacenes> listAlmacenes;
     private List<Clieprov> listClieprov;
@@ -111,6 +125,14 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
     private List<Estructura_costos> listEstructura_costos;
     private List<Destructura_costos_recursos> listDestructura_costos_recursos;
     private List<Estructura_costos_mano_obra> listEstructura_costos_mano_obra;
+    private List<Destructura_costos_recursos_cotizacionventas> listDestructura_costos_recursos_cotizacionventas;
+    private List<Estructura_costos_mano_obra_cotizacionventas> listEstructura_costos_mano_obra_cotizacionventas;
+    
+    private List<Destructura_costos_recursos_cotizacionventas> listTotalDestructura_costos_recursos_cotizacionventas;
+    private List<Estructura_costos_mano_obra_cotizacionventas> listTotalEstructura_costos_mano_obra_cotizacionventas;
+    
+    private List<Destructura_costos_recursos> listTotalDestructura_costos_recursos;
+    private List<Estructura_costos_mano_obra> listTotalEstructura_costos_mano_obra;
     /*************************************DAO***************************************/
     private CotizacionventasDao cotizacionventasDao;
     private DcotizacionventasDao dcotizacionventasDao;
@@ -129,6 +151,8 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
     private Estructura_costosDao estructura_costosDao;
     private Destructura_costos_recursosDao destructura_costos_recursosDao;
     private Estructura_costos_mano_obraDao estructura_costos_mano_obraDao;
+    private Destructura_costos_recursos_cotizacionventasDao destructura_costos_recursos_cotizacionventasDao;
+    private Estructura_costos_mano_obra_cotizacionventasDao estructura_costos_mano_obra_cotizacionventasDao;
     /*************************************ENTITY***************************************/
     private Dcotizacionventas dcotizacionventas;
     private Dcotizacionventas selectdcotizacionventas; 
@@ -139,6 +163,7 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
     private Clieprov selectClieprov;
     private Contactosclieprov selectContactosClieprov;
     private Producto selectProducto;
+    private Estructura_costos_producto selectEstructura_costos_producto;
     private Forma_pago selectForma_pago;
     private Sucursales selectSucursales;
     private Almacen selectAlmacen;
@@ -146,9 +171,24 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
     private Estructura_costos selectEstructura_costos;
     private Destructura_costos_recursos selectDestructura_costos_recursos;
     private Estructura_costos_mano_obra selectEstructura_costos_mano_obra;
+    private Destructura_costos_recursos_cotizacionventas selectDestructura_costos_recursos_cotizacionventas;
+    private Estructura_costos_mano_obra_cotizacionventas selectEstructura_costos_mano_obra_cotizacionventas;
+    private Destructura_costos_recursos_cotizacionventas destructura_costos_recursos_cotizacionventas;
+    private Estructura_costos_mano_obra_cotizacionventas estructura_costos_mano_obra_cotizacionventas;
+    private Cotizacionventas selectCotizacionventas_local; 
     /**********************************CONTROLADOR********************************/
+    private boolean caculate_hora;
     private boolean botonEditarDcotizacionventas;
-    private boolean botonEliminarDcotizacionventas;    
+    private boolean botonEliminarDcotizacionventas;
+
+    private boolean botonNuevoDestructura_costos_recurso;
+    private boolean botonEditarDestructura_costos_recurso;
+    private boolean botonEliminarDestructura_costos_recurso;
+    
+    private boolean botonNuevoEstructura_costos_mano_obra;
+    private boolean botonEditarEstructura_costos_mano_obra;
+    private boolean botonEliminarEstructura_costos_mano_obra;
+    
     private String periodoBase;
     private String periodoDisenio;
     private String mesNumeroDisenio;
@@ -162,14 +202,31 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
     private Float ga_ecosto;
     private Float u_ecosto;
     private Float total_ecosto;
+    private Float ajuste_ecosto;
+    private String filename;
     public CotizacionesAction() {
         /*****************CONFIGURACION****************/
         user = (UsuarioBean) WebUtil.getObjetoSesion(Constantes.SESION_USUARIO);
         numero = "";
         mensaje = "";
         /**********************************CONTROLADOR********************************/
+        lstTipoRecurso = new ArrayList<>();
+        lstTipoRecurso.add("CO");
+        lstTipoRecurso.add("MO");
+        lstEs_porcentaje = new ArrayList<>();
+        lstEs_porcentaje.add(new Es_PorcentajeCombo(0,"No Porcentaje"));
+        lstEs_porcentaje.add(new Es_PorcentajeCombo(1,"Porcentaje"));
+        caculate_hora = false;
         botonEditarDcotizacionventas=true;
         botonEliminarDcotizacionventas=true;
+        
+        botonNuevoDestructura_costos_recurso=true;
+        botonEditarDestructura_costos_recurso=true;
+        botonEliminarDestructura_costos_recurso=true;
+
+        botonNuevoEstructura_costos_mano_obra=true;
+        botonEditarEstructura_costos_mano_obra=true;
+        botonEliminarEstructura_costos_mano_obra=true;
         /********************DAO*******************/
         cotizacionventasDao = new CotizacionventasDao();
         dcotizacionventasDao = new DcotizacionventasDao();
@@ -188,8 +245,13 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
         estructura_costosDao = new Estructura_costosDao();
         destructura_costos_recursosDao = new Destructura_costos_recursosDao();
         estructura_costos_mano_obraDao = new Estructura_costos_mano_obraDao();
+        destructura_costos_recursos_cotizacionventasDao = new Destructura_costos_recursos_cotizacionventasDao();
+        estructura_costos_mano_obra_cotizacionventasDao = new Estructura_costos_mano_obra_cotizacionventasDao();
+        selectCotizacionventas_local = new Cotizacionventas();
         /********************ENTITY****************/
         setDcotizacionventas(new Dcotizacionventas());
+        destructura_costos_recursos_cotizacionventas= new Destructura_costos_recursos_cotizacionventas();
+        estructura_costos_mano_obra_cotizacionventas = new Estructura_costos_mano_obra_cotizacionventas();
         /********************ARRAY****************/
         lstdcotizacionventas = new ArrayList<Dcotizacionventas>();
         listDocumentos = new ArrayList<Documentos>();
@@ -203,6 +265,18 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
         listEstructura_costos = new ArrayList<>();
         listDestructura_costos_recursos = new ArrayList<>();
         listEstructura_costos_mano_obra = new ArrayList<>();
+        
+        listDestructura_costos_recursos_cotizacionventas = new ArrayList<>();
+        listEstructura_costos_mano_obra_cotizacionventas = new ArrayList<>();
+        
+        listDestructura_costos_recursos_cotizacionventas= new ArrayList<>();
+        listEstructura_costos_mano_obra_cotizacionventas= new ArrayList<>();
+        
+        listTotalDestructura_costos_recursos_cotizacionventas=new ArrayList<>();
+        listTotalEstructura_costos_mano_obra_cotizacionventas=new ArrayList<>();
+        
+        listTotalDestructura_costos_recursos=new ArrayList<>();
+        listTotalEstructura_costos_mano_obra=new ArrayList<>();
         /***********************************************/
         fecha_ini = new Date();
         fecha_fin = new Date();
@@ -216,6 +290,7 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
         ga_ecosto = 0.0f;
         u_ecosto = 0.0f;
         total_ecosto = 0.0f;
+        ajuste_ecosto = 0.0f;
         try {
             listAlmacenes = alamcenesDao.getPorEmpresaSucursal(user.getIDEMPRESA(),Constantes.getIDSUCURSALGENERAL());
             listWtiposervicio = wtiposervicioDao.listarPorEmpresaWeb(user.getIDEMPRESA());
@@ -265,6 +340,8 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
             listEstructura_costos = new ArrayList<>();
             listDestructura_costos_recursos = new ArrayList<>();
             listEstructura_costos_mano_obra = new ArrayList<>();
+            listDestructura_costos_recursos_cotizacionventas = new ArrayList<>();
+            listEstructura_costos_mano_obra_cotizacionventas = new ArrayList<>();
             listWtiposervicio = new ArrayList<>();
             /**********************************CONFIGURACION********************************/
             lista_solution=CoreUtil.valoresBase();
@@ -310,6 +387,7 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
                 getDatoEdicion().setMoneda(monedas.getDescripcion());
             }
             Tcambio tcambio=tcambioDao.getPorFecha(WebUtil.SimpleDateFormatN1(getDatoEdicion().getFecha()));
+            getDatoEdicion().setNumero(numero);
             if(tcambio!=null)getDatoEdicion().setTcambio(tcambio.getT_compra());
         } catch (NisiraORMException ex) {
             Logger.getLogger(OrdenliquidaciongastoAction.class.getName()).log(Level.SEVERE, null, ex);
@@ -322,12 +400,16 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
 
     }
     public boolean esVistaValida() {
-        if (getDatoEdicion().getIdclieprov().isEmpty() & getDatoEdicion().getRazon_social().isEmpty()) {
-            WebUtil.MensajeAdvertencia("Seleccione Cliente");
+        if (getDatoEdicion().getIdclieprov()==null & getDatoEdicion().getRazon_social()==null) {
+            this.mensaje="Seleccione Cliente";
             return false;
         }
-        if (getLstdcotizacionventas().size() == 0) {
-            WebUtil.MensajeAdvertencia("Ingrese Detalle de cotización");
+        if (getDatoEdicion().getFormapago()==null) {
+            this.mensaje="Seleccione Forma Pago";
+            return false;
+        }
+        if (getLstdcotizacionventas().isEmpty()) {
+            this.mensaje="Ingrese Detalle de cotización";
             return false;
         }
         return true;
@@ -337,34 +419,47 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
         try {
             if (esVistaValida()) {
                 /*DATOS INICIALES*/
-                getDatoEdicion().setNumero(numero);
                 getDatoEdicion().setPeriodo(periodoBase);
                 if(getLadd()==1){
-                    mensaje=getCotizacionventasDao().grabar(1, getDatoEdicion(), getLstdcotizacionventas(),user.getIDUSUARIO());
+                    mensaje=getCotizacionventasDao().grabar(1, getDatoEdicion(), getLstdcotizacionventas(),
+                            user.getIDUSUARIO(),getListTotalDestructura_costos_recursos_cotizacionventas(),
+                            getListTotalEstructura_costos_mano_obra_cotizacionventas());
                     if(mensaje!=null)
                         if(mensaje.trim().length()==15)
                             getDatoEdicion().setIdcotizacionv(mensaje.trim());
                 }
                 else{
-                    mensaje=getCotizacionventasDao().grabar(2, getDatoEdicion(), getLstdcotizacionventas(),user.getIDUSUARIO());
+                    mensaje=getCotizacionventasDao().grabar(2, getDatoEdicion(), getLstdcotizacionventas(),
+                            user.getIDUSUARIO(),getListTotalDestructura_costos_recursos_cotizacionventas(),
+                            getListTotalEstructura_costos_mano_obra_cotizacionventas());
                 }
                 setMensaje(WebUtil.exitoRegistrar("Cotización Venta ", mensaje));
                 WebUtil.info(getMensaje());
-                RequestContext.getCurrentInstance().update("datos");
-                //RequestContext.getCurrentInstance().update("datos:lstdcotizacionventas");
+                setLvalidate(true);
+            }else{
+                WebUtil.error(getMensaje());
+                setLvalidate(false);
             }
         } catch (Exception ex) {
             setMensaje(ex.getMessage() + "\n" + ex.getLocalizedMessage());
             Logger.getLogger(OrdenliquidaciongastoAction.class.getName()).log(Level.SEVERE, null, ex);
             WebUtil.fatal(mensaje);
         }
+        RequestContext.getCurrentInstance().update("datos");
     }
     @Override
     public void eliminar() {
         try {
-//            if (getOpc_anular_eliminar().equalsIgnoreCase("ANULAR")) {
-//                getDatoEdicion().setEstado(0);
-//            }
+            if (getOpc_anular_eliminar().equalsIgnoreCase("ANULAR")) {
+                getDatoEdicion().setIdestado("AN");
+            }
+            mensaje=getCotizacionventasDao().anular(getDatoEdicion(),user.getIDUSUARIO());
+            if(mensaje!=null){
+                setMensaje(WebUtil.exitoEliminar("Cotización Venta ", mensaje));
+                WebUtil.info(getMensaje());
+                setLvalidate(true);
+                buscarFiltro();
+            }
 //            if (getOpc_anular_eliminar().equalsIgnoreCase("ELIMINAR")) {
 //                getDatoEdicion().setEstado(2);
 //            }
@@ -374,37 +469,340 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
         }
     }
     public void envioCorreo(){
+        try {
+            if(getDatoEdicion().getIdcotizacionv()!=null){
+                List<Configsmtp> lstConfigsmtp=(new ConfigsmtpDao()).listarPorEmpresaWeb();
+                if(!lstConfigsmtp.isEmpty()){
+                    /******************** CREAR REPORTE ************************/
+                    FacesContext context = FacesContext.getCurrentInstance();
+                    ExternalContext ext = context.getExternalContext();
+
+                    setNombreReporte("RPT_COTIZACION_"+getDatoEdicion().getIdtiposervicio().trim());
+                    setNombreArchivo("RPT_COTIZACION_"+getDatoEdicion().getIdtiposervicio().trim());/*JRXML*/
+
+                    JasperPrint jasperPrint = getPrintReport();
+                    HttpServletResponse resp = (HttpServletResponse) ext.getResponse();
+                    resp.setContentType("application/pdf");
+                    
+                    SimpleDateFormat sm = new SimpleDateFormat("mm-dd-yyyy");
+                    String filename = getDatoEdicion().getIddocumento()+getDatoEdicion().getSerie()+"-"+
+                            getDatoEdicion().getNumero()+"_"+sm.format(getDatoEdicion().getFecha())+"_" +
+                            getDatoEdicion().getRazon_social().trim()+
+                            ".pdf";
+                    String rutapdf=Constantes.ARCHIVO_REPORTE + File.separator +filename;
+                    JasperExportManager.exportReportToPdfFile(jasperPrint, rutapdf);
+                    
+                    Constantes.configsmtp=lstConfigsmtp.get(0);
+                    /* *********    ENVIAR CORREO  ********* */
+                    File file = new File(rutapdf);
+                    
+                    EnviarDocumentos enviarDocumentos = new EnviarDocumentos();
+                    enviarDocumentos.enviarcorreo(getDatoEdicion().getContacto_email(), file, 
+                            getDatoEdicion().getIddocumento()+getDatoEdicion().getSerie()+"-"+getDatoEdicion().getNumero(), 
+                            getDatoEdicion().getRazon_social(),filename);
+                    
+                    mensaje = "Envio de mensaje exitoso";
+                    WebUtil.info(mensaje);
+
+                }else{
+                    mensaje = "Envio de mensaje no configurado";
+                    WebUtil.error(mensaje);
+                }
+            }else{
+                mensaje = "Documento no creado";
+                WebUtil.MensajeAdvertencia(mensaje);
+            }
+            
+        }catch (Exception ex) {
+            setMensaje(ex.getMessage() + "\n" + ex.getLocalizedMessage());
+            Logger.getLogger(CotizacionesAction.class.getName()).log(Level.SEVERE, null, ex);
+            WebUtil.fatal(mensaje);
+        }
+        RequestContext.getCurrentInstance().update("datos");
+    }
+    public void envioCorreo_listado(){
+        try {
+            if(getSelectCotizacionventas_local()!=null){
+                if(getSelectCotizacionventas_local().getIdcotizacionv()!=null){
+                    List<Configsmtp> lstConfigsmtp=(new ConfigsmtpDao()).listarPorEmpresaWeb();
+                    if(!lstConfigsmtp.isEmpty()){
+                        Constantes.configsmtp=lstConfigsmtp.get(0);
+                        /* *********    ENVIAR CORREO  ********* */
+                        String rutapdf=Constantes.ARCHIVO_REPORTE + File.separator +filename;
+                        File file = new File(rutapdf);
+                        EnviarDocumentos enviarDocumentos = new EnviarDocumentos();
+                        enviarDocumentos.enviarcorreo(getSelectCotizacionventas_local().getContacto_email(), file, 
+                                getSelectCotizacionventas_local().getIddocumento()+getSelectCotizacionventas_local().getSerie()+"-"+getSelectCotizacionventas_local().getNumero(), 
+                                getSelectCotizacionventas_local().getRazon_social(),filename);
+                        mensaje = "Envio de mensaje exitoso";
+                        WebUtil.info(mensaje);
+                    }else{
+                        mensaje = "Envio de mensaje no configurado";
+                        WebUtil.error(mensaje);
+                    }
+                }
+            }else{
+                mensaje = "Documento no creado";
+                WebUtil.MensajeAdvertencia(mensaje);
+            }
+            
+        }catch (Exception ex) {
+            setMensaje(ex.getMessage() + "\n" + ex.getLocalizedMessage());
+            Logger.getLogger(CotizacionesAction.class.getName()).log(Level.SEVERE, null, ex);
+            WebUtil.fatal(mensaje);
+        }
+        RequestContext.getCurrentInstance().update("datos");
+    }
+    public void envioCorreo_open(){
+        /******************** CREAR REPORTE ************************/
+        try{
+            if(getSelectCotizacionventas_local()!=null){
+                if(getSelectCotizacionventas_local().getIdcotizacionv()!=null){
+                    if(!getSelectCotizacionventas_local().isCheck_rpt_alterno()){
+                        setNombreReporte("RPT_COTIZACION_"+getSelectCotizacionventas_local().getIdtiposervicio().trim());
+                        setNombreArchivo("RPT_COTIZACION_"+getSelectCotizacionventas_local().getIdtiposervicio().trim());/*JRXML*/
+                    }else{
+                        setNombreReporte("RPT_COTIZACION_"+getSelectCotizacionventas_local().getIdtiposervicio().trim()+"_ALTERNO");
+                        setNombreArchivo("RPT_COTIZACION_"+getSelectCotizacionventas_local().getIdtiposervicio().trim()+"_ALTERNO");/*JRXML*/
+                    }
+                    JasperPrint jasperPrint = getPrintReport_list();
+                    SimpleDateFormat sm = new SimpleDateFormat("mm-dd-yyyy");
+                    filename = getSelectCotizacionventas_local().getIddocumento()+getSelectCotizacionventas_local().getSerie()+"-"+
+                            getSelectCotizacionventas_local().getNumero()+"_"+sm.format(getSelectCotizacionventas_local().getFecha())+"_" +
+                            getSelectCotizacionventas_local().getRazon_social().trim()+
+                            ".pdf";
+                    /*RUTA*/
+                    String rutapdf=Constantes.ARCHIVO_REPORTE + File.separator +filename;
+                    JasperExportManager.exportReportToPdfFile(jasperPrint, rutapdf);
+                    RequestContext.getCurrentInstance().execute("PF('dlg_envio').show()");
+                }else{
+                    mensaje = "Documento no creado";
+                    WebUtil.MensajeAdvertencia(mensaje);
+                }
+            }
+        } catch (Exception ex) {
+            System.out.println(ex.toString());
+            mensaje = WebUtil.mensajeError();
+            WebUtil.MensajeError(mensaje);
+        }
         
+    }
+    public void PDF_cotizacion() {
+        try {
+                if(getDatoEdicion().getIdcotizacionv()!=null){
+                    FacesContext context = FacesContext.getCurrentInstance();
+                    ExternalContext ext = context.getExternalContext();
+                    if(!getDatoEdicion().isCheck_rpt_alterno()){
+                        setNombreReporte("RPT_COTIZACION_"+getDatoEdicion().getIdtiposervicio().trim());
+                        setNombreArchivo("RPT_COTIZACION_"+getDatoEdicion().getIdtiposervicio().trim());/*JRXML*/
+                    }else{
+                        setNombreReporte("RPT_COTIZACION_"+getDatoEdicion().getIdtiposervicio().trim()+"_ALTERNO");
+                        setNombreArchivo("RPT_COTIZACION_"+getDatoEdicion().getIdtiposervicio().trim()+"_ALTERNO");/*JRXML*/
+                    }
+                    JasperPrint jasperPrint = getPrintReport();
+                    HttpServletResponse resp = (HttpServletResponse) ext.getResponse();
+                    resp.setContentType("application/pdf");
+                    
+                    SimpleDateFormat sm = new SimpleDateFormat("mm-dd-yyyy");
+                    filename = getDatoEdicion().getIddocumento()+getDatoEdicion().getSerie()+"-"+
+                            getDatoEdicion().getNumero()+"_"+sm.format(getDatoEdicion().getFecha())+"_" +
+                            getDatoEdicion().getRazon_social().trim()+
+                            ".pdf";
+                    /*RUTA*/
+                    String rutapdf=Constantes.ARCHIVO_REPORTE + File.separator +filename;
+                    JasperExportManager.exportReportToPdfFile(jasperPrint, rutapdf);
+                    context.getApplication().getStateManager().saveView(context);
+                    context.responseComplete();
+//                    resp.addHeader("Content-Disposition", "inline; filename=" + Constantes.ARCHIVO_REPORTE + File.separator+filename); // En la misma pantalla
+//                    //resp.addHeader("Content-Disposition", "attachmed; filename=" + Constantes.ARCHIVO_REPORTE + File.separator+filename); // Para que lo guardes
+                    JasperExportManager.exportReportToPdfStream(jasperPrint, resp.getOutputStream());
+                    
+                }else{
+                    mensaje = "Documento no creado";
+                    WebUtil.MensajeAdvertencia(mensaje);
+                }
+        } catch (Exception ex) {
+            System.out.println(ex.toString());
+//            this.estiloMensaje = Constantes.ESTILO_MENSAJE_ERROR;
+            mensaje = WebUtil.mensajeError();
+            WebUtil.MensajeError(mensaje);
+        }
+        RequestContext.getCurrentInstance().update("datos");
+    }
+    public void PDF_cotizacion_listado() {
+        try {
+            if(getSelectCotizacionventas_local()!=null){
+                if(getSelectCotizacionventas_local().getIdcotizacionv()!=null){
+                    FacesContext context = FacesContext.getCurrentInstance();
+//                    ExternalContext ext = context.getExternalContext();
+                    if(!getSelectCotizacionventas_local().isCheck_rpt_alterno()){
+                        setNombreReporte("RPT_COTIZACION_"+getSelectCotizacionventas_local().getIdtiposervicio().trim());
+                        setNombreArchivo("RPT_COTIZACION_"+getSelectCotizacionventas_local().getIdtiposervicio().trim());/*JRXML*/
+                    }else{
+                        setNombreReporte("RPT_COTIZACION_"+getSelectCotizacionventas_local().getIdtiposervicio().trim()+"_ALTERNO");
+                        setNombreArchivo("RPT_COTIZACION_"+getSelectCotizacionventas_local().getIdtiposervicio().trim()+"_ALTERNO");/*JRXML*/
+                    }
+                    JasperPrint jasperPrint = getPrintReport_list();
+//                    HttpServletResponse resp = (HttpServletResponse) ext.getResponse();
+//                    resp.setContentType("application/pdf");
+//                    
+                    SimpleDateFormat sm = new SimpleDateFormat("mm-dd-yyyy");
+                    filename = getSelectCotizacionventas_local().getIddocumento()+getSelectCotizacionventas_local().getSerie()+"-"+
+                            getSelectCotizacionventas_local().getNumero()+"_"+sm.format(getSelectCotizacionventas_local().getFecha())+"_" +
+                            getSelectCotizacionventas_local().getRazon_social().trim()+
+                            ".pdf";
+                    /*RUTA*/
+                    String rutapdf=Constantes.ARCHIVO_REPORTE + File.separator +filename;
+                    JasperExportManager.exportReportToPdfFile(jasperPrint, rutapdf);
+//                    context.getApplication().getStateManager().saveView(context);
+//                    context.responseComplete();
+                    RequestContext.getCurrentInstance().execute("PF('dlg_pdf').show()");
+//                    resp.addHeader("Content-Disposition", "inline; filename=" + Constantes.ARCHIVO_REPORTE + File.separator+filename); // En la misma pantalla
+//                    //resp.addHeader("Content-Disposition", "attachmed; filename=" + Constantes.ARCHIVO_REPORTE + File.separator+filename); // Para que lo guardes
+//                    JasperExportManager.exportReportToPdfStream(jasperPrint, resp.getOutputStream());
+                    
+                }else{
+                    mensaje = "Documento no creado";
+                    WebUtil.MensajeAdvertencia(mensaje);
+                }
+            }
+        } catch (Exception ex) {
+            System.out.println(ex.toString());
+//            this.estiloMensaje = Constantes.ESTILO_MENSAJE_ERROR;
+            mensaje = WebUtil.mensajeError();
+            WebUtil.MensajeError(mensaje);
+        }
+//        RequestContext.getCurrentInstance().update("datos");
     }
     public void findetalle() throws Exception {
         try{
-            if(getLadd()==2){/*EDITAR*/
-                periodoBase=getDatoEdicion().getPeriodo();
-                periodoDisenio=getDatoEdicion().getPeriodo().substring(0, 4);
-                mesNumeroDisenio=getDatoEdicion().getPeriodo().substring(4);
-                mesNombreDisenio=WebUtil.strMonths[Integer.parseInt(getDatoEdicion().getPeriodo().substring(4))-1];
-                getDatoEdicion().setPeriodo(periodoDisenio);
-                getDatoEdicion().setMes(mesNombreDisenio);
-                /* CONSULTAR ESTRUCTURA COSTOS CLIEPROV*/
-                List<Estructura_costos_clieprov> listestcos_clieprov = estructura_costos_clieprovDao.listarPorEmpresaWebXclieprov(user.getIDEMPRESA(),
-                        getDatoEdicion().getIdclieprov());
-                if(!listestcos_clieprov.isEmpty()){
-                    selectEstructura_costos_clieprov=listestcos_clieprov.get(0);
-                }else{
-                    mensaje = "No existe registro <ESTRUCTURA_COSTOS_CLIEPROV>";
-                    WebUtil.error(mensaje);
-                }
-            }
+            /*TOTAL*/
             listDocumentos=docDao.getCotizacionVenta(user.getIDEMPRESA());
             listNumemisor=numemisorDao.listarPorDocWeb(user.getIDEMPRESA(), listDocumentos.get(0).getIddocumento());
             numero=listNumemisor.get(0).getNumero();
             listEstado = estadosDao.listarPorEmpresaWeb(user.getIDEMPRESA(),"edt_cotizacionventa");
             lstdcotizacionventas = dcotizacionventasDao.getListDCotizacionWeb(user.getIDEMPRESA(),getDatoEdicion().getIdcotizacionv());
             listMoneda = monedasDao.getListMonedasWeb();
+            
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy");
+            periodoBase=dateFormat.format(new Date())+WebUtil.idGeneradoDos((new Date()).getMonth()+1);
+            periodoDisenio=dateFormat.format(new Date());
+            mesNumeroDisenio=WebUtil.idGeneradoDos((new Date()).getMonth()+1);
+            mesNombreDisenio=WebUtil.strMonths[(new Date()).getMonth()];
+
+            /*RESET TAB*/
+            selectdcotizacionventas = null;
+            listDestructura_costos_recursos_cotizacionventas = new ArrayList<>();
+            listEstructura_costos_mano_obra_cotizacionventas = new ArrayList<>();
+            selectEstructura_costos = null;
+            selectEstructura_costos_clieprov = null;
+            selectEstructura_costos_producto = null;
+            selectDestructura_costos_recursos_cotizacionventas = null;
+            selectEstructura_costos_mano_obra_cotizacionventas= null;
+            selectDestructura_costos_recursos = null;
+            selectEstructura_costos_mano_obra= null;
+            this.setSubtotal_ecosto(0.0f);
+            this.setGo_ecosto(0.0f);
+            this.setGa_ecosto(0.0f);
+            this.setU_ecosto(0.0f);
+            this.total_ecosto = (0.0f);
+            this.ajuste_ecosto = (0.0f);
+            caculate_hora = false;
+            getDatoEdicion().setMes(mesNombreDisenio);
+            if(getLadd()==2){/*EDITAR*/
+                periodoBase=getDatoEdicion().getPeriodo();
+                periodoDisenio=getDatoEdicion().getPeriodo().substring(0, 4);
+                mesNumeroDisenio=getDatoEdicion().getPeriodo().substring(4);
+                mesNombreDisenio=WebUtil.strMonths[Integer.parseInt(getDatoEdicion().getPeriodo().substring(4))-1];
+                /* CONSULTAR ESTRUCTURA COSTOS CLIEPROV*/
+                List<Estructura_costos_clieprov> listestcos_clieprov = estructura_costos_clieprovDao.listarPorEmpresaWebXclieprov(user.getIDEMPRESA(),
+                        getDatoEdicion().getIdclieprov());
+                if(!listestcos_clieprov.isEmpty()){
+                    selectEstructura_costos_clieprov=listestcos_clieprov.get(0);
+                    /*DESTRUCTURA_COSTOS_RECURSO_TOTAL*/
+                    listTotalDestructura_costos_recursos_cotizacionventas=destructura_costos_recursos_cotizacionventasDao.listarPorEmpresaWebXCotizacion(user.getIDEMPRESA(),getDatoEdicion().getIdcotizacionv());
+                    /*ESTRUCTURA_COSTOS_MANO_OBRA_TOTAL*/
+                    listTotalEstructura_costos_mano_obra_cotizacionventas=estructura_costos_mano_obra_cotizacionventasDao.listarPorEmpresaWebXproducto(user.getIDEMPRESA(),getDatoEdicion().getIdcotizacionv());
+                    if(!lstdcotizacionventas.isEmpty()){
+                        List<Destructura_costos_recursos> lstDestructura_costos_recursos = new ArrayList<>();
+                        List<Estructura_costos_mano_obra> lstEstructura_costos_mano_obra = new ArrayList<>();
+                        for(Dcotizacionventas ob : lstdcotizacionventas){
+                            lstDestructura_costos_recursos= destructura_costos_recursosDao.listarPorEmpresaWebXProducto(ob.getIdempresa(), selectEstructura_costos_clieprov.getCodigo(), 
+                                    ob.getIdproducto(), ob.getItemcotizacion());
+                            lstEstructura_costos_mano_obra = estructura_costos_mano_obraDao.listarPorEmpresaWebXproducto(ob.getIdempresa(), selectEstructura_costos_clieprov.getCodigo()
+                                    , ob.getIdproducto());
+                            /*LLENAR DESTRUCTURA_COSTOS_RECURSOS*/
+                            if(!lstDestructura_costos_recursos.isEmpty()){
+                                listDestructura_costos_recursos.addAll(lstDestructura_costos_recursos);
+                            }
+                            /*LLENAR ESTRUCTURA_COSTOS_MANO_OBRA*/
+                            if(!lstEstructura_costos_mano_obra.isEmpty()){
+                                listEstructura_costos_mano_obra.addAll(lstEstructura_costos_mano_obra);
+                            }
+                        }
+                    }
+                }else{
+                    mensaje = "No existe registro <ESTRUCTURA_COSTOS_CLIEPROV>";
+                    WebUtil.error(mensaje);
+                }
+            }
+            if(getLadd()==1){/*** NUEVO ***/
+                getDatoEdicion().setNumero(numero);
+                getDatoEdicion().setSubtotalsindscto(0.0f);
+                getDatoEdicion().setSubtotalcondscto(0.0f);
+                getDatoEdicion().setDescuento(0.0f);
+                getDatoEdicion().setImpuesto(0.0f);
+                getDatoEdicion().setImporte(0.0f);
+            }
             RequestContext.getCurrentInstance().update("datos");
             RequestContext.getCurrentInstance().update("datos:lstdcotizacionventas");
+            RequestContext.getCurrentInstance().update("datos:tsubtotal");
+            RequestContext.getCurrentInstance().update("datos:tdescuento");
+            RequestContext.getCurrentInstance().update("datos:tigv");
+            RequestContext.getCurrentInstance().update("datos:ttotal");
+            RequestContext.getCurrentInstance().update("datos:tabs");
         }catch(Exception ex){
             Logger.getLogger(CotizacionesAction.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public List<Destructura_costos_recursos_cotizacionventas> listarPorEmpresaWebXProducto_Destructura_costos_cotizacionventas_recursos_action(){
+        List<Destructura_costos_recursos_cotizacionventas> temp = new ArrayList<>();
+        if(getSelectdcotizacionventas()!=null){
+            for(Destructura_costos_recursos_cotizacionventas ob:listTotalDestructura_costos_recursos_cotizacionventas){
+                if(ob.getItemrango().trim().equalsIgnoreCase(getSelectdcotizacionventas().getItemcotizacion().trim()) &&
+                     ob.getIdproducto_ec().trim().equalsIgnoreCase(getSelectdcotizacionventas().getIdproducto().trim())){
+                    temp.add(ob);
+                }
+            }
+        }
+        return temp;
+    }
+    public List<Estructura_costos_mano_obra_cotizacionventas> listarPorEmpresaWebXProducto_Estructura_costos_mano_obra_cotizacionventas_action(){
+        List<Estructura_costos_mano_obra_cotizacionventas> temp = new ArrayList<>();
+        if(getSelectdcotizacionventas()!=null){
+            for(Estructura_costos_mano_obra_cotizacionventas ob:listTotalEstructura_costos_mano_obra_cotizacionventas){
+                if(ob.getItemrango().trim().equalsIgnoreCase(getSelectdcotizacionventas().getItemcotizacion().trim()) &&
+                    ob.getIdproducto().trim().equalsIgnoreCase(getSelectdcotizacionventas().getIdproducto().trim())){
+                    temp.add(ob);
+                }
+            }
+        }
+        return temp;
+    }
+    public void replaceDestructura_costos_recursos_cotizacionventas_action(Destructura_costos_recursos_cotizacionventas ob){
+        int pos=0;
+        for(Destructura_costos_recursos_cotizacionventas ot:listTotalDestructura_costos_recursos_cotizacionventas){
+            if(ob.getIdempresa().trim().equalsIgnoreCase(ot.getIdempresa().trim()) &&
+                ob.getCodigo().trim().equalsIgnoreCase(ot.getCodigo().trim()) &&
+                ob.getItem().trim().equalsIgnoreCase(ot.getItem().trim()) &&
+                ob.getIdproducto_ec().trim().equalsIgnoreCase(ot.getIdproducto_ec().trim()) &&
+                ob.getItemrango().trim().equalsIgnoreCase(ot.getItemrango().trim())
+              ){
+                listTotalDestructura_costos_recursos_cotizacionventas.set(pos, ob);
+                break;
+            }else{
+                pos++;
+            }
         }
     }
     public void oncDocChange() throws Exception {
@@ -436,29 +834,407 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
         
         return WebUtil.idGeneradoTres(may);
     }
-    public void onRowSelectDordenservicio(SelectEvent event) throws IOException {
+    /**** EVENTO *****/
+    public void onRowSelectDordenservicio() throws IOException {
         setBotonEditarDcotizacionventas(false);
         setBotonEliminarDcotizacionventas(false);
-        RequestContext.getCurrentInstance().update("datos:lstdcotizacionventas");
         /**** CONFIGURACION ESTRUCTURA COSTOS*****/
         if(getSelectEstructura_costos_clieprov()!=null){
             try {
                 List<Estructura_costos> lstEstructuracostos=estructura_costosDao.listarPorEmpresaWebXcodigo(user.getIDEMPRESA(),
                     getSelectEstructura_costos_clieprov().getCodigo());
                 if(!lstEstructuracostos.isEmpty()){
-                    Estructura_costos obj = lstEstructuracostos.get(0);
-                    setListDestructura_costos_recursos(destructura_costos_recursosDao.listarPorEmpresaWebXProducto(obj.getIdempresa(), obj.getCodigo(),getSelectdcotizacionventas().getIdproducto()));
-                    setListEstructura_costos_mano_obra(estructura_costos_mano_obraDao.listarPorEmpresaWebXproducto(obj.getIdempresa(), obj.getCodigo(),getSelectdcotizacionventas().getIdproducto()));
-                    calculosTotales_estructuracostos();
+                    setBotonNuevoDestructura_costos_recurso(false);
+                    setBotonNuevoEstructura_costos_mano_obra(false);
+                    selectEstructura_costos = lstEstructuracostos.get(0);
+                    /*** ANÁLISIS ****/
+                    listDestructura_costos_recursos_cotizacionventas=listarPorEmpresaWebXProducto_Destructura_costos_cotizacionventas_recursos_action();
+                    listEstructura_costos_mano_obra_cotizacionventas=listarPorEmpresaWebXProducto_Estructura_costos_mano_obra_cotizacionventas_action();
+                    if(getListDestructura_costos_recursos_cotizacionventas().isEmpty()){
+                        setListDestructura_costos_recursos(destructura_costos_recursosDao.listarPorEmpresaWebXProducto(selectEstructura_costos.getIdempresa(), selectEstructura_costos.getCodigo(),
+                                getSelectdcotizacionventas().getIdproducto(),getSelectdcotizacionventas().getItemcotizacion()));
+                        if(!getListDestructura_costos_recursos().isEmpty()){
+                            setListDestructura_costos_recursos_cotizacionventas(new ArrayList<>());
+                            Destructura_costos_recursos_cotizacionventas tmp=null;
+                            for(Destructura_costos_recursos ob:getListDestructura_costos_recursos()){
+                                tmp = new Destructura_costos_recursos_cotizacionventas();
+                                tmp.setIdbasedatos(ob.getIdbasedatos());
+                                tmp.setIdempresa(ob.getIdempresa());
+                                tmp.setCodigo(ob.getCodigo());
+                                tmp.setIdcotizacionv(getDatoEdicion().getIdcotizacionv());
+                                tmp.setItem(ob.getItem());
+                                tmp.setTipo_recurso(ob.getTipo_recurso());
+                                tmp.setDescripcion(ob.getDescripcion());
+                                tmp.setCantidad(ob.getCantidad());
+                                tmp.setCosto(ob.getCosto());
+                                tmp.setEs_porcentaje(ob.getEs_porcentaje());
+                                tmp.setIdmedida(ob.getIdmedida());
+                                tmp.setIdproducto_ec(ob.getIdproducto_ec());
+                                tmp.setPorcentaje(ob.getPorcentaje());
+                                tmp.setSubtotal(ob.getSubtotal());
+                                tmp.setPu(ob.getPu());
+                                tmp.setItemrango(ob.getItemrango());
+                                listTotalDestructura_costos_recursos_cotizacionventas.add(tmp);
+                                listTotalDestructura_costos_recursos.add(ob);
+//                                getListDestructura_costos_recursos_cotizacionventas().add(tmp);
+                            }
+                        }else{
+                            mensaje = "No existe registro <DESTRUCTURA_COSTOS_RECURSO>";
+                            WebUtil.error(mensaje);
+                        }
+                    }
+                    if(getListEstructura_costos_mano_obra_cotizacionventas().isEmpty()){
+                        setListEstructura_costos_mano_obra(estructura_costos_mano_obraDao.listarPorEmpresaWebXproducto(selectEstructura_costos.getIdempresa(), selectEstructura_costos.getCodigo(),getSelectdcotizacionventas().getIdproducto()));
+                        if(!getListEstructura_costos_mano_obra().isEmpty()){
+                            setListEstructura_costos_mano_obra_cotizacionventas(new ArrayList<>());
+                            Estructura_costos_mano_obra_cotizacionventas tmp= null;
+                            for(Estructura_costos_mano_obra ob :  getListEstructura_costos_mano_obra()){
+                                tmp = new Estructura_costos_mano_obra_cotizacionventas();
+                                tmp.setIdbasedatos(ob.getIdbasedatos());
+                                tmp.setIdempresa(ob.getIdempresa());
+                                tmp.setIdcotizacionv(getDatoEdicion().getIdcotizacionv());
+                                tmp.setCodigo(ob.getCodigo());
+                                tmp.setIdcargo(ob.getIdcargo());
+                                tmp.setItem(ob.getItem());
+                                tmp.setEstado(ob.getEstado());
+                                tmp.setIdproducto(ob.getIdproducto());
+                                tmp.setItemrango(ob.getItemrango());
+                                tmp.setCosto(ob.getCosto());
+                                tmp.setCargo(ob.getCargo());
+                                listTotalEstructura_costos_mano_obra_cotizacionventas.add(tmp);
+                                listTotalEstructura_costos_mano_obra.add(ob);
+//                                getListEstructura_costos_mano_obra_cotizacionventas().add(tmp);
+                            }
+                            
+                        }else{
+                            mensaje = "No existe registro <ESTRUCTURA_COSTOS_MANO_OBRA>";
+                            WebUtil.error(mensaje);
+                        }
+                    }
+                    listDestructura_costos_recursos_cotizacionventas=listarPorEmpresaWebXProducto_Destructura_costos_cotizacionventas_recursos_action();
+                    listEstructura_costos_mano_obra_cotizacionventas=listarPorEmpresaWebXProducto_Estructura_costos_mano_obra_cotizacionventas_action();
+                    this.ajuste_ecosto=getSelectdcotizacionventas().getImporte_isc();
+                    calculosTotales_estructuracostos_local();
+                    getSelectdcotizacionventas().setPrecio(this.total_ecosto);
                     RequestContext.getCurrentInstance().update("datos:tabs");
                     //tabView.setActiveIndex(indexTab);
                 }else{
                     /*SIN ESTRUCTURA DE COSTOS*/
                 }
+            RequestContext.getCurrentInstance().update("datos:lstdcotizacionventas");
             } catch (NisiraORMException ex) {
                 Logger.getLogger(CotizacionesAction.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+    }
+    public void onRowSelectDestructura_costos_recursos(SelectEvent event) throws IOException {
+        setBotonNuevoDestructura_costos_recurso(false);
+        setBotonEliminarDestructura_costos_recurso(false);
+        RequestContext.getCurrentInstance().update("datos:tabs:listDestructura_costos_recursos_cotizacionventas");
+//        RequestContext.getCurrentInstance().update("datos:listDestructura_costos_recursos");
+    }
+    public void onRowSelectEstructura_costos_mano_obra(SelectEvent event) throws IOException {
+        setBotonEditarEstructura_costos_mano_obra(false);
+        setBotonEliminarEstructura_costos_mano_obra(false);
+        setEstructura_costos_mano_obra_cotizacionventas(selectEstructura_costos_mano_obra_cotizacionventas);
+        RequestContext.getCurrentInstance().update("datos:tabs:listEstructura_costos_mano_obra_cotizacionventas");
+//        tabView.setActiveIndex(indexTab);
+    }
+    public void onCellEdit(RowEditEvent event) {
+        Destructura_costos_recursos_cotizacionventas entity = ((Destructura_costos_recursos_cotizacionventas)event.getObject());
+//        int itemRow = getListDestructura_costos_recursos_cotizacionventas().indexOf(entity);
+        /*FORMULA FACTOR*/
+        Float factor=getFactor(entity.getIdempresa().trim(), entity.getCodigo().trim(), entity.getItem().trim(), entity.getIdproducto_ec().trim(), entity.getItemrango().trim(),entity.getDescripcion().trim());
+        if(factor!=null){
+            Double calculo=0.0d;
+            calculo += entity.getCantidad()*factor;
+            entity.setCosto(calculo.floatValue());
+        }
+        calculosTotales_estructuracostos_local();
+        replaceDestructura_costos_recursos_cotizacionventas_action(entity);
+        listDestructura_costos_recursos_cotizacionventas=listarPorEmpresaWebXProducto_Destructura_costos_cotizacionventas_recursos_action();
+        actualizarCostoServicio();
+        RequestContext.getCurrentInstance().update("datos:tabs:listDestructura_costos_recursos_cotizacionventas");
+        RequestContext.getCurrentInstance().update("datos:tabs:subtotal_ecosto");
+        RequestContext.getCurrentInstance().update("datos:tabs:go_ecosto");
+        RequestContext.getCurrentInstance().update("datos:tabs:ga_ecosto");
+        RequestContext.getCurrentInstance().update("datos:tabs:u_ecosto");
+        RequestContext.getCurrentInstance().update("datos:tabs:total_ecosto");
+//        RequestContext.getCurrentInstance().update("datos:tabs");
+//        tabView.setActiveIndex(indexTab);
+    }
+    public void calculosTotales_estructuracostos_local(){
+        Double subtotal_ec=0.0d;
+        Double go_ec=0.0d;
+        Double ga_ec=0.0d;
+        Double u_ec=0.0d;
+        Double total_porcentaje=0.0d;
+        Double total_ec=0.0d;
+        int item=0;
+        if(!getListDestructura_costos_recursos_cotizacionventas().isEmpty()){
+            /*CÁLCULO SUBTOTAL*/
+            for(Destructura_costos_recursos_cotizacionventas o :getListDestructura_costos_recursos_cotizacionventas()){
+                if(o.getEs_porcentaje()==0.0f){
+                    subtotal_ec+=o.getCosto();
+                }
+            }
+            /*CÁLCULO PORCENTAJE*/
+            for(Destructura_costos_recursos_cotizacionventas o :getListDestructura_costos_recursos_cotizacionventas()){
+                if(o.getEs_porcentaje()==1.0f){
+                    switch(o.getDescripcion().trim().toUpperCase()){
+                        case "GO":go_ec+=((o.getCantidad()/100)*subtotal_ec);break;
+                        case "GA":ga_ec+=((o.getCantidad()/100)*subtotal_ec);break;
+                        case "U":u_ec+=((o.getCantidad()/100)*subtotal_ec);break;
+                    }
+                    total_porcentaje+=(o.getCantidad()/100)*subtotal_ec;
+                }
+            }
+        }
+        total_ec = subtotal_ec + total_porcentaje;
+        /*RESULTADOS*/
+        this.setSubtotal_ecosto(subtotal_ec.floatValue());
+        this.setGo_ecosto(go_ec.floatValue());
+        this.setGa_ecosto(ga_ec.floatValue());
+        this.setU_ecosto(u_ec.floatValue());
+        this.total_ecosto = total_ec.floatValue()+this.getAjuste_ecosto();
+        if(getDcotizacionventas()!=null){
+            getDcotizacionventas().setImporte_isc(this.getAjuste_ecosto());
+        }
+    }
+    public void actualizarCostoServicio(){
+        if(getSelectdcotizacionventas()!=null){
+            Double subtotalsin =0.0d;
+            Double subtotalcon =0.0d;
+            Double impuesto=0.0d;
+            Double importe=0.0d;
+            int pos = lstdcotizacionventas.indexOf(getSelectdcotizacionventas());
+            Dcotizacionventas item = getSelectdcotizacionventas();
+            /****************** CÁLCULOS ****************/
+            item.setPrecio(total_ecosto);
+            subtotalsin+=item.getPrecio()*item.getCantidad();
+            impuesto+=subtotalsin*(item.getImpuesto_i()/100);
+            importe+=subtotalsin+impuesto-item.getDescuento();
+            subtotalcon+=subtotalsin+impuesto;
+            /****************** RESET  DATOS ****************/
+            item.setSubtotalsindscto(subtotalsin.floatValue());
+            item.setSubtotalcondscto(subtotalcon.floatValue());
+            item.setImpuesto(impuesto.floatValue());
+            item.setImporte(importe.floatValue());
+            lstdcotizacionventas.set(pos, item);
+            setSelectdcotizacionventas(item);
+            calcularTotales();
+            RequestContext.getCurrentInstance().update("datos:lstdcotizacionventas");
+            RequestContext.getCurrentInstance().update("datos:tsubtotal");
+            RequestContext.getCurrentInstance().update("datos:tdescuento");
+            RequestContext.getCurrentInstance().update("datos:tigv");
+            RequestContext.getCurrentInstance().update("datos:ttotal");
+        }
+    }
+    public Float getFactor(String idempresa,String codigo,String item,String idproducto,String itemrango,String descripcion){
+        Float factor=null;
+            try{
+                for(Destructura_costos_recursos ob :listDestructura_costos_recursos){
+                if(ob.getIdempresa().trim().equalsIgnoreCase(idempresa) &&
+                        ob.getCodigo().trim().equalsIgnoreCase(codigo) &&
+                        ob.getItem().trim().equalsIgnoreCase(item) &&
+                        ob.getIdproducto_ec().trim().equalsIgnoreCase(idproducto) &&
+                        ob.getItemrango().trim().equalsIgnoreCase(itemrango) &&
+                        ob.getDescripcion().trim().equalsIgnoreCase(descripcion)){
+                    factor=0.0f;
+                    factor+=ob.getCosto()/ob.getCantidad();
+                    ;break;    
+                }
+            }
+        }catch(Exception ex){
+            System.err.println(ex.getMessage());
+            factor=null;
+        }
+        return factor;
+    }
+    /************MANTENIMIENTO - DESTRUCTURA - COSTOS - RECURSO **************/
+    public void actualizarDestructuraCostosRecurso() {
+        listDestructura_costos_recursos_cotizacionventas=listarPorEmpresaWebXProducto_Destructura_costos_cotizacionventas_recursos_action();
+        calculosTotales_estructuracostos_local();
+        actualizarCostoServicio();
+        RequestContext.getCurrentInstance().update("datos:tabs:listDestructura_costos_recursos_cotizacionventas");
+        RequestContext.getCurrentInstance().update("datos:tabs:subtotal_ecosto");
+        RequestContext.getCurrentInstance().update("datos:tabs:go_ecosto");
+        RequestContext.getCurrentInstance().update("datos:tabs:ga_ecosto");
+        RequestContext.getCurrentInstance().update("datos:tabs:u_ecosto");
+        RequestContext.getCurrentInstance().update("datos:tabs:total_ecosto");
+    }
+    public void agregarDestructuraCostosRecurso() {
+        if(getSelectdcotizacionventas()!=null){
+            if(getSelectEstructura_costos()!=null){
+                setDestructura_costos_recursos_cotizacionventas(new Destructura_costos_recursos_cotizacionventas());
+                getDestructura_costos_recursos_cotizacionventas().setIdempresa(user.getIDEMPRESA());
+                getDestructura_costos_recursos_cotizacionventas().setCodigo(getSelectEstructura_costos().getCodigo());
+                getDestructura_costos_recursos_cotizacionventas().setItem(agregarItemDestructuraCostosRecurso());
+                getDestructura_costos_recursos_cotizacionventas().setEs_porcentaje(0.0f);
+                getDestructura_costos_recursos_cotizacionventas().setCantidad(0.0f);
+                getDestructura_costos_recursos_cotizacionventas().setCosto(0.0f);
+                getDestructura_costos_recursos_cotizacionventas().setIdproducto_ec(getSelectdcotizacionventas().getIdproducto());
+                getDestructura_costos_recursos_cotizacionventas().setTipo_recurso("CO");
+                getDestructura_costos_recursos_cotizacionventas().setItemrango(getSelectdcotizacionventas().getItemcotizacion());
+                listTotalDestructura_costos_recursos_cotizacionventas.add(getDestructura_costos_recursos_cotizacionventas());
+                //getListDestructura_costos_recursos_cotizacionventas().add(getDestructura_costos_recursos_cotizacionventas());
+                listDestructura_costos_recursos_cotizacionventas=listarPorEmpresaWebXProducto_Destructura_costos_cotizacionventas_recursos_action();
+                RequestContext.getCurrentInstance().update("datos:tabs:listDestructura_costos_recursos_cotizacionventas");
+            }else{
+                mensaje = "No existe estructura de costo";
+                WebUtil.error(mensaje);
+            }
+//            tabView.setActiveIndex(indexTab);
+//            RequestContext.getCurrentInstance().update("datos:listDestructura_costos_recursos");
+        }else{
+            mensaje = "Seleccionar Detalle Cotización";
+            WebUtil.error(mensaje);
+        }
+    }
+    public void eliminarDestructuraCostosRecurso(RowEditEvent event) {
+        try {
+            Destructura_costos_recursos_cotizacionventas entity = ((Destructura_costos_recursos_cotizacionventas)event.getObject());
+            listTotalDestructura_costos_recursos_cotizacionventas.remove(entity);
+            listDestructura_costos_recursos_cotizacionventas=listarPorEmpresaWebXProducto_Destructura_costos_cotizacionventas_recursos_action();
+            //listDestructura_costos_recursos_cotizacionventas.remove(selectDestructura_costos_recursos_cotizacionventas);
+            resetIndices_DestructuraCostosRecurso();
+            calculosTotales_estructuracostos_local();
+            actualizarCostoServicio();
+            RequestContext.getCurrentInstance().update("datos:tabs:listDestructura_costos_recursos_cotizacionventas");
+            RequestContext.getCurrentInstance().update("datos:tabs:subtotal_ecosto");
+            RequestContext.getCurrentInstance().update("datos:tabs:go_ecosto");
+            RequestContext.getCurrentInstance().update("datos:tabs:ga_ecosto");
+            RequestContext.getCurrentInstance().update("datos:tabs:u_ecosto");
+            RequestContext.getCurrentInstance().update("datos:tabs:total_ecosto");
+        } catch (Exception ex) {
+            Logger.getLogger(EstructuraCostosRecursoAction.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    /************MANTENIMIENTO - ESTRUCTURA COSTOS MANO OBRA**************/
+    public void nuevoEstructuraCostosManoObra() {
+        if(getSelectdcotizacionventas()!=null){
+            if(getSelectEstructura_costos()!=null){
+                setEstructura_costos_mano_obra_cotizacionventas(new Estructura_costos_mano_obra_cotizacionventas());
+                getEstructura_costos_mano_obra_cotizacionventas().setIdempresa(user.getIDEMPRESA());
+                getEstructura_costos_mano_obra_cotizacionventas().setCodigo(getSelectEstructura_costos().getCodigo());
+                getEstructura_costos_mano_obra_cotizacionventas().setItem(agregarItemEstructuraCostosManoObra());
+                getEstructura_costos_mano_obra_cotizacionventas().setItemrango(getSelectdcotizacionventas().getItemcotizacion());
+                getEstructura_costos_mano_obra_cotizacionventas().setIdproducto(getSelectdcotizacionventas().getIdproducto());
+                getEstructura_costos_mano_obra_cotizacionventas().setCosto(0.00f);
+                RequestContext.getCurrentInstance().update("datos:dlgnew_estructura_costos_mano_obra");
+                RequestContext.getCurrentInstance().execute("PF('dlgnew_estructura_costos_mano_obra').show()");
+            }else{
+                mensaje = "No existe estructura de costo";
+                WebUtil.error(mensaje);
+            }
+        }else{
+            mensaje = "Seleccionar Detalle Cotización";
+            WebUtil.error(mensaje);
+        }
+        
+    }
+    public void editarEstructuraCostosManoObra() {
+        setEstructura_costos_mano_obra_cotizacionventas(selectEstructura_costos_mano_obra_cotizacionventas);
+        RequestContext.getCurrentInstance().update("datos:dlgnew_estructura_costos_mano_obra");
+        RequestContext.getCurrentInstance().execute("PF('dlgnew_estructura_costos_mano_obra').show()");
+    }
+    public void eliminarEstructuraCostosManoObra() {
+        try {
+            listTotalEstructura_costos_mano_obra_cotizacionventas.remove(selectEstructura_costos_mano_obra_cotizacionventas);
+            RequestContext.getCurrentInstance().update("datos:tabs:listEstructura_costos_mano_obra_cotizacionventas");
+            listEstructura_costos_mano_obra_cotizacionventas=listarPorEmpresaWebXProducto_Estructura_costos_mano_obra_cotizacionventas_action();
+//            tabView.setActiveIndex(indexTab);
+        } catch (Exception ex) {
+            Logger.getLogger(EstructuraCostosRecursoAction.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public void grabarEstructuraCostosManoObra(){
+        if(estructura_costos_mano_obra_cotizacionventas.getIdcargo().isEmpty()){
+            mensaje = "Seleccionar Cargo";
+            WebUtil.error(mensaje);
+        }
+//        else if(existeCargo(estructura_costos_mano_obra.getIdcargo())){
+//            mensaje = "Cargo repetido";
+//            WebUtil.error(mensaje);
+//        }
+        else{
+            int pos=listTotalEstructura_costos_mano_obra_cotizacionventas.indexOf(estructura_costos_mano_obra_cotizacionventas);
+            if(pos==-1)
+                listTotalEstructura_costos_mano_obra_cotizacionventas.add(estructura_costos_mano_obra_cotizacionventas);
+            else 
+                listTotalEstructura_costos_mano_obra_cotizacionventas.set(pos, estructura_costos_mano_obra_cotizacionventas);
+            listEstructura_costos_mano_obra_cotizacionventas=listarPorEmpresaWebXProducto_Estructura_costos_mano_obra_cotizacionventas_action();
+            RequestContext.getCurrentInstance().update("datos:tabs:listEstructura_costos_mano_obra_cotizacionventas");
+//            tabView.setActiveIndex(indexTab);
+//            RequestContext.getCurrentInstance().update("datos:listEstructura_costos_producto");
+            RequestContext.getCurrentInstance().update("datos:dlgnew_estructura_costos_mano_obra");
+            RequestContext.getCurrentInstance().execute("PF('dlgnew_estructura_costos_mano_obra').hide()");
+        }
+        
+    }
+    public void verCntCargos_personal() {
+        RequestContext.getCurrentInstance().openDialog("cntCargos_personal", modalOptions, null);
+    }
+    public void valorCargos_personal(SelectEvent event) {
+        Cargos_personal cargo = (Cargos_personal) event.getObject();
+        this.getEstructura_costos_mano_obra_cotizacionventas().setIdcargo(cargo.getIdcargo());
+        this.getEstructura_costos_mano_obra_cotizacionventas().setCargo(cargo.getDescripcion());
+        return;
+    }
+    /***************** GENERADOR ID *********************/    
+    public String agregarItemDestructuraCostosRecurso(){
+        int dato = 1;
+        int may=-999999999;
+        for(Destructura_costos_recursos_cotizacionventas obj:getListDestructura_costos_recursos_cotizacionventas()){
+            dato = Integer.parseInt(obj.getItem());
+            if(dato>may)
+                may=dato;
+        }
+        if(may==-999999999)
+            may=1;
+        else
+            may++;
+        
+        return WebUtil.idGeneradoTres(may);
+    }
+    public String agregarItemEstructuraCostosManoObra(){
+        int dato = 1;
+        int may=-999999999;
+        for(Estructura_costos_mano_obra obj:getListEstructura_costos_mano_obra()){
+            dato = Integer.parseInt(obj.getItem());
+            if(dato>may)
+                may=dato;
+        }
+        if(may==-999999999)
+            may=1;
+        else
+            may++;
+        
+        return WebUtil.idGeneradoTres(may);
+    }
+    /***************** RECALCULAR INDICES*********************/ 
+    public void resetIndices_DestructuraCostosRecurso(){
+        List<Destructura_costos_recursos_cotizacionventas> temp = new ArrayList<>();
+        /**** INSERTAR NO PORCENTAJE******/
+        for(int i=0 ; i<getListDestructura_costos_recursos_cotizacionventas().size();i++){
+            Destructura_costos_recursos_cotizacionventas ob =getListDestructura_costos_recursos_cotizacionventas().get(i);
+            if(ob.getEs_porcentaje()==0.0f){
+                ob.setItem(WebUtil.idGeneradoTres(i+1));
+                temp.add(ob);
+            }
+        }
+        /**** INSERTAR PORCENTAJE******/
+        int es_porcentaje=temp.size();
+        for(int i=0 ; i<getListDestructura_costos_recursos_cotizacionventas().size();i++){
+            Destructura_costos_recursos_cotizacionventas ob =getListDestructura_costos_recursos_cotizacionventas().get(i);
+            if(ob.getEs_porcentaje()==1.0f){
+                ob.setItem(WebUtil.idGeneradoTres(es_porcentaje+1));
+                temp.add(ob);
+                es_porcentaje++;
+            }
+        }
+        listDestructura_costos_recursos_cotizacionventas=temp;
+//        RequestContext.getCurrentInstance().update("datos:tabs:listDestructura_costos_recursos_cotizacionventas");
     }
     /*** responsable ***/
     public void verCntClieprov() {
@@ -495,70 +1271,136 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
         getDatoEdicion().setContacto(selectContactosClieprov.getNombre());
         getDatoEdicion().setContacto_email(selectContactosClieprov.getEmail());
     }
-    public void verCntProducto() {
-        RequestContext.getCurrentInstance().openDialog("cntProducto", modalOptions, null);
+    public void verCntProducto_Estructura_costos() {
+        if(selectEstructura_costos_clieprov!=null){
+            Map<String, List<String>> params = new HashMap<String, List<String>>();
+            List<String> values = new ArrayList<String>();
+            values.add(selectEstructura_costos_clieprov.getCodigo());
+            params.put("codigo_estructura", values);
+            RequestContext.getCurrentInstance().openDialog("cntEstructura_Costos_Producto", modalParamsOptions, params);
+        }else{
+            mensaje = "No existe registro <ESTRUCTURA_COSTOS_CLIEPROV>";
+            WebUtil.error(mensaje);
+            RequestContext.getCurrentInstance().update("datos");
+        }
     }
-    public void valorProducto(SelectEvent event) {
+    public void valorProducto_Estructura_costos(SelectEvent event) {
         try {
-            this.setSelectProducto((Producto) event.getObject());
-            getDcotizacionventas().setIdproducto(selectProducto.getIdproducto());
-            getDcotizacionventas().setProducto(selectProducto.getDescripcion());
-            getDcotizacionventas().setDescripcion(selectProducto.getDescripcion());
-            getDcotizacionventas().setIdmedida(selectProducto.getIdmedida());
-            /************ CONSULTAR PRECIOS ,IGV  ****************/
-            /*** EVALUAR ****/
-//            ArrayList<Double> arrayDouble = new ArrayList<>();
-//                    productoDao.precioVenta(user.getIDEMPRESA(), getDatoEdicion().getIdsucursal(), getDcotizacionventas().getIdproducto(),
-//                    getDatoEdicion().getIdmoneda(),WebUtil.SimpleDateFormatN1(getDatoEdicion().getFecha()));
-            ArrayList<Object> arrayObject = productoDao.returnImpuestoxproducto(user.getIDEMPRESA(), 
-                    getDcotizacionventas().getIdproducto(),WebUtil.SimpleDateFormatN1(getDatoEdicion().getFecha()));
-            /******************************************************/
-            Double preciounitario = destructura_costos_recursosDao.getPrecioUnitarioXestructuracostos(
-                    selectEstructura_costos_clieprov.getIdempresa(), selectEstructura_costos_clieprov.getCodigo());
-//            if(!arrayDouble.isEmpty()){
-//                getDcotizacionventas().setPrecio(arrayDouble.get(0).floatValue());
-//            }else{
-//                getDcotizacionventas().setPrecio(0.0f);
-//            }
-            if(preciounitario!=0.0d){
-                getDcotizacionventas().setPrecio(preciounitario.floatValue());
-            }else{
-                getDcotizacionventas().setPrecio(0.0f);
-            }
-            if(!arrayObject.isEmpty()){
-                getDcotizacionventas().setImpuesto_i(((Double)arrayObject.get(2)).floatValue());
-            }else{
-                getDcotizacionventas().setImpuesto_i(0.0f);
-            }
-            /********* CÁLCULOS *********/
-            getDcotizacionventas().setImpuesto((getDcotizacionventas().getImpuesto_i()/100)*getDcotizacionventas().getPrecio()*getDcotizacionventas().getCantidad());
-            getDcotizacionventas().setImporte((getDcotizacionventas().getPrecio()*getDcotizacionventas().getCantidad())-
-                    getDcotizacionventas().getDescuento()+getDcotizacionventas().getImpuesto());
+                this.setSelectEstructura_costos_producto((Estructura_costos_producto) event.getObject());
+                getDcotizacionventas().setIdproducto(selectEstructura_costos_producto.getIdproducto());
+                getDcotizacionventas().setProducto(selectEstructura_costos_producto.getDescripcion());
+                getDcotizacionventas().setDescripcion(selectEstructura_costos_producto.getDescripcion());
+                getDcotizacionventas().setIdmedida(selectEstructura_costos_producto.getIdmedida());
+                getDcotizacionventas().setImporte_isc(selectEstructura_costos_producto.getAjuste());
+                /************ CONSULTAR PRECIOS ,IGV  ****************/
+                ArrayList<Object> arrayObject = productoDao.returnImpuestoxproducto(user.getIDEMPRESA(), 
+                        getDcotizacionventas().getIdproducto(),WebUtil.SimpleDateFormatN1(getDatoEdicion().getFecha()));
+                /******************************************************/
+                Double preciounitario=0.0d;
+                if(selectEstructura_costos_clieprov!=null){
+                    if(selectEstructura_costos_producto!=null){
+                        
+                        List<Destructura_costos_recursos> lst=destructura_costos_recursosDao.listarPorEmpresaWebXProducto(selectEstructura_costos_producto.getIdempresa(), selectEstructura_costos_producto.getCodigo(),
+                                selectEstructura_costos_producto.getIdproducto(),selectEstructura_costos_producto.getItem());
+                        if(!lst.isEmpty()){
+                            Double subtotal_ec=0.0d;
+                            Double go_ec=0.0d;
+                            Double ga_ec=0.0d;
+                            Double u_ec=0.0d;
+                            Double total_porcentaje=0.0d;
+                            Double total_ec=0.0d;
+                            /*CÁLCULO SUBTOTAL*/
+                            for(Destructura_costos_recursos o :lst){
+                                if(o.getEs_porcentaje()==0.0f){
+                                    subtotal_ec+=o.getCosto();
+                                }
+                            }
+                            /*CÁLCULO PORCENTAJE*/
+                            for(Destructura_costos_recursos o :lst){
+                                if(o.getEs_porcentaje()==1.0f){
+                                    switch(o.getDescripcion().trim().toUpperCase()){
+                                        case "GO":go_ec+=((o.getCantidad()/100)*subtotal_ec);break;
+                                        case "GA":ga_ec+=((o.getCantidad()/100)*subtotal_ec);break;
+                                        case "U":u_ec+=((o.getCantidad()/100)*subtotal_ec);break;
+                                    }
+                                    total_porcentaje+=(o.getCantidad()/100)*subtotal_ec;
+                                }
+                            }
+                            total_ec = subtotal_ec + total_porcentaje;
+                            preciounitario = total_ec;
+                        }
+                        else{
+                            preciounitario = destructura_costos_recursosDao.getPrecioUnitarioXestructuracostos(
+                                selectEstructura_costos_clieprov.getIdempresa(), selectEstructura_costos_clieprov.getCodigo(),
+                                getDcotizacionventas().getIdproducto(),selectEstructura_costos_producto.getItem());
+                        }
+                    }else{
+                        mensaje = "Producto : Definir Estructura - Costos";
+                        WebUtil.MensajeFatal(mensaje); 
+                    }
+                    
+                }else{
+                    mensaje = "Clieprov : Definir Estructura - Costos";
+                    WebUtil.MensajeFatal(mensaje);
+                }
+                if(preciounitario!=0.0d){
+                    getDcotizacionventas().setPrecio(preciounitario.floatValue());
+                }else{
+                    getDcotizacionventas().setPrecio(0.0f);
+                }
+                if(!arrayObject.isEmpty()){
+                    getDcotizacionventas().setImpuesto_i(((Double)arrayObject.get(2)).floatValue());
+                }else{
+                    getDcotizacionventas().setImpuesto_i(0.0f);
+                }
+                /********* CÁLCULOS *********/
+                getDcotizacionventas().setImpuesto((getDcotizacionventas().getImpuesto_i()/100)*getDcotizacionventas().getPrecio()*getDcotizacionventas().getCantidad());
+                getDcotizacionventas().setImporte((getDcotizacionventas().getPrecio()*getDcotizacionventas().getCantidad())-
+                        getDcotizacionventas().getDescuento()+getDcotizacionventas().getImpuesto());
             
         } catch (NisiraORMException ex) {
             Logger.getLogger(CotizacionesAction.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return;
     }
     public void nuevoDcotizacionventas() {
-        setDcotizacionventas(new Dcotizacionventas());
-        getDcotizacionventas().setIdempresa(user.getIDEMPRESA());
-        getDcotizacionventas().setIdcotizacionv(getDatoEdicion().getIdcotizacionv());
-        getDcotizacionventas().setItem(agregarItemDcotizacionventa());
-        getDcotizacionventas().setPrecio(0.0f);
-        getDcotizacionventas().setCantidad(1.0f);
-        getDcotizacionventas().setDescuento(0.0f);
-        getDcotizacionventas().setImpuesto(0.0f);
-        getDcotizacionventas().setImporte(0.0f);
-        getDcotizacionventas().setFechacreacion(getDatoEdicion().getFecha());
-        getDcotizacionventas().setObservaciones("");
-        RequestContext.getCurrentInstance().update("datos:dlgnew_dcotizacionventas");
-        RequestContext.getCurrentInstance().execute("PF('dlgnew_dcotizacionventas').show()");
+        if(getDatoEdicion().getIdclieprov()==null && getDatoEdicion().getRazon_social()==null){
+            this.mensaje="Seleccionar Cliente";
+            WebUtil.error(getMensaje());
+            RequestContext.getCurrentInstance().update("datos");
+        }else{
+            setDcotizacionventas(new Dcotizacionventas());
+            getDcotizacionventas().setIdempresa(user.getIDEMPRESA());
+            getDcotizacionventas().setIdcotizacionv(getDatoEdicion().getIdcotizacionv());
+            getDcotizacionventas().setItem(agregarItemDcotizacionventa());
+            getDcotizacionventas().setPrecio(0.0f);
+            getDcotizacionventas().setCantidad(1.0f);
+            getDcotizacionventas().setDescuento(0.0f);
+            getDcotizacionventas().setImpuesto(0.0f);
+            getDcotizacionventas().setSubtotalsindscto(0.0f);
+            getDcotizacionventas().setSubtotalcondscto(0.0f);
+            getDcotizacionventas().setImporte(0.0f);
+            getDcotizacionventas().setNhoras("");
+            getDcotizacionventas().setFechacreacion(getDatoEdicion().getFecha());
+            getDcotizacionventas().setObservaciones("");
+            RequestContext.getCurrentInstance().update("datos:dlgnew_dcotizacionventas");
+            RequestContext.getCurrentInstance().execute("PF('dlgnew_dcotizacionventas').show()");
+        }
     }
     public void editarDcotizacionventas() {
-        setDcotizacionventas(selectdcotizacionventas);
-        RequestContext.getCurrentInstance().update("datos:dlgnew_dcotizacionventas");
-        RequestContext.getCurrentInstance().execute("PF('dlgnew_dcotizacionventas').show()");
+        if(getDatoEdicion().getIdclieprov()==null && getDatoEdicion().getRazon_social()==null){
+            this.mensaje="Seleccionar Cliente";
+            WebUtil.error(getMensaje());
+            RequestContext.getCurrentInstance().update("datos");
+        }else if(selectdcotizacionventas==null){
+            this.mensaje="Seleccionar Detalle";
+            WebUtil.error(getMensaje());
+            RequestContext.getCurrentInstance().update("datos");
+        }
+        else{
+            setDcotizacionventas(selectdcotizacionventas);
+            RequestContext.getCurrentInstance().update("datos:dlgnew_dcotizacionventas");
+            RequestContext.getCurrentInstance().execute("PF('dlgnew_dcotizacionventas').show()");
+        }
     }
     public void verCntFormaPago() {
         RequestContext.getCurrentInstance().openDialog("cntForma_pago", modalOptions, null);
@@ -578,24 +1420,68 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
     }
     public void eliminarDcotizacionventas() {
         try {
-            lstdcotizacionventas.remove(selectdcotizacionventas);
-            RequestContext.getCurrentInstance().update("datos:tbl");
+            if(selectdcotizacionventas==null){
+                this.mensaje="Seleccionar Detalle";
+                WebUtil.error(getMensaje());
+                RequestContext.getCurrentInstance().update("datos");
+            }else{
+                lstdcotizacionventas.remove(selectdcotizacionventas);
+                /*ELIMINAR DE DESTRUCTURA_COSTOS_RECURSO_COTIZACIONVENTAS_TOTAL*/
+                
+                /*ELIMINAR DE ESTRUCTURA_COSTOS_MANO_OBRA_COTIZACIONVENTAS_TOTAL*/
+                
+                /**** RESET ***/
+                listDestructura_costos_recursos_cotizacionventas = new ArrayList<>();
+                listEstructura_costos_mano_obra_cotizacionventas = new ArrayList<>();
+                selectdcotizacionventas = null;
+                selectDestructura_costos_recursos_cotizacionventas=null;
+                selectEstructura_costos_mano_obra_cotizacionventas=null;
+
+                botonNuevoDestructura_costos_recurso = true;
+                botonNuevoEstructura_costos_mano_obra = true;
+                botonEditarDestructura_costos_recurso = true;
+                botonEditarEstructura_costos_mano_obra = true;
+                botonEliminarDestructura_costos_recurso = true;
+                botonEliminarEstructura_costos_mano_obra = true;
+                this.setSubtotal_ecosto(0.0f);
+                this.setGo_ecosto(0.0f);
+                this.setGa_ecosto(0.0f);
+                this.setU_ecosto(0.0f);
+                this.total_ecosto = (0.0f);
+                calcularTotales();
+                RequestContext.getCurrentInstance().update("datos:lstdcotizacionventas");
+                RequestContext.getCurrentInstance().update("datos:tsubtotal");
+                RequestContext.getCurrentInstance().update("datos:tdescuento");
+                RequestContext.getCurrentInstance().update("datos:tigv");
+                RequestContext.getCurrentInstance().update("datos:ttotal");
+                RequestContext.getCurrentInstance().update("datos:tabs");
+            }
         } catch (Exception ex) {
             Logger.getLogger(OrdenliquidaciongastoAction.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     public void grabarDcotizacionventa(){
         int pos=lstdcotizacionventas.indexOf(dcotizacionventas);
+        Double subtotalsindscto=0.0d;
+        Double descuento=0.0d;
+        Double impuesto=0.0d;
+        Double importe=0.0d;
         /***********CALCULOS*************/
-        getDcotizacionventas().setImpuesto((getDcotizacionventas().getImpuesto_i()/100)*getDcotizacionventas().getPrecio()*getDcotizacionventas().getCantidad());
-        getDcotizacionventas().setImporte((getDcotizacionventas().getPrecio()*getDcotizacionventas().getCantidad())-
-                getDcotizacionventas().getDescuento()+getDcotizacionventas().getImpuesto());
+        subtotalsindscto += getDcotizacionventas().getPrecio()*getDcotizacionventas().getCantidad();
+        descuento+=getDcotizacionventas().getDescuento();
+        impuesto+=subtotalsindscto*(getDcotizacionventas().getImpuesto_i()/100);
+        importe+=subtotalsindscto-descuento+impuesto;
+        getDcotizacionventas().setImpuesto(impuesto.floatValue());
+        getDcotizacionventas().setSubtotalsindscto(subtotalsindscto.floatValue());
+        getDcotizacionventas().setSubtotalcondscto(((Double)(subtotalsindscto-descuento)).floatValue());
+        getDcotizacionventas().setImporte(importe.floatValue());
+        if(selectEstructura_costos_producto!=null){
+            dcotizacionventas.setItemcotizacion(selectEstructura_costos_producto.getItem());
+        }
         if(pos==-1)
             lstdcotizacionventas.add(dcotizacionventas);
         else 
             lstdcotizacionventas.set(pos, dcotizacionventas);
-        
-        
         calcularTotales();
         RequestContext.getCurrentInstance().update("datos:lstdcotizacionventas");
         RequestContext.getCurrentInstance().update("datos:dlgnew_dcotizacionventas");
@@ -614,6 +1500,7 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
         descuento+=getDcotizacionventas().getDescuento();
         impuesto+=subtotalsindscto*(getDcotizacionventas().getImpuesto_i()/100);
         importe+=subtotalsindscto-descuento+impuesto;
+        
         getDcotizacionventas().setImpuesto(impuesto.floatValue());
         getDcotizacionventas().setImporte(importe.floatValue());
     }
@@ -623,10 +1510,12 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
         Double impuesto=0.0d;
         Double importe=0.0d;
         for(Dcotizacionventas obj : lstdcotizacionventas){
-            subtotalsindscto +=obj.getCantidad()*obj.getPrecio();
+//            subtotalsindscto +=obj.getCantidad()*obj.getPrecio();
+            subtotalsindscto += obj.getSubtotalsindscto();
             descuento+=obj.getDescuento();
             impuesto+=obj.getImpuesto();
-            importe+=(obj.getCantidad()*obj.getPrecio())-obj.getDescuento()+obj.getImpuesto();
+//            importe+=(obj.getCantidad()*obj.getPrecio())-obj.getDescuento()+obj.getImpuesto();
+            importe+=obj.getImporte();
         }
         getDatoEdicion().setSubtotalsindscto(subtotalsindscto.floatValue());
         getDatoEdicion().setDescuento(descuento.floatValue());
@@ -669,13 +1558,6 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
             String f_fin = f.format(getHasta());
             f_ini = f_ini.replace("-", "");
             f_fin = f_fin.replace("-", "");
-//            if (f_ini.length() == 8 && f_fin.length() == 8) {
-//                f_ini = f_ini.substring(4) + f_ini.substring(2, 4) + f_ini.substring(0, 2);
-//                f_fin = f_fin.substring(4) + f_fin.substring(2, 4) + f_fin.substring(0, 2);
-//            } else {
-//                f_ini = "";
-//                f_fin = "";
-//            }
             setListaDatos(getCotizacionventasDao().listarPorEmpresaWebFiltroFecha(user.getIDEMPRESA(),f_ini,f_fin));
             //   filtrar();
             RequestContext.getCurrentInstance().update("datos");
@@ -1496,26 +2378,418 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
         }
         return null;
     }
-    public void PDF_cotizacion() {
+    
+    @Override
+    public JRDataSource getDataSourceReport_lst() {
+        NSRResultSet rs;
         try {
-                FacesContext context = FacesContext.getCurrentInstance();
-                ExternalContext ext = context.getExternalContext();
-                setNombreReporte("RPT_COTIZACION_001");
-                setNombreArchivo("FORMATO_COTIZACION_001");
-                JasperPrint jasperPrint = getPrintReport();
-                HttpServletResponse resp = (HttpServletResponse) ext.getResponse();
-                resp.setContentType("application/pdf");
-                String filename = "RPT_COTIZACION_001.pdf";
-                resp.addHeader("Content-Disposition", "inline; filename=" + filename); // En la misma pantalla
-                //  resp.addHeader("Content-Disposition", "attachmed; filename=" + filename); // Para que lo guardes
-                JasperExportManager.exportReportToPdfStream(jasperPrint, resp.getOutputStream());
-                context.getApplication().getStateManager().saveView(context);
-                context.responseComplete();
-        } catch (Exception ex) {
-            System.out.println(ex.toString());
-//            this.estiloMensaje = Constantes.ESTILO_MENSAJE_ERROR;
-            mensaje = WebUtil.mensajeError();
-            WebUtil.MensajeError(mensaje);
+            //cabecera -> ¨parametro
+            rs = cotizacionventasDao.getConsultaRepote(user.getIDEMPRESA(), getSelectCotizacionventas_local().getIdcotizacionv());
+            return new NSRDataSource(rs);
+        } catch (NisiraORMException e) {
+            WebUtil.MensajeError(e.getMessage());
+        }
+        return null;
+    }
+
+    /**
+     * @return the listDestructura_costos_recursos_cotizacionventas
+     */
+    public List<Destructura_costos_recursos_cotizacionventas> getListDestructura_costos_recursos_cotizacionventas() {
+        return listDestructura_costos_recursos_cotizacionventas;
+    }
+
+    /**
+     * @param listDestructura_costos_recursos_cotizacionventas the listDestructura_costos_recursos_cotizacionventas to set
+     */
+    public void setListDestructura_costos_recursos_cotizacionventas(List<Destructura_costos_recursos_cotizacionventas> listDestructura_costos_recursos_cotizacionventas) {
+        this.listDestructura_costos_recursos_cotizacionventas = listDestructura_costos_recursos_cotizacionventas;
+    }
+
+    /**
+     * @return the listEstructura_costos_mano_obra_cotizacionventas
+     */
+    public List<Estructura_costos_mano_obra_cotizacionventas> getListEstructura_costos_mano_obra_cotizacionventas() {
+        return listEstructura_costos_mano_obra_cotizacionventas;
+    }
+
+    /**
+     * @param listEstructura_costos_mano_obra_cotizacionventas the listEstructura_costos_mano_obra_cotizacionventas to set
+     */
+    public void setListEstructura_costos_mano_obra_cotizacionventas(List<Estructura_costos_mano_obra_cotizacionventas> listEstructura_costos_mano_obra_cotizacionventas) {
+        this.listEstructura_costos_mano_obra_cotizacionventas = listEstructura_costos_mano_obra_cotizacionventas;
+    }
+
+    /**
+     * @return the destructura_costos_recursos_cotizacionventasDao
+     */
+    public Destructura_costos_recursos_cotizacionventasDao getDestructura_costos_recursos_cotizacionventasDao() {
+        return destructura_costos_recursos_cotizacionventasDao;
+    }
+
+    /**
+     * @param destructura_costos_recursos_cotizacionventasDao the destructura_costos_recursos_cotizacionventasDao to set
+     */
+    public void setDestructura_costos_recursos_cotizacionventasDao(Destructura_costos_recursos_cotizacionventasDao destructura_costos_recursos_cotizacionventasDao) {
+        this.destructura_costos_recursos_cotizacionventasDao = destructura_costos_recursos_cotizacionventasDao;
+    }
+
+    /**
+     * @return the estructura_costos_mano_obra_cotizacionventasDao
+     */
+    public Estructura_costos_mano_obra_cotizacionventasDao getEstructura_costos_mano_obra_cotizacionventasDao() {
+        return estructura_costos_mano_obra_cotizacionventasDao;
+    }
+
+    /**
+     * @param estructura_costos_mano_obra_cotizacionventasDao the estructura_costos_mano_obra_cotizacionventasDao to set
+     */
+    public void setEstructura_costos_mano_obra_cotizacionventasDao(Estructura_costos_mano_obra_cotizacionventasDao estructura_costos_mano_obra_cotizacionventasDao) {
+        this.estructura_costos_mano_obra_cotizacionventasDao = estructura_costos_mano_obra_cotizacionventasDao;
+    }
+
+    /**
+     * @return the selectDestructura_costos_recursos_cotizacionventas
+     */
+    public Destructura_costos_recursos_cotizacionventas getSelectDestructura_costos_recursos_cotizacionventas() {
+        return selectDestructura_costos_recursos_cotizacionventas;
+    }
+
+    /**
+     * @param selectDestructura_costos_recursos_cotizacionventas the selectDestructura_costos_recursos_cotizacionventas to set
+     */
+    public void setSelectDestructura_costos_recursos_cotizacionventas(Destructura_costos_recursos_cotizacionventas selectDestructura_costos_recursos_cotizacionventas) {
+        this.selectDestructura_costos_recursos_cotizacionventas = selectDestructura_costos_recursos_cotizacionventas;
+    }
+
+    /**
+     * @return the selectEstructura_costos_mano_obra_cotizacionventas
+     */
+    public Estructura_costos_mano_obra_cotizacionventas getSelectEstructura_costos_mano_obra_cotizacionventas() {
+        return selectEstructura_costos_mano_obra_cotizacionventas;
+    }
+
+    /**
+     * @param selectEstructura_costos_mano_obra_cotizacionventas the selectEstructura_costos_mano_obra_cotizacionventas to set
+     */
+    public void setSelectEstructura_costos_mano_obra_cotizacionventas(Estructura_costos_mano_obra_cotizacionventas selectEstructura_costos_mano_obra_cotizacionventas) {
+        this.selectEstructura_costos_mano_obra_cotizacionventas = selectEstructura_costos_mano_obra_cotizacionventas;
+    }
+
+    /**
+     * @return the destructura_costos_recursos_cotizacionventas
+     */
+    public Destructura_costos_recursos_cotizacionventas getDestructura_costos_recursos_cotizacionventas() {
+        return destructura_costos_recursos_cotizacionventas;
+    }
+
+    /**
+     * @param destructura_costos_recursos_cotizacionventas the destructura_costos_recursos_cotizacionventas to set
+     */
+    public void setDestructura_costos_recursos_cotizacionventas(Destructura_costos_recursos_cotizacionventas destructura_costos_recursos_cotizacionventas) {
+        this.destructura_costos_recursos_cotizacionventas = destructura_costos_recursos_cotizacionventas;
+    }
+
+    /**
+     * @return the estructura_costos_mano_obra_cotizacionventas
+     */
+    public Estructura_costos_mano_obra_cotizacionventas getEstructura_costos_mano_obra_cotizacionventas() {
+        return estructura_costos_mano_obra_cotizacionventas;
+    }
+
+    /**
+     * @param estructura_costos_mano_obra_cotizacionventas the estructura_costos_mano_obra_cotizacionventas to set
+     */
+    public void setEstructura_costos_mano_obra_cotizacionventas(Estructura_costos_mano_obra_cotizacionventas estructura_costos_mano_obra_cotizacionventas) {
+        this.estructura_costos_mano_obra_cotizacionventas = estructura_costos_mano_obra_cotizacionventas;
+    }
+
+    /**
+     * @return the botonNuevoDestructura_costos_recurso
+     */
+    public boolean isBotonNuevoDestructura_costos_recurso() {
+        return botonNuevoDestructura_costos_recurso;
+    }
+
+    /**
+     * @param botonNuevoDestructura_costos_recurso the botonNuevoDestructura_costos_recurso to set
+     */
+    public void setBotonNuevoDestructura_costos_recurso(boolean botonNuevoDestructura_costos_recurso) {
+        this.botonNuevoDestructura_costos_recurso = botonNuevoDestructura_costos_recurso;
+    }
+
+    /**
+     * @return the botonEditarDestructura_costos_recurso
+     */
+    public boolean isBotonEditarDestructura_costos_recurso() {
+        return botonEditarDestructura_costos_recurso;
+    }
+
+    /**
+     * @param botonEditarDestructura_costos_recurso the botonEditarDestructura_costos_recurso to set
+     */
+    public void setBotonEditarDestructura_costos_recurso(boolean botonEditarDestructura_costos_recurso) {
+        this.botonEditarDestructura_costos_recurso = botonEditarDestructura_costos_recurso;
+    }
+
+    /**
+     * @return the botonEliminarDestructura_costos_recurso
+     */
+    public boolean isBotonEliminarDestructura_costos_recurso() {
+        return botonEliminarDestructura_costos_recurso;
+    }
+
+    /**
+     * @param botonEliminarDestructura_costos_recurso the botonEliminarDestructura_costos_recurso to set
+     */
+    public void setBotonEliminarDestructura_costos_recurso(boolean botonEliminarDestructura_costos_recurso) {
+        this.botonEliminarDestructura_costos_recurso = botonEliminarDestructura_costos_recurso;
+    }
+
+    /**
+     * @return the botonNuevoEstructura_costos_mano_obra
+     */
+    public boolean isBotonNuevoEstructura_costos_mano_obra() {
+        return botonNuevoEstructura_costos_mano_obra;
+    }
+
+    /**
+     * @param botonNuevoEstructura_costos_mano_obra the botonNuevoEstructura_costos_mano_obra to set
+     */
+    public void setBotonNuevoEstructura_costos_mano_obra(boolean botonNuevoEstructura_costos_mano_obra) {
+        this.botonNuevoEstructura_costos_mano_obra = botonNuevoEstructura_costos_mano_obra;
+    }
+
+    /**
+     * @return the botonEditarEstructura_costos_mano_obra
+     */
+    public boolean isBotonEditarEstructura_costos_mano_obra() {
+        return botonEditarEstructura_costos_mano_obra;
+    }
+
+    /**
+     * @param botonEditarEstructura_costos_mano_obra the botonEditarEstructura_costos_mano_obra to set
+     */
+    public void setBotonEditarEstructura_costos_mano_obra(boolean botonEditarEstructura_costos_mano_obra) {
+        this.botonEditarEstructura_costos_mano_obra = botonEditarEstructura_costos_mano_obra;
+    }
+
+    /**
+     * @return the botonEliminarEstructura_costos_mano_obra
+     */
+    public boolean isBotonEliminarEstructura_costos_mano_obra() {
+        return botonEliminarEstructura_costos_mano_obra;
+    }
+
+    /**
+     * @param botonEliminarEstructura_costos_mano_obra the botonEliminarEstructura_costos_mano_obra to set
+     */
+    public void setBotonEliminarEstructura_costos_mano_obra(boolean botonEliminarEstructura_costos_mano_obra) {
+        this.botonEliminarEstructura_costos_mano_obra = botonEliminarEstructura_costos_mano_obra;
+    }
+
+    /**
+     * @return the lstTipoRecurso
+     */
+    public List<String> getLstTipoRecurso() {
+        return lstTipoRecurso;
+    }
+
+    /**
+     * @param lstTipoRecurso the lstTipoRecurso to set
+     */
+    public void setLstTipoRecurso(List<String> lstTipoRecurso) {
+        this.lstTipoRecurso = lstTipoRecurso;
+    }
+
+    /**
+     * @return the lstEs_porcentaje
+     */
+    public List<Es_PorcentajeCombo> getLstEs_porcentaje() {
+        return lstEs_porcentaje;
+    }
+
+    /**
+     * @param lstEs_porcentaje the lstEs_porcentaje to set
+     */
+    public void setLstEs_porcentaje(List<Es_PorcentajeCombo> lstEs_porcentaje) {
+        this.lstEs_porcentaje = lstEs_porcentaje;
+    }
+
+    /**
+     * @return the periodoDisenio
+     */
+    public String getPeriodoDisenio() {
+        return periodoDisenio;
+    }
+
+    /**
+     * @param periodoDisenio the periodoDisenio to set
+     */
+    public void setPeriodoDisenio(String periodoDisenio) {
+        this.periodoDisenio = periodoDisenio;
+    }
+
+    /**
+     * @return the mesNumeroDisenio
+     */
+    public String getMesNumeroDisenio() {
+        return mesNumeroDisenio;
+    }
+
+    /**
+     * @param mesNumeroDisenio the mesNumeroDisenio to set
+     */
+    public void setMesNumeroDisenio(String mesNumeroDisenio) {
+        this.mesNumeroDisenio = mesNumeroDisenio;
+    }
+
+    /**
+     * @return the mesNombreDisenio
+     */
+    public String getMesNombreDisenio() {
+        return mesNombreDisenio;
+    }
+
+    /**
+     * @param mesNombreDisenio the mesNombreDisenio to set
+     */
+    public void setMesNombreDisenio(String mesNombreDisenio) {
+        this.mesNombreDisenio = mesNombreDisenio;
+    }
+
+    /**
+     * @return the listTotalDestructura_costos_recursos_cotizacionventas
+     */
+    public List<Destructura_costos_recursos_cotizacionventas> getListTotalDestructura_costos_recursos_cotizacionventas() {
+        return listTotalDestructura_costos_recursos_cotizacionventas;
+    }
+
+    /**
+     * @param listTotalDestructura_costos_recursos_cotizacionventas the listTotalDestructura_costos_recursos_cotizacionventas to set
+     */
+    public void setListTotalDestructura_costos_recursos_cotizacionventas(List<Destructura_costos_recursos_cotizacionventas> listTotalDestructura_costos_recursos_cotizacionventas) {
+        this.listTotalDestructura_costos_recursos_cotizacionventas = listTotalDestructura_costos_recursos_cotizacionventas;
+    }
+
+    /**
+     * @return the listTotalEstructura_costos_mano_obra_cotizacionventas
+     */
+    public List<Estructura_costos_mano_obra_cotizacionventas> getListTotalEstructura_costos_mano_obra_cotizacionventas() {
+        return listTotalEstructura_costos_mano_obra_cotizacionventas;
+    }
+
+    /**
+     * @param listTotalEstructura_costos_mano_obra_cotizacionventas the listTotalEstructura_costos_mano_obra_cotizacionventas to set
+     */
+    public void setListTotalEstructura_costos_mano_obra_cotizacionventas(List<Estructura_costos_mano_obra_cotizacionventas> listTotalEstructura_costos_mano_obra_cotizacionventas) {
+        this.listTotalEstructura_costos_mano_obra_cotizacionventas = listTotalEstructura_costos_mano_obra_cotizacionventas;
+    }
+
+    /**
+     * @return the caculate_hora
+     */
+    public boolean isCaculate_hora() {
+        return caculate_hora;
+    }
+
+    /**
+     * @param caculate_hora the caculate_hora to set
+     */
+    public void setCaculate_hora(boolean caculate_hora) {
+        this.caculate_hora = caculate_hora;
+    }
+
+    /**
+     * @return the selectEstructura_costos_producto
+     */
+    public Estructura_costos_producto getSelectEstructura_costos_producto() {
+        return selectEstructura_costos_producto;
+    }
+
+    /**
+     * @param selectEstructura_costos_producto the selectEstructura_costos_producto to set
+     */
+    public void setSelectEstructura_costos_producto(Estructura_costos_producto selectEstructura_costos_producto) {
+        this.selectEstructura_costos_producto = selectEstructura_costos_producto;
+    }
+
+    /**
+     * @return the ajuste_ecosto
+     */
+    public Float getAjuste_ecosto() {
+        return ajuste_ecosto;
+    }
+
+    /**
+     * @param ajuste_ecosto the ajuste_ecosto to set
+     */
+    public void setAjuste_ecosto(Float ajuste_ecosto) {
+        this.ajuste_ecosto = ajuste_ecosto;
+    }
+
+    /**
+     * @return the selectCotizacionventas_local
+     */
+    public Cotizacionventas getSelectCotizacionventas_local() {
+        return selectCotizacionventas_local;
+    }
+
+    /**
+     * @param selectCotizacionventas_local the selectCotizacionventas_local to set
+     */
+    public void setSelectCotizacionventas_local(Cotizacionventas selectCotizacionventas_local) {
+        this.selectCotizacionventas_local = selectCotizacionventas_local;
+    }
+
+    /**
+     * @return the filename
+     */
+    public String getFilename() {
+        return filename;
+    }
+
+    /**
+     * @param filename the filename to set
+     */
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
+    public class Es_PorcentajeCombo{
+        private int id;
+        private String descripcion;
+        public Es_PorcentajeCombo(int key,String value){
+            this.id=key;
+            this.descripcion=value;
+        }
+
+        /**
+         * @return the id
+         */
+        public int getId() {
+            return id;
+        }
+
+        /**
+         * @param id the id to set
+         */
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        /**
+         * @return the descripcion
+         */
+        public String getDescripcion() {
+            return descripcion;
+        }
+
+        /**
+         * @param descripcion the descripcion to set
+         */
+        public void setDescripcion(String descripcion) {
+            this.descripcion = descripcion;
         }
     }
 }

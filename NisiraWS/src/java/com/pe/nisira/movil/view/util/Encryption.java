@@ -80,7 +80,7 @@ public class Encryption {
 	}
 
 	public static void main(String[] args) {
-		String encrypt = "ÀããªªÂ¦ª";
+		String encrypt = "~è55óÜÉì¿ãªÁ";
 		System.out.println("encrypted string:" + encrypt);
 		System.out.println("decrypted value:" + (pss_decrypt(encrypt)));
 	}

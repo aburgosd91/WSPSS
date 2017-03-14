@@ -110,8 +110,8 @@ public class SeguridadViewHandler extends ViewHandlerWrapper {
         HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
         try {
             context.responseComplete();
-            log.info(context.getExternalContext().getRequestContextPath() + "/faces/" + ruta);
-            response.sendRedirect(context.getExternalContext().getRequestContextPath() + "/faces/" + ruta);
+            log.info(context.getExternalContext().getRequestContextPath() + "/" + ruta);
+            response.sendRedirect(context.getExternalContext().getRequestContextPath() + "/" + ruta);
         } catch (IOException ioe) {
             log.error(ioe.getMessage());
         }

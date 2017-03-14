@@ -20,7 +20,7 @@ import org.primefaces.context.RequestContext;
 
 /**
  *
- * @author azamora
+ * @author aburgos
  */
 @ManagedBean(name = "cntClieprovAction")
 @ViewScoped

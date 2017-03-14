@@ -16,6 +16,7 @@ import com.nisira.core.util.ConstantesBD;
 import com.nisira.core.util.CoreUtil;
 import com.pe.nisira.movil.view.bean.MensajeBean;
 import com.pe.nisira.movil.view.bean.UsuarioBean;
+import com.pe.nisira.movil.view.util.Clave;
 import com.pe.nisira.movil.view.util.ClaveMovil;
 import com.pe.nisira.movil.view.util.Constantes;
 import java.io.Serializable;
@@ -131,7 +132,7 @@ public class LogueoAction implements Serializable {
                 ConstantesBD.setIDEMPRESA(idempresa);
                 //Constantes.setConexionORM(Constantes.conexionORM);
                 UsuarioDao usuariodao =new UsuarioDao(true);
-                Usuario usuario= usuariodao.getSesionUsuario(idempresa,usuarioBean.getIDUSUARIO(),ClaveMovil.Encriptar_ASCII(usuarioBean.getPASSWORD())); 
+                Usuario usuario= usuariodao.getSesionUsuario(idempresa,usuarioBean.getIDUSUARIO(),Clave.Encriptar(usuarioBean.getPASSWORD())); 
                 if (usuario != null) {
                     //List<Privilegios> listaPrivilegios = privilegiosService.filtrar(usuarioBean.getIdusuario());
                     //System.out.println("despues de privilegio");
@@ -172,10 +173,10 @@ public class LogueoAction implements Serializable {
                             try {
                                 this.conexion = "";//para que el menú de seleccion de empresa se reinicie
                                 if (navegador_es_movil()) {
-                                    ctx.redirect(ctxPath + "/faces/sistema/menu.xhtml");
+                                    ctx.redirect(ctxPath + "/sistema/menu.xhtml");
                                 } else {                                    
                                     //Constantes.arrayPrivilegios=usuarioService.listarPrivilegiosUsuario(idempresa, usuarioBean.getIDUSUARIO());                                    
-                                    ctx.redirect(ctxPath + "/faces/sistema/principal.xhtml");
+                                    ctx.redirect(ctxPath + "/sistema/principal.xhtml");
                                 }
                             } catch (IOException ex) {
                                 ex.printStackTrace();

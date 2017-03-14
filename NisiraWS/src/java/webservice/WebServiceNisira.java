@@ -70,10 +70,11 @@ public class WebServiceNisira{
         try {
             String conexion = WebMethodNisira.cargarBaseDatos();
             setConexion(conexion);
-            String idempresa = WebMethodNisira.cargarEmpresas(conexion).getIdempresa();
+            ArrayList<String> lista_solution=com.nisira.core.util.CoreUtil.valoresBase();/*Obtener Datos de solution.ini*/
+            String idempresa = lista_solution.get(5);
             ConstantesBD.setIDEMPRESA(idempresa);
             UsuarioDao usuariodao =new UsuarioDao();
-            Usuario usuario= usuariodao.getSesionUsuario(idempresa,user, ClaveMovil.Encriptar_ASCII(password));
+            Usuario usuario= usuariodao.getSesionUsuarioMovil(idempresa,user, Clave.Encriptar(password));
             if(usuario !=null){
                 if(type.trim().equals("JSON")){
                     result = WebUtil.objectGson(1,usuario);
@@ -88,7 +89,7 @@ public class WebServiceNisira{
             }
             else
             {
-                result = "ERROR";
+                result = "USUARIO NO ASIGNADO";
             }
             
         } catch (NisiraORMException  ex) {
@@ -104,7 +105,8 @@ public class WebServiceNisira{
         try {
             String conexion = WebMethodNisira.cargarBaseDatos();
             setConexion(conexion);
-            String idempresa = WebMethodNisira.cargarEmpresas(conexion).getIdempresa();
+            ArrayList<String> lista_solution=com.nisira.core.util.CoreUtil.valoresBase();/*Obtener Datos de solution.ini*/
+            String idempresa = lista_solution.get(5);
             ConstantesBD.setIDEMPRESA(idempresa);
             ClieprovDao clieprovdao =new ClieprovDao();
             List<Clieprov> list= clieprovdao.listarPorEmpresaClieprovService(idempresa);
@@ -138,7 +140,8 @@ public class WebServiceNisira{
         try {
             String conexion = WebMethodNisira.cargarBaseDatos();
             setConexion(conexion);
-            String idempresa = WebMethodNisira.cargarEmpresas(conexion).getIdempresa();
+            ArrayList<String> lista_solution=com.nisira.core.util.CoreUtil.valoresBase();/*Obtener Datos de solution.ini*/
+            String idempresa = lista_solution.get(5);
             ConstantesBD.setIDEMPRESA(idempresa);
             ConsumidorDao consumidordao =new ConsumidorDao();
             List<Consumidor> list= consumidordao.listarPorEmpresaService(idempresa);
@@ -171,7 +174,8 @@ public class WebServiceNisira{
         try {
             String conexion = WebMethodNisira.cargarBaseDatos();
             setConexion(conexion);
-            String idempresa = WebMethodNisira.cargarEmpresas(conexion).getIdempresa();
+            ArrayList<String> lista_solution=com.nisira.core.util.CoreUtil.valoresBase();/*Obtener Datos de solution.ini*/
+            String idempresa = lista_solution.get(5);
             ConstantesBD.setIDEMPRESA(idempresa);
             Cargos_personalDao cargos_personaldao =new Cargos_personalDao();
             List<Cargos_personal> list= cargos_personaldao.listarPorEmpresaService(idempresa);
@@ -204,7 +208,8 @@ public class WebServiceNisira{
         try {
             String conexion = WebMethodNisira.cargarBaseDatos();
             setConexion(conexion);
-            String idempresa = WebMethodNisira.cargarEmpresas(conexion).getIdempresa();
+            ArrayList<String> lista_solution=com.nisira.core.util.CoreUtil.valoresBase();/*Obtener Datos de solution.ini*/            
+            String idempresa = lista_solution.get(5);
             ConstantesBD.setIDEMPRESA(idempresa);
             Concepto_cuentaDao concepto_cuentadao =new Concepto_cuentaDao();
             List<Concepto_cuenta> list= concepto_cuentadao.listarPorEmpresaService(idempresa);
@@ -237,7 +242,8 @@ public class WebServiceNisira{
         try {
             String conexion = WebMethodNisira.cargarBaseDatos();
             setConexion(conexion);
-            String idempresa = WebMethodNisira.cargarEmpresas(conexion).getIdempresa();
+            ArrayList<String> lista_solution=com.nisira.core.util.CoreUtil.valoresBase();/*Obtener Datos de solution.ini*/            
+            String idempresa = lista_solution.get(5);
             ConstantesBD.setIDEMPRESA(idempresa);
             DestinoadquisicionDao destinoadquisicionDao =new DestinoadquisicionDao();
             List<Destinoadquisicion> list= destinoadquisicionDao.listarPorEmpresaService(idempresa);
@@ -270,7 +276,8 @@ public class WebServiceNisira{
         try {
             String conexion = WebMethodNisira.cargarBaseDatos();
             setConexion(conexion);
-            String idempresa = WebMethodNisira.cargarEmpresas(conexion).getIdempresa();
+            ArrayList<String> lista_solution=com.nisira.core.util.CoreUtil.valoresBase();/*Obtener Datos de solution.ini*/            
+            String idempresa = lista_solution.get(5);
             ConstantesBD.setIDEMPRESA(idempresa);
             DocumentosDao documentosdao =new DocumentosDao();
             List<Documentos> list= documentosdao.listarPorEmpresaService(idempresa);
@@ -303,7 +310,8 @@ public class WebServiceNisira{
         try {
             String conexion = WebMethodNisira.cargarBaseDatos();
             setConexion(conexion);
-            String idempresa = WebMethodNisira.cargarEmpresas(conexion).getIdempresa();
+            ArrayList<String> lista_solution=com.nisira.core.util.CoreUtil.valoresBase();/*Obtener Datos de solution.ini*/            
+            String idempresa = lista_solution.get(5);
             ConstantesBD.setIDEMPRESA(idempresa);
             NumemisorDao numemisordao =new NumemisorDao();
             List<Numemisor> list= numemisordao.listarPorEmpresaService(idempresa);
@@ -336,7 +344,8 @@ public class WebServiceNisira{
         try {
             String conexion = WebMethodNisira.cargarBaseDatos();
             setConexion(conexion);
-            String idempresa = WebMethodNisira.cargarEmpresas(conexion).getIdempresa();
+            ArrayList<String> lista_solution=com.nisira.core.util.CoreUtil.valoresBase();/*Obtener Datos de solution.ini*/            
+            String idempresa = lista_solution.get(5);
             ConstantesBD.setIDEMPRESA(idempresa);
             Personal_servicioDao personal_serviciodao =new Personal_servicioDao();
             List<Personal_servicio> list= personal_serviciodao.listarPorEmpresaService(idempresa);
@@ -369,7 +378,8 @@ public class WebServiceNisira{
         try {
             String conexion = WebMethodNisira.cargarBaseDatos();
             setConexion(conexion);
-            String idempresa = WebMethodNisira.cargarEmpresas(conexion).getIdempresa();
+            ArrayList<String> lista_solution=com.nisira.core.util.CoreUtil.valoresBase();/*Obtener Datos de solution.ini*/            
+            String idempresa = lista_solution.get(5);
             ConstantesBD.setIDEMPRESA(idempresa);
             Dpersonal_servicioDao dpersonal_serviciodao =new Dpersonal_servicioDao();
             List<Dpersonal_servicio> list= dpersonal_serviciodao.listarPorEmpresaService(idempresa);
@@ -402,7 +412,8 @@ public class WebServiceNisira{
         try {
             String conexion = WebMethodNisira.cargarBaseDatos();
             setConexion(conexion);
-            String idempresa = WebMethodNisira.cargarEmpresas(conexion).getIdempresa();
+            ArrayList<String> lista_solution=com.nisira.core.util.CoreUtil.valoresBase();/*Obtener Datos de solution.ini*/            
+            String idempresa = lista_solution.get(5);
             ConstantesBD.setIDEMPRESA(idempresa);
             ProductosDao productosdao =new ProductosDao();
             List<Productos> list= productosdao.listarPorEmpresaService(idempresa);
@@ -435,7 +446,8 @@ public class WebServiceNisira{
         try {
             String conexion = WebMethodNisira.cargarBaseDatos();
             setConexion(conexion);
-            String idempresa = WebMethodNisira.cargarEmpresas(conexion).getIdempresa();
+            ArrayList<String> lista_solution=com.nisira.core.util.CoreUtil.valoresBase();/*Obtener Datos de solution.ini*/            
+            String idempresa = lista_solution.get(5);
             ConstantesBD.setIDEMPRESA(idempresa);
             RutasDao rustasdao =new RutasDao();
             List<Rutas> list= rustasdao.listarPorEmpresaService(idempresa);
@@ -468,7 +480,8 @@ public class WebServiceNisira{
         try {
             String conexion = WebMethodNisira.cargarBaseDatos();
             setConexion(conexion);
-            String idempresa = WebMethodNisira.cargarEmpresas(conexion).getIdempresa();
+            ArrayList<String> lista_solution=com.nisira.core.util.CoreUtil.valoresBase();/*Obtener Datos de solution.ini*/            
+            String idempresa = lista_solution.get(5);
             ConstantesBD.setIDEMPRESA(idempresa);
             SucursalesDao sucursalesdao =new SucursalesDao();
             List<Sucursales> list= sucursalesdao.listarPorEmpresaService(idempresa);
@@ -501,7 +514,8 @@ public class WebServiceNisira{
         try {
             String conexion = WebMethodNisira.cargarBaseDatos();
             setConexion(conexion);
-            String idempresa = WebMethodNisira.cargarEmpresas(conexion).getIdempresa();
+            ArrayList<String> lista_solution=com.nisira.core.util.CoreUtil.valoresBase();/*Obtener Datos de solution.ini*/            
+            String idempresa = lista_solution.get(5);
             ConstantesBD.setIDEMPRESA(idempresa);
             OrdenliquidaciongastoDao ordenliquidaciongastodao =new OrdenliquidaciongastoDao();
             List<Ordenliquidaciongasto> list= ordenliquidaciongastodao.listarPorEmpresaService(idempresa);
@@ -534,7 +548,8 @@ public class WebServiceNisira{
         try {
             String conexion = WebMethodNisira.cargarBaseDatos();
             setConexion(conexion);
-            String idempresa = WebMethodNisira.cargarEmpresas(conexion).getIdempresa();
+            ArrayList<String> lista_solution=com.nisira.core.util.CoreUtil.valoresBase();/*Obtener Datos de solution.ini*/            
+            String idempresa = lista_solution.get(5);
             ConstantesBD.setIDEMPRESA(idempresa);
             OrdenservicioclienteDao ordenservicioclienteDao = new OrdenservicioclienteDao();
             List<Ordenserviciocliente> list = ordenservicioclienteDao.listarPorEmpresaService(idempresa);
@@ -558,6 +573,8 @@ public class WebServiceNisira{
         } catch (NisiraORMException  ex) {
             Logger.getLogger(WebServiceNisira.class.getName()).log(Level.SEVERE, null, ex);
             result = "ERROR :"+ex.getMessage();
+        } catch (Exception ex) {
+            Logger.getLogger(WebServiceNisira.class.getName()).log(Level.SEVERE, null, ex);
         }
         return result;
     }
@@ -567,7 +584,8 @@ public class WebServiceNisira{
         try {
             String conexion = WebMethodNisira.cargarBaseDatos();
             setConexion(conexion);
-            String idempresa = WebMethodNisira.cargarEmpresas(conexion).getIdempresa();
+            ArrayList<String> lista_solution=com.nisira.core.util.CoreUtil.valoresBase();/*Obtener Datos de solution.ini*/            
+            String idempresa = lista_solution.get(5);
             ConstantesBD.setIDEMPRESA(idempresa);
             DordenliquidaciongastoDao dordenliquidaciongastodao =new DordenliquidaciongastoDao();
             List<Dordenliquidaciongasto> list= dordenliquidaciongastodao.listarPorEmpresaService(idempresa);
@@ -600,7 +618,8 @@ public class WebServiceNisira{
         try {
             String conexion = WebMethodNisira.cargarBaseDatos();
             setConexion(conexion);
-            String idempresa = WebMethodNisira.cargarEmpresas(conexion).getIdempresa();
+            ArrayList<String> lista_solution=com.nisira.core.util.CoreUtil.valoresBase();/*Obtener Datos de solution.ini*/            
+            String idempresa = lista_solution.get(5);
             ConstantesBD.setIDEMPRESA(idempresa);
             DordenservicioclienteDao dordenservicioclienteDao = new DordenservicioclienteDao();
             List<Dordenserviciocliente> list = dordenservicioclienteDao.listarPorEmpresaService(idempresa);
@@ -677,30 +696,26 @@ public class WebServiceNisira{
     }
     
     /*SINCRONIZACION DOCUMENTOS*/
-    @WebMethod(operationName = "METHOD_SYNCRO_ORDENSERVICIOCLIENTE")
-    public String METHOD_SYNCRO_ORDENSERVICIOCLIENTE(@WebParam(name = "type") String type,
-            @WebParam(name = "xml_ordenserviciocliente") String xml_ordenserviciocliente){
+    @WebMethod(operationName = "METHOD_ASCENT_ORDENSERVICIOCLIENTE")
+    public String METHOD_ASCENT_ORDENSERVICIOCLIENTE(@WebParam(name = "type") String type,@WebParam(name = "datos") String datos,@WebParam(name = "user") String user){
         String result=null;
         try {
             String conexion = WebMethodNisira.cargarBaseDatos();
             setConexion(conexion);
-            String idempresa = WebMethodNisira.cargarEmpresas(conexion).getIdempresa();
+            ArrayList<String> lista_solution=com.nisira.core.util.CoreUtil.valoresBase();/*Obtener Datos de solution.ini*/            
+            String idempresa = lista_solution.get(5);
             ConstantesBD.setIDEMPRESA(idempresa);
-            
-            
             OrdenservicioclienteDao ordenservicioclienteDao = new OrdenservicioclienteDao();
             
-            List<Ordenserviciocliente> list = (List<Ordenserviciocliente>) WebUtil.stringObject("com.nisira.core.entity.Ordenserviciocliente", xml_ordenserviciocliente);
+            List<Ordenserviciocliente> list = (List<Ordenserviciocliente>) WebUtil.stringObject("com.nisira.core.entity.Ordenserviciocliente", datos);
             if(list !=null){
                 if(type.trim().equals("JSON")){
-                    for(Ordenserviciocliente datos:list){
-                        result = ordenservicioclienteDao.syncro_movil(datos);
+                    for(Ordenserviciocliente dt:list){
+                        result = ordenservicioclienteDao.syncro_movil_object(dt,user);
                     }
                 }
                 if(type.trim().equals("XML")){
-                    for(Ordenserviciocliente datos:list){
-                        result = ordenservicioclienteDao.syncro_movil(datos);
-                    }
+                    result = ordenservicioclienteDao.syncro_movil_list(list,user);
                 }
             }
             else
@@ -718,5 +733,113 @@ public class WebServiceNisira{
         }
         return result;
     }
-
+    @WebMethod(operationName = "METHOD_ASCENT_DORDENSERVICIOCLIENTE")
+    public String METHOD_ASCENT_DORDENSERVICIOCLIENTE(@WebParam(name = "type") String type,@WebParam(name = "datos") String datos,@WebParam(name = "user") String user){
+        String result=null;
+        try {
+            String conexion = WebMethodNisira.cargarBaseDatos();
+            setConexion(conexion);
+            ArrayList<String> lista_solution=com.nisira.core.util.CoreUtil.valoresBase();/*Obtener Datos de solution.ini*/            
+            String idempresa = lista_solution.get(5);
+            ConstantesBD.setIDEMPRESA(idempresa);
+            DordenservicioclienteDao dordenservicioclienteDao = new DordenservicioclienteDao();
+            
+            List<Dordenserviciocliente> list = (List<Dordenserviciocliente>) WebUtil.stringObject("com.nisira.core.entity.Dordenserviciocliente", datos);
+            if(list !=null){
+                if(type.trim().equals("JSON")){
+                    for(Dordenserviciocliente dt:list){
+                        result = dordenservicioclienteDao.syncro_movil_object(dt,user);
+                    }
+                }
+                if(type.trim().equals("XML")){
+                    result = dordenservicioclienteDao.syncro_movil_list(list,user);
+                }
+            }
+            else
+            {
+                result = "ERROR";
+            }
+            
+        } catch (NisiraORMException  ex) {
+            Logger.getLogger(WebServiceNisira.class.getName()).log(Level.SEVERE, null, ex);
+            result = "ERROR :"+ex.getMessage();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(WebServiceNisira.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(WebServiceNisira.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
+    }
+    @WebMethod(operationName = "METHOD_ASCENT_PERSONAL_SERVICIO")
+    public String METHOD_ASCENT_PERSONAL_SERVICIO(@WebParam(name = "type") String type,@WebParam(name = "datos") String datos,@WebParam(name = "user") String user){
+        String result=null;
+        try {
+            String conexion = WebMethodNisira.cargarBaseDatos();
+            setConexion(conexion);
+            ArrayList<String> lista_solution=com.nisira.core.util.CoreUtil.valoresBase();/*Obtener Datos de solution.ini*/            
+            String idempresa = lista_solution.get(5);
+            ConstantesBD.setIDEMPRESA(idempresa);
+            
+            Personal_servicioDao personal_servicioDao = new Personal_servicioDao();
+            
+            List<Personal_servicio> list = (List<Personal_servicio>) WebUtil.stringObject("com.nisira.core.entity.Personal_servicio", datos);
+            if(list !=null){
+                if(type.trim().equals("JSON")){
+                    for(Personal_servicio dt:list){
+                        result = personal_servicioDao.syncro_movil_object(dt,user);
+                    }
+                }
+                if(type.trim().equals("XML")){
+                    result = personal_servicioDao.syncro_movil_list(list,user);
+                }
+            }
+            else
+            {
+                result = "ERROR";
+            }
+            
+        } catch (NisiraORMException  ex) {
+            Logger.getLogger(WebServiceNisira.class.getName()).log(Level.SEVERE, null, ex);
+            result = "ERROR :"+ex.getMessage();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(WebServiceNisira.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(WebServiceNisira.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
+    }
+    @WebMethod(operationName = "METHOD_ASCENT_DPERSONAL_SERVICIO")
+    public String METHOD_ASCENT_DPERSONAL_SERVICIO(@WebParam(name = "type") String type,@WebParam(name = "datos") String datos,@WebParam(name = "user") String user){
+        String result=null;
+        try {
+            String conexion = WebMethodNisira.cargarBaseDatos();
+            setConexion(conexion);
+            ArrayList<String> lista_solution=com.nisira.core.util.CoreUtil.valoresBase();/*Obtener Datos de solution.ini*/            String idempresa = lista_solution.get(5);
+            ConstantesBD.setIDEMPRESA(idempresa);
+            Dpersonal_servicioDao dpersonal_servicioDao = new Dpersonal_servicioDao();
+            List<Dpersonal_servicio> list = (List<Dpersonal_servicio>) WebUtil.stringObject("com.nisira.core.entity.Dpersonal_servicio", datos);
+            if(list !=null){
+                if(type.trim().equals("JSON")){
+                    for(Dpersonal_servicio dt:list){
+                        result = dpersonal_servicioDao.syncro_movil_object(dt,user);
+                    }
+                }
+                if(type.trim().equals("XML")){
+                    result = dpersonal_servicioDao.syncro_movil_list(list,user);
+                }
+            }
+            else
+            {
+                result = "ERROR";
+            }
+        } catch (NisiraORMException  ex) {
+            Logger.getLogger(WebServiceNisira.class.getName()).log(Level.SEVERE, null, ex);
+            result = "ERROR :"+ex.getMessage();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(WebServiceNisira.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(WebServiceNisira.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
+    }
  }
