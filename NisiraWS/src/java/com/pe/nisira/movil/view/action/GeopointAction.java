@@ -181,6 +181,12 @@ public class GeopointAction extends AbstactListAction<Geopoint> implements Seria
 
         }
     }
+    
+    @Override
+    public void aprobar() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
     public void openGMap() {
         RequestContext.getCurrentInstance().openDialog("cnt_geocode", modalGoogleMapOptions, null);
     }
@@ -304,7 +310,7 @@ public class GeopointAction extends AbstactListAction<Geopoint> implements Seria
     }
 
     @Override
-    public String buscarFiltro() {
+    public String buscarFiltro(int tipo) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

@@ -54,6 +54,7 @@ import com.nisira.core.entity.Producto;
 import com.nisira.core.entity.Sucursal;
 import com.nisira.core.entity.Sucursales;
 import com.nisira.core.entity.Tcambio;
+import com.nisira.core.entity.Vendedor;
 import com.nisira.core.entity.Wtiposervicio;
 import com.nisira.core.util.ConstantesBD;
 import com.nisira.core.util.CoreUtil;
@@ -161,6 +162,7 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
     private String mensaje;
     private Estados selecEstados;
     private Clieprov selectClieprov;
+    private Vendedor selectVendedor;
     private Contactosclieprov selectContactosClieprov;
     private Producto selectProducto;
     private Estructura_costos_producto selectEstructura_costos_producto;
@@ -458,7 +460,7 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
                 setMensaje(WebUtil.exitoEliminar("Cotización Venta ", mensaje));
                 WebUtil.info(getMensaje());
                 setLvalidate(true);
-                buscarFiltro();
+                buscarFiltro(2);
             }
 //            if (getOpc_anular_eliminar().equalsIgnoreCase("ELIMINAR")) {
 //                getDatoEdicion().setEstado(2);
@@ -467,6 +469,10 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
         } catch (Exception ex) {
             Logger.getLogger(CotizacionesAction.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    @Override
+    public void aprobar() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     public void envioCorreo(){
         try {
@@ -1173,7 +1179,7 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
         
     }
     public void verCntCargos_personal() {
-        RequestContext.getCurrentInstance().openDialog("cntCargos_personal", modalOptions, null);
+        RequestContext.getCurrentInstance().openDialog("cntCargosPersonal", modalOptions, null);
     }
     public void valorCargos_personal(SelectEvent event) {
         Cargos_personal cargo = (Cargos_personal) event.getObject();
@@ -1237,6 +1243,14 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
 //        RequestContext.getCurrentInstance().update("datos:tabs:listDestructura_costos_recursos_cotizacionventas");
     }
     /*** responsable ***/
+    public void verCntVendedor() {
+        RequestContext.getCurrentInstance().openDialog("cntVendedor", modalOptions, null);
+    }
+    public void valorVendedor(SelectEvent event) {
+        this.selectVendedor = (Vendedor)  event.getObject();
+        getDatoEdicion().setIdvendedor(selectVendedor.getIdvendedor());
+        getDatoEdicion().setVendedor(selectVendedor.getDescripcion());
+    }
     public void verCntClieprov() {
         RequestContext.getCurrentInstance().openDialog("cntClieprov", modalOptions, null);
     }
@@ -1326,7 +1340,8 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
                                     total_porcentaje+=(o.getCantidad()/100)*subtotal_ec;
                                 }
                             }
-                            total_ec = subtotal_ec + total_porcentaje;
+                            total_ec = subtotal_ec + total_porcentaje + selectEstructura_costos_producto.getAjuste();
+                            //total_ec = subtotal_ec + total_porcentaje;
                             preciounitario = total_ec;
                         }
                         else{
@@ -2010,7 +2025,7 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
     }
 
     @Override
-    public String buscarFiltro(){
+    public String buscarFiltro(int tipo){
         try {
             this.mensaje = "";
             SimpleDateFormat  f = new SimpleDateFormat("yyyy-MM-dd");
@@ -2018,24 +2033,15 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
             String f_fin = f.format(getHasta());
             f_ini = f_ini.replace("-", "");
             f_fin = f_fin.replace("-", "");
-//            if (f_ini.length() == 8 && f_fin.length() == 8) {
-//                f_ini = f_ini.substring(4) + f_ini.substring(2, 4) + f_ini.substring(0, 2);
-//                f_fin = f_fin.substring(4) + f_fin.substring(2, 4) + f_fin.substring(0, 2);
-//            } else {
-//                f_ini = "";
-//                f_fin = "";
-//            }
             setListaDatos(getCotizacionventasDao().listarPorEmpresaWebFiltroFecha(user.getIDEMPRESA(),f_ini,f_fin));
-            //   filtrar();
-            RequestContext.getCurrentInstance().update("datos:tbl");
-//            RequestContext.getCurrentInstance().execute("javascript:location.reload()");
         } catch (Exception e) {
             mensaje = WebUtil.mensajeError();
             WebUtil.error(mensaje);
         }
 //        RequestContext.getCurrentInstance().update("datos");
         RequestContext.getCurrentInstance().update("datos:tbl");
-        lista_accion_filtro("wLst_Cotizacionventas");
+        if(tipo == 2)
+            lista_accion_filtro("wLst_Cotizacionventas");
         return "";
     }
 

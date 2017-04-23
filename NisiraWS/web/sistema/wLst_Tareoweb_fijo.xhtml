@@ -1,0 +1,55 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">            
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
+                <cmp:barra_lst bean="#{tareoweb_fijoAction}" mostrar_opciones="false" cfgfiltro="true"/>
+                <p:dataTable  id="tbl" var="listCabtareoweb" value="#{tareoweb_fijoAction.listaDatos}" filteredValue="#{tareoweb_fijoAction.filtroDatos}"  widgetVar="listCabtareoweb" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                              paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" 
+                              selection="#{tareoweb_fijoAction.datoSeleccionado}" 
+                              rowKey="#{listCabtareoweb.idcabtareoweb}"
+                              resizableColumns="true">
+                    <f:facet name="header">
+                        <h:outputText value="#{tareoweb_fijoAction.tituloHead}" />   
+                    </f:facet>
+                    <p:column headerText="Doc" style="width:5%;" filterBy="#{listCabtareoweb.iddocumento}" filterMatchMode="contains" sortBy="#{listCabtareoweb.iddocumento}">
+                        <h:outputText value="#{listCabtareoweb.iddocumento}" />
+                    </p:column>
+                    <p:column headerText="Serie" style="width:8%;" filterBy="#{listCabtareoweb.serie}" filterMatchMode="contains" sortBy="#{listCabtareoweb.serie}">
+                        <h:outputText value="#{listCabtareoweb.serie}" />
+                    </p:column>
+                    <p:column headerText="Número" style="width:10%;" filterBy="#{listCabtareoweb.numero}" filterMatchMode="contains" sortBy="#{listCabtareoweb.numero}">
+                        <h:outputText value="#{listCabtareoweb.numero}" />
+                    </p:column>
+                    <p:column headerText="Responsable" style="width:30%;" filterBy="#{listCabtareoweb.responsable}" filterMatchMode="contains" sortBy="#{listCabtareoweb.responsable}">
+                        <h:outputText value="#{listCabtareoweb.responsable}" />
+                    </p:column>
+                    <p:column headerText="Sucursal" style="width:30%;" filterBy="#{listCabtareoweb.sucursal}" filterMatchMode="contains" sortBy="#{listCabtareoweb.sucursal}">
+                        <h:outputText value="#{listCabtareoweb.sucursal}" />
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{listCabtareoweb.fecha}" filterMatchMode="contains" sortBy="#{listCabtareoweb.fecha}">
+                        <f:facet name="header">
+                            <h:outputText value="Fecha" />
+                        </f:facet>
+                        <h:outputText value="#{listCabtareoweb.fecha}">
+                            <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Estado" style="width:30%;" filterBy="#{listCabtareoweb.estado}" filterMatchMode="contains" sortBy="#{listCabtareoweb.estado}">
+                        <h:outputText value="#{listCabtareoweb.estado}" />
+                    </p:column>
+                </p:dataTable>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{tareoweb_fijoAction}" ventana="LST" />
+        </h:form>
+    </ui:define>    
+</ui:composition>

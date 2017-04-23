@@ -9,11 +9,11 @@
     </ui:define>
     <ui:define name="body">
         <h:form style="font-size: 12px;" id="datos" >
-            <p:panelGrid columns="2" styleClass="bordePanelGrid" columnClasses="no-border, no-border">
+            <p:panelGrid columns="2" styleClass="bordePanelGrid" columnClasses="no-border, no-border" style="width: 65%">
                 <f:facet name="header">
                     <p:outputLabel style="font-size: 14px" value="Control de Privilegios de Menu"/>
                 </f:facet>
-                <p:panelGrid columns="1" styleClass="bordePanelGrid" columnClasses="no-border, no-border">
+                <p:panelGrid columns="1" styleClass="bordePanelGrid" columnClasses="no-border, no-border" style="width: 80%">
                     <p:panelGrid columns="2" columnClasses="no-border, no-border">
                         <p:outputLabel value="Usuario: "/>
                         <p:selectOneMenu id="usr" value="#{privilegioEdtMenuAction.idusuario}" filter="true" filterMatchMode="startsWith">  
@@ -42,17 +42,18 @@
                         </p:treeNode>  
                     </p:tree>
                 </p:panelGrid>
-                <h:panelGrid style="vertical-align: top !important; width: 100%" bgcolor="white" id="datosTree" columns="1"> 
+                <h:panelGrid style="vertical-align: top !important; width: 600px;" bgcolor="white" id="datosTree" columns="1"> 
                     <h:panelGrid style="vertical-align: top !important;font-size: 11px" columns="3">
                         <p:commandButton update=":datos:datosTree,:datos:growl"  value="Grabar"  actionListener="#{privilegioEdtMenuAction.grabar_tg30wbmenu()}"  />
 
                     </h:panelGrid>
 
-                    <h:panelGrid columns="7" 
+                    <h:panelGrid columns="8" 
                                  style="padding: 0px !important;
                                  background: white !important;
                                  background-color: white !important;
-                                 font-size: 12px;text-align: left;font-weight: bold"
+                                 font-size: 12px;text-align: left;font-weight: bold;
+                                 width: 99%;"
                                  >
                         <h:panelGrid width="40" >Abilitar </h:panelGrid>
                         <h:panelGrid width="40" >Nuevo </h:panelGrid>
@@ -61,6 +62,7 @@
                         <h:panelGrid width="40" > Anular </h:panelGrid>
                         <h:panelGrid width="40" > Grabar </h:panelGrid>
                         <h:panelGrid width="40" > Cerrar </h:panelGrid>
+                        <h:panelGrid width="40" > Aprobar </h:panelGrid>
                     </h:panelGrid>
                     <p:dataGrid   styleClass="dataGridNoticias"   id="tabla000" var="i" value="#{privilegioEdtMenuAction.lista_seleccion}" 
                                   columns="1"     
@@ -92,6 +94,9 @@
                                 </h:panelGrid>
                                 <h:panelGrid style="text-align: center" width="40" columns="1">
                                     <h:selectBooleanCheckbox  value="#{i[8]}" />
+                                </h:panelGrid>
+                                <h:panelGrid style="text-align: center" width="40" columns="1">
+                                    <h:selectBooleanCheckbox  value="#{i[9]}" />
                                 </h:panelGrid>
                             </h:panelGrid>
                         </h:column> 

@@ -67,7 +67,12 @@ public class EmpesaAction extends AbstactListAction<Empresa> implements Serializ
     public void eliminar() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
+    @Override
+    public void aprobar() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
     public void editar() {
         setLadd(1);
         setDatoEdicion(getDatoSeleccionado());
@@ -84,7 +89,7 @@ public class EmpesaAction extends AbstactListAction<Empresa> implements Serializ
     }
 
     @Override
-    public String buscarFiltro() {
+    public String buscarFiltro(int tipo) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

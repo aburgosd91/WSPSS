@@ -6,8 +6,10 @@
 package com.pe.nisira.movil.view.action;
 
 import com.nisira.core.dao.RutaDao;
+import com.nisira.core.dao.RutasDao;
 import com.nisira.core.entity.Geopoint;
 import com.nisira.core.entity.Ruta;
+import com.nisira.core.entity.Rutas;
 import com.pe.nisira.movil.view.bean.UsuarioBean;
 import com.pe.nisira.movil.view.util.Constantes;
 import com.pe.nisira.movil.view.util.WebUtil;
@@ -29,17 +31,17 @@ import org.primefaces.event.SelectEvent;
  */
 @ManagedBean(name = "rutaAction")
 @SessionScoped
-public class RutaAction extends AbstactListAction<Ruta> implements Serializable {
+public class RutaAction extends AbstactListAction<Rutas> implements Serializable {
 
     private String mensaje;
-    private RutaDao rutaDao;
+    private RutasDao rutaDao;
     private UsuarioBean user;
-    private Geopoint selectLugarOrigen;
-    private Geopoint selectLugarDestino;
+    private boolean estado;
     public RutaAction() {
         mensaje = "";
-        rutaDao = new RutaDao();
+        rutaDao = new RutasDao();
         user = (UsuarioBean) WebUtil.getObjetoSesion(Constantes.SESION_USUARIO);
+        estado = false;
         actualiza_ventana("wMnt_Ruta");
     }
 
@@ -54,46 +56,22 @@ public class RutaAction extends AbstactListAction<Ruta> implements Serializable 
             this.setMensaje(ex.toString());
         }
     }
-
+    
     @Override
     public String getIniciar() {
         mensaje = "";
-        rutaDao = new RutaDao();
+        rutaDao = new RutasDao();
         user = (UsuarioBean) WebUtil.getObjetoSesion(Constantes.SESION_USUARIO);
         actualiza_ventana("wMnt_Ruta");
         return "";
     }
 
     @Override
-    public void doNuevo() throws IOException {
-        setLadd(1);
-        nuevo();
-    }
-
-    @Override
-    public void doEditar_lista() throws IOException {
-        if (getDatoSeleccionado() == null) {
-            WebUtil.MensajeAdvertencia("Debe seleccionar registro a editar.");
-
-        } else {
-            setLadd(2);
-            setDatoEdicion(getDatoSeleccionado());
-            RequestContext.getCurrentInstance().update("datos:dlGuardarRuta");
-            RequestContext.getCurrentInstance().execute("PF('dlGuardarRuta').show()");
-            setDatoEdicion(getDatoSeleccionado());
-
-        }
-    }
-
-    @Override
     public void nuevo() {
         try {
-            setDatoEdicion(new Ruta());
+            setDatoEdicion(new Rutas());
             getDatoEdicion().setIdempresa(user.getIDEMPRESA());
             getDatoEdicion().setEstado(1);
-            RequestContext.getCurrentInstance().update("datos:dlGuardarRuta");
-            RequestContext.getCurrentInstance().execute("PF('dlGuardarRuta').show()");
-
         } catch (Exception ex) {
             this.setMensaje(ex.toString());
         }
@@ -112,30 +90,25 @@ public class RutaAction extends AbstactListAction<Ruta> implements Serializable 
             if (validarEdicion()) {
                 if(getLadd()==1){
                     mensaje = rutaDao.grabar(1,getDatoEdicion());
-                    if (!mensaje.equals("")) {
-                        WebUtil.info("Ruta " + mensaje+ " registrado con éxito.");
-                    }
+                    if(mensaje!=null)
+                        if(mensaje.trim().length()==15)
+                            getDatoEdicion().setIdruta(mensaje.trim());
                 }
                 else if(getLadd()==2){
+                    getDatoEdicion().setEstado(estado?1:0);
                     mensaje = rutaDao.grabar(2,getDatoEdicion());
-                    if (!mensaje.equals("")) {
-                        WebUtil.info("Ruta " + mensaje + " actualizado con éxito.");
-                    }
                 }
-                RequestContext.getCurrentInstance().update("datos");
-                RequestContext.getCurrentInstance().execute("PF('dlGuardarRuta').hide()");
+                setMensaje(WebUtil.exitoRegistrar("Ruta ", mensaje));
+                WebUtil.info(getMensaje());
+                setLvalidate(true);
 //                buscarTodo();
             }
         } catch (Exception ex) {
-            Logger.getLogger(RutaAction.class.getName()).log(Level.SEVERE, null, ex);
+            setMensaje(ex.getMessage() + "\n" + ex.getLocalizedMessage());
+            Logger.getLogger(OrdenliquidaciongastoAction.class.getName()).log(Level.SEVERE, null, ex);
+            WebUtil.fatal(mensaje);
         }
-    }
-
-    public void ver() {
-        setLadd(0);
-        setDatoEdicion(getDatoSeleccionado());
-        RequestContext.getCurrentInstance().update("datos:dlGuardarRuta");
-        RequestContext.getCurrentInstance().execute("PF('dlGuardarRuta').show()");
+        RequestContext.getCurrentInstance().update("datos");
     }
 
     @Override
@@ -143,11 +116,11 @@ public class RutaAction extends AbstactListAction<Ruta> implements Serializable 
         try {
             if (getOpc_anular_eliminar().equalsIgnoreCase("ANULAR")) {
                 getDatoEdicion().setEstado(0);
-                rutaDao.grabar(2,getDatoEdicion());
+                rutaDao.grabar(3,getDatoEdicion());
             }
             if (getOpc_anular_eliminar().equalsIgnoreCase("ELIMINAR")) {
                 getDatoEdicion().setEstado(2);
-                rutaDao.grabar(2,getDatoEdicion());
+                rutaDao.grabar(4,getDatoEdicion());
             }
             RequestContext.getCurrentInstance().update("datos");
         } catch (Exception ex) {
@@ -155,19 +128,18 @@ public class RutaAction extends AbstactListAction<Ruta> implements Serializable 
         }
 
     }
-    public void verCntLugar() {
-        RequestContext.getCurrentInstance().openDialog("cntGeopoint", modalOptions, null);
+    
+    @Override
+    public void aprobar() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    public void valorLugarOrigen(SelectEvent event) {
-        this.setSelectLugarOrigen((Geopoint) event.getObject());
-        getDatoEdicion().setIdterminalorigen(getSelectLugarOrigen().getIdgeopoint());
-        getDatoEdicion().setRutaorigen(getSelectLugarOrigen().getDescripcion());
+    
+    public void findDetalle(){
+        if(getDatoEdicion()!=null){
+            estado = getDatoEdicion().getEstado()==0.0?false:true;
+        }
     }
-    public void valorLugarDestino(SelectEvent event) {
-        this.setSelectLugarDestino((Geopoint) event.getObject());
-        getDatoEdicion().setIdterminaldestino(getSelectLugarDestino().getIdgeopoint());
-        getDatoEdicion().setRutadestino(getSelectLugarDestino().getDescripcion());
-    }
+
     public String getMensaje() {
         return mensaje;
     }
@@ -176,36 +148,8 @@ public class RutaAction extends AbstactListAction<Ruta> implements Serializable 
         this.mensaje = mensaje;
     }
 
-    /**
-     * @return the selectLugarOrigen
-     */
-    public Geopoint getSelectLugarOrigen() {
-        return selectLugarOrigen;
-    }
-
-    /**
-     * @param selectLugarOrigen the selectLugarOrigen to set
-     */
-    public void setSelectLugarOrigen(Geopoint selectLugarOrigen) {
-        this.selectLugarOrigen = selectLugarOrigen;
-    }
-
-    /**
-     * @return the selectLugarDestino
-     */
-    public Geopoint getSelectLugarDestino() {
-        return selectLugarDestino;
-    }
-
-    /**
-     * @param selectLugarDestino the selectLugarDestino to set
-     */
-    public void setSelectLugarDestino(Geopoint selectLugarDestino) {
-        this.selectLugarDestino = selectLugarDestino;
-    }
-
     @Override
-    public String buscarFiltro() {
+    public String buscarFiltro(int tipo) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -222,6 +166,20 @@ public class RutaAction extends AbstactListAction<Ruta> implements Serializable 
     @Override
     public JRDataSource getDataSourceReport_lst() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    /**
+     * @return the estado
+     */
+    public boolean isEstado() {
+        return estado;
+    }
+
+    /**
+     * @param estado the estado to set
+     */
+    public void setEstado(boolean estado) {
+        this.estado = estado;
     }
 
 }

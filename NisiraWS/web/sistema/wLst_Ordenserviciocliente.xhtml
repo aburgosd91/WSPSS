@@ -9,7 +9,7 @@
     <ui:define name="metadata">
     </ui:define>
     <ui:define name="body">
-        <h:form id="datos">            
+        <h:form id="datos">
             <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
                 <cmp:barra_lst bean="#{ordenservicioclienteAction}" mostrar_opciones="false" cfgfiltro="true"/>
                 <p:dataTable  id="tbl" var="listOrdenServicioCliente" value="#{ordenservicioclienteAction.listaDatos}" filteredValue="#{ordenservicioclienteAction.filtroDatos}"  widgetVar="listOrdenServicioCliente" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
@@ -20,7 +20,7 @@
                     <f:facet name="header">
                         <h:outputText value="#{ordenservicioclienteAction.tituloHead}" />   
                     </f:facet>
-                    <p:column headerText="Nro. Documento" style="width:30%;" >
+                    <p:column headerText="Nro. Documento" style="width:30%;" filterBy="#{listOrdenServicioCliente.iddocumento}-#{listOrdenServicioCliente.serie}-#{listOrdenServicioCliente.numero}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.iddocumento}-#{listOrdenServicioCliente.serie}-#{listOrdenServicioCliente.numero}">
                         <h:outputText value="#{listOrdenServicioCliente.iddocumento}-#{listOrdenServicioCliente.serie}-#{listOrdenServicioCliente.numero}" />
                     </p:column>
                     <p:column headerText="Doc." style="width:30%;" filterBy="#{listOrdenServicioCliente.idclieprov}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.idclieprov}">
@@ -46,7 +46,10 @@
                     <p:column headerText="Servicio" style="width:30%;" filterBy="#{listOrdenServicioCliente.ro_oservicio}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.ro_oservicio}">
                         <h:outputText value="#{listOrdenServicioCliente.nro_oservicio}" />
                     </p:column>
-                    <p:column headerText="Estado" style="width:30%;" filterBy="#{listOrdenServicioCliente.estado}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.estado}">
+                    <p:column headerText="Tipo" style="width:15%;" filterBy="#{listOrdenServicioCliente.tipo_servicio}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.tipo_servicio}">
+                        <h:outputText value="#{listOrdenServicioCliente.tipo_servicio}" />
+                    </p:column>
+                    <p:column headerText="Estado" style="width:15%;" filterBy="#{listOrdenServicioCliente.estado}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.estado}">
                         <h:outputText value="#{listOrdenServicioCliente.estado}" />
                     </p:column>
                 </p:dataTable>

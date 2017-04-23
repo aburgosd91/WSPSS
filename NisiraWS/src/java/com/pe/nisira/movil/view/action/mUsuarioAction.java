@@ -152,6 +152,12 @@ public class mUsuarioAction extends AbstactListAction<Appmovilusuario>{
             RequestContext.getCurrentInstance().update("datos");
         }
     }
+    
+    @Override
+    public void aprobar() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
     public void verCntUsuario() {
         RequestContext.getCurrentInstance().openDialog("cntUsuario", modalOptions, null);
     }
@@ -221,7 +227,7 @@ public class mUsuarioAction extends AbstactListAction<Appmovilusuario>{
     }
 
     @Override
-    public String buscarFiltro() {
+    public String buscarFiltro(int tipo) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

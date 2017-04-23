@@ -5,6 +5,8 @@
  */
 package com.pe.nisira.movil.view.util;
 
+import java.util.Date;
+
 /**
  *
  * @author jpretel
@@ -12,12 +14,23 @@ package com.pe.nisira.movil.view.util;
 public class DataTableColumn {
     private String header;
     private String property;
-
+    private Date adicional1;
+    private int adicional2;
     public DataTableColumn(String header, String property) {
         this.header = header;
         this.property = property;
     }
-
+    
+    public DataTableColumn(String header, String property, Date date) {
+        this.header = header;
+        this.property = property;
+        this.adicional1 = date;
+    }
+    public DataTableColumn(String header, String property, Date date, int item) {
+        this.header = header;
+        this.property = property;
+        this.adicional1 = date;
+    }
     public String getHeader() {
         return header;
     }
@@ -32,5 +45,19 @@ public class DataTableColumn {
 
     public void setProperty(String property) {
         this.property = property;
+    }
+
+    /**
+     * @return the adicional1
+     */
+    public Date getAdicional1() {
+        return adicional1;
+    }
+
+    /**
+     * @param adicional1 the adicional1 to set
+     */
+    public void setAdicional1(Date adicional1) {
+        this.adicional1 = adicional1;
     }
 }

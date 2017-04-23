@@ -111,7 +111,7 @@ public class Table_rpt_liquidacion_pssAction extends AbstactListAction<Table_rpt
                 setMensaje(WebUtil.exitoRegistrar("Orden Servicio ", mensaje));
                 WebUtil.info(getMensaje());
 //                setSelectListOrdenserviciocliente(new ArrayList<>());
-                buscarFiltro();
+                buscarFiltro(2);
             }else{
                 this.mensaje = "Seleccionar Documento";
                 WebUtil.MensajeError(this.mensaje);
@@ -121,6 +121,12 @@ public class Table_rpt_liquidacion_pssAction extends AbstactListAction<Table_rpt
             WebUtil.MensajeError(ex.getMessage());
         }
     }
+    
+    @Override
+    public void aprobar() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
     public UsuarioBean getUser() {
         return user;
     }
@@ -145,7 +151,7 @@ public class Table_rpt_liquidacion_pssAction extends AbstactListAction<Table_rpt
         this.mensaje = mensaje;
     }
     @Override
-    public String buscarFiltro(){
+    public String buscarFiltro(int tipo){
         try {
             this.mensaje = "";
             SimpleDateFormat  f = new SimpleDateFormat("yyyy-MM-dd");
@@ -160,7 +166,8 @@ public class Table_rpt_liquidacion_pssAction extends AbstactListAction<Table_rpt
             WebUtil.error(mensaje);
         }
         RequestContext.getCurrentInstance().update("datos:tbl");
-        lista_accion_filtro("wLst_Table_rpt_liquidacion_pss");
+        if(tipo == 2)
+            lista_accion_filtro("wLst_Table_rpt_liquidacion_pss");
         return "";
     }
 

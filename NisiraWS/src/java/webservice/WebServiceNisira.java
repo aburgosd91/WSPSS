@@ -45,7 +45,7 @@ public class WebServiceNisira{
         EConexion e = new EConexion();
         e.BASEDATOS = lista_solution.get(4);/*BASE DATOS*/
         e.CLAVE = ClaveMovil.Desencriptar_ASCII(lista_solution.get(3));//"amadeus2010";
-        e.INSTANCIA = "";
+        e.INSTANCIA = lista_solution.get(1).isEmpty()?"":lista_solution.get(1).trim();
         e.USUARIO = lista_solution.get(2).trim();//"sa";
         //e.SERVIDOR = "localhost";
         e.SERVIDOR = lista_solution.get(0).trim();//"10.250.50.88";

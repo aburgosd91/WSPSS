@@ -25,24 +25,12 @@
                         </f:facet>
                         <h:outputText value="#{listRuta.idruta}"/>
                     </p:column>
-                    <p:column style="width:35%;" filterBy="#{listRuta.descripcion}" filterMatchMode="contains" sortBy="#{listRuta.descripcion}">
+                    <p:column style="width:45%;" filterBy="#{listRuta.descripcion}" filterMatchMode="contains" sortBy="#{listRuta.descripcion}">
                         <f:facet name="header">
                             <h:outputText value="Descripción" />
                         </f:facet>
                         <h:outputText value="#{listRuta.descripcion}"/>
                     </p:column>
-                    <p:column style="width:25%;" filterBy="#{listRuta.rutaorigen}" filterMatchMode="contains" sortBy="#{listRuta.rutaorigen}">
-                        <f:facet name="header">
-                            <h:outputText value="Origen" />
-                        </f:facet>
-                        <h:outputText value="#{listRuta.rutaorigen}"/>
-                    </p:column> 
-                    <p:column style="width:25%;" filterBy="#{listRuta.rutadestino}" filterMatchMode="contains" sortBy="#{listRuta.rutadestino}">
-                        <f:facet name="header">
-                            <h:outputText value="Destino" />
-                        </f:facet>
-                        <h:outputText value="#{listRuta.rutadestino}"/>
-                    </p:column> 
                     <p:column style="width:15%;" filterBy="#{listRuta.estado}">
                         <f:facet name="header">
                             <h:outputText value="ESTADO"/>
@@ -58,40 +46,6 @@
                     </p:column>
                 </p:dataTable>
             </p:panelGrid>
-            <p:dialog id="dlGuardarRuta" header="..:: MANTENEDOR RUTA ::." widgetVar="dlGuardarRuta" modal="true" showEffect="popup" closable="false">
-                <p:messages id="messages" autoUpdate="true" closable="true" style="font-size:10px"/>
-                <p:panelGrid columns="2" columnClasses="no-border, no-border,no-border">
-                    <p:outputLabel value="Id: " />
-                    <p:inputText value="#{rutaAction.datoEdicion.idruta}" disabled="true"/>
-                    <p:outputLabel value="Descripcion: " />
-                    <p:inputTextarea value="#{rutaAction.datoEdicion.descripcion}" cols="60" rows="2" disabled="#{!rutaAction.edicion}"/>
-                    <p:outputLabel value="Origen:" escape="false" />
-                    <h:panelGrid id="cntLugarorigen" cellpadding="0" cellspacing="0" columns="3">
-                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{rutaAction.verCntLugar}" 
-                                         disabled="#{!rutaAction.edicion}"  icon="ui-icon-search">
-                            <p:ajax event="dialogReturn" listener="#{rutaAction.valorLugarOrigen}" update="cntLugarorigen"/>
-                        </p:commandButton>
-                        <p:inputText  style="text-align: left" size="8" readonly="true"  value="#{rutaAction.datoEdicion.idterminalorigen}"/>
-                        <p:inputText size="50" readonly="true" value="#{rutaAction.datoEdicion.rutaorigen}" />
-                    </h:panelGrid>
-                    <p:outputLabel value="Destino:" escape="false" />
-                    <h:panelGrid id="cntLugardestino" cellpadding="0" cellspacing="0" columns="3">
-                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{rutaAction.verCntLugar}" 
-                                         disabled="#{!rutaAction.edicion}"  icon="ui-icon-search">
-                            <p:ajax event="dialogReturn" listener="#{rutaAction.valorLugarDestino}" update="cntLugardestino"/>
-                        </p:commandButton>
-                        <p:inputText  style="text-align: left" size="8" readonly="true"  value="#{rutaAction.datoEdicion.idterminaldestino}"/>
-                        <p:inputText size="50" readonly="true" value="#{rutaAction.datoEdicion.rutadestino}" />
-                    </h:panelGrid>
-                </p:panelGrid>
-                <br/>
-                <p:toolbar>
-                    <f:facet name="right">
-                        <p:commandButton id="buttonGuardar" value="Grabar" ajax="true" actionListener="#{rutaAction.grabar()}" image="ui-icon-grabar"/>
-                        <p:commandButton id="buttonCancelar" value="Cancelar" image="ui-icon-cancelar" onclick="PF('dlGuardarRuta').hide()"/>
-                    </f:facet>
-                </p:toolbar>
-            </p:dialog>
             <p:growl id="growl" life="4000" showDetail="false"  />
             <cmp:mDialogElimina_lst id="cmpDialog" bean="#{rutaAction}" ventana="LST" />
         </h:form>

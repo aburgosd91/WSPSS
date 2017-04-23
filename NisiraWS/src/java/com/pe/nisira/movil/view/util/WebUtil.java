@@ -28,14 +28,23 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Formatter;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.servlet.ServletContext;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -55,6 +64,82 @@ import org.primefaces.model.UploadedFile;
  * @author Antenor
  */
 public class WebUtil {
+    public static Date convertCalendarDate(Calendar cal){
+        if(cal!=null)
+            return cal.getTime();
+        else
+            return null;
+    }
+    public static Calendar convertDateCalendar(Date dd){
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(dd);
+        return cal;
+    }
+    public static String convertDayOfSpanish(String day){
+        String dia = null;
+        switch(day){
+            case "Monday":      dia = "Lunes" ;break;
+            case "Tuesday":     dia = "Martes" ;break;
+            case "Wednesday":   dia = "Miércoles" ;break;
+            case "Thursday":    dia = "Jueves" ;break;
+            case "Friday":      dia = "Viernes" ;break;
+            case "Saturday":    dia = "Sábado" ;break;
+            case "Sunday":      dia = "Domingo" ;break;
+        }
+        return dia;
+    }
+    public static final String TIME24HOURS_PATTERN = "([01]?[0-9]|2[0-3]):[0-5][0-9]";
+    public static final Pattern pattern = Pattern.compile(TIME24HOURS_PATTERN);
+    public static boolean validateTime(final String time){
+        Matcher matcher = pattern.matcher(time);
+        return matcher.matches();
+    }
+    public static Date convertStringTime(String timer) throws ParseException{
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm"); // 12 hour format
+        java.util.Date d1 =(java.util.Date)format.parse(timer);
+        return d1;
+    }
+    public static int compareToDate(Date date1,Date date2){
+        int item = -2;
+        try {
+            /*
+            date1.compareTo(date2); //date1 < date2, devuelve un valor menor que 0
+            date2.compareTo(date1); //date2 > date1, devuelve un valor mayor que 0
+            date1.compareTo(date3); //date1 = date3, se mostrará un 0 en la consola
+            */
+            DateFormat dateF  = new SimpleDateFormat("HH:mm");
+            /** OBTENER SOLO HORAS **/
+            String t1 = dateF.format(date1);
+            String t2 = dateF.format(date2);
+            Date horaI;
+            Date horaF;
+            horaI = dateF.parse(t1);
+            horaF = dateF.parse(t2);
+            item = horaI.compareTo(horaF);
+        } catch (ParseException ex) {
+            Logger.getLogger(WebUtil.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return item;
+    }
+    public static int compareToDate(String date1,String date2){
+        int item = -2;
+        try {
+            /*
+            date1.compareTo(date2); //date1 < date2, devuelve un valor menor que 0
+            date2.compareTo(date1); //date2 > date1, devuelve un valor mayor que 0
+            date1.compareTo(date3); //date1 = date3, se mostrará un 0 en la consola
+            */
+            DateFormat dateF  = new SimpleDateFormat("HH:mm");
+            Date horaI;
+            Date horaF;
+            horaI = dateF.parse(date1);
+            horaF = dateF.parse(date2);
+            item = horaI.compareTo(horaF);
+        } catch (ParseException ex) {
+            Logger.getLogger(WebUtil.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return item;
+    }
     public static final String[] strMonths = new String[]{
 						"Enero",
 						"Febrero",
@@ -99,6 +184,8 @@ public class WebUtil {
             case 2:forma="dd/MM/yy";break;
             case 3:forma="dd-MM-yy:HH:mm:SS Z";break;
             case 4:forma="yyyy-MM-dd HH:mm:ss";break;
+            case 5:forma="yyyyMMdd";break;
+            case 6:forma="dd MM yy";break;
         }
         SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(forma);
         return DATE_FORMAT.format(fecha);
@@ -131,6 +218,9 @@ public class WebUtil {
 
     public static String exitoEliminar(Object... param) {
         return MessageFormat.format(Constantes.MENSAJE_ELIMINAR, param);
+    }
+    public static String exitoAnular(Object... param) {
+        return MessageFormat.format(Constantes.MENSAJE_ANULAR, param);
     }
     /********************************MSJ DE ALERTAS********************************************/
     public  static void info(String mensaje) {

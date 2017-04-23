@@ -134,6 +134,11 @@ public class ProductosAction extends AbstactListAction<Productos> implements Ser
             Logger.getLogger(ProductosAction.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    @Override
+    public void aprobar() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
     public String getMensaje() {
         return mensaje;
@@ -174,7 +179,7 @@ public class ProductosAction extends AbstactListAction<Productos> implements Ser
     }
 
     @Override
-    public String buscarFiltro() {
+    public String buscarFiltro(int tipo) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

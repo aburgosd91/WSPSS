@@ -103,7 +103,7 @@ public class UsuarioAction extends AbstactListAction<Usuario> implements Seriali
     }
 
     @Override
-    public String buscarFiltro() {
+    public String buscarFiltro(int tipo) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -122,4 +122,8 @@ public class UsuarioAction extends AbstactListAction<Usuario> implements Seriali
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
+    @Override
+    public void aprobar() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

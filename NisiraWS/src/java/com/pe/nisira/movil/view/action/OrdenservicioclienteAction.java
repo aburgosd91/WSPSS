@@ -6,6 +6,7 @@
 package com.pe.nisira.movil.view.action;
 
 import com.nisira.core.NisiraORMException;
+import com.nisira.core.dao.Cargos_personalDao;
 import com.nisira.core.dao.ClieprovDao;
 import com.nisira.core.dao.CotizacionventasDao;
 import com.nisira.core.dao.DcotizacionventasDao;
@@ -82,6 +83,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
     private boolean ftabdetalleordenservicio;
     private boolean ftabpersonalservicio;
     private boolean ftabrutas;
+    private boolean ftipo_servicio;
     /************** BOTONES - DORDENSERVICIO*******************/
     private boolean botonNuevoDOrdenservicio;
     private boolean botonEditarDOrdenservicio;
@@ -116,6 +118,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
     private List<Dcotizacionventas_actividades> listDcotizacionventas_actividades;
     private List<Estructura_costos_mano_obra_cotizacionventas> listEstructura_costos_mano_obra_cotizacionventas;
     private List<Motivosproduccion> listMotivoproduccion;
+    private List<Cargos_personal> listCargo_personal;
     /********************************** TABLAS TOTALES *******************************************/
     private List<Personal_servicio> listPersonalservicio_total;
     private List<Dpersonal_servicio> listDpersonalservicio_total;
@@ -136,6 +139,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
     private Dcotizacionventas_actividadesDao dcotizacionventas_actividadesdao;
     private Estructura_costos_mano_obra_cotizacionventasDao estructura_costos_mano_obra_cotizacionventasDao;
     private MotivosproduccionDao motivosproduccionDao;
+    private Cargos_personalDao cargos_personalDao;
     /*************************************ENTITY***************************************/
     private UsuarioBean user;
     private String numero;
@@ -162,7 +166,9 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
     private int indexTab;
     private TabView tabView; 
     private Producto selectProducto;
-
+    private Cargos_personal selectCargos_personal;
+    /************************************* DATOS *****************************************/
+    private int num_repetir;
     
     public OrdenservicioclienteAction() {
         try {
@@ -194,6 +200,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
             listPersonalservicio_total = new ArrayList<>();
             listDpersonalservicio_total = new ArrayList<>();
             listRutasTotales = new ArrayList<>();
+            listCargo_personal = new ArrayList<>();
             /*********************************DAO*******************************************/
             cotizacionventasDao = new CotizacionventasDao();
             ordenservicioclienteDao = new OrdenservicioclienteDao();
@@ -210,7 +217,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
             estadosDao = new EstadosDao();
             motivosproduccionDao = new MotivosproduccionDao();
             estructura_costos_mano_obra_cotizacionventasDao = new Estructura_costos_mano_obra_cotizacionventasDao();
-            
+            cargos_personalDao = new Cargos_personalDao();
             /**********************************CONTROLADOR********************************/
             /*DETALLE ORDEN SERVICIO*/
             botonNuevoDOrdenservicio=true;
@@ -228,12 +235,14 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
             botonNuevoRuta_servicios=true;
             botonEditarRuta_servicios=true;
             botonEliminarRuta_servicios=true;
-            /**********************************CONFIGURACIÓN - SERVIDOR********************************/
+            ftipo_servicio = true;
+            /********************************** CONFIGURACIÓN - SERVIDOR ********************************/
             listDocumentos=docDao.getOrdenServicio(user.getIDEMPRESA());
             listNumemisor=numemisorDao.listarPorDocWeb(user.getIDEMPRESA(), listDocumentos.get(0).getIddocumento());
             numero=listNumemisor.get(0).getNumero();
             listEstado = estadosDao.listarPorEmpresaWeb(user.getIDEMPRESA(),null);
-            listMotivoproduccion=motivosproduccionDao.listarPorEmpresaWeb(user.getIDEMPRESA());
+            listMotivoproduccion = motivosproduccionDao.listarPorEmpresaWeb(user.getIDEMPRESA());
+            num_repetir = 1;
             actualiza_ventana("wMnt_Ordenserviciocliente");
         } catch (NisiraORMException ex) {
             Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, null, ex);
@@ -321,14 +330,17 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
     public boolean esVistaValida() {
         if (getDatoEdicion().getIdclieprov().isEmpty() & getDatoEdicion().getRazonsocial().isEmpty()) {
             WebUtil.MensajeAdvertencia("Seleccione Cliente");
+            RequestContext.getCurrentInstance().update("datos:growl");
             return false;
         }
         if (!this.fdocreferencia & getListDocreferencia().size() == 0) {
             WebUtil.MensajeAdvertencia("Ingrese Documento referencia");
+            RequestContext.getCurrentInstance().update("datos:growl");
             return false;
         }
         if (getLstdordenserviciocliente().size() == 0) {
             WebUtil.MensajeAdvertencia("Ingrese Detalle de servicio");
+            RequestContext.getCurrentInstance().update("datos:growl");
             return false;
         }
         return true;
@@ -353,6 +365,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                 setMensaje(WebUtil.exitoRegistrar("Orden Servicio ", mensaje));
                 WebUtil.info(getMensaje());
                 setLvalidate(true);
+                RequestContext.getCurrentInstance().update("datos");
             }
         } catch (Exception ex) {
             setMensaje(ex.getMessage() + "\n" + ex.getLocalizedMessage());
@@ -360,7 +373,6 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
             WebUtil.fatal(mensaje);
         }
         
-        RequestContext.getCurrentInstance().update("datos");
     }
 
     @Override
@@ -376,12 +388,18 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
             Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    @Override
+    public void aprobar() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
     /************** CONFIGURACIÓN *******************/
     public void onSPTabChange(TabChangeEvent event) 
     {   
         tabView = (TabView) event.getComponent();
         indexTab = tabView.getActiveIndex();
-//        tabView.setActiveIndex(0);
+//      tabView.setActiveIndex(0);
     }
     public void configuracion_motivo_cabecera(String idmotivo){
         Motivosproduccion motivo =null;
@@ -486,6 +504,12 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                 }
                 configuracion_motivo_cabecera(getDatoEdicion().getIdmotivo());
                 configuracion_motivo_detalle(getDatoEdicion().getIdmotivo());
+                if(getDatoEdicion().getTipo_servicio()!=null){
+                    if(getDatoEdicion().getTipo_servicio().equalsIgnoreCase("F"))
+                        this.ftipo_servicio=true;
+                    else if(getDatoEdicion().getTipo_servicio().equalsIgnoreCase("E"))
+                        this.ftipo_servicio=false;
+                }
             }
             if(getLadd()==1){
                 if(!getListMotivoproduccion().isEmpty()){
@@ -494,6 +518,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                     configuracion_motivo_cabecera(getDatoEdicion().getIdmotivo());
                     configuracion_motivo_detalle(getDatoEdicion().getIdmotivo());
                 }
+                this.ftipo_servicio=true;
             }
 //            if(!getListMotivoproduccion().isEmpty()){
 //                Motivosproduccion mov = getListMotivoproduccion().get(0);
@@ -526,7 +551,17 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
         }
         RequestContext.getCurrentInstance().update("datos:btnbuscarcliente");
         RequestContext.getCurrentInstance().update("datos:btnbuscardocreferencia");
+        RequestContext.getCurrentInstance().update("datos:lstdordenserviciocliente");
         RequestContext.getCurrentInstance().update("datos:tabs");
+    }
+    public void onTiposervicio(){
+        if(getDatoEdicion().getTipo_servicio()!=null){
+            if(getDatoEdicion().getTipo_servicio().trim().equalsIgnoreCase("F")){
+                this.ftipo_servicio=true;
+            }else if(getDatoEdicion().getTipo_servicio().trim().equalsIgnoreCase("E")){
+                this.ftipo_servicio=false;
+            }
+        }
     }
     public void oncDocChange() throws Exception {
         listNumemisor = numemisorDao.listarPorDocWeb(user.getIDEMPRESA(), getDatoEdicion().getIddocumento());
@@ -561,9 +596,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
         configuracion_motivo_detalle(getDatoEdicion().getIdmotivo());
         listPersonal_Servicio = cargarPersonal_servicio();
         listRuta_servicios = cargarRuta_servicios();
-//        listPersonal_Servicio=(getPersonal_servicioDao().listarPorOrdenServicioClienteWeb(selectDordenserviciocliente.getIdempresa(), 
-//                selectDordenserviciocliente.getIdordenservicio(), selectDordenserviciocliente.getItem()));
-        RequestContext.getCurrentInstance().update("datos:tabs:lstdordenserviciocliente");
+        RequestContext.getCurrentInstance().update("datos:lstdordenserviciocliente");
         RequestContext.getCurrentInstance().update("datos:tabs:listPersonal_Servicio");
         RequestContext.getCurrentInstance().update("datos:tabs:listRuta_servicios");
     }
@@ -575,23 +608,52 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
         tabView.setActiveIndex(indexTab);
     }
     public void onRowSelectPersonal_Servicio(SelectEvent event) throws IOException {
-        setBotonEditarPersonal_servicio(false);
-        /*** CONFIGURACIONES ****/
-        configuracion_motivo_detalle(getDatoEdicion().getIdmotivo());
-        RequestContext.getCurrentInstance().update("datos:tabs");
-        tabView.setActiveIndex(indexTab);
-        //RequestContext.getCurrentInstance().update("datos:tabs:tab_personal_Servicio");
-        //RequestContext.getCurrentInstance().update("datos:tabs:tab_personal_Servicio:listPersonal_Servicio");
+        try {
+            setBotonEditarPersonal_servicio(false);
+            /*** CONFIGURACIONES ****/
+            configuracion_motivo_detalle(getDatoEdicion().getIdmotivo());
+            /*CARGAR DATOS DPERSONAL_SERVICIO*/
+            listDpersonal_Servicio = cargarDpersonal_servicio();
+            RequestContext.getCurrentInstance().update("datos:tabs");
+            //tabView.setActiveIndex(indexTab);
+            //RequestContext.getCurrentInstance().update("datos:tabs:tab_personal_Servicio");
+            //RequestContext.getCurrentInstance().update("datos:tabs:tab_personal_Servicio:listPersonal_Servicio");
+        } catch (NisiraORMException ex) {
+            Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     public void onRowSelectDPersonal_Servicio(SelectEvent event) throws IOException {
         setBotonEditarDPersonal_servicio(false);
         setBotonEliminarDPersonal_servicio(false);
-        RequestContext.getCurrentInstance().update("datos:listDpersonal_Servicio");
+        RequestContext.getCurrentInstance().update("datos:tabs");
+//        RequestContext.getCurrentInstance().update("datos:tabs:listDpersonal_Servicio");
     }
     public void onRowCancelDocreferencia(RowEditEvent event) {
         Docreferencia obj =(Docreferencia)event.getObject();
         getListDocreferencia().remove(obj);
         RequestContext.getCurrentInstance().update("datos:tabledocreferencia");
+    }
+    public void blur_hora_llegada(){
+        getDpersonal_servicio().setFhora_inicio_serv(getDpersonal_servicio().getFhora_llegada());
+//        RequestContext.getCurrentInstance().update("datos:dlgnew_dpersonal_servicio:hora_inicio");
+    }
+    public void blur_hora_inicio(){
+        /*CONVERTIR A DECIMALES PARA COMPARAR*/
+        Float hora_llegada_local=0.0f;
+        Float hora_inicio_serv_local=0.0f;
+        if(dpersonal_servicio.getFhora_llegada()!=null)
+            hora_llegada_local=WebUtil.convertTimeDecimal(dpersonal_servicio.getFhora_llegada());
+        if(dpersonal_servicio.getFhora_inicio_serv()!=null)
+            hora_inicio_serv_local=WebUtil.convertTimeDecimal(dpersonal_servicio.getFhora_inicio_serv());
+        if(hora_llegada_local>hora_inicio_serv_local){
+            getDpersonal_servicio().setFhora_inicio_serv(getDpersonal_servicio().getFhora_llegada());
+        }
+    }
+    public void blur_hora_liberacion(){
+
+    }
+    public void blur_hora_fin(){
+        getDpersonal_servicio().setFhora_liberacion(getDpersonal_servicio().getFhora_fin_serv());
     }
     /*******************DOC REFERENCIA******************/
     public void addDocreferencia(){
@@ -620,6 +682,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                     getSelectCotizacionventas().getIdcotizacionv(),lstdordenserviciocliente);
             //setListDcotizacionventas_actividades(getDcotizacionventas_actividadesdao().listarPorEmpresaServiceCotizacionVenta(getSelectCotizacionventas().getIdempresa(), getSelectCotizacionventas().getIdcotizacionv()));
             addPersonal_servicio();
+            RequestContext.getCurrentInstance().update("datos:lstdordenserviciocliente");
             RequestContext.getCurrentInstance().update("datos:tabs");
         } catch (Exception ex) {
             Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, null, ex);
@@ -688,35 +751,70 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                 obj.setIdservicio(deta.getIdproducto());
                 lstdordenserviciocliente.add(obj);
             }
-            
-            if(!lstdordenserviciocliente.isEmpty()){
-                setSelectDordenserviciocliente(lstdordenserviciocliente.get(0));
-            }
         } catch (Exception ex) {
             Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     public void grabarDordenserviciocliente(){
-        if(dordenserviciocliente.getHora_reqConvert()!=null)
-            dordenserviciocliente.setHora_req(WebUtil.convertTimeDecimal(dordenserviciocliente.getHora_reqConvert()));
-        int pos=lstdordenserviciocliente.indexOf(dordenserviciocliente);
-        if(pos==-1)
-            lstdordenserviciocliente.add(dordenserviciocliente);
-        else
-            lstdordenserviciocliente.set(pos, dordenserviciocliente);
-        RequestContext.getCurrentInstance().update("datos:dlgnew_dordenserviciocliente");
-        RequestContext.getCurrentInstance().update("datos:tabs");
-        
-//        RequestContext.getCurrentInstance().update("datos:tabs:tab_dordenserviciocliente");
-//        RequestContext.getCurrentInstance().update("datos:tabs:tab_dordenserviciocliente:lstdordenserviciocliente");
-        RequestContext.getCurrentInstance().execute("PF('dlgnew_dordenserviciocliente').hide()");
+        try {
+            if(dordenserviciocliente.getHora_reqConvert()!=null)
+                dordenserviciocliente.setHora_req(WebUtil.convertTimeDecimal(dordenserviciocliente.getHora_reqConvert()));
+            int pos=lstdordenserviciocliente.indexOf(dordenserviciocliente);
+            if(pos==-1)
+                lstdordenserviciocliente.add(dordenserviciocliente);
+            else
+                lstdordenserviciocliente.set(pos, dordenserviciocliente);
+            setSelectDordenserviciocliente(dordenserviciocliente);
+            
+            setBotonEditarDOrdenservicio(false);
+            setBotonNuevoRuta_servicios(false);
+            /*** CONFIGURACIONES ****/
+            configuracion_motivo_detalle(getDatoEdicion().getIdmotivo());
+            listPersonal_Servicio = cargarPersonal_servicio();
+            listRuta_servicios = cargarRuta_servicios();
+            
+            RequestContext.getCurrentInstance().update("datos:lstdordenserviciocliente");
+            RequestContext.getCurrentInstance().update("datos:tabs");
+            RequestContext.getCurrentInstance().update("datos:dlgnew_dordenserviciocliente");
+            RequestContext.getCurrentInstance().execute("PF('dlgnew_dordenserviciocliente').hide()");
+        } catch (NisiraORMException ex) {
+            Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     public void nuevoDordenserviciocliente() {
-        setDordenserviciocliente(new Dordenserviciocliente());
-        getDordenserviciocliente().setIdempresa(user.getIDEMPRESA());
-        getDordenserviciocliente().setItem(agregarItemDordenservicio());
-        RequestContext.getCurrentInstance().update("datos:dlgnew_dordenserviciocliente");
-        RequestContext.getCurrentInstance().execute("PF('dlgnew_dordenserviciocliente').show()");
+        if(getDatoEdicion().getIddocumento()==null){
+            this.mensaje="Documento no asignado";
+            WebUtil.MensajeError(mensaje);
+            RequestContext.getCurrentInstance().update("datos:growl");
+        }else if(getDatoEdicion().getSerie()==null){
+            this.mensaje="Serie no asignada";
+            WebUtil.MensajeError(mensaje);
+            RequestContext.getCurrentInstance().update("datos:growl");
+        }else if(getDatoEdicion().getNumero()==null){
+            this.mensaje="Número no asignado";
+            WebUtil.MensajeError(mensaje);
+            RequestContext.getCurrentInstance().update("datos:growl");
+        }else if(getDatoEdicion().getIdmotivo()==null){
+            this.mensaje="Seleccionar Motivo";
+            WebUtil.MensajeError(mensaje);
+            RequestContext.getCurrentInstance().update("datos:growl");
+        }else if(getDatoEdicion().getIdclieprov() == null){
+            this.mensaje="Seleccionar Cliente";
+            WebUtil.MensajeError(mensaje);
+            RequestContext.getCurrentInstance().update("datos:growl");
+        }else if(getDatoEdicion().getIdoperario()==null){
+            this.mensaje="Seleccionar Operario";
+            WebUtil.MensajeError(mensaje);
+            RequestContext.getCurrentInstance().update("datos:growl");
+        }
+        else{
+            setDordenserviciocliente(new Dordenserviciocliente());
+            getDordenserviciocliente().setIdempresa(user.getIDEMPRESA());
+            getDordenserviciocliente().setItem(agregarItemDordenservicio());
+            RequestContext.getCurrentInstance().update("datos:dlgnew_dordenserviciocliente");
+            RequestContext.getCurrentInstance().execute("PF('dlgnew_dordenserviciocliente').show()"); 
+        }
+        
     }
     public void editarDordenserviciocliente() {
         setDordenserviciocliente(selectDordenserviciocliente);
@@ -726,7 +824,9 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
     public void eliminarDordenserviciocliente() {
         try {
             lstdordenserviciocliente.remove(selectDordenserviciocliente);
-            RequestContext.getCurrentInstance().update("datos:tbl");
+            RequestContext.getCurrentInstance().update("datos:lstdordenserviciocliente");
+            RequestContext.getCurrentInstance().update("datos:tabs");
+//            RequestContext.getCurrentInstance().update("datos:tbl");
         } catch (Exception ex) {
             Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -736,8 +836,8 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
     }
     public void valorConsumidor(SelectEvent event) {
         this.selectConsumidor = (Consumidor) event.getObject();
-        getDordenserviciocliente().setIdvehiculo(selectConsumidor.getIdconsumidor());
-        getDordenserviciocliente().setVehiculo(selectConsumidor.getDescripcion());
+        getPersonal_servicio().setIdvehiculo(selectConsumidor.getIdconsumidor());
+        getPersonal_servicio().setVehiculo(selectConsumidor.getDescripcion());
     }
     public List<Personal_servicio> cargarPersonal_servicio() throws NisiraORMException{
         List<Personal_servicio> temp = new ArrayList<>();
@@ -800,20 +900,33 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
             int pos=-1;
             if(getSelectPersonal_servicio()!=null){
                 pos=listPersonalservicio_total.indexOf(getSelectPersonal_servicio());
-//                pos=listPersonal_Servicio.indexOf(getSelectPersonal_servicio());
             }
             if(pos==-1){
-                listPersonalservicio_total.add(personal_servicio);
-//                listPersonal_Servicio.add(personal_servicio);
+                Personal_servicio temp;
+                for(int i=0;i<this.num_repetir;i++){
+                    temp = new Personal_servicio();
+                    temp.setIdempresa(personal_servicio.getIdempresa());
+                    temp.setIdordenservicio(personal_servicio.getIdordenservicio());
+                    temp.setItem(personal_servicio.getItem());
+                    temp.setItem2(agregarItemPersonal_servicio());
+                    temp.setIdcargo(personal_servicio.getIdcargo());
+                    temp.setCargo(personal_servicio.getCargo());
+                    temp.setChecklist(personal_servicio.getChecklist());
+                    temp.setIdpersonal(personal_servicio.getIdpersonal());
+                    temp.setDni(personal_servicio.getDni());
+                    temp.setNombres(personal_servicio.getNombres());
+                    temp.setIdvehiculo(personal_servicio.getIdvehiculo());
+                    temp.setVehiculo(personal_servicio.getVehiculo());
+                    temp.setIdbasedatos(personal_servicio.getIdbasedatos());
+                    temp.setFechaoperacion(personal_servicio.getFechaoperacion());
+                    listPersonalservicio_total.add(temp);
+                }
             }
             else{
                 listPersonalservicio_total.set(pos, personal_servicio);
-//                listPersonal_Servicio.set(pos, personal_servicio);
             }
             listPersonal_Servicio = cargarPersonal_servicio();
             RequestContext.getCurrentInstance().update("datos:tabs");
-            tabView.setActiveIndex(indexTab);
-            //RequestContext.getCurrentInstance().update("datos:tabs:tab_personal_Servicio:listPersonal_Servicio");
             RequestContext.getCurrentInstance().update("datos:dlgnew_personal_servicio");
         } catch (Exception ex) {
             Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, null, ex);
@@ -821,7 +934,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
     }
     public void addPersonal_servicio() {
         /*AGREGAR DETALLE PERSONA_SERVICIO*/
-        listPersonal_Servicio = new ArrayList<>();
+        listPersonalservicio_total = new ArrayList<>();
         Personal_servicio detaobj;
         for(Estructura_costos_mano_obra_cotizacionventas detaDca : getListEstructura_costos_mano_obra_cotizacionventas()){
             detaobj = new Personal_servicio();
@@ -839,11 +952,8 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
             //detaobj.setItem(getSelectDordenserviciocliente().getItem()==null?"":getSelectDordenserviciocliente().getItem());//-> relacion DORDENSERVICIOCLIENTE
             detaobj.setItem2(agregarItemPersonal_servicio());
             detaobj.setFechaoperacion(new Date());
-            listPersonal_Servicio.add(detaobj);
+            listPersonalservicio_total.add(detaobj);
         }
-//        RequestContext.getCurrentInstance().update("datos:tabs");
-//        RequestContext.getCurrentInstance().update("datos:tab_personal_Servicio");
-//        RequestContext.getCurrentInstance().update("datos:tab_personal_Servicio:listPersonal_Servicio");
     }
     public Dordenserviciocliente getLocalDordenserviciocliente(String idreferencia,String itemreferencia){/*itemreferencia -> idproducto*/
         Dordenserviciocliente result = null;
@@ -862,6 +972,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
         if(getSelectDordenserviciocliente()==null){
             this.mensaje="Seleccionar Detalle Servicio";
             WebUtil.MensajeError(mensaje);
+            RequestContext.getCurrentInstance().update("datos:growl");
         }else{
             setPersonal_servicio(new Personal_servicio());
             getPersonal_servicio().setIdempresa(user.getIDEMPRESA());
@@ -869,22 +980,20 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
             getPersonal_servicio().setItem(getSelectDordenserviciocliente().getItem());
             getPersonal_servicio().setItem2(agregarItemPersonal_servicio());
             getPersonal_servicio().setFechaoperacion(new Date());
+            this.num_repetir =1;
+            RequestContext.getCurrentInstance().update("datos:dlgnew_personal_servicio");
+            RequestContext.getCurrentInstance().execute("PF('dlgnew_personal_servicio').show()");
         }
-        RequestContext.getCurrentInstance().update("datos:dlgnew_personal_servicio");
-        RequestContext.getCurrentInstance().execute("PF('dlgnew_personal_servicio').show()");
     }
     public void editarPersonal_servicio() {
+        this.num_repetir =1;
         if(!getListPersonal_Servicio().isEmpty()){
             setPersonal_servicio(selectPersonal_servicio);
-            try {
-                /*CARGAR DATOS DPERSONAL_SERVICIO*/
-                listDpersonal_Servicio = cargarDpersonal_servicio();
-//                setListDpersonal_Servicio(getDpersonal_servicioDao().listarPorOrdenServicio_PersonalDetalleWeb(selectPersonal_servicio.getIdempresa(),
-//                        selectPersonal_servicio.getIdordenservicio(), selectPersonal_servicio.getItem(),
-//                        selectPersonal_servicio.getItem2()));
-            } catch (NisiraORMException ex) {
-                Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, null, ex);
-            }
+//            try {
+//                
+//            } catch (NisiraORMException ex) {
+//                Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, null, ex);
+//            }
             RequestContext.getCurrentInstance().update("datos:dlgnew_personal_servicio");
             RequestContext.getCurrentInstance().update("datos:dlgnew_personal_servicio.listDpersonal_Servicio");
             RequestContext.getCurrentInstance().execute("PF('dlgnew_personal_servicio').show()");
@@ -900,13 +1009,21 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
             Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    public void verCntClieprovPersonal() {
-        RequestContext.getCurrentInstance().openDialog("cntClieprovPersonal", modalOptions, null);
-    }
     public void valorOperario(SelectEvent event) {
         this.setSelectClieprovPersonal((Clieprov) event.getObject());
         getDatoEdicion().setIdoperario(this.getSelectClieprovPersonal().getIdclieprov());
         getDatoEdicion().setOperario(this.getSelectClieprovPersonal().getRazonsocial());
+    }
+    public void valorOperario2(SelectEvent event) {
+        this.setSelectClieprovPersonal((Clieprov) event.getObject());
+        getDatoEdicion().setIdoperario2(this.getSelectClieprovPersonal().getIdclieprov());
+        getDatoEdicion().setOperario2(this.getSelectClieprovPersonal().getRazonsocial());
+    }
+    public void verCntClieprovPersonal() {
+        RequestContext.getCurrentInstance().openDialog("cntClieprovPersonal", modalOptions, null);
+    }
+    public void verCntClieprovPersonalS() {
+        RequestContext.getCurrentInstance().openDialog("cntClieprovPersonalS", modalOptions, null);
     }
     public void valorClieprovPersonal(SelectEvent event) {
         this.setSelectClieprovPersonal((Clieprov) event.getObject());
@@ -915,7 +1032,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
         this.getPersonal_servicio().setNombres(this.getSelectClieprovPersonal().getRazonsocial());
     }
     public void verCntCargos_personal() {
-        RequestContext.getCurrentInstance().openDialog("cntCargos_personal", modalOptions, null);
+        RequestContext.getCurrentInstance().openDialog("cntCargosPersonal", modalParamsOptions, null);
     }
     public void valorCargos_personal(SelectEvent event) {
         Cargos_personal cargo = (Cargos_personal) event.getObject();
@@ -961,64 +1078,62 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
 //                listDpersonal_Servicio.set(pos, dpersonal_servicio);
             }
             listDpersonal_Servicio = cargarDpersonal_servicio();
-//            RequestContext.getCurrentInstance().update("datos:dlgnew_personal_servicio");
+//            RequestContext.getCurrentInstance().update("datos:tabs:listDPersonal_Servicio");
             RequestContext.getCurrentInstance().update("datos:dlgnew_dpersonal_servicio");
             RequestContext.getCurrentInstance().execute("PF('dlgnew_dpersonal_servicio').hide()");
-            RequestContext.getCurrentInstance().update("datos:dlgnew_personal_servicio:listDPersonal_Servicio");
-//            RequestContext.getCurrentInstance().execute("PF('dlgnew_dordenserviciocliente').hide()");
+            RequestContext.getCurrentInstance().update("datos:tabs");
         } catch (Exception ex) {
             Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, null, ex);
         } 
     }
     public void nuevoDPersonal_servicio() {
-        if(getPersonal_servicio().getIdordenservicio()==null){
-            this.mensaje="Antes de Asignar Tareo , guardar servicio";
-            Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, "Antes de Asignar Tareo , guardar servicio");
-            WebUtil.MensajeError(mensaje);
-        }else if(getPersonal_servicio().getIdcargo()==null){
-            this.mensaje="Seleccionar Cargo";
-            Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, "Seleccionar Cargo");
-            WebUtil.MensajeError(mensaje);
-        }else if(getPersonal_servicio().getIdpersonal()==null){
-            this.mensaje="Seleccionar Personal";
+        if(getSelectPersonal_servicio()==null){
             Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, "Seleccionar Personal");
             WebUtil.MensajeError(mensaje);
+            RequestContext.getCurrentInstance().update("datos:growl");
+        }else if(getSelectPersonal_servicio().getIdpersonal()==null){
+            this.mensaje="Definir Operario";
+            Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, "Seleccionar Personal");
+            WebUtil.MensajeError(mensaje);
+            RequestContext.getCurrentInstance().update("datos:growl");
+        }else if(getSelectPersonal_servicio().getIdcargo()==null){
+            this.mensaje="Definir Cargo";
+            Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, "Seleccionar Cargo");
+            WebUtil.MensajeError(mensaje);
+            RequestContext.getCurrentInstance().update("datos:growl");
         }else{
             setDpersonal_servicio(new Dpersonal_servicio());
             getDpersonal_servicio().setIdempresa(user.getIDEMPRESA());
-            if(getSelectPersonal_servicio()==null){/*NUEVO - PERSONAL - SERVICIO*/
-                getDpersonal_servicio().setIdordenservicio(getSelectDordenserviciocliente().getIdordenservicio());
-                getDpersonal_servicio().setItem_dordenservicio(getSelectDordenserviciocliente().getItem());
-                getDpersonal_servicio().setItem(agregarItemDPersonal_servicio());
-                getDpersonal_servicio().setFhora_req(getSelectDordenserviciocliente().getHora_reqConvert());
-                getDpersonal_servicio().setHora_req(getSelectDordenserviciocliente().getHora_req());
-                getDpersonal_servicio().setIdcargo(getPersonal_servicio().getIdcargo());
-                getDpersonal_servicio().setCargo(getPersonal_servicio().getCargo());
-            }else{/*EDITAR - PERSONAL - SERVICIO*/
-                Dordenserviciocliente osc =getLocalDordenservicioclienteXpersonal(getPersonal_servicio().getIdordenservicio(),getPersonal_servicio().getItem());
-                getDpersonal_servicio().setIdordenservicio(getSelectPersonal_servicio().getIdordenservicio());
-                getDpersonal_servicio().setItem_dordenservicio(getSelectPersonal_servicio().getItem());
-                getDpersonal_servicio().setItem2(getSelectPersonal_servicio().getItem2());
-                getDpersonal_servicio().setItem(agregarItemDPersonal_servicio());
-                getDpersonal_servicio().setFhora_req(osc.getHora_reqConvert());
-                getDpersonal_servicio().setHora_req(osc.getHora_req());
-                getDpersonal_servicio().setIdcargo(getSelectPersonal_servicio().getIdcargo());
-                getDpersonal_servicio().setCargo(getSelectPersonal_servicio().getCargo());
-            }
+            Dordenserviciocliente osc =getLocalDordenservicioclienteXpersonal(getPersonal_servicio().getIdordenservicio(),getPersonal_servicio().getItem());
+            getDpersonal_servicio().setIdordenservicio(getSelectPersonal_servicio().getIdordenservicio());
+            getDpersonal_servicio().setItem_dordenservicio(getSelectPersonal_servicio().getItem());
+            getDpersonal_servicio().setItem2(getSelectPersonal_servicio().getItem2());
+            getDpersonal_servicio().setItem(agregarItemDPersonal_servicio());
+            getDpersonal_servicio().setFhora_req(osc.getHora_reqConvert());
+            getDpersonal_servicio().setHora_req(osc.getHora_req());
+            getDpersonal_servicio().setIdcargo(getSelectPersonal_servicio().getIdcargo());
+            getDpersonal_servicio().setCargo(getSelectPersonal_servicio().getCargo());
+            getDpersonal_servicio().setFecharegistro(new Date());
             RequestContext.getCurrentInstance().update("datos:dlgnew_dpersonal_servicio");
             RequestContext.getCurrentInstance().execute("PF('dlgnew_dpersonal_servicio').show()");
         }
-        
     }
     public Dordenserviciocliente getLocalDordenservicioclienteXpersonal(String idorden,String item_orden){
         Dordenserviciocliente result = null;
-        if(!idorden.isEmpty()&& !item_orden.isEmpty()){
+        if(!item_orden.isEmpty()){
             for(Dordenserviciocliente obj : getLstdordenserviciocliente()){
-                if(obj.getIdordenservicio().trim().equalsIgnoreCase(idorden) &&
-                    obj.getItem().trim().equalsIgnoreCase(item_orden)){
+                if(obj.getItem().trim().equalsIgnoreCase(item_orden)){
                     result=obj;
                     break;
                 }
+//        if(!idorden.isEmpty()&& !item_orden.isEmpty()){
+//                if(obj.getIdordenservicio().trim().equalsIgnoreCase(idorden) &&
+//                    obj.getItem().trim().equalsIgnoreCase(item_orden)){
+//                    result=obj;
+//                    break;
+//                }
+//        }
+
             }
         }
         return result;
@@ -1033,7 +1148,8 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
             listDpersonalservicio_total.remove(selectDPersonal_servicio);
 //            listDpersonal_Servicio.remove(selectDPersonal_servicio);
             listDpersonal_Servicio = cargarDpersonal_servicio();
-            RequestContext.getCurrentInstance().update("datos:dlgnew_dpersonal_servicio:listDpersonal_Servicio");
+            RequestContext.getCurrentInstance().update("datos:tabs");
+//            RequestContext.getCurrentInstance().update("datos:dlgnew_dpersonal_servicio:listDpersonal_Servicio");
         } catch (Exception ex) {
             Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1063,14 +1179,20 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
         }
     }
     public void nuevoRuta_servicios() {
-        this.ruta_servicios = new Ruta_servicios();
-        this.ruta_servicios.setIdempresa(user.getIDEMPRESA());
-        this.ruta_servicios.setIdordenservicio(getSelectDordenserviciocliente().getIdordenservicio());
-        this.ruta_servicios.setItem(getSelectDordenserviciocliente().getItem());
-        this.ruta_servicios.setItemruta(agregarItemRuta_servicios());
-        this.ruta_servicios.setGlosa("");
-        RequestContext.getCurrentInstance().update("datos:dlgnew_ruta_servicios");
-        RequestContext.getCurrentInstance().execute("PF('dlgnew_ruta_servicios').show()");
+        if(getSelectDordenserviciocliente()==null){
+            this.mensaje="Seleccionar Detalle Servicio";
+            WebUtil.MensajeError(mensaje);
+            RequestContext.getCurrentInstance().update("datos:growl");
+        }else{
+            this.ruta_servicios = new Ruta_servicios();
+            this.ruta_servicios.setIdempresa(user.getIDEMPRESA());
+            this.ruta_servicios.setIdordenservicio(getSelectDordenserviciocliente().getIdordenservicio());
+            this.ruta_servicios.setItem(getSelectDordenserviciocliente().getItem());
+            this.ruta_servicios.setItemruta(agregarItemRuta_servicios());
+            this.ruta_servicios.setGlosa("");
+            RequestContext.getCurrentInstance().update("datos:dlgnew_ruta_servicios");
+            RequestContext.getCurrentInstance().execute("PF('dlgnew_ruta_servicios').show()");
+        }
     }
     public void editarRuta_servicios() {
         setRuta_servicios(selectRuta_servicios);
@@ -1146,8 +1268,8 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
     public String agregarItemPersonal_servicio(){
         int dato = 1;
         int may=-999999999;
-        for(Personal_servicio obj:getListPersonal_Servicio()){
-            dato = Integer.parseInt(obj.getItem());
+        for(Personal_servicio obj:getListPersonalservicio_total()){
+            dato = Integer.parseInt(obj.getItem2());
             if(dato>may)
                 may=dato;
         }
@@ -1188,7 +1310,6 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
         
         return WebUtil.idGeneradoTres(may);
     }
-
     public boolean esDetValida() {
         if (dordenserviciocliente.getItem().equalsIgnoreCase("")) {
             WebUtil.MensajeError("Ingrese Item del Detalle");
@@ -2040,7 +2161,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
     }
 
     @Override
-    public String buscarFiltro(){
+    public String buscarFiltro(int tipo){
         try {
             this.mensaje = "";
             SimpleDateFormat  f = new SimpleDateFormat("yyyy-MM-dd");
@@ -2049,13 +2170,13 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
             f_ini = f_ini.replace("-", "");
             f_fin = f_fin.replace("-", "");
             setListaDatos(getOrdenservicioclienteDao().listarPorEmpresaWebFiltroFecha(user.getIDEMPRESA(),f_ini,f_fin));
-            RequestContext.getCurrentInstance().update("datos:tbl");
         } catch (Exception e) {
             mensaje = WebUtil.mensajeError();
             WebUtil.error(mensaje);
         }
         RequestContext.getCurrentInstance().update("datos:tbl");
-        lista_accion_filtro("wLst_Ordenserviciocliente");
+        if(tipo == 2)
+            lista_accion_filtro("wLst_Ordenserviciocliente");
         return "";
     }
 
@@ -2309,4 +2430,75 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
     public JRDataSource getDataSourceReport_lst() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    /**
+     * @return the num_repetir
+     */
+    public int getNum_repetir() {
+        return num_repetir;
+    }
+
+    /**
+     * @param num_repetir the num_repetir to set
+     */
+    public void setNum_repetir(int num_repetir) {
+        this.num_repetir = num_repetir;
+    }
+
+    /**
+     * @return the listCargo_personal
+     */
+    public List<Cargos_personal> getListCargo_personal() {
+        return listCargo_personal;
+    }
+
+    /**
+     * @param listCargo_personal the listCargo_personal to set
+     */
+    public void setListCargo_personal(List<Cargos_personal> listCargo_personal) {
+        this.listCargo_personal = listCargo_personal;
+    }
+
+    /**
+     * @return the cargos_personalDao
+     */
+    public Cargos_personalDao getCargos_personalDao() {
+        return cargos_personalDao;
+    }
+
+    /**
+     * @param cargos_personalDao the cargos_personalDao to set
+     */
+    public void setCargos_personalDao(Cargos_personalDao cargos_personalDao) {
+        this.cargos_personalDao = cargos_personalDao;
+    }
+
+    /**
+     * @return the selectCargos_personal
+     */
+    public Cargos_personal getSelectCargos_personal() {
+        return selectCargos_personal;
+    }
+
+    /**
+     * @param selectCargos_personal the selectCargos_personal to set
+     */
+    public void setSelectCargos_personal(Cargos_personal selectCargos_personal) {
+        this.selectCargos_personal = selectCargos_personal;
+    }
+
+    /**
+     * @return the ftipo_servicio
+     */
+    public boolean isFtipo_servicio() {
+        return ftipo_servicio;
+    }
+
+    /**
+     * @param ftipo_servicio the ftipo_servicio to set
+     */
+    public void setFtipo_servicio(boolean ftipo_servicio) {
+        this.ftipo_servicio = ftipo_servicio;
+    }
+
 }

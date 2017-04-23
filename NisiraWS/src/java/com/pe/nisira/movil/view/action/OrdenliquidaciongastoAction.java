@@ -250,7 +250,12 @@ public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidac
             Logger.getLogger(OrdenliquidaciongastoAction.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
+    @Override
+    public void aprobar() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
     public void findetalle() throws Exception {
         try{
             listDocumentos=docDao.getOrdenServicio(user.getIDEMPRESA());
@@ -788,7 +793,7 @@ public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidac
     }
 
     @Override
-    public String buscarFiltro() {
+    public String buscarFiltro(int tipo) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

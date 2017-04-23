@@ -47,9 +47,9 @@
                                     <p:inputText id="nro_oservicio" style="width: 200px !important;" value="#{ordenservicioclienteAction.datoEdicion.nro_oservicio}" disabled="#{!ordenservicioclienteAction.edicion}"/>
                                     <p:outputLabel value="Glosa" escape="false"/>
                                     <p:inputTextarea rows="2" cols="50" value="#{ordenservicioclienteAction.datoEdicion.glosa}" disabled="#{!ordenservicioclienteAction.edicion}"/>
-                                    <p:outputLabel value="Operario:" escape="false" />
+                                    <p:outputLabel value="Supervisor:" escape="false" />
                                     <h:panelGrid id="cntPersonalOperario" cellpadding="0" cellspacing="0" columns="3">
-                                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{ordenservicioclienteAction.verCntClieprovPersonal}" 
+                                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{ordenservicioclienteAction.verCntClieprovPersonalS}" 
                                                          disabled="#{!ordenservicioclienteAction.edicion}"  icon="ui-icon-search">
                                             <p:ajax event="dialogReturn" listener="#{ordenservicioclienteAction.valorOperario}" update="cntPersonalOperario"/>
                                         </p:commandButton>
@@ -81,6 +81,7 @@
                                     </h:panelGrid>
                                     <p:outputLabel for="tiposervicio"  value="Tipo Servicio:" />
                                     <p:selectOneMenu id="tiposervicio" value="#{ordenservicioclienteAction.datoEdicion.tipo_servicio}"  disabled="#{!ordenservicioclienteAction.edicion}">
+                                        <p:ajax listener="#{ordenservicioclienteAction.onTiposervicio()}"/>
                                         <f:selectItem itemLabel="Fijo" itemValue="F"/>
                                         <f:selectItem itemLabel="Especial" itemValue="E"/>
                                     </p:selectOneMenu>
@@ -128,65 +129,68 @@
                                             <p:rowEditor/>
                                         </p:column>
                                    </p:dataTable>
+                                    <p:outputLabel value="Operario:" escape="false" />
+                                    <h:panelGrid id="cntPersonalOperario2" cellpadding="0" cellspacing="0" columns="3">
+                                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{ordenservicioclienteAction.verCntClieprovPersonalS}" 
+                                                         disabled="#{!ordenservicioclienteAction.edicion}"  icon="ui-icon-search">
+                                            <p:ajax event="dialogReturn" listener="#{ordenservicioclienteAction.valorOperario2}" update="cntPersonalOperario2"/>
+                                        </p:commandButton>
+                                        <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{ordenservicioclienteAction.datoEdicion.idoperario2}"/>
+                                        <p:inputText size="50" readonly="true" value="#{ordenservicioclienteAction.datoEdicion.operario2}" />
+                                    </h:panelGrid>
                                 </p:panelGrid>
                             </div> 
                         </p:fieldset> 
                     </div>
                     <div class="ui-grid-row">
-                        <p:tabView id="tabs">
-                            <p:ajax event="tabChange" listener="#{ordenservicioclienteAction.onSPTabChange}" />
-                            <p:tab id="tab_dordenserviciocliente" title="Detalle Orden Servicio">
-                                <p:dataTable id="lstdordenserviciocliente" var="lstdordenserviciocliente" value="#{ordenservicioclienteAction.lstdordenserviciocliente}" widgetVar="lstdordenserviciocliente"
+                        <div class="ui-grid-row">
+                            <p:dataTable id="lstdordenserviciocliente" var="lstdordenserviciocliente" value="#{ordenservicioclienteAction.lstdordenserviciocliente}" widgetVar="lstdordenserviciocliente"
                                 paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
                                 paginator="true" paginatorPosition="top" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{ordenservicioclienteAction.selectDordenserviciocliente}" rowKey="#{lstdordenserviciocliente.item}">
-                                   <p:ajax event="rowSelect" listener="#{ordenservicioclienteAction.onRowSelectDordenservicio}" />
-                                   <f:facet name="{Comandos}">
-                                       <p:commandButton value="Agregar" ajax="true" image="ui-icon-nuevo" actionListener="#{ordenservicioclienteAction.nuevoDordenserviciocliente()}" disabled="#{ordenservicioclienteAction.botonNuevoDOrdenservicio}"/>
-                                       <p:commandButton value="Editar" ajax="true" image="ui-icon-edit" actionListener="#{ordenservicioclienteAction.editarDordenserviciocliente()}" disabled="#{ordenservicioclienteAction.botonEditarDOrdenservicio}"/> 
-                                       <p:commandButton value="Eliminar" ajax="true" image="ui-icon-eliminar" actionListener="#{ordenservicioclienteAction.eliminarDordenserviciocliente()}" disabled="#{ordenservicioclienteAction.botonEliminarDOrdenservicio}"/>
-                                   </f:facet>
-                                   <p:column style="width:10%;" filterBy="#{lstdordenserviciocliente.item}" filterMatchMode="contains" sortBy="#{lstdordenserviciocliente.item}">
-                                       <f:facet name="header">
-                                           <h:outputText value="N°"/>
-                                       </f:facet>
-                                       <h:outputText value="#{lstdordenserviciocliente.item}"/>
-                                   </p:column>
-                                   <p:column style="width:30%;" filterBy="#{lstdordenserviciocliente.descripcion}" filterMatchMode="contains" sortBy="#{lstdordenserviciocliente.descripcion}">
-                                       <f:facet name="header" >
-                                           <h:outputText value="Descripción" />
-                                       </f:facet>
-                                       <h:outputText value="#{lstdordenserviciocliente.descripcion}" />
-                                   </p:column>
-                                   <p:column style="width:10%;" filterBy="#{lstdordenserviciocliente.placa_cliente}" filterMatchMode="contains" sortBy="#{lstdordenserviciocliente.placa_cliente}">
-                                       <f:facet name="header" >
-                                           <h:outputText value="Placa Cliente" />
-                                       </f:facet>
-                                       <h:outputText value="#{lstdordenserviciocliente.placa_cliente}" />
-                                   </p:column>
-                                   <p:column style="width:10%;" filterBy="#{lstdordenserviciocliente.hora_reqConvert}" filterMatchMode="contains" sortBy="#{lstdordenserviciocliente.hora_reqConvert}">
-                                       <f:facet name="header">
-                                           <h:outputText value="H. Req." />
-                                       </f:facet>
-                                       <h:outputText value="#{lstdordenserviciocliente.hora_reqConvert}">
-                                           <f:convertDateTime type="both" pattern="HH:mm a" timeZone="America/Lima" />
-                                       </h:outputText>
-                                   </p:column>
-                                   <p:column style="width:20%;" filterBy="#{lstdordenserviciocliente.fecha_fin_servicio}" filterMatchMode="contains" sortBy="#{lstdordenserviciocliente.fecha_fin_servicio}">
-                                       <f:facet name="header">
-                                           <h:outputText value="F.Fin" />
-                                       </f:facet>
-                                       <h:outputText value="#{lstdordenserviciocliente.fecha_fin_servicio}">
-                                           <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
-                                       </h:outputText>
-                                   </p:column>
-                                   <p:column style="width:30%;" filterBy="#{lstdordenserviciocliente.vehiculo}" filterMatchMode="contains" sortBy="#{lstdordenserviciocliente.vehiculo}">
-                                       <f:facet name="header" >
-                                           <h:outputText value="Vehículo" />
-                                       </f:facet>
-                                       <h:outputText value="(#{lstdordenserviciocliente.idvehiculo})#{lstdordenserviciocliente.vehiculo}" />
-                                   </p:column>
-                                </p:dataTable> 
-                            </p:tab>
+                                <p:ajax event="rowSelect" listener="#{ordenservicioclienteAction.onRowSelectDordenservicio}" />
+                                <f:facet name="{Comandos}">
+                                    <p:commandButton value="Agregar" ajax="true" image="ui-icon-nuevo" actionListener="#{ordenservicioclienteAction.nuevoDordenserviciocliente()}" disabled="#{ordenservicioclienteAction.botonNuevoDOrdenservicio}"/>
+                                    <p:commandButton value="Editar" ajax="true" image="ui-icon-edit" actionListener="#{ordenservicioclienteAction.editarDordenserviciocliente()}" disabled="#{ordenservicioclienteAction.botonEditarDOrdenservicio}"/> 
+                                    <p:commandButton value="Eliminar" ajax="true" image="ui-icon-eliminar" actionListener="#{ordenservicioclienteAction.eliminarDordenserviciocliente()}" disabled="#{ordenservicioclienteAction.botonEliminarDOrdenservicio}"/>
+                                </f:facet>
+                                <p:column style="width:10%;" filterBy="#{lstdordenserviciocliente.item}" filterMatchMode="contains" sortBy="#{lstdordenserviciocliente.item}">
+                                    <f:facet name="header">
+                                        <h:outputText value="N°"/>
+                                    </f:facet>
+                                    <h:outputText value="#{lstdordenserviciocliente.item}"/>
+                                </p:column>
+                                <p:column style="width:30%;" filterBy="#{lstdordenserviciocliente.descripcion}" filterMatchMode="contains" sortBy="#{lstdordenserviciocliente.descripcion}">
+                                    <f:facet name="header" >
+                                        <h:outputText value="Descripción" />
+                                    </f:facet>
+                                    <h:outputText value="#{lstdordenserviciocliente.descripcion}" />
+                                </p:column>
+                                <p:column style="width:10%;" filterBy="#{lstdordenserviciocliente.placa_cliente}" filterMatchMode="contains" sortBy="#{lstdordenserviciocliente.placa_cliente}">
+                                    <f:facet name="header" >
+                                        <h:outputText value="Placa Cliente" />
+                                    </f:facet>
+                                    <h:outputText value="#{lstdordenserviciocliente.placa_cliente}"/>
+                                </p:column>
+                                <p:column style="width:10%;" filterBy="#{lstdordenserviciocliente.hora_reqConvert}" filterMatchMode="contains" sortBy="#{lstdordenserviciocliente.hora_reqConvert}">
+                                    <f:facet name="header">
+                                        <h:outputText value="H. Req." />
+                                    </f:facet>
+                                    <h:outputText value="#{lstdordenserviciocliente.hora_reqConvert}">
+                                        <f:convertDateTime type="both" pattern="HH:mm a" timeZone="America/Lima" />
+                                    </h:outputText>
+                                </p:column>
+                                <p:column style="width:20%;" filterBy="#{lstdordenserviciocliente.fecha_fin_servicio}" filterMatchMode="contains" sortBy="#{lstdordenserviciocliente.fecha_fin_servicio}">
+                                    <f:facet name="header">
+                                        <h:outputText value="F.Fin" />
+                                    </f:facet>
+                                    <h:outputText value="#{lstdordenserviciocliente.fecha_fin_servicio}">
+                                        <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                                    </h:outputText>
+                                </p:column>
+                             </p:dataTable> 
+                        </div>
+                        <p:tabView id="tabs">
+                            <p:ajax event="tabChange" listener="#{ordenservicioclienteAction.onSPTabChange}" />
                             <p:tab id="tab_personal_Servicio" title="Asignación Personal">
                                 <p:dataTable id="listPersonal_Servicio" var="listPersonal_Servicio" value="#{ordenservicioclienteAction.listPersonal_Servicio}" widgetVar="listPersonal_Servicio"
                                     paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
@@ -221,7 +225,93 @@
                                            </f:facet>
                                            <h:outputText value="#{listPersonal_Servicio.nombres}" />
                                        </p:column>
-                                   </p:dataTable> 
+                                       <p:column style="width:20%;" filterBy="#{listPersonal_Servicio.checklist}" filterMatchMode="contains" sortBy="#{listPersonal_Servicio.checklist}">
+                                           <f:facet name="header" >
+                                               <h:outputText value="Checklist" />
+                                           </f:facet>
+                                           <h:outputText value="#{listPersonal_Servicio.checklist}" />
+                                       </p:column>
+                                       <p:column style="width:10%;" filterBy="#{listPersonal_Servicio.idvehiculo}" filterMatchMode="contains" sortBy="#{listPersonal_Servicio.idvehiculo}">
+                                           <f:facet name="header" >
+                                               <h:outputText value="Vehículo" />
+                                           </f:facet>
+                                           <h:outputText value="#{listPersonal_Servicio.idvehiculo}" />
+                                       </p:column>
+                                   </p:dataTable>
+                                <br/>
+                                <h:outputLabel value="Tareo Personal" style="color: rgb(37, 42, 84);font-size: 15px;text-decoration: underline"/>
+                                <p:dataTable id="listDpersonal_Servicio" var="listDpersonal_Servicio" value="#{ordenservicioclienteAction.listDpersonal_Servicio}" widgetVar="listDpersonal_Servicio"
+                                    paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                    paginator="true" paginatorPosition="top" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{ordenservicioclienteAction.selectDPersonal_servicio}" rowKey="#{listDpersonal_Servicio.item}">
+                                       <p:ajax event="rowSelect" listener="#{ordenservicioclienteAction.onRowSelectDPersonal_Servicio}" />
+                                       <f:facet name="{Comandos}">
+                                           <p:commandButton value="Nuevo" ajax="true" image="ui-icon-nuevo" actionListener="#{ordenservicioclienteAction.nuevoDPersonal_servicio()}"/>
+                                           <p:commandButton value="Editar" ajax="true" image="ui-icon-edit" actionListener="#{ordenservicioclienteAction.editarDPersonal_servicio()}" disabled="#{ordenservicioclienteAction.botonEditarDPersonal_servicio}"/> 
+                                           <p:commandButton value="Eliminar" ajax="true" image="ui-icon-eliminar" actionListener="#{ordenservicioclienteAction.eliminarDPersonal_servicio()}" disabled="#{ordenservicioclienteAction.botonEliminarDPersonal_servicio}"/>
+                                       </f:facet>
+                                       <p:column style="width:10%;" filterBy="#{listDpersonal_Servicio.item}" filterMatchMode="contains" sortBy="#{listDpersonal_Servicio.item}">
+                                           <f:facet name="header">
+                                               <h:outputText value="N°"/>
+                                           </f:facet>
+                                           <h:outputText value="#{listDpersonal_Servicio.item}"/>
+                                       </p:column>
+                                       <p:column style="width:20%;" filterBy="#{listDpersonal_Servicio.fecharegistro}" filterMatchMode="contains" sortBy="#{listDpersonal_Servicio.fecharegistro}">
+                                           <f:facet name="header">
+                                               <h:outputText value="FECHA" />
+                                           </f:facet>
+                                           <h:outputText value="#{listDpersonal_Servicio.fecharegistro}">
+                                               <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                                           </h:outputText>
+                                       </p:column>
+                                       <p:column style="width:20%;" filterBy="#{listDpersonal_Servicio.fhora_req}" filterMatchMode="contains" sortBy="#{listDpersonal_Servicio.fhora_req}">
+                                           <f:facet name="header">
+                                               <h:outputText value="H. Req." />
+                                           </f:facet>
+                                           <h:outputText value="#{listDpersonal_Servicio.fhora_req}">
+                                               <f:convertDateTime type="both" pattern="HH:mm a" timeZone="America/Lima" />
+                                           </h:outputText>
+                                       </p:column>
+                                       <p:column style="width:20%;" filterBy="#{listDpersonal_Servicio.fhora_llegada}" filterMatchMode="contains" sortBy="#{listDpersonal_Servicio.fhora_llegada}">
+                                           <f:facet name="header">
+                                               <h:outputText value="H. Llegada." />
+                                           </f:facet>
+                                           <h:outputText value="#{listDpersonal_Servicio.fhora_llegada}">
+                                               <f:convertDateTime type="both" pattern="HH:mm a" timeZone="America/Lima" />
+                                           </h:outputText>
+                                       </p:column>
+                                       <p:column style="width:20%;" filterBy="#{listDpersonal_Servicio.fhora_inicio_serv}" filterMatchMode="contains" sortBy="#{listDpersonal_Servicio.fhora_inicio_serv}">
+                                           <f:facet name="header">
+                                               <h:outputText value="H. Inicio." />
+                                           </f:facet>
+                                           <h:outputText value="#{listDpersonal_Servicio.fhora_inicio_serv}">
+                                               <f:convertDateTime type="both" pattern="HH:mm a" timeZone="America/Lima" />
+                                           </h:outputText>
+                                       </p:column>
+                                       <p:column style="width:20%;" filterBy="#{listDpersonal_Servicio.fhora_fin_serv}" filterMatchMode="contains" sortBy="#{listDpersonal_Servicio.fhora_fin_serv}">
+                                           <f:facet name="header">
+                                               <h:outputText value="H. Fin." />
+                                           </f:facet>
+                                           <h:outputText value="#{listDpersonal_Servicio.fhora_fin_serv}">
+                                               <f:convertDateTime type="both" pattern="HH:mm a" timeZone="America/Lima" />
+                                           </h:outputText>
+                                       </p:column>
+                                       <p:column style="width:20%;" filterBy="#{listDpersonal_Servicio.fhora_liberacion}" filterMatchMode="contains" sortBy="#{listDpersonal_Servicio.fhora_liberacion}">
+                                           <f:facet name="header">
+                                               <h:outputText value="H. Liberación." />
+                                           </f:facet>
+                                           <h:outputText value="#{listDpersonal_Servicio.fhora_liberacion}">
+                                               <f:convertDateTime type="both" pattern="HH:mm a" timeZone="America/Lima" />
+                                           </h:outputText>
+                                       </p:column>
+                                       <p:column style="width:15%;" filterBy="#{listDpersonal_Servicio.fechafinregistro}" filterMatchMode="contains" sortBy="#{listDpersonal_Servicio.fechafinregistro}">
+                                           <f:facet name="header">
+                                               <h:outputText value="F.Fin" />
+                                           </f:facet>
+                                           <h:outputText value="#{listDpersonal_Servicio.fechafinregistro}">
+                                               <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                                           </h:outputText>
+                                       </p:column>
+                               </p:dataTable>  
                             </p:tab>
                             <p:tab id="tab_ruta_servicios" title="Rutas">
                                 <p:dataTable id="listRuta_servicios" var="listRuta_servicios" value="#{ordenservicioclienteAction.listRuta_servicios}" widgetVar="listRuta_servicios"
@@ -276,14 +366,6 @@
                                         <p:outputLabel  value="N°" />
                                         <p:inputText size="40"  disabled="true" value="#{ordenservicioclienteAction.dordenserviciocliente.item}" />
                                     </p:panelGrid>
-                                    <p:outputLabel value="Vehículo" escape="false" />
-                                    <h:panelGrid id="cntConsumidor" cellpadding="0" cellspacing="0" columns="3">
-                                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{ordenservicioclienteAction.verCntConsumidor()}" icon="ui-icon-search">
-                                            <p:ajax event="dialogReturn" listener="#{ordenservicioclienteAction.valorConsumidor}" update="cntConsumidor"/>
-                                        </p:commandButton>
-                                        <p:inputText  style="text-align: center" size="3" readonly="true"  value="#{ordenservicioclienteAction.dordenserviciocliente.idvehiculo}" />
-                                        <p:inputText size="41" readonly="true" value="#{ordenservicioclienteAction.dordenserviciocliente.vehiculo}" />
-                                    </h:panelGrid>
                                     <p:outputLabel value="Producto" escape="false" />
                                     <h:panelGrid id="cntProducto" cellpadding="0" cellspacing="0" columns="3">
                                         <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{ordenservicioclienteAction.verCntProducto()}" 
@@ -293,11 +375,14 @@
                                         <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{ordenservicioclienteAction.dordenserviciocliente.idservicio}" disabled="#{!ordenservicioclienteAction.edicion}"/>
                                         <p:inputText size="50" readonly="true" value="#{ordenservicioclienteAction.dordenserviciocliente.descripcion}" disabled="#{!ordenservicioclienteAction.edicion}"/>
                                     </h:panelGrid>
-                                    <p:outputLabel value="Placa:" />
-                                    <p:inputTextarea  cols="60" rows="2"  value="#{ordenservicioclienteAction.dordenserviciocliente.placa_cliente}" onkeyup="javascript:this.value = this.value.toUpperCase();" disabled="#{!ordenservicioclienteAction.edicion}">
+                                    <p:outputLabel value="Placa/Cliente:" />
+                                    <p:inputTextarea  cols="60" rows="2"  value="#{ordenservicioclienteAction.dordenserviciocliente.placa_cliente}" onkeyup="javascript:this.value = this.value.toUpperCase();" disabled="#{ordenservicioclienteAction.ftipo_servicio}">
                                     </p:inputTextarea>
                                     <p:outputLabel for="hora_req" value="Hora. Req.:" />
-                                    <p:calendar id="hora_req" value="#{ordenservicioclienteAction.dordenserviciocliente.hora_reqConvert}" pattern="HH:mm" timeOnly="true"  />
+                                    <p:calendar id="hora_req" value="#{ordenservicioclienteAction.dordenserviciocliente.hora_reqConvert}" mask="99:99" pattern="HH:mm" timeOnly="true"  />
+                                    <p:outputLabel value="Conductor/Cliente:" />
+                                    <p:inputTextarea  cols="60" rows="2"  value="#{ordenservicioclienteAction.dordenserviciocliente.conductor_cliente}" onkeyup="javascript:this.value = this.value.toUpperCase();">
+                                    </p:inputTextarea>
                                     <p:outputLabel for="fecha_fin_servicio" value="F. Fin:" />
                                     <p:calendar id="fecha_fin_servicio" value="#{ordenservicioclienteAction.dordenserviciocliente.fecha_fin_servicio}" pattern="dd-MM-yyyy" mask="true" />
                                     <p:outputLabel for="idreferenciacot" value="Id Ref.:" />
@@ -356,15 +441,6 @@
                                         <p:outputLabel  value="N°" />
                                         <p:inputText size="10"  disabled="true" value="#{ordenservicioclienteAction.personal_servicio.item}" />
                                     </p:panelGrid>
-                                    <p:outputLabel value="Personal:" escape="false" />
-                                    <h:panelGrid id="cntCliePersonal" cellpadding="0" cellspacing="0" columns="3">
-                                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{ordenservicioclienteAction.verCntClieprovPersonal}" 
-                                                         disabled="#{!ordenservicioclienteAction.edicion}"  icon="ui-icon-search">
-                                            <p:ajax event="dialogReturn" listener="#{ordenservicioclienteAction.valorClieprovPersonal}" update="cntCliePersonal"/>
-                                        </p:commandButton>
-                                        <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{ordenservicioclienteAction.personal_servicio.dni}"/>
-                                        <p:inputText size="50" readonly="true" value="#{ordenservicioclienteAction.personal_servicio.nombres}" />
-                                    </h:panelGrid>
                                     <p:outputLabel value="Cargo:" escape="false" />
                                     <h:panelGrid id="cntCargos_personal" cellpadding="0" cellspacing="0" columns="3">
                                         <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{ordenservicioclienteAction.verCntCargos_personal()}" 
@@ -374,65 +450,30 @@
                                         <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{ordenservicioclienteAction.personal_servicio.idcargo}"/>
                                         <p:inputText size="50" readonly="true" value="#{ordenservicioclienteAction.personal_servicio.cargo}" />
                                     </h:panelGrid>
-                                    <p:outputLabel for="fecha_operacion" value="F. Operación:" />
+                                    <p:outputLabel value="#Cantidad:" escape="false" />
+                                    <p:spinner value="#{ordenservicioclienteAction.num_repetir}" min="1" />
+                                    <p:outputLabel for="checklist_personalservicio" value="Checklist:" />
+                                    <p:inputText id="checklist_personalservicio" size="60" value="#{ordenservicioclienteAction.personal_servicio.checklist}" onkeyup="javascript:this.value = this.value.toUpperCase();"/>
+                                    <p:outputLabel value="Vehículo" escape="false" />
+                                    <h:panelGrid id="cntConsumidor" cellpadding="0" cellspacing="0" columns="3">
+                                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{ordenservicioclienteAction.verCntConsumidor()}" icon="ui-icon-search"  disabled="#{ordenservicioclienteAction.ftipo_servicio}">
+                                            <p:ajax event="dialogReturn" listener="#{ordenservicioclienteAction.valorConsumidor}" update="cntConsumidor"/>
+                                        </p:commandButton>
+                                        <p:inputText  style="text-align: center" size="3" readonly="true"  value="#{ordenservicioclienteAction.personal_servicio.idvehiculo}" />
+                                        <p:inputText size="41" readonly="true" value="#{ordenservicioclienteAction.personal_servicio.vehiculo}" />
+                                    </h:panelGrid>
+                                    <p:outputLabel value="Personal:" escape="false" />
+                                    <h:panelGrid id="cntCliePersonal" cellpadding="0" cellspacing="0" columns="3">
+                                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{ordenservicioclienteAction.verCntClieprovPersonal}" 
+                                                         disabled="#{!ordenservicioclienteAction.edicion}"  icon="ui-icon-search">
+                                            <p:ajax event="dialogReturn" listener="#{ordenservicioclienteAction.valorClieprovPersonal}" update="cntCliePersonal"/>
+                                        </p:commandButton>
+                                        <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{ordenservicioclienteAction.personal_servicio.dni}"/>
+                                        <p:inputText size="50" readonly="true" value="#{ordenservicioclienteAction.personal_servicio.nombres}" />
+                                    </h:panelGrid>
+                                    <p:outputLabel for="fecha_operacion" value="Fecha Oper.:" />
                                     <p:calendar id="fecha_operacion" value="#{ordenservicioclienteAction.personal_servicio.fechaoperacion}" pattern="dd-MM-yyyy" mask="true" />
                                 </p:panelGrid>
-                                <p:dataTable id="listDpersonal_Servicio" var="listDpersonal_Servicio" value="#{ordenservicioclienteAction.listDpersonal_Servicio}" widgetVar="listDpersonal_Servicio"
-                                    paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
-                                    paginator="true" paginatorPosition="top" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{ordenservicioclienteAction.selectDPersonal_servicio}" rowKey="#{listDpersonal_Servicio.item}">
-                                       <p:ajax event="rowSelect" listener="#{ordenservicioclienteAction.onRowSelectDPersonal_Servicio}" />
-                                       <f:facet name="{Comandos}">
-                                           <p:commandButton value="Nuevo" ajax="true" image="ui-icon-nuevo" actionListener="#{ordenservicioclienteAction.nuevoDPersonal_servicio()}"/>
-                                           <p:commandButton value="Editar" ajax="true" image="ui-icon-edit" actionListener="#{ordenservicioclienteAction.editarDPersonal_servicio()}" disabled="#{ordenservicioclienteAction.botonEditarDPersonal_servicio}"/> 
-                                           <p:commandButton value="Eliminar" ajax="true" image="ui-icon-eliminar" actionListener="#{ordenservicioclienteAction.eliminarDPersonal_servicio()}" disabled="#{ordenservicioclienteAction.botonEliminarDPersonal_servicio}"/>
-                                       </f:facet>
-                                       <p:column style="width:10%;" filterBy="#{listDpersonal_Servicio.item}" filterMatchMode="contains" sortBy="#{listDpersonal_Servicio.item}">
-                                           <f:facet name="header">
-                                               <h:outputText value="N°"/>
-                                           </f:facet>
-                                           <h:outputText value="#{listDpersonal_Servicio.item}"/>
-                                       </p:column>
-                                       <p:column style="width:20%;" filterBy="#{listDpersonal_Servicio.fhora_req}" filterMatchMode="contains" sortBy="#{listDpersonal_Servicio.fhora_req}">
-                                           <f:facet name="header">
-                                               <h:outputText value="H. Req." />
-                                           </f:facet>
-                                           <h:outputText value="#{listDpersonal_Servicio.fhora_req}">
-                                               <f:convertDateTime type="both" pattern="HH:mm a" timeZone="America/Lima" />
-                                           </h:outputText>
-                                       </p:column>
-                                       <p:column style="width:20%;" filterBy="#{listDpersonal_Servicio.fhora_llegada}" filterMatchMode="contains" sortBy="#{listDpersonal_Servicio.fhora_llegada}">
-                                           <f:facet name="header">
-                                               <h:outputText value="H. Llegada." />
-                                           </f:facet>
-                                           <h:outputText value="#{listDpersonal_Servicio.fhora_llegada}">
-                                               <f:convertDateTime type="both" pattern="HH:mm a" timeZone="America/Lima" />
-                                           </h:outputText>
-                                       </p:column>
-                                       <p:column style="width:20%;" filterBy="#{listDpersonal_Servicio.fhora_inicio_serv}" filterMatchMode="contains" sortBy="#{listDpersonal_Servicio.fhora_inicio_serv}">
-                                           <f:facet name="header">
-                                               <h:outputText value="H. Inicio." />
-                                           </f:facet>
-                                           <h:outputText value="#{listDpersonal_Servicio.fhora_inicio_serv}">
-                                               <f:convertDateTime type="both" pattern="HH:mm a" timeZone="America/Lima" />
-                                           </h:outputText>
-                                       </p:column>
-                                       <p:column style="width:20%;" filterBy="#{listDpersonal_Servicio.fhora_fin_serv}" filterMatchMode="contains" sortBy="#{listDpersonal_Servicio.fhora_fin_serv}">
-                                           <f:facet name="header">
-                                               <h:outputText value="H. Fin." />
-                                           </f:facet>
-                                           <h:outputText value="#{listDpersonal_Servicio.fhora_fin_serv}">
-                                               <f:convertDateTime type="both" pattern="HH:mm a" timeZone="America/Lima" />
-                                           </h:outputText>
-                                       </p:column>
-                                       <p:column style="width:20%;" filterBy="#{listDpersonal_Servicio.fhora_liberacion}" filterMatchMode="contains" sortBy="#{listDpersonal_Servicio.fhora_liberacion}">
-                                           <f:facet name="header">
-                                               <h:outputText value="H. Liberación." />
-                                           </f:facet>
-                                           <h:outputText value="#{listDpersonal_Servicio.fhora_liberacion}">
-                                               <f:convertDateTime type="both" pattern="HH:mm a" timeZone="America/Lima" />
-                                           </h:outputText>
-                                       </p:column>
-                               </p:dataTable>  
                                 <br/>
                                 <p:toolbar>
                                     <f:facet name="right">
@@ -451,21 +492,31 @@
                                         <p:outputLabel value="N°"/>
                                         <p:inputText size="10"  disabled="true" value="#{ordenservicioclienteAction.dpersonal_servicio.item}" />
                                     </p:panelGrid>
+                                    <p:outputLabel for="fecharegistro" value="F. Registro:" />
+                                    <p:calendar id="fecharegistro" value="#{ordenservicioclienteAction.dpersonal_servicio.fecharegistro}" pattern="dd-MM-yyyy" mask="true" />
                                     <p:outputLabel for="hora_req_personal" value="Hora. Req.:" />
                                     <p:calendar id="hora_req_personal" value="#{ordenservicioclienteAction.dpersonal_servicio.fhora_req}" pattern="HH:mm" timeOnly="true" disabled="true" />
                                     <p:outputLabel for="hora_llegada" value="Hora. Llegada:" />
-                                    <p:calendar id="hora_llegada" value="#{ordenservicioclienteAction.dpersonal_servicio.fhora_llegada}" pattern="HH:mm" timeOnly="true"  />
+                                    <p:calendar id="hora_llegada" value="#{ordenservicioclienteAction.dpersonal_servicio.fhora_llegada}" pattern="HH:mm" timeOnly="true">
+                                        <p:ajax event="blur" listener="#{ordenservicioclienteAction.blur_hora_llegada}" update="hora_inicio" />
+                                    </p:calendar>
                                     <p:outputLabel for="hora_inicio" value="Hora. Inicio.:" />
-                                    <p:calendar id="hora_inicio" value="#{ordenservicioclienteAction.dpersonal_servicio.fhora_inicio_serv}" pattern="HH:mm" timeOnly="true"  />
+                                    <p:calendar id="hora_inicio" value="#{ordenservicioclienteAction.dpersonal_servicio.fhora_inicio_serv}" pattern="HH:mm" timeOnly="true">
+                                        <p:ajax event="blur" listener="#{ordenservicioclienteAction.blur_hora_inicio}" update="hora_inicio" />
+                                    </p:calendar>
                                     <p:outputLabel for="hora_fin" value="Hora. Fin.:" />
-                                    <p:calendar id="hora_fin" value="#{ordenservicioclienteAction.dpersonal_servicio.fhora_fin_serv}" pattern="HH:mm" timeOnly="true"  />
+                                    <p:calendar id="hora_fin" value="#{ordenservicioclienteAction.dpersonal_servicio.fhora_fin_serv}" pattern="HH:mm" timeOnly="true">
+                                        <p:ajax event="blur" listener="#{ordenservicioclienteAction.blur_hora_fin}" update="hora_liberacion" />
+                                    </p:calendar>
                                     <p:outputLabel for="hora_liberacion" value="Hora. Liberación:" />
                                     <p:calendar id="hora_liberacion" value="#{ordenservicioclienteAction.dpersonal_servicio.fhora_liberacion}" pattern="HH:mm" timeOnly="true"  />
+                                    <p:outputLabel for="fechafinregistro" value="F. Fin:" />
+                                    <p:calendar id="fechafinregistro" value="#{ordenservicioclienteAction.dpersonal_servicio.fechafinregistro}" pattern="dd-MM-yyyy" mask="true" />
                                 </p:panelGrid>
                                 <br/>
                                 <p:toolbar>
                                     <f:facet name="right">
-                                        <p:commandButton value="Grabar" ajax="true" actionListener="#{ordenservicioclienteAction.grabarDPersonal_Servicion()}" image="ui-icon-grabar" update="listDpersonal_Servicio"/>
+                                        <p:commandButton value="Grabar" ajax="true" actionListener="#{ordenservicioclienteAction.grabarDPersonal_Servicion()}" image="ui-icon-grabar"/>
                                         <p:commandButton value="Cancelar" process="@this"  image="ui-icon-cancelar" onclick="PF('dlgnew_dpersonal_servicio').hide()" />
                                     </f:facet>
                                 </p:toolbar>   
@@ -479,7 +530,7 @@
                                 <p:commandButton value="Cancelar" process="@this"  image="ui-icon-cancelar" onclick="PF('dlgnew_cotizacionventas').hide()" />
                             </f:facet>
                         </p:toolbar> 
-                        <p:fieldset legend="..:: DOCUMENTO ::."  style="width: 100%">
+                        <p:fieldset legend="..:: DOCUMENTO ::."  style="width: 95%">
                             <p:dataTable id="cotizacionventas" widgetVar="cotizacionventas" 
                                         value="#{ordenservicioclienteAction.listCotizacionventas}" 
                                         var="cotizacionventas" 
@@ -517,7 +568,7 @@
                                </p:column>
                            </p:dataTable>
                         </p:fieldset>
-                        <p:fieldset legend="..:: DETALLE COTIZACIÓN VENTAS ::."  style="width: 100%">
+                        <p:fieldset legend="..:: DETALLE COTIZACIÓN VENTAS ::."  style="width: 95%">
                             <p:dataTable id="dcotizacionventas" widgetVar="dcotizacionventas" 
                                         value="#{ordenservicioclienteAction.listDcotizacionventas}" 
                                     var="dcotizacionventas" 
@@ -545,6 +596,7 @@
                            </p:dataTable>
                         </p:fieldset>                   
                     </p:dialog>
+                    <!-- DIALOG LOCAL -->
                 </div>
             </p:panelGrid>
             <p:growl id="growl" life="4000" showDetail="false"  />

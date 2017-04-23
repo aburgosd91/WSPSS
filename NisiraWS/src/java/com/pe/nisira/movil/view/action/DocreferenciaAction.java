@@ -113,7 +113,12 @@ public class DocreferenciaAction extends AbstactListAction<Docreferencia> implem
             Logger.getLogger(DocreferenciaAction.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
+    @Override
+    public void aprobar() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
     public String getMensaje() {
         return mensaje;
     }
@@ -153,7 +158,7 @@ public class DocreferenciaAction extends AbstactListAction<Docreferencia> implem
     }
 
     @Override
-    public String buscarFiltro() {
+    public String buscarFiltro(int tipo) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

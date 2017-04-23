@@ -64,6 +64,7 @@ public abstract class AbstactListAction<T> {
     private int aanular;
     private int aeliminar;
     private int acerrar;
+    private int aaprobar;
     /*FILTRO*/
     private Date desde;
     private Date hasta;
@@ -140,7 +141,7 @@ public abstract class AbstactListAction<T> {
                     this.aanular=Integer.parseInt(a[4]);
                     this.aeliminar=Integer.parseInt(a[5]);
                     this.setAcerrar(Integer.parseInt(a[6]));
-                    
+                    this.aaprobar=Integer.parseInt(a[7]);
                 }
             }
         }
@@ -150,7 +151,6 @@ public abstract class AbstactListAction<T> {
             }else{
                  ctx.redirect(ctxPath + "/sistema/" + lst_name + ".xhtml");
                  /************************************************/
-                 doVerFiltro();
             }
         } else {
             ctx.redirect(ctxPath + "/sistema/principal.xhtml");
@@ -170,18 +170,20 @@ public abstract class AbstactListAction<T> {
                     this.aanular=Integer.parseInt(a[4]);
                     this.aeliminar=Integer.parseInt(a[5]);
                     this.acerrar=Integer.parseInt(a[6]);
+                    this.aaprobar=Integer.parseInt(a[7]);
                 }
             }
         }
         /********************* FECHA ********************/
         desde=new Date();
         hasta=new Date();
-        
+        doVerFiltro(1);
         return access;
     }
-    public void doVerFiltro() throws IOException {
-        buscarFiltro();
-        this.ladd = 0;
+    public void doVerFiltro(int tipo) throws IOException {
+        buscarFiltro(tipo);
+        if(tipo == 2)
+            this.ladd = 0;
     }
     
     public void doNuevo() throws IOException {
@@ -247,11 +249,15 @@ public abstract class AbstactListAction<T> {
         cerrar();
         this.ladd = 0;
     }
+    public void doAprobar(){
+        aprobar();
+        this.ladd = 0;
+    }
     public boolean isBarraVista() {
         return this.ladd == 0;
     }
     
-    public abstract String buscarFiltro();
+    public abstract String buscarFiltro(int tipo);
     
     public abstract void buscarTodo();
 
@@ -264,6 +270,8 @@ public abstract class AbstactListAction<T> {
     public abstract void eliminar();
     
     public abstract void cerrar();
+    
+    public abstract void aprobar();
     
     public abstract  JRDataSource getDataSourceReport();
     
@@ -710,5 +718,19 @@ public abstract class AbstactListAction<T> {
      */
     public void setLvalidate(boolean lvalidate) {
         this.lvalidate = lvalidate;
+    }
+
+    /**
+     * @return the aaprobar
+     */
+    public int getAaprobar() {
+        return aaprobar;
+    }
+
+    /**
+     * @param aaprobar the aaprobar to set
+     */
+    public void setAaprobar(int aaprobar) {
+        this.aaprobar = aaprobar;
     }
 }

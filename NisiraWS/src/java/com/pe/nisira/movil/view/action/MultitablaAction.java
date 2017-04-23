@@ -205,7 +205,12 @@ public class MultitablaAction extends AbstactListAction<Multitabla> implements S
             this.setMensaje(ex.toString());
         }
     }
-
+    
+    @Override
+    public void aprobar() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
     public void onRowSelect(SelectEvent event) throws IOException {
         selectMultitablaTabla = (Multitabla) event.getObject();
         botonEditarTabla = false;
@@ -830,7 +835,7 @@ public class MultitablaAction extends AbstactListAction<Multitabla> implements S
     }
 
     @Override
-    public String buscarFiltro() {
+    public String buscarFiltro(int tipo) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

@@ -16,7 +16,7 @@
                 <f:facet name="header">
                     <p:outputLabel value="#{cotizacionventasAction.tituloHead}"/>
                 </f:facet>
-                <div class="ui-grid ">
+                <div class="ui-grid">
                     <div class="ui-grid-row">
                         <p:fieldset legend="Datos" style="width: 100%" >
                             <p:panelGrid  columns="8" columnClasses="no-border,no-border,no-border,no-border,no-border,no-border,no-border,no-border" style="width: 100%">
@@ -90,7 +90,7 @@
                                             <!--<p:ajax event="dateSelect" listener="{planventaAction.updateCampañas}" update="lstCampaña"/>-->
                                         </p:calendar>
                                         <p:outputLabel for="estado"  value="Estado:" />
-                                        <p:selectOneMenu id="estado" value="#{cotizacionventasAction.datoEdicion.idestado}"  disabled="#{!cotizacionventasAction.edicion}" >    
+                                        <p:selectOneMenu id="estado" value="#{cotizacionventasAction.datoEdicion.idestado}"  disabled="true" >    
                                             <f:selectItems value="#{cotizacionventasAction.listEstado}" var="tipoEstado" itemLabel="#{tipoEstado.descripcion}" itemValue="#{tipoEstado.idestado}" />
                                         </p:selectOneMenu>
                                     </p:panelGrid>
@@ -98,6 +98,15 @@
                                     <p:selectOneMenu id="idtiposerrvicio" value="#{cotizacionventasAction.datoEdicion.idtiposervicio}" style="width:70px" disabled="#{!cotizacionventasAction.edicion}">
                                         <f:selectItems value="#{cotizacionventasAction.listWtiposervicio}" var="tiposervicio" itemLabel="#{tiposervicio.descripcion}" itemValue="#{tiposervicio.idtiposervicio}"/>
                                     </p:selectOneMenu>
+                                    <p:outputLabel value="Vendedor:" escape="false" />
+                                    <h:panelGrid id="cntVendedor" cellpadding="0" cellspacing="0" columns="3">
+                                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{cotizacionventasAction.verCntVendedor()}" 
+                                                         disabled="#{!cotizacionventasAction.edicion}"  icon="ui-icon-search">
+                                            <p:ajax event="dialogReturn" listener="#{cotizacionventasAction.valorVendedor}" update="cntVendedor"/>
+                                        </p:commandButton>
+                                        <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{cotizacionventasAction.datoEdicion.idvendedor}" disabled="#{!cotizacionventasAction.edicion}"/>
+                                        <p:inputText size="50" readonly="true" value="#{cotizacionventasAction.datoEdicion.vendedor}" disabled="#{!cotizacionventasAction.edicion}"/>
+                                    </h:panelGrid>
                                     <p:outputLabel value="Fecha V." escape="false"/>
                                     <p:panelGrid  columns="5" columnClasses="no-border, no-border, no-border, no-border, no-border" >
                                         <p:calendar id="button2" style="text-align: left" size="15" value="#{cotizacionventasAction.datoEdicion.fechavigencia}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="#{!cotizacionventasAction.edicion}">
@@ -110,11 +119,11 @@
                                     </p:panelGrid>
                                     
                                     <p:outputLabel value="Almacen" escape="false"/>
-                                    <p:selectOneMenu id="idalmacen" value="#{cotizacionventasAction.datoEdicion.idalmacen}" style="width:70px" disabled="#{!cotizacionventasAction.edicion}">
+                                    <p:selectOneMenu id="idalmacen" value="#{cotizacionventasAction.datoEdicion.idalmacen}" style="width:100px" disabled="#{!cotizacionventasAction.edicion}">
                                         <f:selectItems value="#{cotizacionventasAction.listAlmacen}" var="almacen" itemLabel="#{almacen.descripcion}" itemValue="#{almacen.idalmacen}"/>
                                     </p:selectOneMenu>
                                     <p:outputLabel value="Glosa" escape="false"/>
-                                    <p:inputTextarea rows="2" cols="30" value="#{cotizacionventasAction.datoEdicion.glosa}" disabled="#{!cotizacionventasAction.edicion}"/>
+                                    <p:inputTextarea rows="2" cols="60" value="#{cotizacionventasAction.datoEdicion.glosa}" disabled="#{!cotizacionventasAction.edicion}"/>
                                 </p:panelGrid>
                             </div> 
                         </p:fieldset> 

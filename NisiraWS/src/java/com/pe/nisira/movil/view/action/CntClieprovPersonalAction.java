@@ -31,7 +31,7 @@ public class CntClieprovPersonalAction {
         ClieprovDao rd= new ClieprovDao();
         try {
             UsuarioBean u =(UsuarioBean) WebUtil.getObjetoSesion(Constantes.SESION_USUARIO);
-            setDatos(rd.listarPorEmpresaPersonalWeb(u.getIDEMPRESA()));
+            setDatos(rd.listarPorEmpresaOperadorWeb(u.getIDEMPRESA()));
         } catch (Exception ex) {
             Logger.getLogger(CntClieprovPersonalAction.class.getName()).log(Level.SEVERE, null, ex);
         }

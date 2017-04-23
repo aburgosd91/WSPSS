@@ -22,6 +22,7 @@
                     <p:commandButton rendered="#{cc.attrs.bean.aedtiar==1?true:false}" value="Editar" ajax="true" actionListener="#{cc.attrs.bean.doEditar()}" disabled="#{!cc.attrs.bean.barraVista}" icon="ui-icon-pencil" update=":datos" />
                     <p:commandButton rendered="#{cc.attrs.bean.aanular==1?true:false}" disabled="#{!cc.attrs.bean.barraVista}"  update=":datos:growl,:datos:cmpDialog:lbl_opcion" value="Anular" actionListener="#{cc.attrs.bean.opcionEliminarDocumento('ANULAR','MNT')}" icon="ui-icon-closethick"/> 
                     <p:commandButton rendered="#{cc.attrs.bean.aeliminar==1?true:false}" disabled="#{!cc.attrs.bean.barraVista}"  update=":datos:growl,:datos:cmpDialog:lbl_opcion" value="Eliminar" actionListener="#{cc.attrs.bean.opcionEliminarDocumento('ELIMINAR','MNT')}" icon="ui-icon-trash"/> 
+                    <p:commandButton rendered="#{cc.attrs.bean.aaprobar==1?true:false}" value="Aprobar" ajax="true" actionListener="#{cc.attrs.bean.doAprobar()}" disabled="#{!cc.attrs.bean.barraVista}" icon="ui-icon-document"/>    
                     <p:commandButton rendered="#{cc.attrs.bean.agrabar==1?true:false}" value="Grabar" ajax="true" actionListener="#{cc.attrs.bean.doGrabar()}" disabled="#{cc.attrs.bean.barraVista}"  icon="ui-icon-disk" update=":datos"/>
                     <p:commandButton value="Cancelar" ajax="true" actionListener="#{cc.attrs.bean.doCancelar()}" disabled="#{cc.attrs.bean.barraVista}"  icon="ui-icon-disk" update=":datos"/>
                     <p:separator/>

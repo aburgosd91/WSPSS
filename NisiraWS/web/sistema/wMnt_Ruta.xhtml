@@ -1,0 +1,38 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    >
+    <ui:define name="metadata">        
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos" >
+            #{rutaAction.findDetalle()}
+            <cmp:barra_mnt bean="#{rutaAction}"/>
+            <p:panelGrid id="cabecera" columns="2" columnClasses="no-border,no-border,no-border">
+                <f:facet name="header">
+                    #{rutaAction.tituloHead}
+                </f:facet>
+                <p:outputLabel value="Código: " />
+                <p:inputText id="idruta" size="3"
+                    disabled="true" value="#{rutaAction.datoEdicion.idruta}"/>
+                <p:outputLabel for="descripcion"  value="Descripcion:" />
+                <p:inputTextarea id="descripcion" cols="60" rows="2" 
+                                 disabled="#{!rutaAction.edicion}"
+                                 value="#{rutaAction.datoEdicion.descripcion}" 
+                                 onkeyup="javascript:this.value = this.value.toUpperCase();"
+                                 >
+                    <p:ajax event="valueChange" immediate="true" process="@this"/>
+                </p:inputTextarea>
+                <p:outputLabel value="Estado: " />
+                <p:selectBooleanCheckbox value="#{rutaAction.estado}" disabled="#{!rutaAction.edicion}"/>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{rutaAction}" ventana="MNT" />
+        </h:form>
+    </ui:define>
+</ui:composition>

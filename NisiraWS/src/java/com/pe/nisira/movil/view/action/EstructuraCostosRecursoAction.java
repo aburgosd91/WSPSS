@@ -291,24 +291,33 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
     @Override
     public void eliminar() {
         try {
-//            if (getOpc_anular_eliminar().equalsIgnoreCase("ANULAR")) {
-//                daoZona.anular(getDatoEdicion().getIDEMPRESA(), getDatoEdicion().getIDSUCURSAL(), getDatoEdicion().getIDZONA(), 0);
-//            }
-//            if (getOpc_anular_eliminar().equalsIgnoreCase("ELIMINAR")) {
-//                daoZona.anular(getDatoEdicion().getIDEMPRESA(), getDatoEdicion().getIDSUCURSAL(), getDatoEdicion().getIDZONA(), 2);
-//            }
+            if (getOpc_anular_eliminar().equalsIgnoreCase("ANULAR")) {
+                mensaje=getEstructura_costosDao().anular(getDatoEdicion().getIdempresa(), getDatoEdicion().getCodigo(), user.getIDUSUARIO());
+                setMensaje(WebUtil.exitoAnular("Estructura Costo ", mensaje));
+            }
+            if (getOpc_anular_eliminar().equalsIgnoreCase("ELIMINAR")) {
+                mensaje=getEstructura_costosDao().eliminar(getDatoEdicion().getIdempresa(), getDatoEdicion().getCodigo(), user.getIDUSUARIO());
+                setMensaje(WebUtil.exitoEliminar("Estructura Costo ", mensaje));
+            }
+            WebUtil.info(getMensaje());
+            RequestContext.getCurrentInstance().update("datos");
         } catch (Exception ex) {
             Logger.getLogger(EstructuraCostosRecursoAction.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
     @Override
-    public String buscarFiltro() {
+    public String buscarFiltro(int tipo) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void cerrar() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @Override
+    public void aprobar() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     public void findetalle() throws Exception {
@@ -588,6 +597,8 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
         this.setGo_ecosto(go_ec.floatValue());
         this.setGa_ecosto(ga_ec.floatValue());
         this.setU_ecosto(u_ec.floatValue());
+        if(this.getAjuste_ecosto()==null)
+            this.ajuste_ecosto = 0.0f;
         this.total_ecosto = total_ec.floatValue()+this.getAjuste_ecosto();
         if(getSelectEstructura_costos_producto()!=null){
             getSelectEstructura_costos_producto().setAjuste(this.getAjuste_ecosto());
@@ -797,7 +808,7 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
             listDestructura_costos_recursos = listarPorEmpresaWebXProducto_Destructura_costos_recursos_action();
             resetIndices_DestructuraCostosRecurso();
             calculosTotales_estructuracostos_local();
-            RequestContext.getCurrentInstance().update("datos:listDestructura_costos_recursos");
+            RequestContext.getCurrentInstance().update("datos:tabs:listDestructura_costos_recursos");
             RequestContext.getCurrentInstance().update("datos:subtotal_ecosto");
             RequestContext.getCurrentInstance().update("datos:go_ecosto");
             RequestContext.getCurrentInstance().update("datos:ga_ecosto");
@@ -865,7 +876,7 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
         }
     }
     public void verCntCargos_personal() {
-        RequestContext.getCurrentInstance().openDialog("cntCargos_personal", modalOptions, null);
+        RequestContext.getCurrentInstance().openDialog("cntCargosPersonal", modalOptions, null);
     }
     public void valorCargos_personal(SelectEvent event) {
         Cargos_personal cargo = (Cargos_personal) event.getObject();

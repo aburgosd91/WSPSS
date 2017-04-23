@@ -163,6 +163,12 @@ public class Ordenserviciocliente_cierreAction extends AbstactListAction<Ordense
     public void eliminar() {
         
     }
+    
+    @Override
+    public void aprobar() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
     public void buscar_filtrofecha() {
         try {
             this.mensaje = "";
@@ -834,7 +840,7 @@ public class Ordenserviciocliente_cierreAction extends AbstactListAction<Ordense
     }
 
     @Override
-    public String buscarFiltro(){
+    public String buscarFiltro(int tipo){
         try {
             this.mensaje = "";
             SimpleDateFormat  f = new SimpleDateFormat("yyyy-MM-dd");
@@ -843,13 +849,13 @@ public class Ordenserviciocliente_cierreAction extends AbstactListAction<Ordense
             f_ini = f_ini.replace("-", "");
             f_fin = f_fin.replace("-", "");
             setListaDatos(getOrdenservicioclienteDao().listarPorEmpresaWebFiltroFecha(user.getIDEMPRESA(),f_ini,f_fin));
-            RequestContext.getCurrentInstance().update("datos:tbl");
         } catch (Exception e) {
             mensaje = WebUtil.mensajeError();
             WebUtil.error(mensaje);
         }
         RequestContext.getCurrentInstance().update("datos:tbl");
-        lista_accion_filtro("wLst_Ordenserviciocliente_cerrado");
+        if(tipo == 2)
+            lista_accion_filtro("wLst_Ordenserviciocliente_cerrado");
         return "";
     }
 
@@ -861,7 +867,7 @@ public class Ordenserviciocliente_cierreAction extends AbstactListAction<Ordense
                 setMensaje(WebUtil.exitoRegistrar("Orden Servicio ", mensaje));
                 WebUtil.info(getMensaje());
                 setSelectListOrdenserviciocliente(new ArrayList<>());
-                buscarFiltro();
+                buscarFiltro(2);
             }else{
                 this.mensaje = "Seleccionar Documento";
                 WebUtil.MensajeError(this.mensaje);

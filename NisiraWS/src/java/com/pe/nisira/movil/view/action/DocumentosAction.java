@@ -146,7 +146,12 @@ public class DocumentosAction extends AbstactListAction<Documentos> implements S
             Logger.getLogger(DocumentosAction.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
+    @Override
+    public void aprobar() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
     public String getMensaje() {
         return mensaje;
     }
@@ -200,7 +205,7 @@ public class DocumentosAction extends AbstactListAction<Documentos> implements S
     }
 
     @Override
-    public String buscarFiltro() {
+    public String buscarFiltro(int tipo) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
