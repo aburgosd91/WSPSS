@@ -3,10 +3,11 @@ package com.nisira.core.entity;
 import com.nisira.annotation.ClavePrimaria;
 import com.nisira.annotation.Columna;
 import com.nisira.annotation.Tabla;
+import java.io.Serializable;
 import java.util.Date;
 
 @Tabla(nombre = "TCAMBIO")
-public class Tcambio {
+public class Tcambio implements Serializable{
         private String idbasedatos;
 	@Columna
 	private Date fecha;

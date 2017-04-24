@@ -3,146 +3,217 @@ package com.nisira.core.entity;
 import com.nisira.annotation.ClavePrimaria;
 import com.nisira.annotation.Columna;
 import com.nisira.annotation.Tabla;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-
+@XStreamAlias("COTIZACIONVENTAS")
 @Tabla(nombre = "COTIZACIONVENTAS")
-public class Cotizacionventas {
+public class Cotizacionventas  implements Serializable {
+
+        @XStreamAlias("IDBASEDATOS")
         private String idbasedatos;
+        @XStreamAlias("IDEMPRESA")
 	@ClavePrimaria
 	@Columna
 	private String idempresa;
+        @XStreamAlias("IDCOTIZACIONV")
 	@ClavePrimaria
 	@Columna
 	private String idcotizacionv;
+        @XStreamAlias("IDEMISOR")
 	@Columna
 	private String idemisor;
+        @XStreamAlias("IDSUCURSAL")
 	@Columna
 	private String idsucursal;
+        @XStreamAlias("IDALMACEN")
 	@Columna
 	private String idalmacen;
+        @XStreamAlias("IDDOCUMENTO")
 	@Columna
 	private String iddocumento;
+        @XStreamAlias("PERIODO")
 	@Columna
 	private String periodo;
+        @XStreamAlias("SERIE")
 	@Columna
 	private String serie;
+        @XStreamAlias("NUMERO")
 	@Columna
 	private String numero;
+        @XStreamAlias("FECHA")
 	@Columna
 	private Date fecha;
+        @XStreamAlias("IDCLIEPROV")
 	@Columna
 	private String idclieprov;
+        @XStreamAlias("IDPROYECTO")
 	@Columna
 	private String idproyecto;
+        @XStreamAlias("TCAMBIO")
 	@Columna
 	private Float tcambio;
+        @XStreamAlias("IDMONEDA")
 	@Columna
 	private String idmoneda;
+        @XStreamAlias("GLOSA")
 	@Columna
 	private String glosa;
+        @XStreamAlias("IDESTADO")
 	@Columna
 	private String idestado;
+        @XStreamAlias("IDESTADOOLD")
 	@Columna
 	private String idestadoold;
+        @XStreamAlias("VVENTA")
 	@Columna
 	private Float vventa;
+        @XStreamAlias("IMPUESTO")
 	@Columna
 	private Float impuesto;
+        @XStreamAlias("IMPUESTO_I")
 	@Columna
 	private Float impuesto_i;
+        @XStreamAlias("IMPORTE")
 	@Columna
 	private Float importe;
+        @XStreamAlias("FECHACREACION")
 	@Columna
 	private Date fechacreacion;
+        @XStreamAlias("SINCRONIZA")
 	@Columna
 	private String sincroniza;
+        @XStreamAlias("CONTACTO")
 	@Columna
 	private String contacto;
+        @XStreamAlias("LUGAR_ENTREGA")
 	@Columna
 	private String lugar_entrega;
+        @XStreamAlias("SOLICITADO")
 	@Columna
 	private String solicitado;
+        @XStreamAlias("TCMONEDA")
 	@Columna
 	private Float tcmoneda;
+        @XStreamAlias("SUBTOTALSINDSCTO")
 	@Columna
 	private Float subtotalsindscto;
+        @XStreamAlias("DESCUENTO")
 	@Columna
 	private Float descuento;
+        @XStreamAlias("SUBTOTALCONDSCTO")
 	@Columna
 	private Float subtotalcondscto;
+        @XStreamAlias("FECHAVIGENCIA")
 	@Columna
 	private Date fechavigencia;
+        @XStreamAlias("DURACIONVIGENCIA")
 	@Columna
 	private Float duracionvigencia;
+        @XStreamAlias("CONFIRMASTOCK")
 	@Columna
 	private Float confirmastock;
+        @XStreamAlias("FECHAVISITA")
 	@Columna
 	private Date fechavisita;
+        @XStreamAlias("IDFPAGO")
 	@Columna
 	private String idfpago;
+        @XStreamAlias("PLAZOENTREGA")
 	@Columna
 	private String plazoentrega;
+        @XStreamAlias("VENTANA")
 	@Columna
 	private String ventana;
+        @XStreamAlias("IDVENDEDOR")
 	@Columna
 	private String idvendedor;
+        @XStreamAlias("COMISION")
 	@Columna
 	private Float comision;
+        @XStreamAlias("IDEMBALAJE")
 	@Columna
 	private String idembalaje;
+        @XStreamAlias("GARANTIA")
 	@Columna
 	private String garantia;
+        @XStreamAlias("IDPREVALORIZA")
 	@Columna
 	private String idprevaloriza;
+        @XStreamAlias("REFERENCIA")
 	@Columna
 	private String referencia;
+        @XStreamAlias("MULTIVENDEDORES")
 	@Columna
 	private Float multivendedores;
+        @XStreamAlias("PESOBRUTO")
 	@Columna
 	private Float pesobruto;
+        @XStreamAlias("PESOTARA")
 	@Columna
 	private Float pesotara;
+        @XStreamAlias("PESONETO")
 	@Columna
 	private Float pesoneto;
+        @XStreamAlias("IDTIPOCONTENEDOR")
 	@Columna
 	private String idtipocontenedor;
+        @XStreamAlias("NROCONTENEDOR")
 	@Columna
 	private String nrocontenedor;
+        @XStreamAlias("CIUDADORIGEN")
 	@Columna
 	private String ciudadorigen;
+        @XStreamAlias("CIUDADDESTINO")
 	@Columna
 	private String ciudaddestino;
+        @XStreamAlias("FECHAEMBARQUE")
 	@Columna
 	private Date fechaembarque;
+        @XStreamAlias("FECHAARRIBO")
 	@Columna
 	private Date fechaarribo;
+        @XStreamAlias("IDPUERTOORIGEN")
 	@Columna
 	private String idpuertoorigen;
+        @XStreamAlias("IDPUERTODESTINO")
 	@Columna
 	private String idpuertodestino;
+        @XStreamAlias("PUERTOCIUDADORI")
 	@Columna
 	private String puertociudadori;
+        @XStreamAlias("PUERTOCIUDADDES")
 	@Columna
 	private String puertociudaddes;
+        @XStreamAlias("IDUBIGEO")
 	@Columna
 	private String idubigeo;
+        @XStreamAlias("CONTAINER")
 	@Columna
 	private String container;
+        @XStreamAlias("IDTIPOPRECIO")
 	@Columna
 	private String idtipoprecio;
+        @XStreamAlias("IDFLETE")
 	@Columna
 	private String idflete;
+        @XStreamAlias("EXONERADO")
 	@Columna
 	private Float exonerado;
+        @XStreamAlias("ES_PROYECTO")
 	@Columna
 	private Float es_proyecto;
+        @XStreamAlias("SMFCRED")
 	@Columna
 	private String smfcred;
+        @XStreamAlias("SMFVENC")
 	@Columna
 	private String smfvenc;
+        @XStreamAlias("IDUNIDADNEGOCIO")
 	@Columna
 	private String idunidadnegocio;
+        @XStreamAlias("IDSUBUNIDADNEGOCIO")
 	@Columna
 	private String idsubunidadnegocio;
 	@Columna
@@ -225,9 +296,28 @@ public class Cotizacionventas {
 	private Float cuotainicial;
 	@Columna
 	private String idctacte;
+        @XStreamAlias("IDTIPOSERVICIO")
+        @Columna
+        private String idtiposervicio;
+        @XStreamAlias("ITEM_CONTACTO")
+        @Columna
+        private String item_contacto;
+        
         private String razon_social;
+        private String estadosunat;
+        private String moneda;
+        private String sucursal;
+        private String almacen;
+        private String emisor;
+        private String mes;
+        private String formapago;
+        private String contacto_email;
+        private String estado;
+        private boolean check_rpt_alterno;
         private List<Dcotizacionventas> listDcotizacionventas;
-
+        private String color_estado;
+        private String vendedor;
+        private String tipo_servicio;
 	/* Sets & Gets */
 	public void setIdempresa(String idempresa) {
 		this.idempresa = idempresa;
@@ -1131,4 +1221,211 @@ public class Cotizacionventas {
         this.listDcotizacionventas = listDcotizacionventas;
     }
 
+    /**
+     * @return the emisor
+     */
+    public String getEmisor() {
+        return emisor;
+    }
+
+    /**
+     * @param emisor the emisor to set
+     */
+    public void setEmisor(String emisor) {
+        this.emisor = emisor;
+    }
+
+    /**
+     * @return the estadosunat
+     */
+    public String getEstadosunat() {
+        return estadosunat;
+    }
+
+    /**
+     * @param estadosunat the estadosunat to set
+     */
+    public void setEstadosunat(String estadosunat) {
+        this.estadosunat = estadosunat;
+    }
+
+    /**
+     * @return the moneda
+     */
+    public String getMoneda() {
+        return moneda;
+    }
+
+    /**
+     * @param moneda the moneda to set
+     */
+    public void setMoneda(String moneda) {
+        this.moneda = moneda;
+    }
+
+    /**
+     * @return the sucursal
+     */
+    public String getSucursal() {
+        return sucursal;
+    }
+
+    /**
+     * @param sucursal the sucursal to set
+     */
+    public void setSucursal(String sucursal) {
+        this.sucursal = sucursal;
+    }
+
+    /**
+     * @return the mes
+     */
+    public String getMes() {
+        return mes;
+    }
+
+    /**
+     * @param mes the mes to set
+     */
+    public void setMes(String mes) {
+        this.mes = mes;
+    }
+
+    /**
+     * @return the formapago
+     */
+    public String getFormapago() {
+        return formapago;
+    }
+
+    /**
+     * @param formapago the formapago to set
+     */
+    public void setFormapago(String formapago) {
+        this.formapago = formapago;
+    }
+
+    /**
+     * @return the almacen
+     */
+    public String getAlmacen() {
+        return almacen;
+    }
+
+    /**
+     * @param almacen the almacen to set
+     */
+    public void setAlmacen(String almacen) {
+        this.almacen = almacen;
+    }
+
+    /**
+     * @return the idtiposervicio
+     */
+    public String getIdtiposervicio() {
+        return idtiposervicio;
+    }
+
+    /**
+     * @param idtiposervicio the idtiposervicio to set
+     */
+    public void setIdtiposervicio(String idtiposervicio) {
+        this.idtiposervicio = idtiposervicio;
+    }
+    /**
+     * @return the item_contacto
+     */
+    public String getItem_contacto() {
+        return item_contacto;
+    }
+
+    /**
+     * @param item_contacto the item_contacto to set
+     */
+    public void setItem_contacto(String item_contacto) {
+        this.item_contacto = item_contacto;
+    }
+
+    /**
+     * @return the contacto_email
+     */
+    public String getContacto_email() {
+        return contacto_email;
+    }
+
+    /**
+     * @param contacto_email the contacto_email to set
+     */
+    public void setContacto_email(String contacto_email) {
+        this.contacto_email = contacto_email;
+    }
+
+    /**
+     * @return the check_rpt_alterno
+     */
+    public boolean isCheck_rpt_alterno() {
+        return check_rpt_alterno;
+    }
+
+    /**
+     * @param check_rpt_alterno the check_rpt_alterno to set
+     */
+    public void setCheck_rpt_alterno(boolean check_rpt_alterno) {
+        this.check_rpt_alterno = check_rpt_alterno;
+    }
+
+    /**
+     * @return the estado
+     */
+    public String getEstado() {
+        return estado;
+    }
+
+    /**
+     * @param estado the estado to set
+     */
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    /**
+     * @return the color_estado
+     */
+    public String getColor_estado() {
+        return color_estado;
+    }
+
+    /**
+     * @param color_estado the color_estado to set
+     */
+    public void setColor_estado(String color_estado) {
+        this.color_estado = color_estado;
+    }
+    /**
+     * @return the vendedor
+     */
+    public String getVendedor() {
+        return vendedor;
+    }
+
+    /**
+     * @param vendedor the vendedor to set
+     */
+    public void setVendedor(String vendedor) {
+        this.vendedor = vendedor;
+    }
+
+    /**
+     * @return the tipo_servicio
+     */
+    public String getTipo_servicio() {
+        return tipo_servicio;
+    }
+
+    /**
+     * @param tipo_servicio the tipo_servicio to set
+     */
+    public void setTipo_servicio(String tipo_servicio) {
+        this.tipo_servicio = tipo_servicio;
+    }
 }

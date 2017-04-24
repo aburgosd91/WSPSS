@@ -3,9 +3,10 @@ package com.nisira.core.entity;
 import com.nisira.annotation.ClavePrimaria;
 import com.nisira.annotation.Columna;
 import com.nisira.annotation.Tabla;
+import java.io.Serializable;
 
 @Tabla(nombre = "DCOTIZACIONVENTAS_ACTIVIDADES")
-public class Dcotizacionventas_actividades {
+public class Dcotizacionventas_actividades implements Serializable{
         private String idbasedatos;
 	@ClavePrimaria
 	@Columna

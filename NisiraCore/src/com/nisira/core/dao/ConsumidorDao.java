@@ -87,4 +87,40 @@ public class ConsumidorDao extends BaseDao<Consumidor> {
         }
         return lista;
         }
+        
+        public Consumidor getEmpresa_Idconsumidor(String idempresa,String idconsumidor) throws NisiraORMException {
+            ArrayList<Consumidor> lista = new ArrayList<Consumidor>();
+        try
+        {
+            ResultSet rs = null;
+            rs = execProcedure("GETCONSUMIDOR_IDCONSUMIDOR_TMPSS",idempresa,idconsumidor);
+            while (rs.next()) {
+                Consumidor consumidor = new Consumidor();
+                consumidor.setIdbasedatos(rs.getString("IDBASEDATOS").trim());
+                consumidor.setIdempresa(rs.getString("IDEMPRESA").trim());
+                consumidor.setIdconsumidor(rs.getString("IDCONSUMIDOR").trim());
+                consumidor.setTipo(rs.getString("TIPO")!=null?rs.getString("TIPO").trim():"");
+                consumidor.setJerarquia(rs.getString("JERARQUIA")!=null?rs.getString("JERARQUIA").trim():"");
+                consumidor.setDescripcion(rs.getString("DESCRIPCION")!=null?rs.getString("DESCRIPCION").trim():"");
+                consumidor.setIdccosto(rs.getString("IDCCOSTO")!=null?rs.getString("IDCCOSTO").trim():"");
+                consumidor.setFecha_ingreso(rs.getDate("FECHA_INGRESO"));
+                consumidor.setFecha_baja(rs.getDate("FECHA_BAJA"));
+                consumidor.setMarca(rs.getString("MARCA"));
+                consumidor.setPlaca(rs.getString("PLACA"));
+                consumidor.setTipovehiculo(rs.getString("TIPOVEHICULO"));
+                consumidor.setAnio(rs.getFloat("ANIO"));
+                consumidor.setEstado(rs.getFloat("ESTADO"));
+                
+                lista.add(consumidor);                             
+                
+            }
+        } catch(Exception ex) {
+            ex.printStackTrace();
+        }
+            if(!lista.isEmpty())
+                return lista.get(0);
+            else{
+                return null;
+            }
+        }
 }

@@ -23,12 +23,12 @@ public class EstadosDao extends BaseDao<Estados> {
 			return l.get(0);
 		}
 	}
-        public ArrayList<Estados> listarPorEmpresaWeb(String idempresa,String iddocumento) throws NisiraORMException {
+        public ArrayList<Estados> listarPorEmpresaWeb(String idempresa,String formulario) throws NisiraORMException {
             ArrayList<Estados> lista = new ArrayList<Estados>();
         try
         {
             ResultSet rs = null;
-            rs = execProcedure("GETESTADO_TMPSS",idempresa,iddocumento);
+            rs = execProcedure("GETESTADO_TMPSS",idempresa,"",formulario);
             while (rs.next()) {
                 Estados estados = new Estados();
                 estados.setIdbasedatos(rs.getString("IDBASEDATOS").trim());

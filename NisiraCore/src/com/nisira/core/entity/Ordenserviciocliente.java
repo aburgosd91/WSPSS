@@ -4,10 +4,11 @@ import com.nisira.annotation.ClavePrimaria;
 import com.nisira.annotation.Columna;
 import com.nisira.annotation.Tabla;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import java.io.Serializable;
 import java.util.Date;
 @XStreamAlias("ORDENSERVICIOCLIENTE")
 @Tabla(nombre = "ORDENSERVICIOCLIENTE")
-public class Ordenserviciocliente {
+public class Ordenserviciocliente implements Serializable{
         @XStreamAlias("IDBASEDATOS")
         private String idbasedatos;
 	@Columna
@@ -58,9 +59,23 @@ public class Ordenserviciocliente {
 	@Columna
         @XStreamAlias("NRO_OSERVICIO")
 	private String nro_oservicio;
+        @Columna
+        @XStreamAlias("IDMOTIVO")
+	private String idmotivo;
+        @Columna
+        @XStreamAlias("GLOSA")
+	private String glosa;
+        @Columna
+        @XStreamAlias("IDOPERARIO")
+	private String idoperario;
+        @Columna
+        @XStreamAlias("IDOPERARIO2")
+	private String idoperario2;
+        private String operario;
+        private String operario2;
         private String idcotizacionv;
         private String razonsocial;
-
+        private String estado;
 	/* Sets & Gets */
 	public void setIdempresa(String idempresa) {
 		this.idempresa = idempresa;
@@ -235,5 +250,101 @@ public class Ordenserviciocliente {
     public void setRazonsocial(String razonsocial) {
         this.razonsocial = razonsocial;
     }
+    /**
+     * @return the idmotivo
+     */
+    public String getIdmotivo() {
+        return idmotivo;
+    }
 
+    /**
+     * @param idmotivo the idmotivo to set
+     */
+    public void setIdmotivo(String idmotivo) {
+        this.idmotivo = idmotivo;
+    }
+
+    /**
+     * @return the estado
+     */
+    public String getEstado() {
+        return estado;
+    }
+
+    /**
+     * @param estado the estado to set
+     */
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    /**
+     * @return the glosa
+     */
+    public String getGlosa() {
+        return glosa;
+    }
+
+    /**
+     * @param glosa the glosa to set
+     */
+    public void setGlosa(String glosa) {
+        this.glosa = glosa;
+    }
+
+    /**
+     * @return the idoperario
+     */
+    public String getIdoperario() {
+        return idoperario;
+    }
+
+    /**
+     * @param idoperario the idoperario to set
+     */
+    public void setIdoperario(String idoperario) {
+        this.idoperario = idoperario;
+    }
+
+    /**
+     * @return the operario
+     */
+    public String getOperario() {
+        return operario;
+    }
+
+    /**
+     * @param operario the operario to set
+     */
+    public void setOperario(String operario) {
+        this.operario = operario;
+    }
+
+    /**
+     * @return the idoperario2
+     */
+    public String getIdoperario2() {
+        return idoperario2;
+    }
+
+    /**
+     * @param idoperario2 the idoperario2 to set
+     */
+    public void setIdoperario2(String idoperario2) {
+        this.idoperario2 = idoperario2;
+    }
+
+    /**
+     * @return the operario2
+     */
+    public String getOperario2() {
+        return operario2;
+    }
+
+    /**
+     * @param operario2 the operario2 to set
+     */
+    public void setOperario2(String operario2) {
+        this.operario2 = operario2;
+    }
 }

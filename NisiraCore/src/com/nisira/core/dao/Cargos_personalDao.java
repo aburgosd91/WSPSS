@@ -36,6 +36,7 @@ public class Cargos_personalDao extends BaseDao<Cargos_personal> {
                 cargos_personal.setIdempresa(rs.getString("IDEMPRESA").trim());
                 cargos_personal.setIdcargo(rs.getString("IDCARGO").trim());
                 cargos_personal.setDescripcion(rs.getString("DESCRIPCION")!=null?rs.getString("DESCRIPCION").trim():"");
+                cargos_personal.setEs_chofer(rs.getFloat("ES_CHOFER"));
                 lista.add(cargos_personal);      
             }
         } catch(Exception ex) {
@@ -56,6 +57,7 @@ public class Cargos_personalDao extends BaseDao<Cargos_personal> {
                 cargos_personal.setIdempresa(rs.getString("IDEMPRESA").trim());
                 cargos_personal.setIdcargo(rs.getString("IDCARGO").trim());
                 cargos_personal.setDescripcion(rs.getString("DESCRIPCION")!=null?rs.getString("DESCRIPCION").trim():"");
+                cargos_personal.setEs_chofer(rs.getFloat("ES_CHOFER"));
                 lista.add(cargos_personal);      
             }
         } catch(Exception ex) {

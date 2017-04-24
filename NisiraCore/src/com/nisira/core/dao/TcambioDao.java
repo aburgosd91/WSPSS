@@ -15,12 +15,12 @@ public class TcambioDao extends BaseDao<Tcambio> {
 		super(Tcambio.class, usaCnBase);
 	}
 
-        public Tcambio getPorFecha( Date fecha) throws NisiraORMException {
+        public Tcambio getPorFecha( String fecha) throws NisiraORMException {
             Tcambio tcambio= null;
         try
         {
             ResultSet rs = null;
-            rs = execProcedure("GETTTCAMBIO_TMPSS",fecha);
+            rs = execProcedure("GETTTCAMBIO_TMPSS", fecha);
             while (rs.next()) {
                 tcambio = new Tcambio();
                 tcambio.setIdbasedatos(rs.getString("IDBASEDATOS").trim());

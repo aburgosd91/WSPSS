@@ -6,13 +6,14 @@
 package com.nisira.core.entity;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import java.io.Serializable;
 
 /**
  *
  * @author Alex Johel Burgos Dionicio
  */
 @XStreamAlias("MULTITABLA")
-public class Multitabla {
+public class Multitabla implements Serializable{
     @XStreamAlias("cTABLA_ID")
     private String TABLA_ID;
     @XStreamAlias("cVALOR")

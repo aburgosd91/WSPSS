@@ -4,10 +4,11 @@ import com.nisira.annotation.ClavePrimaria;
 import com.nisira.annotation.Columna;
 import com.nisira.annotation.Tabla;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import java.io.Serializable;
 import java.util.Date;
 @XStreamAlias("DORDENSERVICIOCLIENTE")
 @Tabla(nombre = "DORDENSERVICIOCLIENTE")
-public class Dordenserviciocliente {
+public class Dordenserviciocliente implements Serializable{
 	@Columna
         @XStreamAlias("IDEMPRESA")
 	private String idempresa;
@@ -38,8 +39,15 @@ public class Dordenserviciocliente {
 	@Columna
         @XStreamAlias("ITEMREFERENCIA")
 	private String itemreferencia;
+        @Columna
+        @XStreamAlias("IDSERVICIO")
+	private String idservicio;
+        @Columna
+        @XStreamAlias("CONDUCTOR_CLIENTE")
+	private String conductor_cliente;
         private String vehiculo;
         private Date hora_reqConvert;
+        private String descripcion;
 
 	/* Sets & Gets */
 	public void setIdempresa(String idempresa) {
@@ -164,6 +172,48 @@ public class Dordenserviciocliente {
      */
     public void setItemreferencia(String itemreferencia) {
         this.itemreferencia = itemreferencia;
+    }
+
+    /**
+     * @return the descripcion
+     */
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    /**
+     * @param descripcion the descripcion to set
+     */
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    /**
+     * @return the idservicio
+     */
+    public String getIdservicio() {
+        return idservicio;
+    }
+
+    /**
+     * @param idservicio the idservicio to set
+     */
+    public void setIdservicio(String idservicio) {
+        this.idservicio = idservicio;
+    }
+
+    /**
+     * @return the conductor_cliente
+     */
+    public String getConductor_cliente() {
+        return conductor_cliente;
+    }
+
+    /**
+     * @param conductor_cliente the conductor_cliente to set
+     */
+    public void setConductor_cliente(String conductor_cliente) {
+        this.conductor_cliente = conductor_cliente;
     }
 
 }

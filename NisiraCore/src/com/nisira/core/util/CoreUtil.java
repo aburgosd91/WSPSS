@@ -13,6 +13,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -24,7 +25,19 @@ import java.util.List;
  * @version 1.0         
  */
 public final class CoreUtil {
-
+    public static final String[] strMonths = new String[]{
+						"Enero",
+						"Febrero",
+						"Marzo",
+						"Abril",
+						"Mayo",
+						"Junio",
+						"Julio",
+						"Agosto",
+						"Septiembre",
+						"Octubre",
+						"Noviembre",
+						"Diciembre"};
     /**
      * Obtiene una lista de parametros con el tipo de dato que es
      * @param obj La clase 
@@ -159,5 +172,10 @@ public final class CoreUtil {
         obj.setHours(hora);
         obj.setMinutes(minutos);
         return obj;
+    }
+    public static String convertTimeString(Date time){
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm"); // 12 hour format
+        String rsp = format.format(time);
+        return rsp == null?"":rsp;
     }
 }

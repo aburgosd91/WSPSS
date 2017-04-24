@@ -4,10 +4,11 @@ import com.nisira.annotation.ClavePrimaria;
 import com.nisira.annotation.Columna;
 import com.nisira.annotation.Tabla;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import java.io.Serializable;
 import java.util.Date;
 @XStreamAlias("DOCUMENTOS")
 @Tabla(nombre = "DOCUMENTOS")
-public class Documentos {
+public class Documentos implements Serializable{
         @XStreamAlias("IDBASEDATOS")
         private String idbasedatos;
         @XStreamAlias("IDEMPRESA")

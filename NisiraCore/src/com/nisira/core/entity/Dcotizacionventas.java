@@ -3,68 +3,100 @@ package com.nisira.core.entity;
 import com.nisira.annotation.ClavePrimaria;
 import com.nisira.annotation.Columna;
 import com.nisira.annotation.Tabla;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import java.io.Serializable;
 import java.util.Date;
-
+@XStreamAlias("DCOTIZACIONVENTAS")
 @Tabla(nombre = "DCOTIZACIONVENTAS")
-public class Dcotizacionventas {
+public class Dcotizacionventas implements Serializable{
+        @XStreamAlias("IDEMPRESA")
 	@Columna
 	private String idempresa;
+        @XStreamAlias("IDCOTIZACIONV")
 	@Columna
 	private String idcotizacionv;
+        @XStreamAlias("ITEM")
 	@Columna
 	private String item;
+        @XStreamAlias("IDCOMPRA")
 	@Columna
 	private String idcompra;
+        @XStreamAlias("ITEMCOTIZACION")
 	@Columna
 	private String itemcotizacion;
+        @XStreamAlias("IDPRODUCTO")
 	@Columna
 	private String idproducto;
+        @XStreamAlias("DESCRIPCION")
 	@Columna
 	private String descripcion;
+        @XStreamAlias("IDMEDIDA")
 	@Columna
 	private String idmedida;
+        @XStreamAlias("CANTIDAD")
 	@Columna
 	private Float cantidad;
+        @XStreamAlias("PRECIO")
 	@Columna
 	private Float precio;
+        @XStreamAlias("DESCUENTO")
 	@Columna
 	private Float descuento;
+        @XStreamAlias("IMPORTE")
 	@Columna
 	private Float importe;
+        @XStreamAlias("ES_AFECTO")
 	@Columna
 	private Float es_afecto;
+        @XStreamAlias("PORCENTAJEDSCTO1")
 	@Columna
 	private Float porcentajedscto1;
+        @XStreamAlias("PORCENTAJEDSCTO2")
 	@Columna
 	private Float porcentajedscto2;
+        @XStreamAlias("PORCENTAJEDSCTO3")
 	@Columna
 	private Float porcentajedscto3;
+        @XStreamAlias("IMPUESTO_I")
 	@Columna
 	private Float impuesto_i;
+        @XStreamAlias("IMPUESTO")
 	@Columna
 	private Float impuesto;
+        @XStreamAlias("IMPORTEDSCTO1")
 	@Columna
 	private Float importedscto1;
+        @XStreamAlias("IMPORTEDSCTO2")
 	@Columna
 	private Float importedscto2;
+        @XStreamAlias("IMPORTEDSCTO3")
 	@Columna
 	private Float importedscto3;
+        @XStreamAlias("SUBTOTALSINDSCTO")
 	@Columna
 	private Float subtotalsindscto;
+        @XStreamAlias("SUBTOTALCONDSCTO")
 	@Columna
 	private Float subtotalcondscto;
+        @XStreamAlias("IDESTADOPRODUCTO")
 	@Columna
 	private String idestadoproducto;
+        @XStreamAlias("DESCUENTO_TOTAL")
 	@Columna
 	private Float descuento_total;
+        @XStreamAlias("DESTINO")
 	@Columna
 	private String destino;
+        @XStreamAlias("IDESTADO")
 	@Columna
 	private String idestado;
+        @XStreamAlias("IDESTADOOLD")
 	@Columna
 	private String idestadoold;
+        @XStreamAlias("OBSERVACIONES")
 	@Columna
 	private String observaciones;
+        @XStreamAlias("ANNIOFABRICACION")
 	@Columna
 	private String anniofabricacion;
 	@Columna
@@ -77,32 +109,43 @@ public class Dcotizacionventas {
 	private String tipomotor;
 	@Columna
 	private String combustible;
+        @XStreamAlias("IDREFERENCIA")
 	@Columna
 	private String idreferencia;
+        @XStreamAlias("ITEMREF")
 	@Columna
 	private String itemref;
+        @XStreamAlias("TABLAREF")
 	@Columna
 	private String tablaref;
+        @XStreamAlias("DOCUMENTOREF")
 	@Columna
 	private String documentoref;
+        @XStreamAlias("SINCRONIZA")
 	@Columna
 	private String sincroniza;
+        @XStreamAlias("FECHACREACION")
 	@Columna
 	private Date fechacreacion;
 	@Columna
 	private String idconsumidor;
+        @XStreamAlias("IDPLANTILLACV")
 	@Columna
 	private String idplantillacv;
+        @XStreamAlias("PARAFECHA")
 	@Columna
 	private Date parafecha;
+        @XStreamAlias("DIAS")
 	@Columna
 	private Float dias;
 	@Columna
 	private String idserie;
 	@Columna
 	private String idcolor;
+        @XStreamAlias("IDSUCURSAL")
 	@Columna
 	private String idsucursal;
+        @XStreamAlias("IDALMACEN")
 	@Columna
 	private String idalmacen;
 	@Columna
@@ -123,18 +166,25 @@ public class Dcotizacionventas {
 	private Integer undxphl;
 	@Columna
 	private Float descuento_i;
+        @XStreamAlias("IMPORTE_ISC")
 	@Columna
 	private Float importe_isc;
+        @XStreamAlias("ACCESORIOS_CONIGV")
 	@Columna
 	private Float accesorios_conigv;
+        @XStreamAlias("IMPORTEDSCTO1_CONIGV")
 	@Columna
 	private Float importedscto1_conigv;
+        @XStreamAlias("IMPORTEDSCTO2_CONIGV")
 	@Columna
 	private Float importedscto2_conigv;
+        @XStreamAlias("IMPORTEDSCTO3_CONIGV")
 	@Columna
 	private Float importedscto3_conigv;
+        @XStreamAlias("IMPORTEDSCTO_IMPORTADOR_REAL")
 	@Columna
 	private Float importedscto_importador_real;
+        @XStreamAlias("IMPORTEDSCTO_MAXPERMITIDO")
 	@Columna
 	private Float importedscto_maxpermitido;
 	@Columna
@@ -145,6 +195,9 @@ public class Dcotizacionventas {
 	private Integer idtg20versionveh;
 	@Columna
 	private Float importeaccesorios;
+        @XStreamAlias("NHORAS")
+	@Columna
+	private String nhoras;
         private String producto;
 
 
@@ -717,6 +770,20 @@ public class Dcotizacionventas {
      */
     public void setProducto(String producto) {
         this.producto = producto;
+    }
+
+    /**
+     * @return the nhoras
+     */
+    public String getNhoras() {
+        return nhoras;
+    }
+
+    /**
+     * @param nhoras the nhoras to set
+     */
+    public void setNhoras(String nhoras) {
+        this.nhoras = nhoras;
     }
 
 }

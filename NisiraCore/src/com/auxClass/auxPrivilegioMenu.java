@@ -18,7 +18,8 @@ public class auxPrivilegioMenu {
     private int eliminar;
     private int anular;    
     private int grabar;
-
+    private int cerrar;
+    private int aprobar;
     public auxPrivilegioMenu() {
     }
 
@@ -84,6 +85,34 @@ public class auxPrivilegioMenu {
 
     public void setGrabar(int grabar) {
         this.grabar = grabar;
+    }
+
+    /**
+     * @return the cerrar
+     */
+    public int getCerrar() {
+        return cerrar;
+    }
+
+    /**
+     * @param cerrar the cerrar to set
+     */
+    public void setCerrar(int cerrar) {
+        this.cerrar = cerrar;
+    }
+
+    /**
+     * @return the aprobar
+     */
+    public int getAprobar() {
+        return aprobar;
+    }
+
+    /**
+     * @param aprobar the aprobar to set
+     */
+    public void setAprobar(int aprobar) {
+        this.aprobar = aprobar;
     }
     
 }

@@ -4,10 +4,11 @@ import com.nisira.annotation.ClavePrimaria;
 import com.nisira.annotation.Columna;
 import com.nisira.annotation.Tabla;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import java.io.Serializable;
 import java.util.Date;
 @XStreamAlias("PERSONAL_SERVICIO")
 @Tabla(nombre = "PERSONAL_SERVICIO")
-public class Personal_servicio {
+public class Personal_servicio implements Serializable{
         private String idbasedatos;
         @XStreamAlias("IDEMPRESA")
 	@ClavePrimaria
@@ -40,6 +41,16 @@ public class Personal_servicio {
         @XStreamAlias("IDCARGO")
 	@Columna
 	private String idcargo;
+        @XStreamAlias("FECHAFIN")
+	@Columna
+	private Date fechafin;
+        @XStreamAlias("CHECKLIST")
+	@Columna
+	private String checklist;
+        @XStreamAlias("IDVEHICULO")
+	@Columna
+	private String idvehiculo;
+        private String vehiculo;
         private String cargo;
 
 
@@ -148,4 +159,58 @@ public class Personal_servicio {
         this.cargo = cargo;
     }
 
+    /**
+     * @return the fechafin
+     */
+    public Date getFechafin() {
+        return fechafin;
+    }
+
+    /**
+     * @param fechafin the fechafin to set
+     */
+    public void setFechafin(Date fechafin) {
+        this.fechafin = fechafin;
+    }
+    /**
+     * @return the checklist
+     */
+    public String getChecklist() {
+        return checklist;
+    }
+
+    /**
+     * @param checklist the checklist to set
+     */
+    public void setChecklist(String checklist) {
+        this.checklist = checklist;
+    }
+
+    /**
+     * @return the idvehiculo
+     */
+    public String getIdvehiculo() {
+        return idvehiculo;
+    }
+
+    /**
+     * @param idvehiculo the idvehiculo to set
+     */
+    public void setIdvehiculo(String idvehiculo) {
+        this.idvehiculo = idvehiculo;
+    }
+
+    /**
+     * @return the vehiculo
+     */
+    public String getVehiculo() {
+        return vehiculo;
+    }
+
+    /**
+     * @param vehiculo the vehiculo to set
+     */
+    public void setVehiculo(String vehiculo) {
+        this.vehiculo = vehiculo;
+    }
 }

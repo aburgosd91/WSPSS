@@ -57,7 +57,7 @@ public class Clieprov implements Serializable {
 	private String ruc = "" ;
 	@Columna
 	@SerializedName("razonsocial") 
-	@XStreamAlias("RAZONSOCIAL") 
+	@XStreamAlias("RAZON_SOCIAL") 
 	private String razonsocial = "" ;
         @Columna
 	@SerializedName("direccion") 
@@ -67,8 +67,11 @@ public class Clieprov implements Serializable {
 	@SerializedName("estado") 
 	@XStreamAlias("ESTADO") 
 	private Double estado = 0.00 ;
-
-
+        @Columna
+	@SerializedName("idgrupoclieprov") 
+	@XStreamAlias("IDGRUPOCLIEPROV") 
+	private String idgrupoclieprov = "" ;
+        
 
 	/* Sets & Gets */
 	public void setIdbasedatos(String idbasedatos) {
@@ -225,6 +228,20 @@ public class Clieprov implements Serializable {
      */
     public void setDireccion(String direccion) {
         this.direccion = direccion;
+    }
+
+    /**
+     * @return the idgrupoclieprov
+     */
+    public String getIdgrupoclieprov() {
+        return idgrupoclieprov;
+    }
+
+    /**
+     * @param idgrupoclieprov the idgrupoclieprov to set
+     */
+    public void setIdgrupoclieprov(String idgrupoclieprov) {
+        this.idgrupoclieprov = idgrupoclieprov;
     }
 
 }

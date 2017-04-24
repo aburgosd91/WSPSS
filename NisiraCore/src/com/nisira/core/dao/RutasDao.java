@@ -4,6 +4,7 @@ import com.nisira.core.BaseDao;
 import com.nisira.core.entity.Rutas;
 import com.nisira.core.NisiraORMException;
 import com.nisira.core.entity.Rutas;
+import com.thoughtworks.xstream.XStream;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,5 +74,44 @@ public class RutasDao extends BaseDao<Rutas> {
             ex.printStackTrace();
         }
             return lista;
+        }
+        /*nuevo / editar*/
+        public String grabar(int tipo,Rutas obj) throws Exception {
+            String mensaje="";
+            String xmlNot = "";
+            String xml = "<?xml version='1.0' encoding='ISO-8859-1' ?>";
+            XStream xStream = new XStream();
+            xStream.processAnnotations(Rutas.class);
+            xmlNot = xml + xStream.toXML(obj);
+            try {
+                ResultSet rs = null;
+                rs = execProcedure("SP_RUTAS_GRABAR",tipo,obj.getIdempresa(),obj.getIdruta(),xmlNot);
+                while (rs.next()) {
+                    mensaje = rs.getString("mensaje");
+                    break;
+                }
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
+            return mensaje;
+        }
+        public String anular_eliminar(int tipo,Rutas obj) throws Exception {
+            String mensaje="";
+            String xmlNot = "";
+            String xml = "<?xml version='1.0' encoding='ISO-8859-1' ?>";
+            XStream xStream = new XStream();
+            xStream.processAnnotations(Rutas.class);
+            xmlNot = xml + xStream.toXML(obj);
+            try {
+                ResultSet rs = null;
+                rs = execProcedure("SP_RUTAS_GRABAR",tipo,obj.getIdempresa(),obj.getIdruta());
+                while (rs.next()) {
+                    mensaje = rs.getString("mensaje");
+                    break;
+                }
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
+            return mensaje;
         }
 }

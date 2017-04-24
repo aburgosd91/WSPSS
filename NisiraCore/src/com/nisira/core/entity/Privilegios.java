@@ -4,13 +4,14 @@
  */
 package com.nisira.core.entity;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  *
  * @author Antenor
  */
-public class Privilegios {
+public class Privilegios implements Serializable{
     private static final long serialVersionUID = 1L;
     private String idempresa;
     private String idusuario;

@@ -40,6 +40,27 @@ public class UsuarioDao extends BaseDao<Usuario> {
         }
         return lista;
         }
+        public Usuario getSesionUsuarioMovil(String idempresa,String idusuario,String pass) throws NisiraORMException {
+            Usuario usuario=null;
+            try
+            {
+                ResultSet rs = null;
+                rs = execProcedure("GETUSUARIO_APPMOVIL_TMPSS",idusuario,pass);
+                while (rs.next()) {
+                    usuario = new Usuario();
+                    usuario.setIdbasedatos(rs.getString("IDBASEDATOS"));
+                    usuario.setIdempresa(idempresa);
+                    usuario.setIdusuario(rs.getString("IDUSUARIO"));
+                    usuario.setUsr_nombres(rs.getString("USR_NOMBRES"));
+                    usuario.setIdclieprov(rs.getString("IDCLIEPROV"));
+                    usuario.setPassword(rs.getString("PASSWORD"));
+                    usuario.setEmail(rs.getString("EMAIL"));
+                }
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
+            return usuario;
+        }
 	/*-Fin-*/
         /*APPWEB*/
         public Usuario getSesionUsuario(String idempresa,String idusuario,String pass) throws NisiraORMException {
@@ -61,5 +82,27 @@ public class UsuarioDao extends BaseDao<Usuario> {
                 ex.printStackTrace();
             }
             return usuario;
+        }
+        public List<Usuario> getUsuarioXappmovil(String idempresa) throws NisiraORMException {
+            Usuario usuario=null;
+            List<Usuario> lst = new ArrayList<>();
+            try
+            {
+                ResultSet rs = null;
+                rs = execProcedure("GETUSUARIO_MOVIL_TMPSS",idempresa);
+                while (rs.next()) {
+                    usuario = new Usuario();
+                    usuario.setIdbasedatos(rs.getString("IDBASEDATOS"));
+                    usuario.setIdempresa(idempresa);
+                    usuario.setIdusuario(rs.getString("IDUSUARIO"));
+                    usuario.setUsr_nombres(rs.getString("USR_NOMBRES"));
+                    usuario.setIdclieprov(rs.getString("IDCLIEPROV"));
+                    usuario.setPassword(rs.getString("PASSWORD"));
+                    lst.add(usuario);
+                }
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
+            return lst;
         }
 }

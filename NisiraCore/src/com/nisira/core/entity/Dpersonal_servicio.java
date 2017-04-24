@@ -4,10 +4,11 @@ import com.nisira.annotation.ClavePrimaria;
 import com.nisira.annotation.Columna;
 import com.nisira.annotation.Tabla;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import java.io.Serializable;
 import java.util.Date;
 @XStreamAlias("DPERSONAL_SERVICIO")
 @Tabla(nombre = "DPERSONAL_SERVICIO")
-public class Dpersonal_servicio {
+public class Dpersonal_servicio implements Serializable{
 	@XStreamAlias("IDEMPRESA")
         @ClavePrimaria
 	@Columna
@@ -49,6 +50,9 @@ public class Dpersonal_servicio {
         @XStreamAlias("FECHAREGISTRO")
 	@Columna
 	private Date fecharegistro;
+        @XStreamAlias("FECHAFINREGISTRO")
+	@Columna
+	private Date fechafinregistro;
         private Date fhora_req;
         private Date fhora_llegada;
         private Date fhora_inicio_serv;
@@ -238,6 +242,20 @@ public class Dpersonal_servicio {
      */
     public void setCargo(String cargo) {
         this.cargo = cargo;
+    }
+
+    /**
+     * @return the fechafinregistro
+     */
+    public Date getFechafinregistro() {
+        return fechafinregistro;
+    }
+
+    /**
+     * @param fechafinregistro the fechafinregistro to set
+     */
+    public void setFechafinregistro(Date fechafinregistro) {
+        this.fechafinregistro = fechafinregistro;
     }
 
 }

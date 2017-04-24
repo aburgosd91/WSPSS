@@ -57,7 +57,24 @@ public class SucursalesDao extends BaseDao<Sucursales> {
                 sucursales.setSincroniza(rs.getString("SINCRONIZA")!=null?rs.getString("SINCRONIZA").trim():"");
                 sucursales.setFechacreacion(rs.getDate("FECHACREACION"));  
             }
-
             return sucursales;
+        }
+        public List<Sucursales> getPorEmpresa( String idempresa) throws NisiraORMException, SQLException {
+            List<Sucursales> listSucursal = new ArrayList<>();
+            Sucursales sucursales= null;
+            ResultSet rs = null;
+            rs = execProcedure("GETSUCURSALES_TMPSS",idempresa);
+            while (rs.next()) {
+                sucursales = new Sucursales();
+                sucursales.setIdbasedatos(rs.getString("IDBASEDATOS").trim());
+                sucursales.setIdempresa(rs.getString("IDEMPRESA")!=null?rs.getString("IDEMPRESA").trim():"");
+                sucursales.setIdsucursal(rs.getString("IDSUCURSAL")!=null?rs.getString("IDSUCURSAL").trim():"");
+                sucursales.setDescripcion(rs.getString("DESCRIPCION")!=null?rs.getString("DESCRIPCION").trim():"");
+                sucursales.setDireccion(rs.getString("DIRECCION")!=null?rs.getString("DIRECCION").trim():"");
+                sucursales.setSincroniza(rs.getString("SINCRONIZA")!=null?rs.getString("SINCRONIZA").trim():"");
+                sucursales.setFechacreacion(rs.getDate("FECHACREACION"));
+                listSucursal.add(sucursales);
+            }
+            return listSucursal;
         }
 }

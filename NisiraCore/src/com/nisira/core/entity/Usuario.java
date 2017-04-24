@@ -44,7 +44,10 @@ public class Usuario implements Serializable {
 	@SerializedName("estado") 
 	@XStreamAlias("estado") 
 	private Integer estado;
-
+        @Columna
+	@SerializedName("email") 
+	@XStreamAlias("email") 
+	private String email = "" ;
 
 
 	/* Sets & Gets */
@@ -118,6 +121,20 @@ public class Usuario implements Serializable {
      */
     public void setIdclieprov(String idclieprov) {
         this.idclieprov = idclieprov;
+    }
+
+    /**
+     * @return the email
+     */
+    public String getEmail() {
+        return email;
+    }
+
+    /**
+     * @param email the email to set
+     */
+    public void setEmail(String email) {
+        this.email = email;
     }
 
 }
