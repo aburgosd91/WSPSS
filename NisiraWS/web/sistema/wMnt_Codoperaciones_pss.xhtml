@@ -1,0 +1,49 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">        
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos" >
+            #{codoperaciones_pssAction.findDetalle()}
+            <cmp:barra_mnt bean="#{codoperaciones_pssAction}"/>
+            <p:panelGrid id="cabecera" columns="2" columnClasses="no-border,no-border">
+                <f:facet name="header">
+                    #{codoperaciones_pssAction.tituloHead}
+                </f:facet>
+                <p:outputLabel value="Código: " />
+                <p:inputText id="idtiposervicio" maxlength="3" size="3"
+                             value="#{codoperaciones_pssAction.datoEdicion.idcodoperaciones}" 
+                             onkeyup="javascript:this.value = this.value.toUpperCase();"
+                             disabled="#{codoperaciones_pssAction.flag_pk}">
+                    <p:keyFilter regEx="/[a-z0-9_]/i"/>
+                </p:inputText>                       
+                <p:outputLabel for="descripcion"  value="Descripcion:" />
+                <p:inputTextarea id="descripcion" cols="60" rows="2" 
+                                 disabled="#{!codoperaciones_pssAction.edicion}"
+                                 value="#{codoperaciones_pssAction.datoEdicion.descripcion}" 
+                                 onkeyup="javascript:this.value = this.value.toUpperCase();"
+                                 >
+                    <p:ajax event="valueChange" immediate="true" process="@this"/>
+                </p:inputTextarea>
+                <p:outputLabel for="descripcion_corta"  value="Descripcion Corta:" />
+                <p:inputTextarea id="descripcion_corta" cols="60" rows="1" 
+                                 disabled="#{!codoperaciones_pssAction.edicion}"
+                                 value="#{codoperaciones_pssAction.datoEdicion.descripcion_corta}" 
+                                 onkeyup="javascript:this.value = this.value.toUpperCase();"
+                                 >
+                    <p:ajax event="valueChange" immediate="true" process="@this"/>
+                </p:inputTextarea>
+                <p:outputLabel value="Estado: " />
+                <p:selectBooleanCheckbox value="#{codoperaciones_pssAction.estado}" disabled="#{!codoperaciones_pssAction.edicion}"/>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{codoperaciones_pssAction}" ventana="MNT" />
+        </h:form>
+    </ui:define>
+</ui:composition>

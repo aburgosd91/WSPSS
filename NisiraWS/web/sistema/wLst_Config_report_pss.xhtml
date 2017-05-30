@@ -1,0 +1,71 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">          
+        <h:form id="datos">
+            #{config_report_pssAction.buscarTodo()}  
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
+                <cmp:barra_lst bean="#{config_report_pssAction}" mostrar_opciones="false" />
+                <p:dataTable id="tbl" var="listConfig_report_pss" value="#{config_report_pssAction.listaDatos}" filteredValue="#{config_report_pssAction.filtroDatos}" widgetVar="listConfig_report_pss" 
+                             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                             paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{config_report_pssAction.datoSeleccionado}" rowKey="#{listConfig_report_pss.idconfig_report}" resizableColumns="true">
+                    <f:facet name="header">
+                        <h:outputText value="#{config_report_pssAction.tituloHead}" />
+                    </f:facet>
+                    <p:ajax event="rowDblselect" listener="#{config_report_pssAction.ver()}" />
+                    <p:column style="width:15%;" filterBy="#{listConfig_report_pss.idconfig_report}" filterMatchMode="contains" sortBy="#{listConfig_report_pss.idconfig_report}">
+                        <f:facet name="header">
+                            <h:outputText value="Código" />
+                        </f:facet>
+                        <h:outputText value="#{listConfig_report_pss.idconfig_report}"/>
+                    </p:column>
+                    <p:column style="width:35%;" filterBy="#{listConfig_report_pss.tiposervicio}" filterMatchMode="contains" sortBy="#{listConfig_report_pss.tiposervicio}">
+                        <f:facet name="header">
+                            <h:outputText value="Tipo Servicio" />
+                        </f:facet>
+                        <h:outputText value="#{listConfig_report_pss.tiposervicio}"/>
+                    </p:column>
+                    <p:column style="width:35%;" filterBy="#{listConfig_report_pss.dato1}" filterMatchMode="contains" sortBy="#{listConfig_report_pss.dato1}">
+                        <f:facet name="header">
+                            <h:outputText value="Dato1" />
+                        </f:facet>
+                        <h:outputText value="#{listConfig_report_pss.dato1}"/>
+                    </p:column>
+                    <p:column style="width:35%;" filterBy="#{listConfig_report_pss.dato2}" filterMatchMode="contains" sortBy="#{listConfig_report_pss.dato2}">
+                        <f:facet name="header">
+                            <h:outputText value="Dato2" />
+                        </f:facet>
+                        <h:outputText value="#{listConfig_report_pss.dato2}"/>
+                    </p:column>
+                    <p:column style="width:35%;" filterBy="#{listConfig_report_pss.dato3}" filterMatchMode="contains" sortBy="#{listConfig_report_pss.dato3}">
+                        <f:facet name="header">
+                            <h:outputText value="Dato3" />
+                        </f:facet>
+                        <h:outputText value="#{listConfig_report_pss.dato3}"/>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{listConfig_report_pss.estado}">
+                        <f:facet name="header">
+                            <h:outputText value="ESTADO"/>
+                        </f:facet>
+                        <f:facet name="filter">
+                            <p:selectOneButton onchange="PF('listConfig_report_pss').filter()">
+                                <f:selectItem  itemLabel="Activo" itemValue="#{1}"/>
+                                <f:selectItem itemLabel="Inactivo" itemValue="#{0}"/>
+                            </p:selectOneButton>
+                        </f:facet>
+                        <h:graphicImage value="../images/img/#{listConfig_report_pss.estado==1?'activo':'inactivo'}.png"/>
+                        <h:outputText value="#{listConfig_report_pss.estado==1?'Activo':'Inactivo'}" />
+                    </p:column>
+                </p:dataTable>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{config_report_pssAction}" ventana="LST" />
+        </h:form>
+    </ui:define>
+</ui:composition>

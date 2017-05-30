@@ -72,7 +72,7 @@ public class SeguridadViewHandler extends ViewHandlerWrapper {
                 if (session == null || session.getAttribute(Constantes.SESION_USUARIO) == null) {
                     sendRedirect(context, "index.xhtml");
                 }  else {
-                    session.setMaxInactiveInterval(10 * 60000);
+                    session.setMaxInactiveInterval(60 * 60000);/*1 hora activo -> 60 * 60000(1min) */
                     if(!vista.equalsIgnoreCase("index") || !vista.equalsIgnoreCase("sistema/CerrarSesion") || !vista.equalsIgnoreCase("sistema/Expulsado") || !vista.equalsIgnoreCase("indexm")){
     //                    Boolean monitorvalidado  =ValidarMonitor();
     //                    monitorvalidado = true;

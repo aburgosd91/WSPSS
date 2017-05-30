@@ -1,0 +1,59 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">          
+        <h:form id="datos">
+            #{codoperaciones_pssAction.buscarTodo()}  
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
+                <cmp:barra_lst bean="#{codoperaciones_pssAction}" mostrar_opciones="false" />
+                <p:dataTable id="tbl" var="listCodoperaciones_pss" value="#{codoperaciones_pssAction.listaDatos}" filteredValue="#{codoperaciones_pssAction.filtroDatos}" widgetVar="listCodoperaciones_pss" 
+                             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                             paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{codoperaciones_pssAction.datoSeleccionado}" rowKey="#{listCodoperaciones_pss.idcodoperaciones}" resizableColumns="true">
+                    <f:facet name="header">
+                        <h:outputText value="#{codoperaciones_pssAction.tituloHead}" />
+                    </f:facet>
+                    <p:ajax event="rowDblselect" listener="#{codoperaciones_pssAction.ver()}" />
+                    <p:column style="width:10%;" filterBy="#{listCodoperaciones_pss.idcodoperaciones}" filterMatchMode="contains" sortBy="#{listCodoperaciones_pss.idcodoperaciones}">
+                        <f:facet name="header">
+                            <h:outputText value="Código" />
+                        </f:facet>
+                        <h:outputText value="#{listCodoperaciones_pss.idcodoperaciones}"/>
+                    </p:column>
+                    <p:column style="width:65%;" filterBy="#{listCodoperaciones_pss.descripcion}" filterMatchMode="contains" sortBy="#{listCodoperaciones_pss.descripcion}">
+                        <f:facet name="header">
+                            <h:outputText value="Descripción" />
+                        </f:facet>
+                        <h:outputText value="#{listCodoperaciones_pss.descripcion}"/>
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{listCodoperaciones_pss.descripcion_corta}" filterMatchMode="contains" sortBy="#{listCodoperaciones_pss.descripcion_corta}">
+                        <f:facet name="header">
+                            <h:outputText value="Descripción_Corta" />
+                        </f:facet>
+                        <h:outputText value="#{listCodoperaciones_pss.descripcion_corta}"/>
+                    </p:column>
+                    <p:column style="width:10%;" filterBy="#{listCodoperaciones_pss.estado}">
+                        <f:facet name="header">
+                            <h:outputText value="ESTADO"/>
+                        </f:facet>
+                        <f:facet name="filter">
+                            <p:selectOneButton onchange="PF('listCodoperaciones_pss').filter()">
+                                <f:selectItem  itemLabel="Activo" itemValue="#{1}"/>
+                                <f:selectItem itemLabel="Inactivo" itemValue="#{0}"/>
+                            </p:selectOneButton>
+                        </f:facet>
+                        <h:graphicImage value="../images/img/#{listCodoperaciones_pss.estado==1?'activo':'inactivo'}.png"/>
+                        <h:outputText value="#{listCodoperaciones_pss.estado==1?'Activo':'Inactivo'}" />
+                    </p:column>
+                </p:dataTable>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{codoperaciones_pssAction}" ventana="LST" />
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -15,7 +15,7 @@ public class DataTableColumn {
     private String header;
     private String property;
     private Date adicional1;
-    private int adicional2;
+    private String adicional2;
     public DataTableColumn(String header, String property) {
         this.header = header;
         this.property = property;
@@ -26,10 +26,11 @@ public class DataTableColumn {
         this.property = property;
         this.adicional1 = date;
     }
-    public DataTableColumn(String header, String property, Date date, int item) {
+    public DataTableColumn(String header, String property, Date date, String type) {
         this.header = header;
         this.property = property;
         this.adicional1 = date;
+        this.adicional2 = type;
     }
     public String getHeader() {
         return header;
@@ -59,5 +60,19 @@ public class DataTableColumn {
      */
     public void setAdicional1(Date adicional1) {
         this.adicional1 = adicional1;
+    }
+
+    /**
+     * @return the adicional2
+     */
+    public String getAdicional2() {
+        return adicional2;
+    }
+
+    /**
+     * @param adicional2 the adicional2 to set
+     */
+    public void setAdicional2(String adicional2) {
+        this.adicional2 = adicional2;
     }
 }

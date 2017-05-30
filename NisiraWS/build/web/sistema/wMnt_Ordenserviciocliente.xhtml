@@ -30,7 +30,7 @@
                                         <p:selectOneMenu id="cboserie" value="#{ordenservicioclienteAction.datoEdicion.serie}" style="width:70px" disabled="#{!ordenservicioclienteAction.edicion}">
                                             <f:selectItems value="#{ordenservicioclienteAction.listNumemisor}" var="nume" itemLabel="#{nume.serie}" itemValue="#{nume.serie}"/>
                                         </p:selectOneMenu>
-                                        <p:inputText id="num" style="width: 90px !important" value="#{ordenservicioclienteAction.datoEdicion.numero}" disabled="#{!ordenservicioclienteAction.edicion}"/>
+                                        <p:inputText id="num" style="width: 90px !important" value="#{ordenservicioclienteAction.datoEdicion.numero}" disabled="#{!ordenservicioclienteAction.edicion}" readonly="true"/>
                                     </p:panelGrid>
                                     <p:outputLabel for="motivo_orden"  value="Motivo:" />
                                     <p:selectOneMenu id="motivo_orden" value="#{ordenservicioclienteAction.datoEdicion.idmotivo}"  disabled="#{!ordenservicioclienteAction.edicion}" >    
@@ -49,7 +49,7 @@
                                     <p:inputTextarea rows="2" cols="50" value="#{ordenservicioclienteAction.datoEdicion.glosa}" disabled="#{!ordenservicioclienteAction.edicion}"/>
                                     <p:outputLabel value="Supervisor:" escape="false" />
                                     <h:panelGrid id="cntPersonalOperario" cellpadding="0" cellspacing="0" columns="3">
-                                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{ordenservicioclienteAction.verCntClieprovPersonalS}" 
+                                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{ordenservicioclienteAction.verCntClieprovPersonalSupervisor()}" 
                                                          disabled="#{!ordenservicioclienteAction.edicion}"  icon="ui-icon-search">
                                             <p:ajax event="dialogReturn" listener="#{ordenservicioclienteAction.valorOperario}" update="cntPersonalOperario"/>
                                         </p:commandButton>
@@ -66,7 +66,7 @@
                                             <!--<p:ajax event="dateSelect" listener="{planventaAction.updateCampañas}" update="lstCampaña"/>-->
                                         </p:calendar>
                                         <p:outputLabel for="estado"  value="Estado:" />
-                                        <p:selectOneMenu id="estado" value="#{ordenservicioclienteAction.datoEdicion.idestado}"  disabled="#{!ordenservicioclienteAction.edicion}" >    
+                                        <p:selectOneMenu id="estado" value="#{ordenservicioclienteAction.datoEdicion.idestado}"  disabled="true" >    
                                             <f:selectItems value="#{ordenservicioclienteAction.listEstado}" var="tipoEstado" itemLabel="#{tipoEstado.descripcion}" itemValue="#{tipoEstado.idestado}" />
                                         </p:selectOneMenu>
                                     </p:panelGrid>
@@ -131,7 +131,7 @@
                                    </p:dataTable>
                                     <p:outputLabel value="Operario:" escape="false" />
                                     <h:panelGrid id="cntPersonalOperario2" cellpadding="0" cellspacing="0" columns="3">
-                                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{ordenservicioclienteAction.verCntClieprovPersonalS}" 
+                                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{ordenservicioclienteAction.verCntClieprovPersonalOperador()}" 
                                                          disabled="#{!ordenservicioclienteAction.edicion}"  icon="ui-icon-search">
                                             <p:ajax event="dialogReturn" listener="#{ordenservicioclienteAction.valorOperario2}" update="cntPersonalOperario2"/>
                                         </p:commandButton>
@@ -164,6 +164,12 @@
                                         <h:outputText value="Descripción" />
                                     </f:facet>
                                     <h:outputText value="#{lstdordenserviciocliente.descripcion}" />
+                                </p:column>
+                                <p:column style="width:5%;" filterBy="#{lstdordenserviciocliente.hora_rc}" filterMatchMode="contains" sortBy="#{lstdordenserviciocliente.hora_rc}">
+                                    <f:facet name="header" >
+                                        <h:outputText value="#Horas" />
+                                    </f:facet>
+                                    <h:outputText value="#{lstdordenserviciocliente.hora_rc}"/>
                                 </p:column>
                                 <p:column style="width:10%;" filterBy="#{lstdordenserviciocliente.placa_cliente}" filterMatchMode="contains" sortBy="#{lstdordenserviciocliente.placa_cliente}">
                                     <f:facet name="header" >
@@ -239,7 +245,7 @@
                                        </p:column>
                                    </p:dataTable>
                                 <br/>
-                                <h:outputLabel value="Tareo Personal" style="color: rgb(37, 42, 84);font-size: 15px;text-decoration: underline"/>
+                                <h:outputLabel value="Tareo Personal - Opcional" style="color: rgb(37, 42, 84);font-size: 15px;text-decoration: underline"/>
                                 <p:dataTable id="listDpersonal_Servicio" var="listDpersonal_Servicio" value="#{ordenservicioclienteAction.listDpersonal_Servicio}" widgetVar="listDpersonal_Servicio"
                                     paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
                                     paginator="true" paginatorPosition="top" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{ordenservicioclienteAction.selectDPersonal_servicio}" rowKey="#{listDpersonal_Servicio.item}">
@@ -366,15 +372,25 @@
                                         <p:outputLabel  value="N°" />
                                         <p:inputText size="40"  disabled="true" value="#{ordenservicioclienteAction.dordenserviciocliente.item}" />
                                     </p:panelGrid>
-                                    <p:outputLabel value="Producto" escape="false" />
-                                    <h:panelGrid id="cntProducto" cellpadding="0" cellspacing="0" columns="3">
-                                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{ordenservicioclienteAction.verCntProducto()}" 
+                                    <p:outputLabel value="Serv. Operaciones" escape="false" />
+                                    <h:panelGrid id="cntCodigoOperaciones" cellpadding="0" cellspacing="0" columns="3">
+                                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{ordenservicioclienteAction.verCntCodoperaciones_pss()}" 
                                                          disabled="#{ordenservicioclienteAction.fproducto}"  icon="ui-icon-search">
-                                            <p:ajax event="dialogReturn" listener="#{ordenservicioclienteAction.valorProducto}" update="cntProducto"/>
+                                            <p:ajax event="dialogReturn" listener="#{ordenservicioclienteAction.valorCodoperaciones_pss}" update="cntCodigoOperaciones,nhoras,ruta_ec,idreferenciacot,itemreferencia"/>
                                         </p:commandButton>
-                                        <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{ordenservicioclienteAction.dordenserviciocliente.idservicio}" disabled="#{!ordenservicioclienteAction.edicion}"/>
-                                        <p:inputText size="50" readonly="true" value="#{ordenservicioclienteAction.dordenserviciocliente.descripcion}" disabled="#{!ordenservicioclienteAction.edicion}"/>
+                                        <p:inputTextarea  style="text-align: left" rows="3" cols="5" readonly="true"  value="#{ordenservicioclienteAction.dordenserviciocliente.codoperaciones}" disabled="#{!ordenservicioclienteAction.edicion}"/>
+                                        <p:inputTextarea cols="40" rows="3" readonly="true" value="#{ordenservicioclienteAction.dordenserviciocliente.descripcion}" disabled="#{!ordenservicioclienteAction.edicion}"/>
                                     </h:panelGrid>
+                                    <p:outputLabel value="#Horas:" />
+                                    <p:selectOneMenu id="nhoras" value="#{ordenservicioclienteAction.dordenserviciocliente.hora_rc}" style="width: 80px">    
+                                        <p:ajax listener="#{ordenservicioclienteAction.onNhoras_estructura()}" update="ruta_ec,idreferenciacot,itemreferencia"/>
+                                        <f:selectItems value="#{ordenservicioclienteAction.lstHoras}" var="hora" itemLabel="#{hora}" itemValue="#{hora}" />
+                                    </p:selectOneMenu>
+                                    <p:outputLabel value="Ruta E.C.:" />
+                                    <p:selectOneMenu id="ruta_ec" value="#{ordenservicioclienteAction.dordenserviciocliente.idruta_ec}" style="width: 150px">    
+                                        <p:ajax listener="#{ordenservicioclienteAction.onIdruta_estructura()}" update="idreferenciacot,itemreferencia"/>
+                                        <f:selectItems value="#{ordenservicioclienteAction.lstComboRutas}" var="ruta" itemLabel="#{ruta.descripcion}" itemValue="#{ruta.idruta}" />
+                                    </p:selectOneMenu>
                                     <p:outputLabel value="Placa/Cliente:" />
                                     <p:inputTextarea  cols="60" rows="2"  value="#{ordenservicioclienteAction.dordenserviciocliente.placa_cliente}" onkeyup="javascript:this.value = this.value.toUpperCase();" disabled="#{ordenservicioclienteAction.ftipo_servicio}">
                                     </p:inputTextarea>
@@ -385,6 +401,9 @@
                                     </p:inputTextarea>
                                     <p:outputLabel for="fecha_fin_servicio" value="F. Fin:" />
                                     <p:calendar id="fecha_fin_servicio" value="#{ordenservicioclienteAction.dordenserviciocliente.fecha_fin_servicio}" pattern="dd-MM-yyyy" mask="true" />
+                                    
+                                    <p:outputLabel value="Glosa"/>
+                                    <p:inputTextarea rows="2" cols="50" value="#{ordenservicioclienteAction.dordenserviciocliente.glosa}"/>
                                     <p:outputLabel for="idreferenciacot" value="Id Ref.:" />
                                     <p:inputText id="idreferenciacot" size="40"  disabled="true" value="#{ordenservicioclienteAction.dordenserviciocliente.idreferencia}" />
                                     <p:outputLabel for="itemreferencia" value="Item Ref.:" />
@@ -451,7 +470,7 @@
                                         <p:inputText size="50" readonly="true" value="#{ordenservicioclienteAction.personal_servicio.cargo}" />
                                     </h:panelGrid>
                                     <p:outputLabel value="#Cantidad:" escape="false" />
-                                    <p:spinner value="#{ordenservicioclienteAction.num_repetir}" min="1" />
+                                    <p:spinner value="#{ordenservicioclienteAction.num_repetir}" min="1" disabled="#{ordenservicioclienteAction.fnum_repetir}"/>
                                     <p:outputLabel for="checklist_personalservicio" value="Checklist:" />
                                     <p:inputText id="checklist_personalservicio" size="60" value="#{ordenservicioclienteAction.personal_servicio.checklist}" onkeyup="javascript:this.value = this.value.toUpperCase();"/>
                                     <p:outputLabel value="Vehículo" escape="false" />
@@ -465,11 +484,11 @@
                                     <p:outputLabel value="Personal:" escape="false" />
                                     <h:panelGrid id="cntCliePersonal" cellpadding="0" cellspacing="0" columns="3">
                                         <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{ordenservicioclienteAction.verCntClieprovPersonal}" 
-                                                         disabled="#{!ordenservicioclienteAction.edicion}"  icon="ui-icon-search">
+                                                         disabled="true"  icon="ui-icon-search">
                                             <p:ajax event="dialogReturn" listener="#{ordenservicioclienteAction.valorClieprovPersonal}" update="cntCliePersonal"/>
                                         </p:commandButton>
-                                        <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{ordenservicioclienteAction.personal_servicio.dni}"/>
-                                        <p:inputText size="50" readonly="true" value="#{ordenservicioclienteAction.personal_servicio.nombres}" />
+                                        <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{ordenservicioclienteAction.personal_servicio.dni}" disabled="true"/>
+                                        <p:inputText size="50" readonly="true" value="#{ordenservicioclienteAction.personal_servicio.nombres}" disabled="true" />
                                     </h:panelGrid>
                                     <p:outputLabel for="fecha_operacion" value="Fecha Oper.:" />
                                     <p:calendar id="fecha_operacion" value="#{ordenservicioclienteAction.personal_servicio.fechaoperacion}" pattern="dd-MM-yyyy" mask="true" />
@@ -495,21 +514,21 @@
                                     <p:outputLabel for="fecharegistro" value="F. Registro:" />
                                     <p:calendar id="fecharegistro" value="#{ordenservicioclienteAction.dpersonal_servicio.fecharegistro}" pattern="dd-MM-yyyy" mask="true" />
                                     <p:outputLabel for="hora_req_personal" value="Hora. Req.:" />
-                                    <p:calendar id="hora_req_personal" value="#{ordenservicioclienteAction.dpersonal_servicio.fhora_req}" pattern="HH:mm" timeOnly="true" disabled="true" />
+                                    <p:calendar id="hora_req_personal" value="#{ordenservicioclienteAction.dpersonal_servicio.fhora_req}" mask="99:99" pattern="HH:mm" timeOnly="true" disabled="true" />
                                     <p:outputLabel for="hora_llegada" value="Hora. Llegada:" />
-                                    <p:calendar id="hora_llegada" value="#{ordenservicioclienteAction.dpersonal_servicio.fhora_llegada}" pattern="HH:mm" timeOnly="true">
+                                    <p:calendar id="hora_llegada" value="#{ordenservicioclienteAction.dpersonal_servicio.fhora_llegada}" mask="99:99" pattern="HH:mm" timeOnly="true">
                                         <p:ajax event="blur" listener="#{ordenservicioclienteAction.blur_hora_llegada}" update="hora_inicio" />
                                     </p:calendar>
                                     <p:outputLabel for="hora_inicio" value="Hora. Inicio.:" />
-                                    <p:calendar id="hora_inicio" value="#{ordenservicioclienteAction.dpersonal_servicio.fhora_inicio_serv}" pattern="HH:mm" timeOnly="true">
+                                    <p:calendar id="hora_inicio" value="#{ordenservicioclienteAction.dpersonal_servicio.fhora_inicio_serv}" mask="99:99" pattern="HH:mm" timeOnly="true">
                                         <p:ajax event="blur" listener="#{ordenservicioclienteAction.blur_hora_inicio}" update="hora_inicio" />
                                     </p:calendar>
                                     <p:outputLabel for="hora_fin" value="Hora. Fin.:" />
-                                    <p:calendar id="hora_fin" value="#{ordenservicioclienteAction.dpersonal_servicio.fhora_fin_serv}" pattern="HH:mm" timeOnly="true">
+                                    <p:calendar id="hora_fin" value="#{ordenservicioclienteAction.dpersonal_servicio.fhora_fin_serv}" mask="99:99" pattern="HH:mm" timeOnly="true">
                                         <p:ajax event="blur" listener="#{ordenservicioclienteAction.blur_hora_fin}" update="hora_liberacion" />
                                     </p:calendar>
                                     <p:outputLabel for="hora_liberacion" value="Hora. Liberación:" />
-                                    <p:calendar id="hora_liberacion" value="#{ordenservicioclienteAction.dpersonal_servicio.fhora_liberacion}" pattern="HH:mm" timeOnly="true"  />
+                                    <p:calendar id="hora_liberacion" value="#{ordenservicioclienteAction.dpersonal_servicio.fhora_liberacion}" mask="99:99" pattern="HH:mm" timeOnly="true"  />
                                     <p:outputLabel for="fechafinregistro" value="F. Fin:" />
                                     <p:calendar id="fechafinregistro" value="#{ordenservicioclienteAction.dpersonal_servicio.fechafinregistro}" pattern="dd-MM-yyyy" mask="true" />
                                 </p:panelGrid>
@@ -526,7 +545,7 @@
                     <p:dialog id="dlgnew_cotizacionventas" header="..:: COTIZACIÓN VENTAS ::." widgetVar="dlgnew_cotizacionventas" modal="true" showEffect="popup" closable="false">
                         <p:toolbar>
                             <f:facet name="right">
-                                <p:commandButton value="Asignar" ajax="true" image="ui-icon-right" actionListener="#{ordenservicioclienteAction.addDocreferencia()}"/>
+                                <p:commandButton value="Asignar" ajax="true" image="ui-icon-reload" actionListener="#{ordenservicioclienteAction.addDocreferencia()}"/>
                                 <p:commandButton value="Cancelar" process="@this"  image="ui-icon-cancelar" onclick="PF('dlgnew_cotizacionventas').hide()" />
                             </f:facet>
                         </p:toolbar> 
@@ -540,8 +559,11 @@
                                        paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
                                        rows="8"
                                        resizableColumns="true" 
-                                       style="width: 100%">
-                                <p:ajax event="rowSelectRadio" listener="#{ordenservicioclienteAction.onCheckCotizacionventa()}" update="datos:dcotizacionventas"/>
+                                       style="width: 100%;font-size: 11px;" scrollable="true" scrollHeight="150">
+                               <p:ajax event="rowSelectRadio" listener="#{ordenservicioclienteAction.onCheckCotizacionventa()}" update="datos:dcotizacionventas"/>
+                               <f:facet name="header">
+                                    ..:: N° ::..                 (Total:#{ordenservicioclienteAction.listCotizacionventas.size()})
+                                </f:facet>
                                <p:column selectionMode="single" style="width:16px;text-align:center"/>
                                <p:column headerText="N° Doc" sortBy="#{cotizacionventas.iddocumento}" filterBy="#{cotizacionventas.iddocumento}" filterMatchMode="contains" filterStyle="width: 75%" style="width: 10%;padding: 3px !important;text-align: center">
                                    <h:outputText value="#{cotizacionventas.iddocumento}" />
@@ -576,23 +598,26 @@
                                     selection="#{ordenservicioclienteAction.selectListDcotizacionventas}"
                                     rows="10"
                                     resizableColumns="true" 
-                                    rowSelectMode="checkbox" style="width: 100%">
+                                    rowSelectMode="checkbox" style="width: 100%;font-size: 11px;" scrollable="true" scrollHeight="150">
+                                    <f:facet name="header">
+                                    ..:: N° ::..                 (Total:#{ordenservicioclienteAction.listDcotizacionventas.size()})
+                                    </f:facet>
                                     <p:column headerText="" selectionMode="multiple" style="width:16px;text-align:center"/>
-                                    <p:column headerText="Item" sortBy="#{dcotizacionventas.item}" filterBy="#{dcotizacionventas.item}" filterMatchMode="contains" filterStyle="width: 75%" style="width: 10%;padding: 3px !important;text-align: center">
+                                    <p:column headerText="Item" sortBy="#{dcotizacionventas.item}" filterBy="#{dcotizacionventas.item}" filterMatchMode="contains" filterStyle="width: 75%" style="width: 7%;padding: 3px !important;text-align: center">
                                         <h:outputText value="#{dcotizacionventas.item}" />
                                     </p:column> 
-                                    <p:column headerText="IdProducto" sortBy="#{dcotizacionventas.idproducto}" filterBy="#{dcotizacionventas.idproducto}" filterMatchMode="contains" filterStyle="width: 75%" style="width: 10%;padding: 3px !important;text-align: center">
-                                        <h:outputText value="#{dcotizacionventas.idproducto}" />
+                                    <p:column headerText="Cod.Operativo" sortBy="#{dcotizacionventas.codoperaciones}" filterBy="#{dcotizacionventas.codoperaciones}" filterMatchMode="contains" filterStyle="width: 75%" style="width: 8%;padding: 3px !important;text-align: center">
+                                        <h:outputText value="#{dcotizacionventas.codoperaciones}" />
                                     </p:column> 
                                     <p:column headerText="Descripción" sortBy="#{dcotizacionventas.descripcion}" filterBy="#{dcotizacionventas.descripcion}" filterMatchMode="contains" filterStyle="width: 75%" style="width: 40%;padding: 3px !important;text-align: center">
                                         <h:outputText value="#{dcotizacionventas.descripcion}" />
                                     </p:column> 
-                                    <p:column headerText="U.M." sortBy="#{dcotizacionventas.idmedida}" filterBy="#{dcotizacionventas.idmedida}" filterMatchMode="contains" filterStyle="width: 75%" style="width: 10%;padding: 3px !important;text-align: center">
-                                        <h:outputText value="#{dcotizacionventas.idmedida}" />
-                                    </p:column> 
                                     <p:column headerText="Cantidad" sortBy="#{dcotizacionventas.cantidad}" filterBy="#{dcotizacionventas.cantidad}" filterMatchMode="contains" filterStyle="width: 75%" style="width: 10%;padding: 3px !important;text-align: center">
                                         <h:outputText value="#{dcotizacionventas.cantidad}" />
                                     </p:column>
+                                    <p:column headerText="Ruta" sortBy="#{dcotizacionventas.ruta_op}" filterBy="#{dcotizacionventas.ruta_op}" filterMatchMode="contains" filterStyle="width: 75%" style="width: 10%;padding: 3px !important;text-align: center">
+                                        <h:outputText value="#{dcotizacionventas.ruta_op}" />
+                                    </p:column> 
                            </p:dataTable>
                         </p:fieldset>                   
                     </p:dialog>

@@ -1,0 +1,46 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">          
+        <h:form id="datos">
+            #{wtiposervicioAction.buscarTodo()}  
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
+                <cmp:barra_lst bean="#{wtiposervicioAction}" mostrar_opciones="false" />
+                <p:dataTable id="tbl" var="listWtiposervicio" value="#{wtiposervicioAction.listaDatos}" filteredValue="#{wtiposervicioAction.filtroDatos}" widgetVar="listWtiposervicio" 
+                             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                             paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{wtiposervicioAction.datoSeleccionado}" rowKey="#{listWtiposervicio.idtiposervicio}" resizableColumns="true">
+                    <f:facet name="header">
+                        <h:outputText value="#{wtiposervicioAction.tituloHead}" />
+                    </f:facet>
+                    <p:ajax event="rowDblselect" listener="#{wtiposervicioAction.ver()}" />
+                    <p:column style="width:15%;" filterBy="#{listWtiposervicio.idtiposervicio}" filterMatchMode="contains" sortBy="#{listWtiposervicio.idtiposervicio}">
+                        <f:facet name="header">
+                            <h:outputText value="Código" />
+                        </f:facet>
+                        <h:outputText value="#{listWtiposervicio.idtiposervicio}"/>
+                    </p:column>
+                    <p:column style="width:45%;" filterBy="#{listWtiposervicio.descripcion}" filterMatchMode="contains" sortBy="#{listWtiposervicio.descripcion}">
+                        <f:facet name="header">
+                            <h:outputText value="Descripción" />
+                        </f:facet>
+                        <h:outputText value="#{listWtiposervicio.descripcion}"/>
+                    </p:column>
+                    <p:column style="width:45%;" filterBy="#{listWtiposervicio.descripcion_corta}" filterMatchMode="contains" sortBy="#{listWtiposervicio.descripcion_corta}">
+                        <f:facet name="header">
+                            <h:outputText value="Descripción_Corta" />
+                        </f:facet>
+                        <h:outputText value="#{listWtiposervicio.descripcion_corta}"/>
+                    </p:column>
+                </p:dataTable>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{wtiposervicioAction}" ventana="LST" />
+        </h:form>
+    </ui:define>
+</ui:composition>

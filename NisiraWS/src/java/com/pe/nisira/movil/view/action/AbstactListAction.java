@@ -89,6 +89,7 @@ public abstract class AbstactListAction<T> {
         modalParamsOptions.put("draggable", true);
         modalParamsOptions.put("resizable", false);
         modalParamsOptions.put("contentHeight", 400);
+        modalParamsOptions.put("contentWidth", 900);
         modalParamsOptions.put("includeViewParams", true);
         /************************************************************/
         modalGoogleMapOptions = new HashMap<String, Object>();
@@ -253,6 +254,7 @@ public abstract class AbstactListAction<T> {
         aprobar();
         this.ladd = 0;
     }
+    public void downFormatExcelEspecial(Object document){}
     public boolean isBarraVista() {
         return this.ladd == 0;
     }

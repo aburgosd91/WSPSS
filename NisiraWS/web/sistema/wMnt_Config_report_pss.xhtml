@@ -1,0 +1,55 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    >
+    <ui:define name="metadata">        
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos" >
+            #{config_report_pssAction.findDetalle()}
+            <cmp:barra_mnt bean="#{config_report_pssAction}"/>
+            <p:panelGrid id="cabecera" columns="2" columnClasses="no-border,no-border,no-border">
+                <f:facet name="header">
+                    #{config_report_pssAction.tituloHead}
+                </f:facet>
+                <p:outputLabel value="Código: " />
+                <p:inputText id="idconfig_report" size="3"
+                    disabled="true" value="#{config_report_pssAction.datoEdicion.idconfig_report}"/>
+                <p:outputLabel value="Tipo Servicio" escape="false"/>
+                    <p:selectOneMenu id="idtiposerrvicio" value="#{config_report_pssAction.datoEdicion.idtiposervicio}" style="width:400px" disabled="#{!config_report_pssAction.edicion}">
+                        <f:selectItems value="#{config_report_pssAction.lstWtiposervicio}" var="tiposervicio" itemLabel="#{tiposervicio.descripcion}" itemValue="#{tiposervicio.idtiposervicio}"/>
+                    </p:selectOneMenu>
+                <p:outputLabel for="dato1"  value="Dato1:" />
+                <p:inputTextarea id="dato1" cols="150" rows="3" 
+                                 disabled="#{!config_report_pssAction.edicion}"
+                                 value="#{config_report_pssAction.datoEdicion.dato1}">
+                    <p:ajax event="valueChange" immediate="true" process="@this"/>
+                </p:inputTextarea>
+                
+                <p:outputLabel for="dato2"  value="Dato2:" />
+                <p:inputTextarea id="dato2" cols="150" rows="3" 
+                                 disabled="#{!config_report_pssAction.edicion}"
+                                 value="#{config_report_pssAction.datoEdicion.dato2}">
+                    <p:ajax event="valueChange" immediate="true" process="@this"/>
+                </p:inputTextarea>
+                
+                <p:outputLabel for="dato3"  value="Dato3:" />
+                <p:inputTextarea id="dato3" cols="150" rows="3" 
+                                 disabled="#{!config_report_pssAction.edicion}"
+                                 value="#{config_report_pssAction.datoEdicion.dato3}">
+                    <p:ajax event="valueChange" immediate="true" process="@this"/>
+                </p:inputTextarea>
+                
+                <p:outputLabel value="Estado: " />
+                <p:selectBooleanCheckbox value="#{config_report_pssAction.estado}" disabled="#{!config_report_pssAction.edicion}"/>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{config_report_pssAction}" ventana="MNT" />
+        </h:form>
+    </ui:define>
+</ui:composition>

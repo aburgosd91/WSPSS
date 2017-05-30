@@ -95,7 +95,7 @@
                                         </p:selectOneMenu>
                                     </p:panelGrid>
                                     <p:outputLabel value="Tipo Servicio" escape="false"/>
-                                    <p:selectOneMenu id="idtiposerrvicio" value="#{cotizacionventasAction.datoEdicion.idtiposervicio}" style="width:70px" disabled="#{!cotizacionventasAction.edicion}">
+                                    <p:selectOneMenu id="idtiposerrvicio" value="#{cotizacionventasAction.datoEdicion.idtiposervicio}" style="width:400px" disabled="#{!cotizacionventasAction.edicion}">
                                         <f:selectItems value="#{cotizacionventasAction.listWtiposervicio}" var="tiposervicio" itemLabel="#{tiposervicio.descripcion}" itemValue="#{tiposervicio.idtiposervicio}"/>
                                     </p:selectOneMenu>
                                     <p:outputLabel value="Vendedor:" escape="false" />
@@ -119,7 +119,7 @@
                                     </p:panelGrid>
                                     
                                     <p:outputLabel value="Almacen" escape="false"/>
-                                    <p:selectOneMenu id="idalmacen" value="#{cotizacionventasAction.datoEdicion.idalmacen}" style="width:100px" disabled="#{!cotizacionventasAction.edicion}">
+                                    <p:selectOneMenu id="idalmacen" value="#{cotizacionventasAction.datoEdicion.idalmacen}" style="width:300px" disabled="#{!cotizacionventasAction.edicion}">
                                         <f:selectItems value="#{cotizacionventasAction.listAlmacen}" var="almacen" itemLabel="#{almacen.descripcion}" itemValue="#{almacen.idalmacen}"/>
                                     </p:selectOneMenu>
                                     <p:outputLabel value="Glosa" escape="false"/>
@@ -367,6 +367,12 @@
                                                </f:facet>
                                                <h:outputText value="#{listEstructura_costos_mano_obra_cotizacionventas.cargo}" />
                                            </p:column>
+                                            <p:column style="width:10%;" filterBy="#{listEstructura_costos_mano_obra_cotizacionventas.costo}" filterMatchMode="contains" sortBy="#{listEstructura_costos_mano_obra_cotizacionventas.costo}">
+                                               <f:facet name="header" >
+                                                   <h:outputText value="Costo" />
+                                               </f:facet>
+                                               <h:outputText value="#{listEstructura_costos_mano_obra_cotizacionventas.costo}" />
+                                           </p:column>
                                         </p:dataTable> 
                                 </p:tab>
                             </p:tabView>
@@ -384,6 +390,8 @@
                                             <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{cotizacionventasAction.estructura_costos_mano_obra_cotizacionventas.idcargo}"/>
                                             <p:inputText size="50" readonly="true" value="#{cotizacionventasAction.estructura_costos_mano_obra_cotizacionventas.cargo}" />
                                         </h:panelGrid>
+                                        <p:outputLabel value="Costo:" />
+                                        <p:inputNumber value="#{cotizacionventasAction.estructura_costos_mano_obra_cotizacionventas.costo}" decimalPlaces="2"/>
                                     </p:panelGrid>
                                     <br/>
                                     <p:toolbar>
@@ -412,8 +420,8 @@
                                             <p:ajax event="dialogReturn" listener="#{cotizacionventasAction.valorProducto_Estructura_costos}" update="cntProducto,dprecio,
                                                     ddescuento,dimpuesto_i,dimpuesto,importe"/>
                                         </p:commandButton>
-                                        <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{cotizacionventasAction.dcotizacionventas.idproducto}" disabled="#{!cotizacionventasAction.edicion}"/>
-                                        <p:inputText size="50" readonly="true" value="#{cotizacionventasAction.dcotizacionventas.producto}" disabled="#{!cotizacionventasAction.edicion}"/>
+                                        <p:inputTextarea  style="text-align: left" rows="3" cols="15" readonly="true"  value="#{cotizacionventasAction.dcotizacionventas.idproducto}" disabled="#{!cotizacionventasAction.edicion}"/>
+                                        <p:inputTextarea rows="3" cols="50"  readonly="true" value="#{cotizacionventasAction.dcotizacionventas.producto}" disabled="#{!cotizacionventasAction.edicion}"/>
                                     </h:panelGrid>
                                     <p:outputLabel for="impto" value="Cantidad :"/>
                                     <p:inputNumber id="impto" value="#{cotizacionventasAction.dcotizacionventas.cantidad}" decimalPlaces="2">

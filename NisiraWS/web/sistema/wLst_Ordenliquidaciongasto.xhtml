@@ -12,9 +12,15 @@
         <h:form id="datos">            
             #{ordenliquidaciongastoAction.buscarTodo()}  
             <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
-                <cmp:barra_lst bean="#{ordenliquidaciongastoAction}" mostrar_opciones="true" />
-                <p:dataTable  id="tbl" var="listOrdenliquidaciongasto" value="#{ordenliquidaciongastoAction.listaDatos}" filteredValue="#{ordenliquidaciongastoAction.filtroDatos}"  widgetVar="listOrdenliquidaciongasto" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
-                              paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{ordenliquidaciongastoAction.datoSeleccionado}" rowKey="#{listOrdenliquidaciongasto.idorden}" resizableColumns="true">
+                <cmp:barra_lst bean="#{ordenliquidaciongastoAction}" mostrar_opciones="true" cfgfiltro="true"/>
+                <p:dataTable  id="tbl" var="listOrdenliquidaciongasto" value="#{ordenliquidaciongastoAction.listaDatos}" 
+                              filteredValue="#{ordenliquidaciongastoAction.filtroDatos}"  
+                              widgetVar="listOrdenliquidaciongasto" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" 
+                              paginatorPosition="top"
+                              paginator="true" rows="15" 
+                              style="margin-bottom:20px" selectionMode="single" 
+                              selection="#{ordenliquidaciongastoAction.datoSeleccionado}" 
+                              rowKey="#{listOrdenliquidaciongasto.idorden}" resizableColumns="true">
                     <f:facet name="header">
                         <h:outputText value="#{ordenliquidaciongastoAction.tituloHead}" />   
                     </f:facet>

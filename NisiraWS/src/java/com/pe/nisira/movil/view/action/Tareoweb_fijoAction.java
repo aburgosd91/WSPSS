@@ -278,11 +278,11 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
         if(getDatoEdicion().getFinicio()==null){
             this.mensaje = "Ingresar Fecha Inicio";
             WebUtil.MensajeAdvertencia(this.mensaje );
-            RequestContext.getCurrentInstance().update("datos");
+            RequestContext.getCurrentInstance().update("datos:growl");
         }else if(getDatoEdicion().getFfin()==null){
             this.mensaje = "Ingresar Fecha Fin";
             WebUtil.MensajeAdvertencia(this.mensaje );
-            RequestContext.getCurrentInstance().update("datos");
+            RequestContext.getCurrentInstance().update("datos:growl");
         }else{
             int i = 1;
             String nameDay ="";
@@ -296,10 +296,10 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
                 //nameDay = WebUtil.convertDayOfSpanish(new SimpleDateFormat("EEEE", Locale.ENGLISH).format(WebUtil.convertCalendarDate(inicio)).trim());
                 //header = nameDay + " " + ft_day_moth.format(WebUtil.convertCalendarDate(inicio));
                 header = ft_day_moth.format(WebUtil.convertCalendarDate(inicio))+"\nHora Inicio";
-                dataTableColumns.add(new DataTableColumn(header,String.valueOf(i),WebUtil.convertCalendarDate(inicio)));
+                dataTableColumns.add(new DataTableColumn(header,String.valueOf(i),WebUtil.convertCalendarDate(inicio),"i"));
                 
                 header = ft_day_moth.format(WebUtil.convertCalendarDate(inicio))+"\nHora Fin";
-                dataTableColumns.add(new DataTableColumn(header,String.valueOf(i),WebUtil.convertCalendarDate(inicio)));
+                dataTableColumns.add(new DataTableColumn(header,String.valueOf(i),WebUtil.convertCalendarDate(inicio),"f"));
                 
                 inicio.add(Calendar.DATE, 1);
             }
@@ -312,7 +312,7 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
                     ob_dias = new Object[7];
                     ob_dias[0] = "00:00";
                     ob_dias[1] = "i";
-                    ob_dias[2] = x; /*posición array*/
+                    ob_dias[2] = det.getItem();
                     ob_dias[3] = WebUtil.fechaDMY(dataTableColumns.get(y).getAdicional1(),2);
                     ob_dias[4] = ob_dias[3]+"\nHora Inicio";
                     ob_dias[5] = dataTableColumns.get(y).getAdicional1();
@@ -322,7 +322,7 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
                     ob_dias = new Object[7];
                     ob_dias[0] = "00:00";
                     ob_dias[1] = "f";
-                    ob_dias[2] = x; /*posición array*/
+                    ob_dias[2] = det.getItem();
                     ob_dias[3] = WebUtil.fechaDMY(dataTableColumns.get(y).getAdicional1(),2);
                     ob_dias[4] = ob_dias[3]+"\nHora Fin";
                     ob_dias[5] = dataTableColumns.get(y).getAdicional1();
@@ -407,6 +407,7 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
         }catch(Exception ex){
             this.mensaje=ex.getMessage();
             WebUtil.error(mensaje);
+            System.out.println(mensaje);
         }
         RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
         RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
@@ -415,11 +416,11 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
         if(getDatoEdicion().getFinicio()==null){
             this.mensaje = "Ingresar Fecha Inicio";
             WebUtil.MensajeAdvertencia(this.mensaje );
-            RequestContext.getCurrentInstance().update("datos");
+            RequestContext.getCurrentInstance().update("datos:growl");
         }else if(getDatoEdicion().getFfin()==null){
             this.mensaje = "Ingresar Fecha Fin";
             WebUtil.MensajeAdvertencia(this.mensaje );
-            RequestContext.getCurrentInstance().update("datos");
+            RequestContext.getCurrentInstance().update("datos:growl");
         }else{
             int i = 1;
             String nameDay ="";
@@ -431,42 +432,62 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
             dataTableColumns = new ArrayList<>();
             while (inicio.before(fin) || inicio.equals(fin)) {
                 header = ft_day_moth.format(WebUtil.convertCalendarDate(inicio))+"\nHora Inicio";
-                dataTableColumns.add(new DataTableColumn(header,String.valueOf(i),WebUtil.convertCalendarDate(inicio)));
+                dataTableColumns.add(new DataTableColumn(header,String.valueOf(i),WebUtil.convertCalendarDate(inicio),"i"));
                 
                 header = ft_day_moth.format(WebUtil.convertCalendarDate(inicio))+"\nHora Fin";
-                dataTableColumns.add(new DataTableColumn(header,String.valueOf(i),WebUtil.convertCalendarDate(inicio)));
+                dataTableColumns.add(new DataTableColumn(header,String.valueOf(i),WebUtil.convertCalendarDate(inicio),"f"));
+                
                 inicio.add(Calendar.DATE, 1);
             }
             /*******************************************************************************************************/
             /*REEGENERAR DE BASE DE DATOS*/
             List<Programacion> temp = null;
             Object [] ob_dias;
+            String fecha1,fecha2;
+            DataTableColumn dc=null;
+            Programacion pr=null;
+            boolean flag =false;
             for(int x = 0;x<listDet_tareoweb.size();x++){
                 Det_tareoweb xc = listDet_tareoweb.get(x);
+                xc.setTareo(new ArrayList<>());
                 if(xc.getEncrypt_programacion()!=null){
                     if(!xc.getEncrypt_programacion().isEmpty()){
-                        xc.setTareo(new ArrayList<>());
                         temp = (List<Programacion>)WebUtil.stringObject("com.nisira.core.entity.Programacion", xc.getEncrypt_programacion());
-                        for(int y = 0;y < temp.size(); y++){
-                            ob_dias = new Object[7];
-                            ob_dias[0] = temp.get(y).getHinicio();
-                            ob_dias[1] = "i";
-                            ob_dias[2] = xc.getItem(); /*posición array*/
-                            ob_dias[3] = WebUtil.fechaDMY(temp.get(y).getFecha(),2);
-                            ob_dias[4] = ob_dias[3]+"\nHora Inicio";
-                            ob_dias[5] = temp.get(y).getFecha();
-                            ob_dias[6] = temp.get(y).getValor();
-                            xc.getTareo().add(ob_dias);
-                            
-                            ob_dias = new Object[7];
-                            ob_dias[0] = temp.get(y).getHfin();
-                            ob_dias[1] = "f";
-                            ob_dias[2] = xc.getItem(); /*posición array*/
-                            ob_dias[3] = WebUtil.fechaDMY(temp.get(y).getFecha(),2);
-                            ob_dias[4] = ob_dias[3]+"\nHora Fin";
-                            ob_dias[5] = temp.get(y).getFecha();
-                            ob_dias[6] = temp.get(y).getValor();
-                            xc.getTareo().add(ob_dias);
+                        for(int y=0;y<dataTableColumns.size();y++){
+                            dc = dataTableColumns.get(y);
+                            flag =false;
+                            /*ALGORITMO DE BUSQUEDA*/
+                            for(int xp =0 ;xp < temp.size(); xp++){
+                                pr = temp.get(xp);
+                                fecha1 = WebUtil.fechaDMY(dc.getAdicional1(), 5);
+                                fecha2 = WebUtil.fechaDMY(pr.getFecha(), 5);
+                                if(fecha1.equalsIgnoreCase(fecha2)){
+                                    flag=true;
+                                    break;
+                                }
+                            }
+                            /*LLENADO DE DATOS*/
+                            if(flag){
+                                ob_dias = new Object[7];
+                                ob_dias[0] = dc.getAdicional2().equalsIgnoreCase("i")?pr.getHinicio():pr.getHfin();
+                                ob_dias[1] = dc.getAdicional2();
+                                ob_dias[2] = xc.getItem(); /*posición array*/
+                                ob_dias[3] = WebUtil.fechaDMY(pr.getFecha(),2);
+                                ob_dias[4] = ob_dias[3]+"\n"+(dc.getAdicional2().equalsIgnoreCase("i")?"Hora Inicio":"Hora Fin");
+                                ob_dias[5] = pr.getFecha();
+                                ob_dias[6] = pr.getValor();
+                                xc.getTareo().add(ob_dias);
+                            }else{
+                                ob_dias = new Object[7];
+                                ob_dias[0] = "00:00";
+                                ob_dias[1] = dc.getAdicional2();
+                                ob_dias[2] = xc.getItem();
+                                ob_dias[3] = WebUtil.fechaDMY(dc.getAdicional1(),2);
+                                ob_dias[4] = ob_dias[3]+"\n"+(dc.getAdicional2().equalsIgnoreCase("i")?"Hora Inicio":"Hora Fin");
+                                ob_dias[5] = dc.getAdicional1();
+                                ob_dias[6] = 0.0f;
+                                xc.getTareo().add(ob_dias);
+                            }
                         }
                     }else{
                         for(int y=0;y<dataTableColumns.size(); y++){
@@ -490,7 +511,7 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
                             ob_dias[6] = 0.0f;
                             xc.getTareo().add(ob_dias);
                         }
-                    }
+                    }   
                 }else{
                     for(int y=0;y<dataTableColumns.size(); y++){
                         ob_dias = new Object[7];
@@ -513,7 +534,7 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
                         ob_dias[6] = 0.0f;
                         xc.getTareo().add(ob_dias);
                     }
-                }
+                }   
                 listDet_tareoweb.set(x, xc);
             }
             RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
@@ -736,6 +757,9 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
     public void verCntClieprovPersonalS() {
         RequestContext.getCurrentInstance().openDialog("cntClieprovPersonalS", modalOptions, null);
     }
+    public void verCntClieprovPersonalSupervisorOperador() {
+        RequestContext.getCurrentInstance().openDialog("cntClieprovPersonalSupervisorOperador", modalOptions, null);
+    }
     public void valorClieprovPersonalS(SelectEvent event) {
         Clieprov responsable = (Clieprov) event.getObject();
         getDatoEdicion().setIdresponsable(responsable.getIdclieprov());
@@ -787,26 +811,26 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
         }else{
             this.mensaje="Seleccionar Personal";
             WebUtil.error(mensaje);
-            RequestContext.getCurrentInstance().update("datos");
+            RequestContext.getCurrentInstance().update("datos:growl");
         }
     }
     public void grabarAsignacionPersonal_servicio(){
         if(this.iddocumento_local==null){
             this.mensaje="Ingresar ID documento";
             WebUtil.error(mensaje);
-            RequestContext.getCurrentInstance().update("datos");
+            RequestContext.getCurrentInstance().update("datos:growl");
         }else if(this.serie_local==null){
             this.mensaje="Ingresar serie";
             WebUtil.error(mensaje);
-            RequestContext.getCurrentInstance().update("datos");
+            RequestContext.getCurrentInstance().update("datos:growl");
         }else if(this.numero_local==null){
             this.mensaje="Ingresar número";
             WebUtil.error(mensaje);
-            RequestContext.getCurrentInstance().update("datos");
+            RequestContext.getCurrentInstance().update("datos:growl");
         }else if(listPersonal_servicio.isEmpty()){
             this.mensaje="No existe Dato de Personal-Servicio";
             WebUtil.error(mensaje);
-            RequestContext.getCurrentInstance().update("datos");
+            RequestContext.getCurrentInstance().update("datos:growl");
         }else{
             for(Personal_servicio per : listPersonal_servicio){
                 actualizarPersonal_servicio_tareoweb(this.iddocumento_local,this.serie_local,this.numero_local,per);
@@ -998,6 +1022,14 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
         }
         return pos;
     }
+    public void deleteDettareo_web(){
+        Det_tareoweb sl = selectDet_tareoweb;
+        if(sl!=null){
+            listDet_tareoweb.remove(sl);
+            RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
+            RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
+        }
+    }
     @Override
     public String buscarFiltro(int tipo) {
         try {
@@ -1074,9 +1106,6 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
         } catch (SQLException ex) {
             Logger.getLogger(OrdenliquidaciongastoAction.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        
-        
         RequestContext.getCurrentInstance().update("datos");
     }
     public boolean esVistaValida() {
@@ -1108,13 +1137,14 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
                 setMensaje(WebUtil.exitoRegistrar("Tareo Web", mensaje));
                 WebUtil.info(getMensaje());
                 setLvalidate(true);
+                RequestContext.getCurrentInstance().update("datos");
             }
         } catch (Exception ex) {
             setMensaje(ex.getMessage() + "\n" + ex.getLocalizedMessage());
             Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, null, ex);
             WebUtil.fatal(mensaje);
+            RequestContext.getCurrentInstance().update("datos:growl");
         }
-        RequestContext.getCurrentInstance().update("datos:growl");
     }
 
     @Override
@@ -1153,13 +1183,17 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
                 if(mensaje!=null)
                     if(mensaje.trim().length()==15)
                         getDatoEdicion().setIdcabtareoweb(mensaje.trim());
-                WebUtil.info(getMensaje());
+                WebUtil.info("Se aprobó el documento :"+getMensaje());
                 setLvalidate(true);
+                RequestContext.getCurrentInstance().update("datos");
             }
         } catch (Exception ex) {
             Logger.getLogger(Tareoweb_fijoAction.class.getName()).log(Level.SEVERE, null, ex);
+            setMensaje(ex.getMessage());
+            WebUtil.error(getMensaje());
+            RequestContext.getCurrentInstance().update("datos:growl");
         }
-        RequestContext.getCurrentInstance().update("datos");
+        
     }
     
     /**

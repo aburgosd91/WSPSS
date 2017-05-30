@@ -36,7 +36,7 @@ public class CntEstructura_Costos_ProductoAction {
         Estructura_costos_productoDao rd= new Estructura_costos_productoDao();
         try {
             UsuarioBean u =(UsuarioBean) WebUtil.getObjetoSesion(Constantes.SESION_USUARIO);
-            setDatos(rd.listarPorEmpresaWebXcodigo(u.getIDEMPRESA(),codigo_estructura));
+            setDatos(rd.listarPorEmpresaWebXidclieprov(u.getIDEMPRESA(),codigo_estructura));
         } catch (Exception ex) {
             Logger.getLogger(CntEstructura_Costos_ProductoAction.class.getName()).log(Level.SEVERE, null, ex);
         }

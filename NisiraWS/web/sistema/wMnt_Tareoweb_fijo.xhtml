@@ -10,20 +10,20 @@
     <ui:define name="body">
         <script type='text/javascript'>
             function synchronizeRowsHeight() {
-                //aligning table header row
-                var $leftHeaderRow = $('.ui-datatable-frozenlayout-left .ui-datatable-scrollable-header-box tr');
-                var $rightHeaderRow = $('.ui-datatable-frozenlayout-right .ui-datatable-scrollable-header-box tr');
-                $leftHeaderRow.outerHeight(35);//height(px) in int    
-                $rightHeaderRow.outerHeight(35);//height(px) in int   
-
-                //aligning table data rows
-                 var $leftRows = $('.ui-datatable-frozenlayout-left .ui-datatable-scrollable-body tr');
-                 var $rightRows = $('.ui-datatable-frozenlayout-right .ui-datatable-scrollable-body tr');
-                 $leftRows.each(function (index) {
-                   var $leftRow = $leftRows.eq(index); 
-                   var $rightRow = $rightRows.eq(index);
-                   $rightRow.innerHeight($leftRow.innerHeight());
-                   $leftRow.innerHeight($rightRow.innerHeight());       
+             //   //aligning table header row
+             //   var $leftHeaderRow = $('.ui-datatable-frozenlayout-left .ui-datatable-scrollable-header-box tr');
+             //   var $rightHeaderRow = $('.ui-datatable-frozenlayout-right .ui-datatable-scrollable-header-box tr');
+             //   $leftHeaderRow.outerHeight(35);//height(px) in int    
+             //   $rightHeaderRow.outerHeight(35);//height(px) in int   
+//
+             //   //aligning table data rows
+             //    var $leftRows = $('.ui-datatable-frozenlayout-left .ui-datatable-scrollable-body tr');
+             //    var $rightRows = $('.ui-datatable-frozenlayout-right .ui-datatable-scrollable-body tr');
+             //    $leftRows.each(function (index) {
+             //      var $leftRow = $leftRows.eq(index); 
+             //      var $rightRow = $rightRows.eq(index);
+             //      $rightRow.innerHeight($leftRow.innerHeight());
+             //      $leftRow.innerHeight($rightRow.innerHeight());       
                 });
             }
             </script>
@@ -57,7 +57,7 @@
                                         <p:selectOneMenu id="cboserie" value="#{tareoweb_fijoAction.datoEdicion.serie}" style="width:70px" disabled="#{!tareoweb_fijoAction.edicion}">
                                             <f:selectItems value="#{tareoweb_fijoAction.listNumemisor}" var="nume" itemLabel="#{nume.serie}" itemValue="#{nume.serie}"/>
                                         </p:selectOneMenu>
-                                        <p:inputText id="num" style="width: 90px !important" value="#{tareoweb_fijoAction.datoEdicion.numero}" disabled="#{!tareoweb_fijoAction.edicion}"/>
+                                        <p:inputText id="num" style="width: 90px !important" value="#{tareoweb_fijoAction.datoEdicion.numero}" disabled="#{!tareoweb_fijoAction.edicion}"  readonly="true"/>
                                     </p:panelGrid>
                                     <p:outputLabel value="Sucursal"/>
                                     <p:panelGrid  columns="2" columnClasses="no-border, no-border" >
@@ -66,7 +66,7 @@
                                     </p:panelGrid>
                                     <p:outputLabel value="Responsable:" escape="false" />
                                     <h:panelGrid id="cntCliePersonalS" cellpadding="0" cellspacing="0" columns="3">
-                                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{tareoweb_fijoAction.verCntClieprovPersonalS}" 
+                                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{tareoweb_fijoAction.verCntClieprovPersonalSupervisorOperador}" 
                                                          disabled="#{!tareoweb_fijoAction.edicion}"  icon="ui-icon-search">
                                             <p:ajax event="dialogReturn" listener="#{tareoweb_fijoAction.valorClieprovPersonalS}" update="cntCliePersonalS"/>
                                         </p:commandButton>
@@ -122,7 +122,7 @@
             <p:toolbar id="tb" style="font-size: 11px;">
                 <f:facet name="left">
                     <h:panelGrid  id="comandos" cellpadding="0" cellspacing="0"  columns="5">
-                        <p:commandButton value="Asignar Personal" ajax="true" image="ui-icon-reload" actionListener="#{tareoweb_fijoAction.openDialogAsignacionPersonal()}" style="visibility:false;" />
+                        <p:commandButton value="Asignar Personal" ajax="true" image="ui-icon-reload" actionListener="#{tareoweb_fijoAction.openDialogAsignacionPersonal()}" rendered="false" />
                        <p:commandButton value="Agregar Item" ajax="true" image="ui-icon-nuevo" actionListener="#{tareoweb_fijoAction.openDialogAddItemTareo()}" />
                        <p:commandButton value="Refrescar" ajax="true" image="ui-icon-reload" actionListener="#{tareoweb_fijoAction.onRefresh()}" />
                        <p:commandButton value="Generar" ajax="true" image="ui-icon-reload" actionListener="#{tareoweb_fijoAction.generarCalendario()}" />
@@ -136,35 +136,37 @@
             <p:sticky target="tb" />
             <p:dataTable id="listDet_tareoweb" var="listDet_tareoweb" 
                          value="#{tareoweb_fijoAction.listDet_tareoweb}" 
-                widgetVar="listDet_tareoweb" scrollable="true" scrollWidth="523px;" 
-                paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
-                paginator="true" paginatorPosition="top" style="margin-bottom:20px;font-size: 11px;" 
-                selection="#{tareoweb_fijoAction.selectDet_tareoweb}" 
+                         widgetVar="listDet_tareoweb" scrollable="true" scrollWidth="523px;"
+                style="margin-bottom:20px;font-size: 11px;" 
+                selection="#{tareoweb_fijoAction.selectDet_tareoweb}" selectionMode="single" 
                 resizableColumns="true" 
                 frozenColumns="7" 
                 rowKey="#{listDet_tareoweb.item}" editable="true" editMode="cell"
                 rowIndexVar="rownum" >
                     <p:ajax event="cellEdit" listener="#{tareoweb_fijoAction.onCellEdit}" update="listDet_tareoweb"/>
                     <p:ajax event="rowSelectRadio" listener="#{tareoweb_fijoAction.openDialogAsistencia()}"/>
-                    <p:column headerText="N°" footerText="N°" sortBy="#{listDet_tareoweb.item}" style="width:2%;">
+                    <f:facet name="header">
+                        ..:: Detalle Tareo ::..                 (Total:#{tareoweb_fijoAction.listDet_tareoweb.size()})
+                    </f:facet>
+                    <p:column headerText="N°" footerText="N°" sortBy="#{listDet_tareoweb.item}" style="white-space: nowrap; width: 10px;padding: 3px;text-align: center">
                         <h:outputText value="#{listDet_tareoweb.item}"/>
                      </p:column>
-                    <p:column headerText="Doc." footerText="Doc." filterBy="#{listDet_tareoweb.iddocumento}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.iddocumento}"  style="width:3%;">
+                    <p:column headerText="Doc." footerText="Doc." filterBy="#{listDet_tareoweb.iddocumento}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.iddocumento}"  style="white-space: nowrap; width: 30px;padding: 3px;text-align: center">
                        <h:outputText value="#{listDet_tareoweb.iddocumento}"/>
                     </p:column>
-                    <p:column headerText="Serie" footerText="Serie" filterBy="#{listDet_tareoweb.serie}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.serie}" style="width:5%;">
+                    <p:column headerText="Serie" footerText="Serie" filterBy="#{listDet_tareoweb.serie}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.serie}" style="white-space: nowrap; width: 38px;padding: 3px;text-align: center">
                        <h:outputText value="#{listDet_tareoweb.serie}"/>
                     </p:column>
-                    <p:column headerText="Número" footerText="Número" filterBy="#{listDet_tareoweb.numero}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.numero}" style="width:5%;">
+                    <p:column headerText="Número" footerText="Número" filterBy="#{listDet_tareoweb.numero}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.numero}" style="white-space: nowrap; width: 48px;padding: 3px;text-align: center">
                        <h:outputText value="#{listDet_tareoweb.numero}"/>
                     </p:column>
-                    <p:column headerText="Cliente" footerText="Cliente" filterBy="#{listDet_tareoweb.ruc} - #{listDet_tareoweb.razon}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.ruc} - #{listDet_tareoweb.razon}" style="width:10%;">
+                    <p:column headerText="Cliente" footerText="Cliente" filterBy="#{listDet_tareoweb.ruc} - #{listDet_tareoweb.razon}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.ruc} - #{listDet_tareoweb.razon}" style="white-space: nowrap; width: 230px;padding: 3px;text-align: left">
                        <h:outputText value="#{listDet_tareoweb.ruc} - #{listDet_tareoweb.razon}"/>
                     </p:column>
-                    <p:column headerText="Cargo" footerText="Cargo" filterBy="#{listDet_tareoweb.cargo}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.cargo}" style="width:15%;">
+                    <p:column headerText="Cargo" footerText="Cargo" filterBy="#{listDet_tareoweb.cargo}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.cargo}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: left">
                        <h:outputText value="#{listDet_tareoweb.cargo}"/>
                     </p:column>
-                    <p:column headerText="Personal" footerText="Personal" width="60" filterBy="#{listDet_tareoweb.dni} - #{listDet_tareoweb.personal}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.dni} - #{listDet_tareoweb.personal}" style="width:25%;">
+                    <p:column headerText="Personal" footerText="Personal" filterBy="#{listDet_tareoweb.dni} - #{listDet_tareoweb.personal}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.dni} - #{listDet_tareoweb.personal}" style="white-space: nowrap; width: 300px;padding: 3px;text-align: left">
                         <p:cellEditor >
                             <f:facet name="output">
                                 <h:outputText value="#{listDet_tareoweb.dni} - #{listDet_tareoweb.personal}"/>
@@ -236,7 +238,7 @@
                        </p:cellEditor>
                     </p:column>
                     
-                    <p:column headerText="AT"  footerText="AT" selectionMode="single" selectRow="false" style="white-space: nowrap; width: 130px;padding: 3px;text-align: center" />
+                    
                     <!-- FOR REPORT -->
                     
                     <p:column visible="false">
@@ -275,6 +277,13 @@
                     </p:column>
                     
                </p:dataTable>
+            <p:contextMenu for="listDet_tareoweb">
+                <p:menuitem value="Reg. Asitencia" icon="ui-icon-search" actionListener="#{tareoweb_fijoAction.openDialogAsistencia()}" />
+                <p:menuitem value="Mostrar" update="detalleDialog" icon="ui-icon-search" oncomplete="PF('detalleDialog').show()"/>
+                <p:menuitem value="Eliminar" update="listDet_tareoweb" icon="ui-icon-close" actionListener="#{tareoweb_fijoAction.deleteDettareo_web()}">
+                    <p:confirm header="Advertencia" message="Está seguro de eliminar registro?" icon="ui-icon-alert" />
+                </p:menuitem>
+            </p:contextMenu>
             <p:dialog id="dlgasignar_personal" header="..::Asignar - Personal::." widgetVar="dlgasignar_personal" modal="true" showEffect="popup" closable="false">
                 <p:panelGrid columns="1" columnClasses="no-border">
                     <p:panelGrid columns="7" columnClasses="no-border, no-border, no-border, no-border, no-border, no-border, no-border">
@@ -402,7 +411,28 @@
                     </p:toolbar>  
                 </p:panelGrid>                      
             </p:dialog>
-            
+            <p:dialog header="Detalle Datos" widgetVar="detalleDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <p:outputPanel id="detalleDialog" style="text-align:center;">
+                    <p:panelGrid  columns="2" rendered="#{not empty tareoweb_fijoAction.selectDet_tareoweb}" columnClasses="label,value">
+                        <h:outputText value="Documento:" />
+                        <h:outputText value="#{tareoweb_fijoAction.selectDet_tareoweb.iddocumento}-#{tareoweb_fijoAction.selectDet_tareoweb.serie}-#{tareoweb_fijoAction.selectDet_tareoweb.numero}" />
+                        <h:outputText value="Cliente" />
+                        <h:outputText value="#{tareoweb_fijoAction.selectDet_tareoweb.razon}" />
+                        <h:outputText value="Personal:" />
+                        <h:outputText value="#{tareoweb_fijoAction.selectDet_tareoweb.personal}" />
+                        <h:outputText value="Checklist:" />
+                        <h:outputText value="#{tareoweb_fijoAction.selectDet_tareoweb.checklist}" />
+                        <h:outputText value="Hora Requerimiento" />
+                        <h:outputText value="#{tareoweb_fijoAction.selectDet_tareoweb.shora_req}" />
+                        <h:outputText value="Tipo Asistencia" />
+                        <h:outputText value="#{tareoweb_fijoAction.selectDet_tareoweb.asistencia}" style="background-color:#{tareoweb_fijoAction.selectDet_tareoweb.color}"/>
+                    </p:panelGrid>
+                </p:outputPanel>
+            </p:dialog>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
             <p:growl id="growl" life="4000" showDetail="false"  />
             <cmp:mDialogElimina_lst id="cmpDialog" bean="#{tareoweb_fijoAction}" ventana="MNT" />
         </h:form>

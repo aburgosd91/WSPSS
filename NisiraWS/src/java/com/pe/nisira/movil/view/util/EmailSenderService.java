@@ -43,6 +43,9 @@ public class EmailSenderService {
             properties.put("mail.smtp.mail.sender", cfg.getMail_smtp_mail_sender());
             properties.put("mail.smtp.user", cfg.getMail_smtp_user());
             properties.put("mail.smtp.auth", cfg.getMail_smtp_auth());
+            properties.put("mail.smtp.ssl.trust",cfg.getMail_smtp_host());
+//            properties.put("mail.smtp.socketFactory.port", cfg.getMail_smtp_port());
+//            properties.put("mail.smtp.socketFactory.class","javax.net.ssl.SSLSocketFactory");
 
             session = Session.getDefaultInstance(properties);
     }
@@ -52,6 +55,7 @@ public class EmailSenderService {
         init();
         String sender = Constantes.configsmtp.getMail_smtp_mail_sender();/*remitente */
         String user = Constantes.configsmtp.getMail_smtp_user();/*remitente */
+        String copy = Constantes.configsmtp.getCC();
 //        String password = Encryption.decrypt(Constantes.configsmtp.getMail_smtp_password());/*remitente clave */
         String password = Constantes.configsmtp.getMail_smtp_password();/*remitente clave */
         BodyPart texto = new MimeBodyPart();
@@ -68,19 +72,25 @@ public class EmailSenderService {
         message.setFrom(new InternetAddress(sender));
 
         String[] correos = destinatario.split(";");
+        String[] correos_copy = copy.split(";");
 
-        Address[] addresses = new Address[correos.length];
-
-        for (int i = 0; i < correos.length; i++) {
-                String correo = correos[i];
-                addresses[i] = new InternetAddress(correo);
+        Address[] addresses = new Address[correos.length+correos_copy.length];
+        int tc =0;
+        for (int i = 0;i < correos.length; i++) {
+            String correo = correos[i];
+            addresses[i] = new InternetAddress(correo);
+            tc++;
         }
-
+        for(int j=0;j<correos_copy.length;j++){
+            String correo_copy = correos_copy[j];
+            addresses[tc] = new InternetAddress(correo_copy);
+            tc++;
+        }
+        
         message.addRecipients(Message.RecipientType.TO, addresses);
 
         message.setSubject(asunto);
         message.setContent(multiParte);
-
         Transport t = session.getTransport("smtp");
         t.connect(user, password);
 

@@ -19,6 +19,7 @@ import static com.pe.nisira.movil.view.util.NisiraWebLog.log;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.mapper.CannotResolveClassException;
 import com.thoughtworks.xstream.mapper.MapperWrapper;
+import groovy.json.internal.Type;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -572,6 +573,11 @@ public class WebUtil {
         Class oClase =  Class.forName(_class);
         Gson gson = new Gson();
         List<? extends Object> object = (List<? extends Object>)gson.fromJson(obj, oClase);
+        return object;
+    }
+    public static List<? extends Object> string_List_Gson(String obj) throws ClassNotFoundException{
+        Gson gson = new Gson();
+        ArrayList<String> object = gson.fromJson(obj,ArrayList.class);
         return object;
     }
     /************** AGREGADO 06/02/2017 **************/

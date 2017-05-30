@@ -30,6 +30,7 @@ import com.nisira.core.entity.Estructura_costos_producto;
 import com.nisira.core.entity.Monedas;
 import com.nisira.core.entity.Multitabla;
 import com.nisira.core.entity.Producto;
+import com.nisira.core.entity.Rutas;
 import com.nisira.core.entity.Unimedida;
 import static com.pe.nisira.movil.view.action.AbstactListAction.modalOptions;
 import com.pe.nisira.movil.view.bean.UsuarioBean;
@@ -51,6 +52,12 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import net.sf.jasperreports.engine.JRDataSource;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.primefaces.component.datatable.DataTable;
 import org.primefaces.component.tabview.TabView;
 import org.primefaces.context.RequestContext;
@@ -69,16 +76,15 @@ import org.primefaces.event.UnselectEvent;
 public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_costos> implements Serializable {
 
     /*CONTROLES*/
+    private Float costo_mano_obra;
     private String mensaje;
     private boolean botonEditarEstructura_costos_clieprov;
     private boolean botonEliminarEstructura_costos_clieprov;
     private boolean botonEditarEstructura_costos_producto;
     private boolean botonEliminarEstructura_costos_producto;
-    
     private boolean botonNuevoDestructura_costos_recurso;
     private boolean botonEditarDestructura_costos_recurso;
     private boolean botonEliminarDestructura_costos_recurso;
-    
     private boolean botonNuevoEstructura_costos_mano_obra;
     private boolean botonEditarEstructura_costos_mano_obra;
     private boolean botonEliminarEstructura_costos_mano_obra;
@@ -93,11 +99,12 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
     private List<Es_PorcentajeCombo> lstEs_porcentaje;
     private List<Estructura_costos_clieprov> listEstructura_costos_clieprov;
     private List<Estructura_costos_producto> listEstructura_costos_producto;
+    private List<Estructura_costos_producto> listEstructura_costos_producto_copy;
+    private List<Estructura_costos_producto> selectlistEstructura_costos_producto_copy;
     private List<Destructura_costos_recursos> listDestructura_costos_recursos;
     private List<Estructura_costos_mano_obra> listEstructura_costos_mano_obra;
     private List<Destructura_costos_recursos> listTotalDestructura_costos_recursos;
     private List<Estructura_costos_mano_obra> listTotalEstructura_costos_mano_obra;
-    
     private List<Unimedida> listUnimedida;
     private List<Monedas> listMoneda;
     /***************** ENTITY ****************/
@@ -105,6 +112,8 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
     private Estructura_costos_clieprov estructura_costos_clieprov;
     private Estructura_costos_producto estructura_costos_producto;
     private Destructura_costos_recursos destructura_costos_recursos;
+    private Rutas selectRutas;
+    private Clieprov selectClieprov_copy;
     /*********************************************/
     private Estructura_costos_clieprov selectEstructura_costos_clieprov;
     private Estructura_costos_producto selectEstructura_costos_producto;
@@ -173,6 +182,7 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
         u_ecosto = 0.0f;
         total_ecosto = 0.0f;
         ajuste_ecosto = 0.0f;
+        costo_mano_obra = 0.0f;
         actualiza_ventana("wMnt_EstructuraCostosRecurso");
     }
 
@@ -308,7 +318,7 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
     
     @Override
     public String buscarFiltro(int tipo) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "";
     }
 
     @Override
@@ -319,6 +329,87 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
     @Override
     public void aprobar() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    @Override
+    public void downFormatExcelEspecial(Object document){
+        try {
+            List<List<Object>> lst = estructura_costosDao.export_xls(user.getIDEMPRESA());
+            if(!lst.isEmpty()){
+                HSSFWorkbook objWB = (HSSFWorkbook) document;
+//                HSSFWorkbook objWB = new HSSFWorkbook();
+                HSSFSheet sheet1 = objWB.createSheet("ESTRUCTURA_COSTOS");
+                HSSFRow fila_cabecera = sheet1.createRow((short)0);
+                
+                // Aunque no es necesario podemos establecer estilos a las celdas.
+                // Primero, establecemos el tipo de fuente
+                HSSFFont fuente = objWB.createFont();
+                fuente.setFontHeightInPoints((short)10);
+                fuente.setFontName(fuente.FONT_ARIAL);
+                fuente.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+                    
+                // Luego creamos el objeto que se encargará de aplicar el estilo a la celda
+                
+                HSSFCellStyle estiloCelda = objWB.createCellStyle();
+                estiloCelda.setWrapText(true);
+                estiloCelda.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+                estiloCelda.setVerticalAlignment(HSSFCellStyle.VERTICAL_TOP);
+                estiloCelda.setFont(fuente);
+                estiloCelda.setWrapText(true);
+                // También, podemos establecer bordes...
+//                estiloCelda.setBorderBottom(HSSFCellStyle.BORDER_MEDIUM);
+//                estiloCelda.setBottomBorderColor((short)8);
+//                estiloCelda.setBorderLeft(HSSFCellStyle.BORDER_MEDIUM);
+//                estiloCelda.setLeftBorderColor((short)8);
+//                estiloCelda.setBorderRight(HSSFCellStyle.BORDER_MEDIUM);
+//                estiloCelda.setRightBorderColor((short)8);
+//                estiloCelda.setBorderTop(HSSFCellStyle.BORDER_MEDIUM);
+//                estiloCelda.setTopBorderColor((short)8);
+
+                // Establecemos el tipo de sombreado de nuestra celda
+                estiloCelda.setFillForegroundColor((short)22);
+                estiloCelda.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+                
+                // Creamos la celda, aplicamos el estilo y definimos
+                // el tipo de dato que contendrá la celda
+                HSSFCell celda;
+                int tcol = lst.get(0).size();
+                for(int i=0 ;i<tcol;i++){
+                    celda = fila_cabecera.createCell((short)i);
+                    celda.setCellStyle(estiloCelda);
+                    celda.setCellType(HSSFCell.CELL_TYPE_STRING);
+                    switch(i){
+                        case 0:celda.setCellValue("CÓDIGO");break;
+                        case 1:celda.setCellValue("RUC");break;
+                        case 2:celda.setCellValue("CLIENTE");break;
+                        case 3:celda.setCellValue("DESCRIPCIÓN");break;
+                        case 4:celda.setCellValue("CODOPERATIVO");break;
+                        case 5:celda.setCellValue("NHORAS");break;
+                        case 6:celda.setCellValue("RUTA");break;
+                        case 7:celda.setCellValue("AD1");break;
+                        case 8:celda.setCellValue("AD2");break;
+                    }
+                }
+                /*ESTRUCTURA PERSONALIZADA*/
+                for(int row=0;row<lst.size();row++){
+                    List<Object> lst_col = lst.get(row);
+                    fila_cabecera = sheet1.createRow((short)row+1);
+                    for(int col=0 ; col<tcol;col++){
+                        celda = fila_cabecera.createCell((short)col);
+                        celda.setCellValue(lst_col.get(col).toString());
+                    }
+                }
+                //wb = objWB;
+            }else{
+               this.mensaje="No existe registros";
+               WebUtil.info(getMensaje());
+               RequestContext.getCurrentInstance().update("datos:growl");
+            }
+            
+        } catch (Exception ex) {
+            Logger.getLogger(EstructuraCostosRecursoAction.class.getName()).log(Level.SEVERE, null, ex);
+            this.mensaje=ex.getMessage();
+            RequestContext.getCurrentInstance().update("datos:growl");
+        }
     }
     public void findetalle() throws Exception {
         try{
@@ -500,15 +591,8 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
                 mensaje = "No existe registro <ESTRUCTURA_COSTOS_MANO_OBRA>";
                 WebUtil.error(mensaje);
             }
-              calculosTotales_estructuracostos_local();
-//            calculosTotales_estructuracostos();
-//            RequestContext.getCurrentInstance().update("datos:listEstructura_costos_producto");
-//            RequestContext.getCurrentInstance().update("datos:listDestructura_costos_recursos");
-//            RequestContext.getCurrentInstance().update("datos:subtotal_ecosto");
-//            RequestContext.getCurrentInstance().update("datos:go_ecosto");
-//            RequestContext.getCurrentInstance().update("datos:ga_ecosto");
-//            RequestContext.getCurrentInstance().update("datos:u_ecosto");
-//            RequestContext.getCurrentInstance().update("datos:total_ecosto");
+            calculosTotales_estructuracostos_local();
+            RequestContext.getCurrentInstance().update("datos:listEstructura_costos_producto");
             RequestContext.getCurrentInstance().update("datos:tabs");
 //            tabView.setActiveIndex(indexTab);
         } catch (Exception ex) {
@@ -648,6 +732,76 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
         
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Item Selected", event.getObject().toString()));
     }
+    /************COPIAR ESTRUCTURA COSTOS DE OTRO CLIENTE**************/
+    public void openDialogCopyEstructura(){
+        selectClieprov_copy = new Clieprov();
+        listEstructura_costos_producto_copy = new ArrayList<>();
+        selectlistEstructura_costos_producto_copy = new ArrayList<>();
+        RequestContext.getCurrentInstance().update("datos:dlgnew_copy_estructura_costos");
+        RequestContext.getCurrentInstance().execute("PF('dlgnew_copy_estructura_costos').show()");
+    }
+    public void valorClieprov_copy(SelectEvent event) {
+        selectClieprov_copy = (Clieprov) event.getObject();
+    }
+    public void cargarEstructuraCostos(){
+        if(selectClieprov_copy==null){
+            mensaje = "Seleccionar Cliente";
+            WebUtil.error(mensaje);
+            RequestContext.getCurrentInstance().update("datos:growl");
+        }else{
+            try {
+                listEstructura_costos_producto_copy = estructura_costos_productoDao.listarPorEmpresaWebXcodigoXidclieprov(user.getIDEMPRESA(), selectClieprov_copy.getIdclieprov());
+                selectlistEstructura_costos_producto_copy = new ArrayList<>();
+                RequestContext.getCurrentInstance().update("datos:dlgnew_copy_estructura_costos:listEstructura_costos_producto_copy");
+            } catch (NisiraORMException ex) {
+                mensaje = ex.getMessage();
+                Logger.getLogger(EstructuraCostosRecursoAction.class.getName()).log(Level.SEVERE, null, ex);
+                WebUtil.error(mensaje);
+                RequestContext.getCurrentInstance().update("datos:growl");
+            }
+        }
+    }
+    public void asignacionEstucturaCostosCopy(){
+        try {
+            if(selectlistEstructura_costos_producto_copy.isEmpty()){
+                mensaje = "Seleccionar Estructuras";
+                WebUtil.error(mensaje);
+                RequestContext.getCurrentInstance().update("datos:growl");
+            }else{
+                listEstructura_costos_producto = selectlistEstructura_costos_producto_copy;
+                selectEstructura_costos_producto = listEstructura_costos_producto.get(0);
+                listTotalDestructura_costos_recursos = new ArrayList<>();
+                listTotalEstructura_costos_mano_obra = new ArrayList<>();
+                for(int i=0;i<selectlistEstructura_costos_producto_copy.size();i++){
+                    Estructura_costos_producto obj = selectlistEstructura_costos_producto_copy.get(i);
+                    List<Destructura_costos_recursos> lstDestructura_costos_recursos = destructura_costos_recursosDao.listarPorEmpresaWebXProducto(obj.getIdempresa(), obj.getCodigo(),
+                            obj.getIdproducto(), obj.getItem());
+                    if(!lstDestructura_costos_recursos.isEmpty())
+                        listTotalDestructura_costos_recursos.addAll(lstDestructura_costos_recursos);
+                    List<Estructura_costos_mano_obra> lstEstructura_costos_mano_obra = estructura_costos_mano_obraDao.listarPorEmpresaWebXproducto(obj.getIdempresa(), obj.getCodigo(), 
+                            obj.getIdproducto(), obj.getItem());
+                    if(!lstEstructura_costos_mano_obra.isEmpty())
+                        listTotalEstructura_costos_mano_obra.addAll(lstEstructura_costos_mano_obra);
+                }
+                if(getSelectEstructura_costos_producto()!=null){
+                    listDestructura_costos_recursos = listarPorEmpresaWebXProducto_Destructura_costos_recursos_action();
+                    listEstructura_costos_mano_obra = listarPorEmpresaWebXProducto_Estructura_costos_mano_obra_action();
+                    calculosTotales_estructuracostos_local();
+                }
+                RequestContext.getCurrentInstance().update("datos:listEstructura_costos_producto");
+                RequestContext.getCurrentInstance().update("datos:dlgnew_copy_estructura_costos");
+                RequestContext.getCurrentInstance().execute("PF('dlgnew_copy_estructura_costos').hide()");
+                RequestContext.getCurrentInstance().update("datos:tabs");
+                RequestContext.getCurrentInstance().update("datos:listEstructura_costos_producto");
+            }
+        } catch (NisiraORMException ex) {
+            Logger.getLogger(EstructuraCostosRecursoAction.class.getName()).log(Level.SEVERE, null, ex);
+            mensaje = ex.getMessage();
+            WebUtil.error(mensaje);
+            RequestContext.getCurrentInstance().update("datos:growl");
+        }
+        
+    }
     /************MANTENIMIENTO - CLIEPROV**************/
     public void nuevoEstructuraCostosClieprov() {
         setEstructura_costos_clieprov(new Estructura_costos_clieprov());
@@ -706,6 +860,7 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
         setEstructura_costos_producto(new Estructura_costos_producto());
         getEstructura_costos_producto().setIdempresa(user.getIDEMPRESA());
         getEstructura_costos_producto().setCodigo(getDatoEdicion().getCodigo());
+        getEstructura_costos_producto().setNhoras(0.0f);
         //getEstructura_costos_producto().setItem(agregarItemEstructuraCostosProducto());
         RequestContext.getCurrentInstance().update("datos:dlgnew_estructura_costos_producto");
         RequestContext.getCurrentInstance().execute("PF('dlgnew_estructura_costos_producto').show()");
@@ -727,11 +882,13 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
         if(estructura_costos_producto.getIdproducto().isEmpty()){
             mensaje = "Seleccionar Servicio";
             WebUtil.error(mensaje);
+            RequestContext.getCurrentInstance().update("datos:growl");
         }
-//        else if(existeServicio(estructura_costos_producto.getIdproducto())){
-//            mensaje = "Servicio repetido";
-//            WebUtil.error(mensaje);
-//        }
+        else if(estructura_costos_producto.getCodoperativo().isEmpty()){
+            mensaje = "Ingresar codigo operativo";
+            WebUtil.error(mensaje);
+            RequestContext.getCurrentInstance().update("datos:growl");
+        }
         else{
             int pos=listEstructura_costos_producto.indexOf(estructura_costos_producto);
             if(pos==-1){
@@ -828,6 +985,7 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
             getEstructura_costos_mano_obra().setItemrango(getSelectEstructura_costos_producto().getItem());
             getEstructura_costos_mano_obra().setIdproducto(getSelectEstructura_costos_producto().getIdproducto());
             getEstructura_costos_mano_obra().setCosto(0.00f);
+            costo_mano_obra = 0.0f;
             RequestContext.getCurrentInstance().update("datos:dlgnew_estructura_costos_mano_obra");
             RequestContext.getCurrentInstance().execute("PF('dlgnew_estructura_costos_mano_obra').show()");
         }else{
@@ -837,7 +995,8 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
         
     }
     public void editarEstructuraCostosManoObra() {
-        setEstructura_costos_mano_obra(selecteEstructura_costos_mano_obra);
+        costo_mano_obra = selecteEstructura_costos_mano_obra.getCosto();
+        estructura_costos_mano_obra=selecteEstructura_costos_mano_obra;
         RequestContext.getCurrentInstance().update("datos:dlgnew_estructura_costos_mano_obra");
         RequestContext.getCurrentInstance().execute("PF('dlgnew_estructura_costos_mano_obra').show()");
     }
@@ -862,6 +1021,7 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
 //            WebUtil.error(mensaje);
 //        }
         else{
+            estructura_costos_mano_obra.setCosto(this.costo_mano_obra);
             int pos=listTotalEstructura_costos_mano_obra.indexOf(estructura_costos_mano_obra);
             if(pos==-1)
                 listTotalEstructura_costos_mano_obra.add(estructura_costos_mano_obra);
@@ -931,6 +1091,15 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
             may++;
         
         return WebUtil.idGeneradoTres(may);
+    }
+    /*********************************************************************/
+    public void verCntRuta() {
+        RequestContext.getCurrentInstance().openDialog("cntRutas", modalOptions, null);
+    }
+    public void valorRuta(SelectEvent event) {
+        this.setSelectRutas((Rutas) event.getObject());
+        this.estructura_costos_producto.setIdruta(selectRutas.getIdruta());
+        this.estructura_costos_producto.setDescripcion_ruta(selectRutas.getDescripcion());
     }
     /***************** RECALCULAR INDICES*********************/ 
     public void resetIndices_DestructuraCostosRecurso(){
@@ -1534,6 +1703,76 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
     @Override
     public JRDataSource getDataSourceReport_lst() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    /**
+     * @return the costo_mano_obra
+     */
+    public Float getCosto_mano_obra() {
+        return costo_mano_obra;
+    }
+
+    /**
+     * @param costo_mano_obra the costo_mano_obra to set
+     */
+    public void setCosto_mano_obra(Float costo_mano_obra) {
+        this.costo_mano_obra = costo_mano_obra;
+    }
+
+    /**
+     * @return the selectRutas
+     */
+    public Rutas getSelectRutas() {
+        return selectRutas;
+    }
+
+    /**
+     * @param selectRutas the selectRutas to set
+     */
+    public void setSelectRutas(Rutas selectRutas) {
+        this.selectRutas = selectRutas;
+    }
+
+    /**
+     * @return the selectClieprov_copy
+     */
+    public Clieprov getSelectClieprov_copy() {
+        return selectClieprov_copy;
+    }
+
+    /**
+     * @param selectClieprov_copy the selectClieprov_copy to set
+     */
+    public void setSelectClieprov_copy(Clieprov selectClieprov_copy) {
+        this.selectClieprov_copy = selectClieprov_copy;
+    }
+
+    /**
+     * @return the listEstructura_costos_producto_copy
+     */
+    public List<Estructura_costos_producto> getListEstructura_costos_producto_copy() {
+        return listEstructura_costos_producto_copy;
+    }
+
+    /**
+     * @param listEstructura_costos_producto_copy the listEstructura_costos_producto_copy to set
+     */
+    public void setListEstructura_costos_producto_copy(List<Estructura_costos_producto> listEstructura_costos_producto_copy) {
+        this.listEstructura_costos_producto_copy = listEstructura_costos_producto_copy;
+    }
+
+    /**
+     * @return the selectlistEstructura_costos_producto_copy
+     */
+    public List<Estructura_costos_producto> getSelectlistEstructura_costos_producto_copy() {
+        return selectlistEstructura_costos_producto_copy;
+    }
+
+    /**
+     * @param selectlistEstructura_costos_producto_copy the selectlistEstructura_costos_producto_copy to set
+     */
+    public void setSelectlistEstructura_costos_producto_copy(List<Estructura_costos_producto> selectlistEstructura_costos_producto_copy) {
+        this.selectlistEstructura_costos_producto_copy = selectlistEstructura_costos_producto_copy;
     }
     
     public class Es_PorcentajeCombo{

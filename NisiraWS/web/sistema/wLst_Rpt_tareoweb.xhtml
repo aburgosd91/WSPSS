@@ -1,0 +1,37 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">
+            <cmp:barra_lst bean="#{rpt_tareowebAction}" mostrar_opciones="false" cfgfiltro="true"/>
+            <p:panel  style="border: 0px solid ;font-size: 11px !important;padding: 0px !important" id="panelReporte">
+                <p:dataTable style="font-size: 11px;" id="tbl" var="lst_rpt" value="#{rpt_tareowebAction.rpt_result.data}"
+                             widgetVar="lst_rpt"
+                          scrollable="true" scrollWidth="99%"
+                          selection="#{rpt_tareowebAction.selectRpt}" 
+                          resizableColumns="true"
+                          rowIndexVar="rownum">
+                    <f:facet name="header">
+                        Tareo #{rpt_tareowebAction.fechaDMY(rpt_tareowebAction.desde)} - #{rpt_tareowebAction.fechaDMY(rpt_tareowebAction.hasta)}
+                    </f:facet>
+                    <p:columns style="white-space: nowrap; width: 130px;padding: 3px;text-align: #{colIndex=='0'?'center':'center'}" value="#{rpt_tareowebAction.rpt_result.name}" var="column" columnIndexVar="colIndex"   
+                               resizable="true" filterBy="#{lst_rpt[colIndex]}" filterMatchMode="contains" filterStyle="width: 75%" sortBy="#{lst_rpt[colIndex]}">  
+                        <f:facet name="header">  
+                            <h:outputText value="#{rpt_tareowebAction.rpt_result.name[colIndex]}"/> 
+                        </f:facet>  
+                        <h:outputText value="#{rpt_tareowebAction.rpt_result.data[rownum][colIndex]}"/>
+                    </p:columns>
+                </p:dataTable>
+            </p:panel>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{rpt_tareowebAction}" ventana="LST" />
+        </h:form>
+    </ui:define>    
+</ui:composition>

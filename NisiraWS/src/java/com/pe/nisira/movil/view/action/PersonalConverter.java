@@ -5,11 +5,15 @@
  */
 package com.pe.nisira.movil.view.action;
 
+import com.nisira.core.NisiraORMException;
 import com.nisira.core.dao.ClieprovDao;
 import com.nisira.core.entity.Clieprov;
 import com.pe.nisira.movil.view.bean.UsuarioBean;
 import com.pe.nisira.movil.view.util.Constantes;
 import com.pe.nisira.movil.view.util.WebUtil;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -32,6 +36,12 @@ public class PersonalConverter implements Converter {
                 return service;
             } catch(NumberFormatException e) {
                 throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Conversión Error", "Not a valid personal."));
+            } catch (NisiraORMException ex) {
+                Logger.getLogger(PersonalConverter.class.getName()).log(Level.SEVERE, null, ex);
+                return null;
+            } catch (SQLException ex) {
+                Logger.getLogger(PersonalConverter.class.getName()).log(Level.SEVERE, null, ex);
+                return null;
             }
         }
         else {

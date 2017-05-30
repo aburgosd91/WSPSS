@@ -188,6 +188,7 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
             emisorDao = new EmisorDao();
             turno_trabajoDao = new Turno_trabajoDao();
             tipo_asistenciaDao = new Tipo_asistenciaDao();
+            consumidorDao = new ConsumidorDao();
             /* ENTITY */
             tareoWeb = new Det_tareoweb();
             selectPersonal = new Clieprov();
@@ -273,13 +274,41 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
                 listDet_tareoweb = tareoWebDao.listarPorEmpresaWeb_new(user.getIDEMPRESA(), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5));
             }else if(getLadd()==2){/*EDITAR*/
                 listDet_tareoweb = tareoWebDao.listarPorEmpresaWeb_update(getDatoEdicion().getIdempresa(),getDatoEdicion().getIdcabtareoweb(),WebUtil.fechaDMY(getDatoEdicion().getFecha(),5), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5));
+                cargarPersonalVehiculo();
             }
             RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
         }catch(Exception ex){
             this.mensaje=ex.getMessage();
             WebUtil.error(mensaje);
         }
+        RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
         RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
+    }
+    public void cargarPersonalVehiculo(){
+        try{
+            if(!listDet_tareoweb.isEmpty()){
+                Det_tareoweb temp;
+                Clieprov c;
+                Consumidor co;
+                for(int i=0;i<listDet_tareoweb.size();i++){
+                    temp = listDet_tareoweb.get(i);
+                    if(temp.getIdpersonal()!=null){
+                        c = clieprovDao.getEmpresa_Idclieprov(user.getIDEMPRESA(), temp.getIdpersonal());
+                        temp.setSelectPersonal(c);
+                    }
+                    if(temp.getIdvehiculo()!=null){
+                        co = consumidorDao.getEmpresa_Idconsumidor(user.getIDEMPRESA(), temp.getIdvehiculo());
+                        temp.setSelectConsumidor(co);
+                    }
+                    listDet_tareoweb.set(i, temp);
+                }
+            }
+        } catch (NisiraORMException ex) {
+            Logger.getLogger(TareowebAction.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(TareowebAction.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
     public void cargarClieprovPersonal(){
         try {
@@ -332,7 +361,6 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
             }
             numero = WebUtil.cerosIzquierda(i, 7);
         }
-
     }
     public void onCellEdit(CellEditEvent event) {
         try {
@@ -450,6 +478,7 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
 //        tabView.setActiveIndex(indexTab);
     }
     public void onRefresh(){
+        RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
         RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
     }
     public void onCargaPersonalServicio() throws NisiraORMException {
@@ -485,6 +514,9 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
     }
     public void verCntClieprovPersonalS() {
         RequestContext.getCurrentInstance().openDialog("cntClieprovPersonalS", modalOptions, null);
+    }
+    public void verCntClieprovPersonalSupervisorOperador() {
+        RequestContext.getCurrentInstance().openDialog("cntClieprovPersonalSupervisorOperador", modalOptions, null);
     }
     public void valorClieprovPersonalS(SelectEvent event) {
         Clieprov responsable = (Clieprov) event.getObject();
@@ -536,30 +568,31 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
         }else{
             this.mensaje="Seleccionar Personal";
             WebUtil.error(mensaje);
-            RequestContext.getCurrentInstance().update("datos");
+            RequestContext.getCurrentInstance().update("datos:growl");
         }
     }
     public void grabarAsignacionPersonal_servicio(){
         if(this.iddocumento_local==null){
             this.mensaje="Ingresar ID documento";
             WebUtil.error(mensaje);
-            RequestContext.getCurrentInstance().update("datos");
+            RequestContext.getCurrentInstance().update("datos:growl");
         }else if(this.serie_local==null){
             this.mensaje="Ingresar serie";
             WebUtil.error(mensaje);
-            RequestContext.getCurrentInstance().update("datos");
+            RequestContext.getCurrentInstance().update("datos:growl");
         }else if(this.numero_local==null){
             this.mensaje="Ingresar número";
             WebUtil.error(mensaje);
-            RequestContext.getCurrentInstance().update("datos");
+            RequestContext.getCurrentInstance().update("datos:growl");
         }else if(listPersonal_servicio.isEmpty()){
             this.mensaje="No existe Dato de Personal-Servicio";
             WebUtil.error(mensaje);
-            RequestContext.getCurrentInstance().update("datos");
+            RequestContext.getCurrentInstance().update("datos:growl");
         }else{
             for(Personal_servicio per : listPersonal_servicio){
                 actualizarPersonal_servicio_tareoweb(this.iddocumento_local,this.serie_local,this.numero_local,per);
             }
+            RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
             RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
             RequestContext.getCurrentInstance().execute("PF('dlgasignar_personal').hide()");
         }
@@ -705,8 +738,9 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
             if(this.glosa_local!=null)
                 selectDet_tareoweb.setGlosa(glosa_local);
             listDet_tareoweb.set(posSelect_det_tareoweb, selectDet_tareoweb);
-            RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
             RequestContext.getCurrentInstance().execute("PF('dlgDetalleAsistencia').hide()");
+            RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
+            RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
         }
     }
     public String agregarItemDet_tareoweb(List<Det_tareoweb> lst){
@@ -737,6 +771,14 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
                 count++;
         }
         return pos;
+    }
+    public void deleteDettareo_web(){
+        Det_tareoweb sl = selectDet_tareoweb;
+        if(sl!=null){
+            listDet_tareoweb.remove(sl);
+            RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
+            RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
+        }
     }
     @Override
     public String buscarFiltro(int tipo) {
@@ -806,23 +848,24 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
             getDatoEdicion().setSucursal(sucursal);
             if(!listAlmacenes.isEmpty())
             getDatoEdicion().setIdalmacen(listAlmacenes.get(0).getIdalmacen());
+            RequestContext.getCurrentInstance().update("datos");
         } catch (NisiraORMException ex) {
             Logger.getLogger(OrdenliquidaciongastoAction.class.getName()).log(Level.SEVERE, null, ex);
+            RequestContext.getCurrentInstance().update("datos:growl");
         } catch (SQLException ex) {
             Logger.getLogger(OrdenliquidaciongastoAction.class.getName()).log(Level.SEVERE, null, ex);
+            RequestContext.getCurrentInstance().update("datos:growl");
         }
-        
-        
-        
-        RequestContext.getCurrentInstance().update("datos");
     }
     public boolean esVistaValida() {
         if (getDatoEdicion().getIdresponsable() == null){
             WebUtil.MensajeAdvertencia("Seleccione Responsable");
+            RequestContext.getCurrentInstance().update("datos:growl");
             return false;
         }
         else if(getListDet_tareoweb().size() == 0) {
             WebUtil.MensajeAdvertencia("Ingrese Detalle Tareo");
+            RequestContext.getCurrentInstance().update("datos:growl");
             return false;
         }
         return true;
@@ -844,13 +887,14 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
                 setMensaje(WebUtil.exitoRegistrar("Tareo Web", mensaje));
                 WebUtil.info(getMensaje());
                 setLvalidate(true);
+                RequestContext.getCurrentInstance().update("datos");
             }
         } catch (Exception ex) {
             setMensaje(ex.getMessage() + "\n" + ex.getLocalizedMessage());
             Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, null, ex);
             WebUtil.fatal(mensaje);
+            RequestContext.getCurrentInstance().update("datos:growl");
         }
-        RequestContext.getCurrentInstance().update("datos");
     }
 
     @Override
@@ -889,13 +933,16 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
                 if(mensaje!=null)
                     if(mensaje.trim().length()==15)
                         getDatoEdicion().setIdcabtareoweb(mensaje.trim());
-                WebUtil.info(getMensaje());
+                WebUtil.info("Se aprobó el documento :"+getMensaje());
                 setLvalidate(true);
+                RequestContext.getCurrentInstance().update("datos");
             }
         } catch (Exception ex) {
             Logger.getLogger(TareowebAction.class.getName()).log(Level.SEVERE, null, ex);
+            setMensaje(ex.getMessage());
+            WebUtil.error(getMensaje());
+            RequestContext.getCurrentInstance().update("datos:growl");
         }
-        RequestContext.getCurrentInstance().update("datos");
     }
     
     /**
