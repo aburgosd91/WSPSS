@@ -35,7 +35,7 @@ public class Estructura_costos_mano_obra  implements Serializable{
     private String idproducto;
     @XStreamAlias("COSTO")
     @Columna
-    private Float costo;
+    private float costo;
     @XStreamAlias("ITEMRANGO")
     @ClavePrimaria
     @Columna
@@ -132,14 +132,14 @@ public class Estructura_costos_mano_obra  implements Serializable{
     /**
      * @return the costo
      */
-    public Float getCosto() {
+    public float getCosto() {
         return costo;
     }
 
     /**
      * @param costo the costo to set
      */
-    public void setCosto(Float costo) {
+    public void setCosto(float costo) {
         this.costo = costo;
     }
 

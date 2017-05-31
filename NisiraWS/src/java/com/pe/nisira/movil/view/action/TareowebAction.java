@@ -271,9 +271,9 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
         try{
             if(getLadd()==1){/*NUEVO*/
                 getDatoEdicion().setIdtipoasistencia("ASN");
-                listDet_tareoweb = tareoWebDao.listarPorEmpresaWeb_new(user.getIDEMPRESA(), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5));
+                listDet_tareoweb = tareoWebDao.listarPorEmpresaWeb_new(user.getIDEMPRESA(), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5),user.getIdcodigogeneral());
             }else if(getLadd()==2){/*EDITAR*/
-                listDet_tareoweb = tareoWebDao.listarPorEmpresaWeb_update(getDatoEdicion().getIdempresa(),getDatoEdicion().getIdcabtareoweb(),WebUtil.fechaDMY(getDatoEdicion().getFecha(),5), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5));
+                listDet_tareoweb = tareoWebDao.listarPorEmpresaWeb_update(getDatoEdicion().getIdempresa(),getDatoEdicion().getIdcabtareoweb(),WebUtil.fechaDMY(getDatoEdicion().getFecha(),5), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5),user.getIdcodigogeneral());
                 cargarPersonalVehiculo();
             }
             RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
@@ -371,14 +371,27 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
                 String colHead = event.getColumn().getHeaderText().trim();
                 switch(colHead){
                     case "Personal":
-                        Clieprov ob = (Clieprov)newValue;
-                        entity.setIdpersonal(ob.getIdclieprov());
-                        entity.setDni(ob.getDni());
-                        entity.setPersonal(ob.getRazonsocial());break;
+                        if(newValue==null){
+                            entity.setIdpersonal("");
+                            entity.setDni("");
+                            entity.setPersonal("");  
+                        }else{
+                           Clieprov ob = (Clieprov)newValue;
+                            entity.setIdpersonal(ob.getIdclieprov());
+                            entity.setDni(ob.getDni());
+                            entity.setPersonal(ob.getRazonsocial()); 
+                        }
+                        break;
                     case "Vehículo":
-                        Consumidor oc = (Consumidor)newValue;
-                        entity.setIdvehiculo(oc.getIdconsumidor());
-                        entity.setVehiculo(oc.getDescripcion());;break;
+                        if(newValue==null){
+                            entity.setIdvehiculo("");
+                            entity.setVehiculo("");
+                        }else{
+                            Consumidor oc = (Consumidor)newValue;
+                            entity.setIdvehiculo(oc.getIdconsumidor());
+                            entity.setVehiculo(oc.getDescripcion());
+                        }
+                        break;
                     case "Hora Llegada":
                         if(!WebUtil.validateTime(newValue.toString())){
                             if(entity.getFhora_req()!=null){
@@ -466,6 +479,8 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
                 else
                     entity.setHora_liberacion(0.0f);
                 listDet_tareoweb.set(pos, entity);
+                /*GRABAR DIRECTO*/
+                grabar_local();
             } catch (ParseException ex) {
                 Logger.getLogger(TareowebAction.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -789,7 +804,7 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
             String f_fin = f.format(getHasta());
             f_ini = f_ini.replace("-", "");
             f_fin = f_fin.replace("-", "");
-            setListaDatos(getCabtareowebDao().listarPorEmpresaWebFiltroFecha(user.getIDEMPRESA(),f_ini,f_fin));
+            setListaDatos(getCabtareowebDao().listarPorEmpresaWebFiltroFecha(user.getIDEMPRESA(),f_ini,f_fin,user.getIdcodigogeneral()));
         } catch (Exception e) {
             mensaje = WebUtil.mensajeError();
             WebUtil.error(mensaje);
@@ -831,29 +846,40 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
 
     @Override
     public void nuevo() {
-        getIniciar();
-        setDatoEdicion(new Cabtareoweb());
-        getDatoEdicion().setIdempresa(user.getIDEMPRESA());
-        getDatoEdicion().setFecha(new Date());
-        fgeneracion = getDatoEdicion().getFecha();
-        getDatoEdicion().setIdsucursal(Constantes.getIDSUCURSALGENERAL());
-        getDatoEdicion().setPeriodo(periodoDisenio);
-        getDatoEdicion().setMes(mesNombreDisenio);
-        getDatoEdicion().setNumero(numero);
-        getDatoEdicion().setIdemisor(lista_solution.get(5));
         try {
+            getIniciar();
+            setDatoEdicion(new Cabtareoweb());
+            getDatoEdicion().setIdempresa(user.getIDEMPRESA());
+            getDatoEdicion().setFecha(new Date());
+            fgeneracion = getDatoEdicion().getFecha();
+            getDatoEdicion().setIdsucursal(Constantes.getIDSUCURSALGENERAL());
+            getDatoEdicion().setPeriodo(periodoDisenio);
+            getDatoEdicion().setMes(mesNombreDisenio);
+            getDatoEdicion().setIddocumento(listDocumentos.get(0).getIddocumento());
+            getDatoEdicion().setSerie(listNumemisor.get(0).getSerie());
+            getDatoEdicion().setNumero(numero);
+            getDatoEdicion().setIdemisor(lista_solution.get(5));
+            getDatoEdicion().setIdresponsable(user.getIDUSUARIO());
+            getDatoEdicion().setResponsable(user.getNombres());
+            getDatoEdicion().setIdestado(listEstado.get(0).getIdestado());
             String emisor= emisorDao.getPorClavePrimariaWeb(user.getIDEMPRESA(), getDatoEdicion().getIdemisor()).getDescripcion();
             getDatoEdicion().setEmisor(emisor);
             String sucursal = sucursalesDao.getPorEmpresaSucursal(user.getIDEMPRESA(),Constantes.IDSUCURSALGENERAL).getDescripcion();
             getDatoEdicion().setSucursal(sucursal);
+            getDatoEdicion().setIdturnotrabajo(listTurno_trabajo.get(0).getIdturnotrabajo());
             if(!listAlmacenes.isEmpty())
             getDatoEdicion().setIdalmacen(listAlmacenes.get(0).getIdalmacen());
+            
             RequestContext.getCurrentInstance().update("datos");
         } catch (NisiraORMException ex) {
             Logger.getLogger(OrdenliquidaciongastoAction.class.getName()).log(Level.SEVERE, null, ex);
+            setMensaje(ex.getMessage());
+            WebUtil.MensajeError(mensaje);
             RequestContext.getCurrentInstance().update("datos:growl");
         } catch (SQLException ex) {
             Logger.getLogger(OrdenliquidaciongastoAction.class.getName()).log(Level.SEVERE, null, ex);
+            setMensaje(ex.getMessage());
+            WebUtil.MensajeError(mensaje);
             RequestContext.getCurrentInstance().update("datos:growl");
         }
     }
@@ -887,7 +913,8 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
                 setMensaje(WebUtil.exitoRegistrar("Tareo Web", mensaje));
                 WebUtil.info(getMensaje());
                 setLvalidate(true);
-                RequestContext.getCurrentInstance().update("datos");
+//                setLvalidate(true);
+//                RequestContext.getCurrentInstance().update("datos");
             }
         } catch (Exception ex) {
             setMensaje(ex.getMessage() + "\n" + ex.getLocalizedMessage());
@@ -896,10 +923,56 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
             RequestContext.getCurrentInstance().update("datos:growl");
         }
     }
-
+    public void grabar_local(){
+        try {
+            if (esVistaValida()) {
+                /*DATOS INICIALES*/
+                if(getDatoEdicion().getIdcabtareoweb()==null){
+                    mensaje=getCabtareowebDao().grabar(1, getDatoEdicion(), 
+                            getListDet_tareoweb());
+                    if(mensaje!=null)
+                        if(mensaje.trim().length()==15)
+                            getDatoEdicion().setIdcabtareoweb(mensaje.trim());
+                }else{
+                    mensaje=getCabtareowebDao().grabar(2, getDatoEdicion(),getListDet_tareoweb());
+                }
+//                setMensaje(WebUtil.exitoRegistrar("Tareo Web", mensaje));
+//                WebUtil.info(getMensaje());
+                setLvalidate(false);
+//                setLvalidate(true);
+//                RequestContext.getCurrentInstance().update("datos");
+            }
+        } catch (Exception ex) {
+            setMensaje(ex.getMessage() + "\n" + ex.getLocalizedMessage());
+            Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, null, ex);
+            WebUtil.fatal(mensaje);
+            RequestContext.getCurrentInstance().update("datos:growl");
+        }
+    }
     @Override
     public void eliminar() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            if (getOpc_anular_eliminar().equalsIgnoreCase("ANULAR")) {
+                mensaje=getCabtareowebDao().anular(getDatoEdicion().getIdempresa(), getDatoEdicion().getIdcabtareoweb(), user.getIDUSUARIO());
+                setMensaje(WebUtil.exitoAnular("Estructura Costo ", mensaje));
+                WebUtil.info(getMensaje());
+                RequestContext.getCurrentInstance().update("datos:growl");
+                buscarFiltro(2);
+            }
+            if (getOpc_anular_eliminar().equalsIgnoreCase("ELIMINAR")) {
+                mensaje=getCabtareowebDao().eliminar(getDatoEdicion().getIdempresa(), getDatoEdicion().getIdcabtareoweb(), user.getIDUSUARIO());
+                setMensaje(WebUtil.exitoEliminar("Estructura Costo ", mensaje));
+                WebUtil.info(getMensaje());
+                RequestContext.getCurrentInstance().update("datos:growl");
+                buscarFiltro(2);
+            }
+            
+        } catch (Exception ex) {
+            Logger.getLogger(EstructuraCostosRecursoAction.class.getName()).log(Level.SEVERE, null, ex);
+            this.mensaje=ex.getMessage();
+            WebUtil.error(getMensaje());
+            RequestContext.getCurrentInstance().update("datos:growl");
+        }
     }
 
     @Override

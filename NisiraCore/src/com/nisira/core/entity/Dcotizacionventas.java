@@ -199,6 +199,10 @@ public class Dcotizacionventas implements Serializable{
 	@Columna
 	private String nhoras;
         private String producto;
+        
+        private String codoperaciones;
+        private Float nhoras_op;
+        private String ruta_op;
 
 
 	/* Sets & Gets */
@@ -784,6 +788,48 @@ public class Dcotizacionventas implements Serializable{
      */
     public void setNhoras(String nhoras) {
         this.nhoras = nhoras;
+    }
+
+    /**
+     * @return the codoperaciones
+     */
+    public String getCodoperaciones() {
+        return codoperaciones;
+    }
+
+    /**
+     * @param codoperaciones the codoperaciones to set
+     */
+    public void setCodoperaciones(String codoperaciones) {
+        this.codoperaciones = codoperaciones;
+    }
+
+    /**
+     * @return the nhoras_op
+     */
+    public Float getNhoras_op() {
+        return nhoras_op;
+    }
+
+    /**
+     * @param nhoras_op the nhoras_op to set
+     */
+    public void setNhoras_op(Float nhoras_op) {
+        this.nhoras_op = nhoras_op;
+    }
+
+    /**
+     * @return the ruta_op
+     */
+    public String getRuta_op() {
+        return ruta_op;
+    }
+
+    /**
+     * @param ruta_op the ruta_op to set
+     */
+    public void setRuta_op(String ruta_op) {
+        this.ruta_op = ruta_op;
     }
 
 }

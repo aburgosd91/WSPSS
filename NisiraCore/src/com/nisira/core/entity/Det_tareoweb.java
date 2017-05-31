@@ -14,36 +14,6 @@ import java.util.List;
 @Tabla(nombre = "DET_TAREOWEB")
 @XStreamAlias("DET_TAREOWEB")
 public class Det_tareoweb implements Serializable {
-
-    /**
-     * @return the exige_glosa
-     */
-    public boolean isExige_glosa() {
-        return exige_glosa;
-    }
-
-    /**
-     * @param exige_glosa the exige_glosa to set
-     */
-    public void setExige_glosa(boolean exige_glosa) {
-        this.exige_glosa = exige_glosa;
-    }
-
-    /**
-     * @return the color
-     */
-    public String getColor() {
-        return color;
-    }
-
-    /**
-     * @param color the color to set
-     */
-    public void setColor(String color) {
-        this.color = color;
-    }
-
-    
         private int item;
         @SerializedName("idempresa") 
 	@XStreamAlias("IDEMPRESA") 
@@ -191,6 +161,8 @@ public class Det_tareoweb implements Serializable {
         private String color;
         private List<Object[]> tareo;
         /*adicional*/
+        private Clieprov selectPersonal;
+        private Consumidor selectConsumidor;
         /* Sets & Gets */
 	public void setIdempresa(String idempresa) {
 		this.idempresa = idempresa;
@@ -754,5 +726,59 @@ public class Det_tareoweb implements Serializable {
     public void setTareo(List<Object[]> tareo) {
         this.tareo = tareo;
     }
+    /**
+     * @return the exige_glosa
+     */
+    public boolean isExige_glosa() {
+        return exige_glosa;
+    }
 
+    /**
+     * @param exige_glosa the exige_glosa to set
+     */
+    public void setExige_glosa(boolean exige_glosa) {
+        this.exige_glosa = exige_glosa;
+    }
+
+    /**
+     * @return the color
+     */
+    public String getColor() {
+        return color;
+    }
+
+    /**
+     * @param color the color to set
+     */
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    /**
+     * @return the selectPersonal
+     */
+    public Clieprov getSelectPersonal() {
+        return selectPersonal;
+    }
+
+    /**
+     * @param selectPersonal the selectPersonal to set
+     */
+    public void setSelectPersonal(Clieprov selectPersonal) {
+        this.selectPersonal = selectPersonal;
+    }
+
+    /**
+     * @return the selectConsumidor
+     */
+    public Consumidor getSelectConsumidor() {
+        return selectConsumidor;
+    }
+
+    /**
+     * @param selectConsumidor the selectConsumidor to set
+     */
+    public void setSelectConsumidor(Consumidor selectConsumidor) {
+        this.selectConsumidor = selectConsumidor;
+    }
 }

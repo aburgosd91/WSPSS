@@ -45,10 +45,22 @@ public class Dordenserviciocliente implements Serializable{
         @Columna
         @XStreamAlias("CONDUCTOR_CLIENTE")
 	private String conductor_cliente;
+        @Columna
+        @XStreamAlias("HORA_RC")
+        private Float hora_rc;
+        @Columna
+        @XStreamAlias("GLOSA")
+        private String glosa;
+        @Columna
+        @XStreamAlias("CODOPERACIONES")
+        private String codoperaciones;
+        @Columna
+        @XStreamAlias("IDRUTA_EC")
+        private String idruta_ec;
         private String vehiculo;
         private Date hora_reqConvert;
         private String descripcion;
-
+        private String ruta_ec;
 	/* Sets & Gets */
 	public void setIdempresa(String idempresa) {
 		this.idempresa = idempresa;
@@ -214,6 +226,76 @@ public class Dordenserviciocliente implements Serializable{
      */
     public void setConductor_cliente(String conductor_cliente) {
         this.conductor_cliente = conductor_cliente;
+    }
+
+    /**
+     * @return the hora_rc
+     */
+    public Float getHora_rc() {
+        return hora_rc;
+    }
+
+    /**
+     * @param hora_rc the hora_rc to set
+     */
+    public void setHora_rc(Float hora_rc) {
+        this.hora_rc = hora_rc;
+    }
+
+    /**
+     * @return the glosa
+     */
+    public String getGlosa() {
+        return glosa;
+    }
+
+    /**
+     * @param glosa the glosa to set
+     */
+    public void setGlosa(String glosa) {
+        this.glosa = glosa;
+    }
+
+    /**
+     * @return the codoperaciones
+     */
+    public String getCodoperaciones() {
+        return codoperaciones;
+    }
+
+    /**
+     * @param codoperaciones the codoperaciones to set
+     */
+    public void setCodoperaciones(String codoperaciones) {
+        this.codoperaciones = codoperaciones;
+    }
+
+    /**
+     * @return the idruta_ec
+     */
+    public String getIdruta_ec() {
+        return idruta_ec;
+    }
+
+    /**
+     * @param idruta_ec the idruta_ec to set
+     */
+    public void setIdruta_ec(String idruta_ec) {
+        this.idruta_ec = idruta_ec;
+    }
+
+    /**
+     * @return the ruta_ec
+     */
+    public String getRuta_ec() {
+        return ruta_ec;
+    }
+
+    /**
+     * @param ruta_ec the ruta_ec to set
+     */
+    public void setRuta_ec(String ruta_ec) {
+        this.ruta_ec = ruta_ec;
     }
 
 }

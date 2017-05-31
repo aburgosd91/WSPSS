@@ -6,6 +6,7 @@ import com.nisira.core.NisiraORMException;
 import com.nisira.core.entity.Dordenliquidaciongasto;
 import com.thoughtworks.xstream.XStream;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +26,16 @@ public class OrdenliquidaciongastoDao extends BaseDao<Ordenliquidaciongasto> {
 			return l.get(0);
 		}
 	}
+        public String method_web_returnid() throws NisiraORMException, SQLException{
+            String mensaje="";
+            ResultSet rs = null;
+            rs = execProcedure("WEB_RETURNID_TMPSS");
+            while (rs.next()) {
+                mensaje = rs.getString("ID");
+                break;
+            }
+            return mensaje;
+        }
         /*APP SERVICE*/
         public ArrayList<Ordenliquidaciongasto> listarPorEmpresaService(String idempresa) throws NisiraORMException {
             ArrayList<Ordenliquidaciongasto> lista = new ArrayList<Ordenliquidaciongasto>();
@@ -182,6 +193,8 @@ public class OrdenliquidaciongastoDao extends BaseDao<Ordenliquidaciongasto> {
             }
         return mensaje;
     }        
+        
+        
 }
 
 

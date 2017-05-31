@@ -26,10 +26,10 @@ public class Det_tareowebDao extends BaseDao<Det_tareoweb> {
             }
 	}
         /*APP WEB*/
-        public ArrayList<Det_tareoweb> listarPorEmpresaWeb_new(String idempresa,String desde, String hasta) throws NisiraORMException, SQLException {
+        public ArrayList<Det_tareoweb> listarPorEmpresaWeb_new(String idempresa,String desde, String hasta,String dni) throws NisiraORMException, SQLException {
             ArrayList<Det_tareoweb> lista = new ArrayList<Det_tareoweb>();
             ResultSet rs = null;
-            rs = execProcedure("SP_TAREO_WEB_ORDENSERVICIOCLIENTE_TMPSS",idempresa,desde,hasta);
+            rs = execProcedure("SP_TAREO_WEB_ORDENSERVICIOCLIENTE_TMPSS",idempresa,desde,hasta,dni);
             while (rs.next()) {
                 Det_tareoweb tareoweb = new Det_tareoweb();
                 tareoweb.setItem(rs.getInt("ITEM"));
@@ -59,26 +59,36 @@ public class Det_tareowebDao extends BaseDao<Det_tareoweb> {
                 if(tareoweb.getHora_req()!=0.0f){
                     tareoweb.setFhora_req(CoreUtil.convertDecimalTime(tareoweb.getHora_req()));
                     tareoweb.setShora_req(CoreUtil.convertTimeString(tareoweb.getFhora_req()));
+                }else{
+                    tareoweb.setShora_req("00:00");
                 }
                 tareoweb.setHora_llegada(rs.getFloat("HORA_LLEGADA"));
                 if(tareoweb.getHora_llegada()!=0.0f){
                     tareoweb.setFhora_llegada(CoreUtil.convertDecimalTime(tareoweb.getHora_llegada()));
                     tareoweb.setShora_llegada(CoreUtil.convertTimeString(tareoweb.getFhora_llegada()));
+                }else{
+                    tareoweb.setShora_llegada("00:00");
                 }
                 tareoweb.setHora_inicio_serv(rs.getFloat("HORA_INICIO_SERV"));
                 if(tareoweb.getHora_inicio_serv()!=0.0f){
                     tareoweb.setFhora_inicio(CoreUtil.convertDecimalTime(tareoweb.getHora_inicio_serv()));
                     tareoweb.setShora_inicio(CoreUtil.convertTimeString(tareoweb.getFhora_inicio()));
+                }else{
+                    tareoweb.setShora_inicio("00:00");
                 }
                 tareoweb.setHora_fin_serv(rs.getFloat("HORA_FIN_SERV"));
                 if(tareoweb.getHora_fin_serv()!=0.0f){
                     tareoweb.setFhora_fin(CoreUtil.convertDecimalTime(tareoweb.getHora_fin_serv()));
                     tareoweb.setShora_fin(CoreUtil.convertTimeString(tareoweb.getFhora_fin()));
+                }else{
+                    tareoweb.setShora_fin("00:00");
                 }
                 tareoweb.setHora_liberacion(rs.getFloat("HORA_LIBERACION"));
                 if(tareoweb.getHora_liberacion()!=0.0f){
                     tareoweb.setFhora_liberacion(CoreUtil.convertDecimalTime(tareoweb.getHora_liberacion()));
                     tareoweb.setShora_liberacion(CoreUtil.convertTimeString(tareoweb.getFhora_liberacion()));
+                }else{
+                    tareoweb.setShora_liberacion("00:00");
                 }
                 tareoweb.setFechafinregistro(rs.getDate("FECHAFINREGISTRO"));
                 tareoweb.setCodasistencia(rs.getString("CODASISTENCIA")!=null?rs.getString("CODASISTENCIA").trim():"");
@@ -96,11 +106,11 @@ public class Det_tareowebDao extends BaseDao<Det_tareoweb> {
 
         return lista;
         }
-        public ArrayList<Det_tareoweb> listarPorEmpresaWeb_update(String idempresa,String idcabtareoweb,String desde, String hasta) throws NisiraORMException, SQLException {
+        public ArrayList<Det_tareoweb> listarPorEmpresaWeb_update(String idempresa,String idcabtareoweb,String desde, String hasta,String dni) throws NisiraORMException, SQLException {
             ArrayList<Det_tareoweb> lista = new ArrayList<Det_tareoweb>();
 
             ResultSet rs = null;
-            rs = execProcedure("GETDET_TAREOWEB_TMPSS",idempresa,idcabtareoweb,desde,hasta);
+            rs = execProcedure("GETDET_TAREOWEB_TMPSS",idempresa,idcabtareoweb,desde,hasta,dni);
             while (rs.next()) {
                 Det_tareoweb tareoweb = new Det_tareoweb();
                 tareoweb.setItem(rs.getInt("ITEM"));
@@ -135,21 +145,29 @@ public class Det_tareowebDao extends BaseDao<Det_tareoweb> {
                 if(tareoweb.getHora_llegada()!=0.0f){
                     tareoweb.setFhora_llegada(CoreUtil.convertDecimalTime(tareoweb.getHora_llegada()));
                     tareoweb.setShora_llegada(CoreUtil.convertTimeString(tareoweb.getFhora_llegada()));
+                }else{
+                    tareoweb.setShora_llegada("00:00");
                 }
                 tareoweb.setHora_inicio_serv(rs.getFloat("HORA_INICIO_SERV"));
                 if(tareoweb.getHora_inicio_serv()!=0.0f){
                     tareoweb.setFhora_inicio(CoreUtil.convertDecimalTime(tareoweb.getHora_inicio_serv()));
                     tareoweb.setShora_inicio(CoreUtil.convertTimeString(tareoweb.getFhora_inicio()));
+                }else{
+                    tareoweb.setShora_inicio("00:00");
                 }
                 tareoweb.setHora_fin_serv(rs.getFloat("HORA_FIN_SERV"));
                 if(tareoweb.getHora_fin_serv()!=0.0f){
                     tareoweb.setFhora_fin(CoreUtil.convertDecimalTime(tareoweb.getHora_fin_serv()));
                     tareoweb.setShora_fin(CoreUtil.convertTimeString(tareoweb.getFhora_fin()));
+                }else{
+                    tareoweb.setShora_fin("00:00");
                 }
                 tareoweb.setHora_liberacion(rs.getFloat("HORA_LIBERACION"));
                 if(tareoweb.getHora_liberacion()!=0.0f){
                     tareoweb.setFhora_liberacion(CoreUtil.convertDecimalTime(tareoweb.getHora_liberacion()));
                     tareoweb.setShora_liberacion(CoreUtil.convertTimeString(tareoweb.getFhora_liberacion()));
+                }else{
+                    tareoweb.setShora_liberacion("00:00");
                 }
                 tareoweb.setFechafinregistro(rs.getDate("FECHAFINREGISTRO"));
                 tareoweb.setCodasistencia(rs.getString("CODASISTENCIA")!=null?rs.getString("CODASISTENCIA").trim():"");

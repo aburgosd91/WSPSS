@@ -48,7 +48,7 @@ public class Usuario implements Serializable {
 	@SerializedName("email") 
 	@XStreamAlias("email") 
 	private String email = "" ;
-
+        private String idcodigogeneral = "" ;
 
 	/* Sets & Gets */
 	public void setIdbasedatos(String idbasedatos) {
@@ -135,6 +135,20 @@ public class Usuario implements Serializable {
      */
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    /**
+     * @return the idcodigogeneral
+     */
+    public String getIdcodigogeneral() {
+        return idcodigogeneral;
+    }
+
+    /**
+     * @param idcodigogeneral the idcodigogeneral to set
+     */
+    public void setIdcodigogeneral(String idcodigogeneral) {
+        this.idcodigogeneral = idcodigogeneral;
     }
 
 }

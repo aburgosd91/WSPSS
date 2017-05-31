@@ -119,6 +119,10 @@ public class DordenservicioclienteDao extends BaseDao<Dordenserviciocliente> {
                 dordenserviciocliente.setDescripcion(rs.getString("DESCRIPCION")!=null?rs.getString("DESCRIPCION").trim():"");
                 dordenserviciocliente.setIdservicio(rs.getString("IDSERVICIO")!=null?rs.getString("IDSERVICIO").trim():"");
                 dordenserviciocliente.setConductor_cliente(rs.getString("CONDUCTOR_CLIENTE")!=null?rs.getString("CONDUCTOR_CLIENTE").trim():"");
+                dordenserviciocliente.setHora_rc(rs.getFloat("HORA_RC"));
+                dordenserviciocliente.setGlosa(rs.getString("GLOSA")!=null?rs.getString("GLOSA").trim():"");
+                dordenserviciocliente.setCodoperaciones(rs.getString("CODOPERACIONES")!=null?rs.getString("CODOPERACIONES").trim():"");
+                dordenserviciocliente.setIdruta_ec(rs.getString("IDRUTA_EC")!=null?rs.getString("IDRUTA_EC").trim():"");
                 lista.add(dordenserviciocliente); 
             }
         } catch(Exception ex) {

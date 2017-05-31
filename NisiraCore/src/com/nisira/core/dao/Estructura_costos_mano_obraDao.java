@@ -41,6 +41,7 @@ public class Estructura_costos_mano_obraDao extends BaseDao<Estructura_costos_ma
                     estructura_costos_mano_obra.setCargo(rs.getString("CARGO")!=null?rs.getString("CARGO").trim():"");
                     estructura_costos_mano_obra.setIdproducto(rs.getString("IDPRODUCTO")!=null?rs.getString("IDPRODUCTO").trim():"");
                     estructura_costos_mano_obra.setItemrango(rs.getString("ITEMRANGO")!=null?rs.getString("ITEMRANGO").trim():"");
+                    estructura_costos_mano_obra.setCosto(rs.getFloat("COSTO"));
                     lista.add(estructura_costos_mano_obra);                             
                 }
             } catch(Exception ex) {
@@ -49,12 +50,12 @@ public class Estructura_costos_mano_obraDao extends BaseDao<Estructura_costos_ma
             return lista;
         }
         /*APP WEB*/
-        public ArrayList<Estructura_costos_mano_obra> listarPorEmpresaWebXproducto(String idempresa,String codigo,String idproducto) throws NisiraORMException {
+        public ArrayList<Estructura_costos_mano_obra> listarPorEmpresaWebXproducto(String idempresa,String codigo,String idproducto,String itemrango) throws NisiraORMException {
             ArrayList<Estructura_costos_mano_obra> lista = new ArrayList<Estructura_costos_mano_obra>();
             try
             {
                 ResultSet rs = null;
-                rs = execProcedure("GETESTRUCTURA_COSTOS_MANO_OBRA_TMPSS",idempresa,codigo,idproducto);
+                rs = execProcedure("GETESTRUCTURA_COSTOS_MANO_OBRA_TMPSS",idempresa,codigo,idproducto,itemrango);
                 while (rs.next()) {
                     Estructura_costos_mano_obra estructura_costos_mano_obra = new Estructura_costos_mano_obra();
                     estructura_costos_mano_obra.setIdbasedatos(rs.getString("IDBASEDATOS").trim());

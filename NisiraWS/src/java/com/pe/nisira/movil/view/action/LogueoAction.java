@@ -151,6 +151,8 @@ public class LogueoAction implements Serializable {
                             usuarioLogueadoBean.setPASSWORD(usuario.getPassword());
                             usuarioLogueadoBean.setIDEMPRESA(idempresa);
                             usuarioLogueadoBean.setTIPOSINCRO(CoreUtil.valoresBase().get(4));
+                            usuarioLogueadoBean.setNombres(usuario.getUsr_nombres());
+                            usuarioLogueadoBean.setIdcodigogeneral(usuario.getIdcodigogeneral());
                             usuarioLogueadoBean.setH(h);
                             usuarioLogueadoBean.setW(w);
                             WebUtil.setObjetoSesion(Constantes.SESION_USUARIO, usuarioLogueadoBean);

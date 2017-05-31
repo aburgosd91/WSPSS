@@ -27,6 +27,7 @@ public class DcotizacionventasDao extends BaseDao<Dcotizacionventas> {
                 dcotizacionventas.setIdempresa(rs.getString("IDEMPRESA")!=null?rs.getString("IDEMPRESA").trim():"");
                 dcotizacionventas.setIdcotizacionv(rs.getString("IDCOTIZACIONV")!=null?rs.getString("IDCOTIZACIONV").trim():"");
                 dcotizacionventas.setItem(rs.getString("ITEM")!=null?rs.getString("ITEM").trim():"");
+                dcotizacionventas.setIdcompra(rs.getString("IDCOMPRA")!=null?rs.getString("IDCOMPRA").trim():"");
                 dcotizacionventas.setItemcotizacion(rs.getString("ITEMCOTIZACION")!=null?rs.getString("ITEMCOTIZACION").trim():"");
                 dcotizacionventas.setIdproducto(rs.getString("IDPRODUCTO")!=null?rs.getString("IDPRODUCTO").trim():"");
                 dcotizacionventas.setDescripcion(rs.getString("DESCRIPCION")!=null?rs.getString("DESCRIPCION").trim():"");
@@ -50,6 +51,10 @@ public class DcotizacionventasDao extends BaseDao<Dcotizacionventas> {
                 dcotizacionventas.setObservaciones(rs.getString("OBSERVACIONES")!=null?rs.getString("OBSERVACIONES").trim():"");
                 dcotizacionventas.setNhoras(rs.getString("NHORAS")!=null?rs.getString("NHORAS").trim():"");
                 dcotizacionventas.setImporte_isc(rs.getFloat("IMPORTE_ISC"));
+                dcotizacionventas.setCodoperaciones(rs.getString("CODOPERATIVO")!=null?rs.getString("CODOPERATIVO").trim():"");
+                dcotizacionventas.setRuta_op(rs.getString("RUTA")!=null?rs.getString("RUTA").trim():"");
+                dcotizacionventas.setNhoras_op(rs.getFloat("NHORAS_OP"));
+                
                 listDcotizacionventas.add(dcotizacionventas);
             }
         } catch(Exception ex) {

@@ -55,6 +55,22 @@ public class WebServiceNisira{
     /**
      * This is a sample web service operation
      */
+    @WebMethod(operationName = "METHOD_WEB_RETURNID")
+    public String METHOD_WEB_RETURNID() {
+        String result=null;
+        try {
+            String conexion = WebMethodNisira.cargarBaseDatos();
+            setConexion(conexion);
+            OrdenliquidaciongastoDao ordenliquidaciongastodao =new OrdenliquidaciongastoDao();
+            result= ordenliquidaciongastodao.method_web_returnid();
+        } catch (NisiraORMException ex) {
+            Logger.getLogger(WebServiceNisira.class.getName()).log(Level.SEVERE, null, ex);
+            result = "ERROR :"+ex.getMessage();
+        } catch (SQLException ex) {
+            Logger.getLogger(WebServiceNisira.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
+    }
     @WebMethod(operationName = "METHOD_TEST_SERVER")
     public String METHOD_TEST_SERVER() {
         String result=null;

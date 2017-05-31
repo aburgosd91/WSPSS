@@ -25,11 +25,11 @@ public class CabtareowebDao extends BaseDao<Cabtareoweb> {
                     return l.get(0);
             }
     }
-    public ArrayList<Cabtareoweb> listarPorEmpresaWebFiltroFecha(String idempresa,String fechainicio,String fechafin) throws NisiraORMException,Exception {
+    public ArrayList<Cabtareoweb> listarPorEmpresaWebFiltroFecha(String idempresa,String fechainicio,String fechafin,String dni) throws NisiraORMException,Exception {
             ArrayList<Cabtareoweb> lista = new ArrayList<Cabtareoweb>();
 
             ResultSet rs = null;
-            rs = execProcedure("GETCABTAREOWEB_TMPSS",idempresa,fechainicio,fechafin);
+            rs = execProcedure("GETCABTAREOWEB_TMPSS",idempresa,fechainicio,fechafin,dni);
             while (rs.next()) {
                 Cabtareoweb cabtareoweb = new Cabtareoweb();
                 cabtareoweb.setIdbasedatos(rs.getString("IDBASEDATOS").trim());
@@ -172,4 +172,36 @@ public class CabtareowebDao extends BaseDao<Cabtareoweb> {
 
         return mensaje;
     }
+    public String anular(String idempresa,String codigo,String idusuario) throws Exception {
+            String mensaje="";
+            /********* ESTRUCTURA COSTOS ***********/
+            try {
+                ResultSet rs = null;
+                rs = execProcedure("SP_TAREO_ANULAR",idempresa,codigo,idusuario
+                );
+                while (rs.next()) {
+                    mensaje = rs.getString("mensaje");
+                    break;
+                }
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
+            return mensaje;
+        }
+        public String eliminar(String idempresa,String codigo,String idusuario) throws Exception {
+            String mensaje="";
+            /********* ESTRUCTURA COSTOS ***********/
+            try {
+                ResultSet rs = null;
+                rs = execProcedure("SP_TAREO_ELIMINAR",idempresa,codigo,idusuario
+                );
+                while (rs.next()) {
+                    mensaje = rs.getString("mensaje");
+                    break;
+                }
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
+            return mensaje;
+        }
 }

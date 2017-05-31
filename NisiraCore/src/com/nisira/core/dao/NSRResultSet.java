@@ -2,11 +2,12 @@ package com.nisira.core.dao;
 
 import com.nisira.core.NisiraORMException;
 import com.nisira.core.util.NisiraUtils2;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-public class NSRResultSet {
+public class NSRResultSet implements Serializable{
 	private List<Object[]> data;
 	private String[] name;
 
@@ -17,63 +18,66 @@ public class NSRResultSet {
 		if (idxcolumn == -1) {
 			return null;
 		}
-		return clases[idxcolumn];
+		return getClases()[idxcolumn];
 	}
 
 	public int columnCount() {
-		return name.length;
+		return getName().length;
 	}
 
 	public String getColumnName(int index) {
-		return name[index];
+		return getName()[index];
 	}
 
 	public Class<?> getColumnClass(int index) {
-		return clases[index];
+		return getClases()[index];
 	}
 
 	public Object[] getRow(int index) {
-		return data.get(index);
+		return getData().get(index);
 	}
 
 	public int size() {
-		return data.size();
+		return getData().size();
 	}
 
 	public void setData(List<Object[]> data, String[] name) {
-		this.data = data;
-		this.name = name;
+            this.setData(data);
+            this.setName(name);
 
 		if (data.size() > 0) {
-			clases = new Class<?>[this.name.length];
-			for (int i = 0; i < this.name.length; i++) {
-				if (this.data.get(0)[i] instanceof String) {
-					clases[i] = String.class;
+			setClases(new Class<?>[this.getName().length]);
+                        
+                        
+			for (int i = 0; i < this.getName().length; i++) {
+                            
+                                if (this.getData().get(0)[i] instanceof String) {
+					getClases()[i] = String.class;
 
-				} else if (this.data.get(0)[i] instanceof BigDecimal) {
-					clases[i] = BigDecimal.class;
+				} else if (this.getData().get(0)[i] instanceof BigDecimal) {
+					getClases()[i] = BigDecimal.class;
 
-				} else if (this.data.get(0)[i] instanceof Double) {
-					clases[i] = Double.class;
+				} else if (this.getData().get(0)[i] instanceof Double) {
+					getClases()[i] = Double.class;
 
-				} else if (this.data.get(0)[i] instanceof Float) {
-					clases[i] = Float.class;
+				} else if (this.getData().get(0)[i] instanceof Float) {
+					getClases()[i] = Float.class;
 
-				} else if (this.data.get(0)[i] instanceof Integer) {
-					clases[i] = Integer.class;
+				} else if (this.getData().get(0)[i] instanceof Integer) {
+					getClases()[i] = Integer.class;
 
-				} else if (this.data.get(0)[i] instanceof Date || this.data.get(0)[i] instanceof java.sql.Timestamp
-						|| this.data.get(0)[i] instanceof java.sql.Date) {
-					clases[i] = Date.class;
+				} else if (this.getData().get(0)[i] instanceof Date || this.getData().get(0)[i] instanceof java.sql.Timestamp
+						|| this.getData().get(0)[i] instanceof java.sql.Date) {
+					getClases()[i] = Date.class;
 
 				} else {
-					clases[i] = Object.class;
+					getClases()[i] = Object.class;
 				}
 			}
 		} else {
-			clases = new Class<?>[this.name.length];
-			for (int i = 0; i < this.name.length; i++) {
-				clases[i] = Object.class;
+			setClases(new Class<?>[this.getName().length]);
+			for (int i = 0; i < this.getName().length; i++) {
+				getClases()[i] = Object.class;
 			}
 		}
 	}
@@ -135,11 +139,11 @@ public class NSRResultSet {
 	}
 
 	public Object getObject(int row, int column) throws NisiraORMException {
-		return data.get(row)[column];
+		return getData().get(row)[column];
 	}
 
 	public String getString(int row, int column) throws NisiraORMException {
-		Object value = data.get(row)[column];
+		Object value = getData().get(row)[column];
 
 		if (value == null) {
 			return null;
@@ -152,7 +156,7 @@ public class NSRResultSet {
 	}
 
 	public BigDecimal getBigDecimal(int row, int column) throws NisiraORMException {
-		Object value = data.get(row)[column];
+		Object value = getData().get(row)[column];
 
 		if (value == null) {
 			return null;
@@ -173,7 +177,7 @@ public class NSRResultSet {
 	}
 
 	public Double getDouble(int row, int column) throws NisiraORMException {
-		Object value = data.get(row)[column];
+		Object value = getData().get(row)[column];
 
 		if (value == null) {
 			return null;
@@ -194,7 +198,7 @@ public class NSRResultSet {
 	}
 
 	public Float getFloat(int row, int column) throws NisiraORMException {
-		Object value = data.get(row)[column];
+		Object value = getData().get(row)[column];
 
 		if (value == null) {
 			return null;
@@ -215,7 +219,7 @@ public class NSRResultSet {
 	}
 
 	public Integer getInteger(int row, int column) throws NisiraORMException {
-		Object value = data.get(row)[column];
+		Object value = getData().get(row)[column];
 
 		if (value == null) {
 			return null;
@@ -236,7 +240,7 @@ public class NSRResultSet {
 	}
 
 	public Date getDate(int row, int column) throws NisiraORMException {
-		Object value = data.get(row)[column];
+		Object value = getData().get(row)[column];
 
 		if (value == null) {
 			return null;
@@ -258,11 +262,53 @@ public class NSRResultSet {
 	}
 
 	public int getColumnIndex(String columname) {
-		for (int i = 0; i < name.length; i++) {
-			if (columname.trim().equalsIgnoreCase(name[i].trim())) {
+		for (int i = 0; i < getName().length; i++) {
+			if (columname.trim().equalsIgnoreCase(getName()[i].trim())) {
 				return i;
 			}
 		}
 		return -1;
 	}
+
+    /**
+     * @return the data
+     */
+    public List<Object[]> getData() {
+        return data;
+    }
+
+    /**
+     * @param data the data to set
+     */
+    public void setData(List<Object[]> data) {
+        this.data = data;
+    }
+
+    /**
+     * @return the name
+     */
+    public String[] getName() {
+        return name;
+    }
+
+    /**
+     * @param name the name to set
+     */
+    public void setName(String[] name) {
+        this.name = name;
+    }
+
+    /**
+     * @return the clases
+     */
+    public Class<?>[] getClases() {
+        return clases;
+    }
+
+    /**
+     * @param clases the clases to set
+     */
+    public void setClases(Class<?>[] clases) {
+        this.clases = clases;
+    }
 }

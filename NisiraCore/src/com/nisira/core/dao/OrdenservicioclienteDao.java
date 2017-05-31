@@ -8,6 +8,7 @@ import com.nisira.core.entity.Dordenserviciocliente;
 import com.nisira.core.entity.Dpersonal_servicio;
 import com.nisira.core.entity.Personal_servicio;
 import com.nisira.core.entity.Ruta_servicios;
+import com.nisira.core.util.ReportConfig;
 import com.thoughtworks.xstream.XStream;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -247,6 +248,32 @@ public class OrdenservicioclienteDao extends BaseDao<Ordenserviciocliente> {
             while (rs.next()) {
                 mensaje = rs.getString("mensaje");
                 break;
+            }
+        return mensaje;
+    }
+        public NSRResultSet getConsultaRepote(String idempresa,String fechainicio,String fechafin) throws NisiraORMException{
+            ResultSet rs = null;
+            rs = execProcedure("RPT_ORDENSERVICIOCLIENTE_TMPSS",idempresa,fechainicio,fechafin);
+            return ReportConfig.getNSRResultSet(rs);
+        }
+        public NSRResultSet getConsultaRepote_personal_ocupado(String idempresa) throws NisiraORMException{
+            ResultSet rs = null;
+            rs = execProcedure("GET_REPORTE_PERSONAL_OCUPADO_TMPSS",idempresa);
+            return ReportConfig.getNSRResultSet(rs);
+        }
+        public String anular(Ordenserviciocliente ob,String idusuario) throws Exception {
+            String mensaje="";
+            try {
+                ResultSet rs = null;
+                rs = execProcedure("SP_ORDENSERVICIOCLIENTE_ANULAR",
+                        ob.getIdempresa(),ob.getIdordenservicio(),idusuario,ob.getIdestado()
+                );
+                while (rs.next()) {
+                    mensaje = rs.getString("mensaje");
+                    break;
+                }
+            } catch(Exception ex) {
+                ex.printStackTrace();
             }
         return mensaje;
     }

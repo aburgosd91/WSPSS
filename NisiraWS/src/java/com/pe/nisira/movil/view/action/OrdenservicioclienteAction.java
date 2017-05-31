@@ -379,7 +379,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
             RequestContext.getCurrentInstance().update("datos:growl");
             return false;
         }
-        if (getListPersonal_Servicio().size() == 0) {
+        if (getListPersonalservicio_total().size() == 0) {
             WebUtil.MensajeAdvertencia("Ingrese Detalle de personal");
             RequestContext.getCurrentInstance().update("datos:growl");
             return false;
@@ -429,16 +429,6 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                     buscarFiltro(2);
                 }
             }
-//            if (getOpc_anular_eliminar().equalsIgnoreCase("ELIMINAR")) {
-//                getDatoEdicion().setIdestado("CR");
-//                mensaje=getOrdenservicioclienteDao().anular(getDatoEdicion(),user.getIDUSUARIO());
-//                if(mensaje!=null){
-//                    setMensaje(WebUtil.exitoEliminar("Orden servicio cliente", mensaje));
-//                    WebUtil.info(getMensaje());
-//                    setLvalidate(true);
-//                    buscarFiltro(2);
-//                }
-//            }
         } catch (Exception ex) {
             Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -55,7 +55,7 @@ public class RunGenerador {
 	String RUTAADAPTER =  "";
 	String RUTAUTIL =  "";
 	
-	String TIPOLENGUAJE = "";
+	String TIPOLENGUAJE = "ANDROID";
 	
 	public RunGenerador(String RAIZ,String PAQUETEBASE,String TIPOLENGUAJE){
 		this.TIPOLENGUAJE = TIPOLENGUAJE;
@@ -847,58 +847,52 @@ public class RunGenerador {
 
 	private void crearArchivoconEstructuraBD(String TipoDB,String basedatos,String ruta_archivo_sync) {
 
-//		ConexionGen cGen = new ConexionGen(TipoBD, basedatos);
-//		try {
-//			System.out.println("\n" +"Cargando Estructura de Base de Datos");
-//
-//			List<Tabla> lista = cGen.retornaEstructura();
-//			ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream(ruta_archivo_sync));
-//
-//			salida.writeObject(lista);
-//			salida.close();
-//			System.out.println("\n" +"Se creó el archivo file.nsrsync con la configuración de la base de datos");
-//
-//
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		} catch (FileNotFoundException e) {
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
+		ConexionGen cGen = new ConexionGen(TipoBD, basedatos);
+		try {
+                    System.out.println("\n" +"Cargando Estructura de Base de Datos");
+
+                    List<Tabla> lista = cGen.retornaEstructura();
+                    ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream(ruta_archivo_sync));
+
+                    salida.writeObject(lista);
+                    salida.close();
+                    System.out.println("\n" +"Se creó el archivo file.nsrsync con la configuración de la base de datos");
+
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 
 	public static void main(String[] args) {
-//            try {
-
-//                        String PAQUETEBASE = "com.nisira.core.";
-//
-//                        RunGenerador rgen = new RunGenerador(RunGenerador.RAIZ_NETBEANS,PAQUETEBASE,RunGenerador.JAVA);
-//
-//			// ********************************************INICIO CONEXION*******************************************************
-//			EConexion e = new EConexion();
-//			e.BASEDATOS = "PSS";
-//			e.CLAVE = "amadeus2010";
-//			e.INSTANCIA = "";
-//			e.USUARIO = "sa";
-//			e.SERVIDOR = "69.64.88.9";
-//			e.TIPO = "MSSQL";
-//
-//			CoreUtil.conexiones.put("default", e);
-//
-//			// ********************************************FIN CONEXION*******************************************************
-//
-//			Scanner scanner = new Scanner(System.in);
-//			System.out.println("Generar entidades y Dao desde base de datos (Y-N)");
-//			String entrada = scanner.next();
-//			if  (entrada.trim().equals("Y") ){
-//
-//				if( rgen.TIPOLENGUAJE.trim().equals(RunGenerador.ANDROID.trim()) ) {
-//					String ruta_archivo_sync = "app/src/main/assets/file.nsrsync";
-//					rgen.crearArchivoconEstructuraBD(e.TIPO, e.BASEDATOS, ruta_archivo_sync);
-//				}
-//
+            String PAQUETEBASE = "com.nisira.sqlite."; //e1.printStackTrace();
+            RunGenerador rgen = new RunGenerador(RunGenerador.RAIZ_NETBEANS,PAQUETEBASE,RunGenerador.JAVA);
+            // ********************************************INICIO CONEXION*******************************************************
+            EConexion e = new EConexion();
+            e.BASEDATOS = "PSS_SQLITE";
+            e.CLAVE = "amadeus2010";
+            e.INSTANCIA = "";
+            e.USUARIO = "sa";
+            e.SERVIDOR = "ABURGOS";
+            e.TIPO = "MSSQL";
+            CoreUtil.conexiones.put("default", e);
+            // ********************************************FIN CONEXION*******************************************************
+            
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Generar entidades y Dao desde base de datos (Y-N)");
+            String entrada = scanner.next();
+            if  (entrada.trim().equals("Y") ){
+                
+//                if( rgen.TIPOLENGUAJE.trim().equals(RunGenerador.ANDROID.trim()) ) {
+                    String ruta_archivo_sync = "src/com/nisira/sqlite/file.nsrsync";
+                    rgen.crearArchivoconEstructuraBD(e.TIPO, e.BASEDATOS, ruta_archivo_sync);
+//                }
+                
 //				ConexionGen c = new ConexionGen(e.TIPO, e.BASEDATOS);
 //				List<Tabla> lista = null;
 //
@@ -914,17 +908,12 @@ public class RunGenerador {
 //				for(Integer i=1;i<(cantidad_entidades_services+1);i++){
 //					rgen.genEntidadServices(i);
 //				}
-//
-//				System.out.println("Termino el proceso y se generaron correctamente las clases entidades y Dao");
-//			}
-//			else{
-//				System.out.println("Termino el proceso sin generación de codigo");
-//			}
-//
-//		} catch (SQLException e1) {
-//			//e1.printStackTrace();
-//			System.out.println("Error: "+e1.toString());
-//		}
+
+                System.out.println("Termino el proceso y se generaron correctamente las clases entidades y Dao");
+            }
+            else{
+                System.out.println("Termino el proceso sin generación de codigo");
+            }
 
         }
 

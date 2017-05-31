@@ -41,6 +41,8 @@ public class UsuarioBean implements Serializable {
     private String h;
     private String w;
     private int time;
+    private String nombres;
+    private String idcodigogeneral;
     public String getIDUSUARIO() {
         return IDUSUARIO;
     }
@@ -167,6 +169,34 @@ public class UsuarioBean implements Serializable {
 
     public void setTime(int time) {
         this.time = time;
+    }
+
+    /**
+     * @return the nombres
+     */
+    public String getNombres() {
+        return nombres;
+    }
+
+    /**
+     * @param nombres the nombres to set
+     */
+    public void setNombres(String nombres) {
+        this.nombres = nombres;
+    }
+
+    /**
+     * @return the idcodigogeneral
+     */
+    public String getIdcodigogeneral() {
+        return idcodigogeneral;
+    }
+
+    /**
+     * @param idcodigogeneral the idcodigogeneral to set
+     */
+    public void setIdcodigogeneral(String idcodigogeneral) {
+        this.idcodigogeneral = idcodigogeneral;
     }
     
 }

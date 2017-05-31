@@ -3,6 +3,7 @@ package com.nisira.core.dao;
 import com.nisira.core.BaseDao;
 import com.nisira.core.entity.Wtiposervicio;
 import com.nisira.core.NisiraORMException;
+import com.thoughtworks.xstream.XStream;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,5 +44,45 @@ public class WtiposervicioDao extends BaseDao<Wtiposervicio> {
             ex.printStackTrace();
         }
         return lista;
+        }
+        
+        /*nuevo / editar*/
+        public String grabar(int tipo,Wtiposervicio obj) throws Exception {
+            String mensaje="";
+            String xmlNot = "";
+            String xml = "<?xml version='1.0' encoding='ISO-8859-1' ?>";
+            XStream xStream = new XStream();
+            xStream.processAnnotations(Wtiposervicio.class);
+            xmlNot = xml + xStream.toXML(obj);
+            try {
+                ResultSet rs = null;
+                rs = execProcedure("SP_WTIPOSERVICIO_GRABAR",tipo,obj.getIdempresa(),obj.getIdtiposervicio(),xmlNot);
+                while (rs.next()) {
+                    mensaje = rs.getString("mensaje");
+                    break;
+                }
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
+            return mensaje;
+        }
+        public String anular_eliminar(int tipo,Wtiposervicio obj) throws Exception {
+            String mensaje="";
+            String xmlNot = "";
+            String xml = "<?xml version='1.0' encoding='ISO-8859-1' ?>";
+            XStream xStream = new XStream();
+            xStream.processAnnotations(Wtiposervicio.class);
+            xmlNot = xml + xStream.toXML(obj);
+            try {
+                ResultSet rs = null;
+                rs = execProcedure("SP_WTIPOSERVICIO_GRABAR",tipo,obj.getIdempresa(),obj.getIdtiposervicio());
+                while (rs.next()) {
+                    mensaje = rs.getString("mensaje");
+                    break;
+                }
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
+            return mensaje;
         }
 }

@@ -79,6 +79,31 @@ public class Estructura_costosDao extends BaseDao<Estructura_costos> {
             }
             return lista;
         }
+        public ArrayList<Estructura_costos> listarPorEmpresaWebXidclieprov(String idempresa,String idclieprov) throws NisiraORMException {
+            ArrayList<Estructura_costos> lista = new ArrayList<Estructura_costos>();
+            try
+            {
+                ResultSet rs = null;
+                rs = execProcedure("GETESTRUCTURA_COSTOS_COTIZACIONVENTAS_TMPSS",idempresa,idclieprov);
+                while (rs.next()) {
+                    Estructura_costos estructura_costos_clieprov = new Estructura_costos();
+                    estructura_costos_clieprov.setIdbasedatos(rs.getString("IDBASEDATOS").trim());
+                    estructura_costos_clieprov.setIdempresa(rs.getString("IDEMPRESA").trim());
+                    estructura_costos_clieprov.setCodigo(rs.getString("CODIGO")!=null?rs.getString("CODIGO").trim():"");
+                    estructura_costos_clieprov.setDescripcion(rs.getString("DESCRIPCION")!=null?rs.getString("DESCRIPCION").trim():"");
+                    estructura_costos_clieprov.setNombre_corto(rs.getString("NOMBRE_CORTO")!=null?rs.getString("NOMBRE_CORTO").trim():"");
+                    estructura_costos_clieprov.setEstado(rs.getFloat("ESTADO"));
+                    estructura_costos_clieprov.setFechacreacion(rs.getDate("FECHACREACION"));
+                    estructura_costos_clieprov.setMoneda(rs.getString("MONEDA")!=null?rs.getString("MONEDA").trim():"");
+                    estructura_costos_clieprov.setIdclieprov(rs.getString("IDCLIEPROV")!=null?rs.getString("IDCLIEPROV").trim():"");
+                    estructura_costos_clieprov.setCliente(rs.getString("CLIENTE")!=null?rs.getString("CLIENTE").trim():"");
+                    lista.add(estructura_costos_clieprov);                             
+                }
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
+            return lista;
+        }
         public String grabar(int tipo,String idempresa,String codigo,
                 Estructura_costos estructura_costos,
                 List<Estructura_costos_clieprov> listEstructura_costos_clieprov,
@@ -158,5 +183,30 @@ public class Estructura_costosDao extends BaseDao<Estructura_costos> {
                 ex.printStackTrace();
             }
             return mensaje;
+        }
+        public List<List<Object>> export_xls(String idempresa) throws Exception {
+            List<List<Object>> lst = new ArrayList<>();
+            List<Object> objRow;
+            /********* ESTRUCTURA COSTOS ***********/
+            try {
+                ResultSet rs = null;
+                rs = execProcedure("GETESTRUCTURA_COSTOS_EXPORT_TMPSS",idempresa);
+                while (rs.next()) {
+                    objRow = new  ArrayList<>();
+                    objRow.add(rs.getString("CODIGO")!=null?rs.getString("CODIGO").trim():"");
+                    objRow.add(rs.getString("RUC")!=null?rs.getString("RUC").trim():"");
+                    objRow.add(rs.getString("CLIENTE")!=null?rs.getString("CLIENTE").trim():"");
+                    objRow.add(rs.getString("DESCRIPCION")!=null?rs.getString("DESCRIPCION").trim():"");
+                    objRow.add(rs.getString("CODOPERATIVO")!=null?rs.getString("CODOPERATIVO").trim():"");
+                    objRow.add(rs.getFloat("NHORAS"));
+                    objRow.add(rs.getString("RUTA")!=null?rs.getString("RUTA").trim():"");
+                    objRow.add(rs.getString("AD1")!=null?rs.getString("AD1").trim():"");
+                    objRow.add(rs.getString("AD2")!=null?rs.getString("AD2").trim():"");
+                    lst.add(objRow);
+                }
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
+            return lst;
         }
 }

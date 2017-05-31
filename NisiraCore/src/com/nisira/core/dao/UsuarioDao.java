@@ -77,6 +77,7 @@ public class UsuarioDao extends BaseDao<Usuario> {
                     usuario.setUsr_nombres(rs.getString("USR_NOMBRES"));
                     usuario.setIdclieprov(rs.getString("IDCLIEPROV"));
                     usuario.setPassword(rs.getString("PASSWORD"));
+                    usuario.setIdcodigogeneral(rs.getString("IDCODIGOGENERAL"));
                 }
             } catch(Exception ex) {
                 ex.printStackTrace();

@@ -39,7 +39,8 @@ public class Configsmtp implements Serializable{
     private String asunto;/*asunto*/
     @Columna(nombre = "MENSAJE")
     private String mensaje;/*mensaje*/
-
+    @Columna(nombre = "CC")
+    private String CC;/*mensaje*/
 
 
     /* Sets & Gets */
@@ -142,5 +143,19 @@ public class Configsmtp implements Serializable{
      */
     public void setIdbasedatos(String idbasedatos) {
         this.idbasedatos = idbasedatos;
+    }
+
+    /**
+     * @return the CC
+     */
+    public String getCC() {
+        return CC;
+    }
+
+    /**
+     * @param CC the CC to set
+     */
+    public void setCC(String CC) {
+        this.CC = CC;
     }
 }

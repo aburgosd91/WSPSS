@@ -49,7 +49,7 @@ public class ConfigsmtpDao extends BaseDao<Configsmtp> {
                 configsmtp.setMail_smtp_password(rs.getString("MAIL_SMTP_PASSWORD")!=null?rs.getString("MAIL_SMTP_PASSWORD").trim():"");
                 configsmtp.setAsunto(rs.getString("ASUNTO")!=null?rs.getString("ASUNTO").trim():"");
                 configsmtp.setMensaje(rs.getString("MENSAJE")!=null?rs.getString("MENSAJE").trim():"");
-                
+                configsmtp.setCC(rs.getString("CC")!=null?rs.getString("CC").trim():"");
                 lista.add(configsmtp);                             
                 
             }

@@ -6,17 +6,13 @@ import com.nisira.annotation.Tabla;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import java.io.Serializable;
 import java.util.Date;
-@XStreamAlias("WTIPOSERVICIO")
-@Tabla(nombre = "WTIPOSERVICIO")
-public class Wtiposervicio implements Serializable{
-        @XStreamAlias("IDEMPRESA")
+@XStreamAlias("CODOPERACIONES_PSS")
+@Tabla(nombre = "CODOPERACIONES_PSS")
+public class Codoperaciones_pss implements Serializable{
+        @XStreamAlias("IDCODOPERACIONES")
 	@ClavePrimaria
 	@Columna
-	private String idempresa;
-        @XStreamAlias("IDTIPOSERVICIO")
-	@ClavePrimaria
-	@Columna
-	private String idtiposervicio;
+	private String idcodoperaciones;
         @XStreamAlias("DESCRIPCION")
 	@Columna
 	private String descripcion;
@@ -26,24 +22,19 @@ public class Wtiposervicio implements Serializable{
         @XStreamAlias("FECHACREACION")
 	@Columna
 	private Date fechacreacion;
+        @XStreamAlias("ESTADO")
+	@Columna
+	private Float estado;
 
 
 
 	/* Sets & Gets */
-	public void setIdempresa(String idempresa) {
-		this.idempresa = idempresa;
+	public void setIdcodoperaciones(String idcodoperaciones) {
+		this.idcodoperaciones = idcodoperaciones;
 	}
 
-	public String getIdempresa() {
-		return this.idempresa;
-	}
-
-	public void setIdtiposervicio(String idtiposervicio) {
-		this.idtiposervicio = idtiposervicio;
-	}
-
-	public String getIdtiposervicio() {
-		return this.idtiposervicio;
+	public String getIdcodoperaciones() {
+		return this.idcodoperaciones;
 	}
 
 	public void setDescripcion(String descripcion) {
@@ -68,6 +59,14 @@ public class Wtiposervicio implements Serializable{
 
 	public Date getFechacreacion() {
 		return this.fechacreacion;
+	}
+
+	public void setEstado(Float estado) {
+		this.estado = estado;
+	}
+
+	public Float getEstado() {
+		return this.estado;
 	}
 
 
