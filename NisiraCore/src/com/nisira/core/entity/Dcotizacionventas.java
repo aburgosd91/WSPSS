@@ -198,6 +198,9 @@ public class Dcotizacionventas implements Serializable{
         @XStreamAlias("NHORAS")
 	@Columna
 	private String nhoras;
+        @XStreamAlias("CODOPERATIVO")
+	@Columna
+	private String codoperativo;
         private String producto;
         
         private String codoperaciones;
@@ -830,6 +833,20 @@ public class Dcotizacionventas implements Serializable{
      */
     public void setRuta_op(String ruta_op) {
         this.ruta_op = ruta_op;
+    }
+
+    /**
+     * @return the codoperativo
+     */
+    public String getCodoperativo() {
+        return codoperativo;
+    }
+
+    /**
+     * @param codoperativo the codoperativo to set
+     */
+    public void setCodoperativo(String codoperativo) {
+        this.codoperativo = codoperativo;
     }
 
 }
