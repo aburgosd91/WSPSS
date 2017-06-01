@@ -1316,6 +1316,7 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
             getDcotizacionventas().setDescripcion(selectEstructura_costos_producto.getDescripcion());
             getDcotizacionventas().setIdmedida(selectEstructura_costos_producto.getIdmedida());
             getDcotizacionventas().setImporte_isc(selectEstructura_costos_producto.getAjuste());
+            getDcotizacionventas().setCodoperativo(selectEstructura_costos_producto.getCodoperativo());
             /************ CONSULTAR PRECIOS ,IGV  ****************/
             ArrayList<Object> arrayObject = productoDao.returnImpuestoxproducto(user.getIDEMPRESA(), 
                     getDcotizacionventas().getIdproducto(),WebUtil.SimpleDateFormatN1(getDatoEdicion().getFecha()));

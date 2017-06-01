@@ -157,11 +157,11 @@
                                     </f:facet>
                                     <h:outputText value="#{lstdcotizacionventas.descripcion}" />
                                 </p:column>
-                                <p:column style="width:15%;" filterBy="#{lstdcotizacionventas.idmedida}" filterMatchMode="contains" sortBy="#{lstdcotizacionventas.idmedida}">
+                                <p:column style="width:15%;" filterBy="#{lstdcotizacionventas.codoperativo}" filterMatchMode="contains" sortBy="#{lstdcotizacionventas.codoperativo}">
                                     <f:facet name="header" >
-                                        <h:outputText value="U.M." />
+                                        <h:outputText value="Cod.Operacion" />
                                     </f:facet>
-                                    <h:outputText value="#{lstdcotizacionventas.idmedida}" />
+                                    <h:outputText value="#{lstdcotizacionventas.codoperativo}" />
                                 </p:column>
                                 <p:column style="width:10%;" filterBy="#{lstdcotizacionventas.cantidad}" filterMatchMode="contains" sortBy="#{lstdcotizacionventas.cantidad}">
                                     <f:facet name="header" >

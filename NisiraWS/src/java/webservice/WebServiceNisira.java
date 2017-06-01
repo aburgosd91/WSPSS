@@ -524,6 +524,40 @@ public class WebServiceNisira{
         } 
         return result;
     }
+    @WebMethod(operationName = "METHOD_LIST_TIPOGASTO")
+    public String METHOD_LIST_TIPOGASTO(@WebParam(name = "type") String type){
+        String result=null;
+        try {
+            String conexion = WebMethodNisira.cargarBaseDatos();
+            setConexion(conexion);
+            ArrayList<String> lista_solution=com.nisira.core.util.CoreUtil.valoresBase();/*Obtener Datos de solution.ini*/            
+            String idempresa = lista_solution.get(5);
+            ConstantesBD.setIDEMPRESA(idempresa);
+            TipogastoDao tipogastodao =new TipogastoDao();
+            List<Tipogasto> list= tipogastodao.listarPorEmpresa_Tipogasto(idempresa);
+            if(list !=null){
+                if(type.trim().equals("JSON")){
+                    result = WebUtil.objectGson(list.size(),list);
+                }
+                if(type.trim().equals("XML")){
+                    try {
+                        result = WebUtil.objectXml("com.nisira.core.entity.Tipogasto", list);
+                    } catch (ClassNotFoundException ex) {
+                        Logger.getLogger(WebServiceNisira.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+            else
+            {
+                result = "ERROR";
+            }
+            
+        } catch (NisiraORMException  ex) {
+            Logger.getLogger(WebServiceNisira.class.getName()).log(Level.SEVERE, null, ex);
+            result = "ERROR :"+ex.getMessage();
+        }
+        return result;
+    }
     @WebMethod(operationName = "METHOD_LIST_ORDENLIQUIDACIONGASTO")
     public String METHOD_LIST_ORDENLIQUIDACIONGASTO(@WebParam(name = "type") String type){
         String result=null;
