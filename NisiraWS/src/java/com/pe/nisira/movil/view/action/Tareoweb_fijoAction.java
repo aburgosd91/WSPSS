@@ -1094,6 +1094,7 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
         getDatoEdicion().setIdemisor(lista_solution.get(5));
         getDatoEdicion().setFinicio(new Date());
         getDatoEdicion().setFfin(new Date());
+        getDatoEdicion().setIdresponsable(user.getIDUSUARIO());
         try {
             String emisor= emisorDao.getPorClavePrimariaWeb(user.getIDEMPRESA(), getDatoEdicion().getIdemisor()).getDescripcion();
             getDatoEdicion().setEmisor(emisor);
