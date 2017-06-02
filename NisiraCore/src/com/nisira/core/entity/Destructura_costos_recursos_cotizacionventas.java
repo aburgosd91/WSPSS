@@ -56,7 +56,6 @@ public class Destructura_costos_recursos_cotizacionventas  implements Serializab
         private Float subtotal;
         private Float pu;
 
-
 	/* Sets & Gets */
 	public void setIdempresa(String idempresa) {
 		this.idempresa = idempresa;

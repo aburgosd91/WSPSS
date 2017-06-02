@@ -206,7 +206,7 @@ public class Dcotizacionventas implements Serializable{
         private String codoperaciones;
         private Float nhoras_op;
         private String ruta_op;
-
+        private String idruta_op;
 
 	/* Sets & Gets */
 	public void setIdempresa(String idempresa) {
@@ -847,6 +847,20 @@ public class Dcotizacionventas implements Serializable{
      */
     public void setCodoperativo(String codoperativo) {
         this.codoperativo = codoperativo;
+    }
+
+    /**
+     * @return the idruta_op
+     */
+    public String getIdruta_op() {
+        return idruta_op;
+    }
+
+    /**
+     * @param idruta_op the idruta_op to set
+     */
+    public void setIdruta_op(String idruta_op) {
+        this.idruta_op = idruta_op;
     }
 
 }

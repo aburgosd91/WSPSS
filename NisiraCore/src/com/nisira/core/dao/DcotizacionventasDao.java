@@ -51,8 +51,9 @@ public class DcotizacionventasDao extends BaseDao<Dcotizacionventas> {
                 dcotizacionventas.setObservaciones(rs.getString("OBSERVACIONES")!=null?rs.getString("OBSERVACIONES").trim():"");
                 dcotizacionventas.setNhoras(rs.getString("NHORAS")!=null?rs.getString("NHORAS").trim():"");
                 dcotizacionventas.setImporte_isc(rs.getFloat("IMPORTE_ISC"));
-                dcotizacionventas.setCodoperaciones(rs.getString("CODOPERATIVO")!=null?rs.getString("CODOPERATIVO").trim():"");
+                dcotizacionventas.setCodoperativo(rs.getString("CODOPERATIVO")!=null?rs.getString("CODOPERATIVO").trim():"");
                 dcotizacionventas.setRuta_op(rs.getString("RUTA")!=null?rs.getString("RUTA").trim():"");
+                dcotizacionventas.setIdruta_op(rs.getString("IDRUTA")!=null?rs.getString("IDRUTA").trim():"");
                 dcotizacionventas.setNhoras_op(rs.getFloat("NHORAS_OP"));
                 
                 listDcotizacionventas.add(dcotizacionventas);

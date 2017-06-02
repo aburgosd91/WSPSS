@@ -378,6 +378,7 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
         getDatoEdicion().setVventa(0.0f);
         getDatoEdicion().setImpuesto(0.0f);
         getDatoEdicion().setImporte(0.0f);
+        getDatoEdicion().setEstado("PE");
         try {
             /*CONSULTAS A BD*/
             String sucursal = sucursalesDao.getPorEmpresaSucursal(user.getIDEMPRESA(),Constantes.IDSUCURSALGENERAL).getDescripcion();
@@ -859,9 +860,13 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
                     /*** ANÁLISIS ****/
                     listDestructura_costos_recursos_cotizacionventas=listarPorEmpresaWebXProducto_Destructura_costos_cotizacionventas_recursos_action();
                     listEstructura_costos_mano_obra_cotizacionventas=listarPorEmpresaWebXProducto_Estructura_costos_mano_obra_cotizacionventas_action();
+                    listDestructura_costos_recursos = destructura_costos_recursosDao.listarPorEmpresaWebXProducto(getSelectdcotizacionventas().getIdempresa(), getSelectdcotizacionventas().getIdcompra(),
+                                getSelectdcotizacionventas().getIdproducto(),getSelectdcotizacionventas().getItemcotizacion());
+                    listEstructura_costos_mano_obra = estructura_costos_mano_obraDao.listarPorEmpresaWebXproducto(getSelectdcotizacionventas().getIdempresa(), getSelectdcotizacionventas().getIdcompra(),
+                                getSelectdcotizacionventas().getIdproducto(),getSelectdcotizacionventas().getItemcotizacion());
                     if(getListDestructura_costos_recursos_cotizacionventas().isEmpty()){
-                        setListDestructura_costos_recursos(destructura_costos_recursosDao.listarPorEmpresaWebXProducto(selectEstructura_costos_producto.getIdempresa(), selectEstructura_costos_producto.getCodigo(),
-                                getSelectdcotizacionventas().getIdproducto(),getSelectdcotizacionventas().getItemcotizacion()));
+                        listDestructura_costos_recursos = destructura_costos_recursosDao.listarPorEmpresaWebXProducto(selectEstructura_costos_producto.getIdempresa(), selectEstructura_costos_producto.getCodigo(),
+                                getSelectdcotizacionventas().getIdproducto(),getSelectdcotizacionventas().getItemcotizacion());
                         if(!getListDestructura_costos_recursos().isEmpty()){
                             setListDestructura_costos_recursos_cotizacionventas(new ArrayList<>());
                             Destructura_costos_recursos_cotizacionventas tmp=null;
@@ -893,8 +898,8 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
                         }
                     }
                     if(getListEstructura_costos_mano_obra_cotizacionventas().isEmpty()){
-                        setListEstructura_costos_mano_obra(estructura_costos_mano_obraDao.listarPorEmpresaWebXproducto(selectEstructura_costos_producto.getIdempresa(), selectEstructura_costos_producto.getCodigo(),
-                                getSelectdcotizacionventas().getIdproducto(),getSelectdcotizacionventas().getItemcotizacion()));
+                        listEstructura_costos_mano_obra = estructura_costos_mano_obraDao.listarPorEmpresaWebXproducto(selectEstructura_costos_producto.getIdempresa(), selectEstructura_costos_producto.getCodigo(),
+                                getSelectdcotizacionventas().getIdproducto(),getSelectdcotizacionventas().getItemcotizacion());
                         if(!getListEstructura_costos_mano_obra().isEmpty()){
                             setListEstructura_costos_mano_obra_cotizacionventas(new ArrayList<>());
                             Estructura_costos_mano_obra_cotizacionventas tmp= null;

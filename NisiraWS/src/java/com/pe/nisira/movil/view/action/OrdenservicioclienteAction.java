@@ -895,7 +895,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                 seleccion=getSelectListDcotizacionventas().size();
             if(total!=0 && seleccion!=0)
                 if(total==seleccion)
-                idestadoCot="AT";
+                    idestadoCot="AT";
                 else
                     idestadoCot="TP";
             else
@@ -905,10 +905,14 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                 obj.setIdempresa(deta.getIdempresa());
                 obj.setIdordenservicio(getDatoEdicion().getIdordenservicio());
                 obj.setItem(agregarItemDordenservicio());
-                obj.setIdreferencia(deta.getIdcotizacionv());
-                obj.setItemreferencia(deta.getItem());
+                obj.setIdreferencia(deta.getIdcompra());
+                obj.setItemreferencia(deta.getItemcotizacion());
                 obj.setDescripcion(deta.getDescripcion());
                 obj.setIdservicio(deta.getIdproducto());
+                obj.setCodoperaciones(deta.getCodoperativo());
+                obj.setHora_rc(deta.getNhoras_op());
+                obj.setIdruta_ec(deta.getIdruta_op());
+                obj.setRuta_ec(deta.getRuta_op());
                 lstdordenserviciocliente.add(obj);
             }
         } catch (Exception ex) {
@@ -1308,23 +1312,24 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
             detaobj.setIdcargo(detaDca.getIdcargo());
             detaobj.setCargo(detaDca.getCargo());
             /*DETALLE ORDEN SERVICIO*/
-            Dordenserviciocliente osc =getLocalDordenserviciocliente(detaDca.getIdcotizacionv(),detaDca.getIdproducto());
+            Dordenserviciocliente osc =getLocalDordenserviciocliente(detaDca.getCodigo(),detaDca.getItemrango(),detaDca.getIdproducto());
             if(osc!=null)
                 detaobj.setItem(osc.getItem()==null?"":osc.getItem());//-> relacion DORDENSERVICIOCLIENTE
             else
                 detaobj.setItem("");
             //detaobj.setItem(getSelectDordenserviciocliente().getItem()==null?"":getSelectDordenserviciocliente().getItem());//-> relacion DORDENSERVICIOCLIENTE
-            detaobj.setItem2(agregarItemPersonal_servicio());
+            detaobj.setItem2(agregarItemPersonal_servicio_total());
             detaobj.setFechaoperacion(new Date());
             listPersonalservicio_total.add(detaobj);
         }
     }
-    public Dordenserviciocliente getLocalDordenserviciocliente(String idreferencia,String itemreferencia){/*itemreferencia -> idproducto*/
+    public Dordenserviciocliente getLocalDordenserviciocliente(String idreferencia,String itemreferencia,String idproducto){/*itemreferencia -> idproducto*/
         Dordenserviciocliente result = null;
-        if(!idreferencia.isEmpty()&& !itemreferencia.isEmpty()){
+        if(!idreferencia.isEmpty()&& !itemreferencia.isEmpty() && !idproducto.isEmpty()){
             for(Dordenserviciocliente obj : getLstdordenserviciocliente()){
-                if(obj.getIdreferencia().trim().equalsIgnoreCase(idreferencia) &&
-                    obj.getIdservicio().trim().equalsIgnoreCase(itemreferencia)){
+                if(obj.getIdreferencia().trim().equalsIgnoreCase(idreferencia.trim()) &&
+                    obj.getItemreferencia().trim().equalsIgnoreCase(itemreferencia.trim()) &&
+                    obj.getIdservicio().trim().equalsIgnoreCase(idproducto.trim())){
                     result=obj;
                     break;
                 }
@@ -1687,6 +1692,21 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
         
         return WebUtil.idGeneradoTres(may);
     }
+    public String agregarItemPersonal_servicio_total(){
+        int dato = 1;
+        int may=-999999999;
+        for(Personal_servicio obj:getListPersonalservicio_total()){
+            dato = Integer.parseInt(obj.getItem2());
+            if(dato>may)
+                may=dato;
+        }
+        if(may==-999999999)
+            may=1;
+        else
+            may++;
+        
+        return WebUtil.idGeneradoTres(may);
+    }
     public String agregarItemDPersonal_servicio(){
         int dato = 1;
         int may=-999999999;
@@ -1800,8 +1820,6 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
     public void setFechafinalizaciont(Date fechafinalizaciont) {
         this.fechafinalizaciont = fechafinalizaciont;
     }
-
-   
 
     public List<Dordenserviciocliente> getLstdprogtlleg() {
         return getLstdordenserviciocliente();
