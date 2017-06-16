@@ -24,7 +24,7 @@
                     <f:facet name="header">
                         <h:outputText value="#{ordenserviciocliente_cierreAction.tituloHead}" />   
                     </f:facet>
-                    <p:column headerText="Nro. Documento" style="width:30%;" >
+                    <p:column headerText="Nro. Documento" style="width:30%;" filterBy="#{listOrdenServicioCliente.iddocumento}-#{listOrdenServicioCliente.serie}-#{listOrdenServicioCliente.numero}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.iddocumento}-#{listOrdenServicioCliente.serie}-#{listOrdenServicioCliente.numero}">
                         <h:outputText value="#{listOrdenServicioCliente.iddocumento}-#{listOrdenServicioCliente.serie}-#{listOrdenServicioCliente.numero}" />
                     </p:column>
                     <p:column headerText="Doc." style="width:30%;" filterBy="#{listOrdenServicioCliente.idclieprov}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.idclieprov}">
@@ -47,7 +47,7 @@
                     <p:column headerText="Precinto" style="width:30%;" filterBy="#{listOrdenServicioCliente.nroprecinto}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.nroprecinto}">
                         <h:outputText value="#{listOrdenServicioCliente.nroprecinto}" />
                     </p:column>
-                    <p:column headerText="Servicio" style="width:30%;" filterBy="#{listOrdenServicioCliente.ro_oservicio}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.ro_oservicio}">
+                    <p:column headerText="Servicio" style="width:30%;" filterBy="#{listOrdenServicioCliente.nro_oservicio}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.nro_oservicio}">
                         <h:outputText value="#{listOrdenServicioCliente.nro_oservicio}" />
                     </p:column>
                     <p:column headerText="Estado" style="width:30%;" filterBy="#{listOrdenServicioCliente.estado}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.estado}">

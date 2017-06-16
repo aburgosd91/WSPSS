@@ -10,50 +10,56 @@
     </ui:define>
     <ui:define name="body">
         <h:form id="datos">
-            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
-                <cmp:barra_lst bean="#{ordenservicioclienteAction}" mostrar_opciones="false" cfgfiltro="true"/>
-                <p:dataTable  id="tbl" var="listOrdenServicioCliente" value="#{ordenservicioclienteAction.listaDatos}" filteredValue="#{ordenservicioclienteAction.filtroDatos}"  widgetVar="listOrdenServicioCliente" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
-                              paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" 
-                              selection="#{ordenservicioclienteAction.datoSeleccionado}" 
-                              rowKey="#{listOrdenServicioCliente.idordenservicio}"
-                              resizableColumns="true">
+            <cmp:barra_lst bean="#{ordenservicioclienteAction}" mostrar_opciones="false" cfgfiltro="true"/>
+            <p:dataTable  id="tbl" var="listOrdenServicioCliente" value="#{ordenservicioclienteAction.listaDatos}" filteredValue="#{ordenservicioclienteAction.filtroDatos}"  widgetVar="listOrdenServicioCliente" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                          paginator="true" rows="15" style="border: 0px solid ;font-size: 13px !important;padding: 0px !important" selectionMode="single" 
+                          selection="#{ordenservicioclienteAction.datoSeleccionado}" 
+                          rowKey="#{listOrdenServicioCliente.idordenservicio}"
+                          resizableColumns="true"
+                          scrollable="true" scrollWidth="99%"
+                          >
+                <f:facet name="header">
+                    <h:outputText value="#{ordenservicioclienteAction.tituloHead}" />   
+                </f:facet>
+                <p:column headerText="Nro. Documento" style="white-space: nowrap; width: 130px;padding: 3px;" filterBy="#{listOrdenServicioCliente.iddocumento}-#{listOrdenServicioCliente.serie}-#{listOrdenServicioCliente.numero}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.iddocumento}-#{listOrdenServicioCliente.serie}-#{listOrdenServicioCliente.numero}">
+                    <h:outputText value="#{listOrdenServicioCliente.iddocumento}-#{listOrdenServicioCliente.serie}-#{listOrdenServicioCliente.numero}" />
+                </p:column>
+                <p:column headerText="Doc." style="white-space: nowrap; width: 120px;padding: 3px;" filterBy="#{listOrdenServicioCliente.idclieprov}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.idclieprov}">
+                    <h:outputText value="#{listOrdenServicioCliente.idclieprov}" />
+                </p:column>
+                <p:column headerText="Razón" style="white-space: nowrap; width: 200px;padding: 3px;" filterBy="#{listOrdenServicioCliente.razonsocial}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.razonsocial}">
+                    <h:outputText value="#{listOrdenServicioCliente.razonsocial}" />
+                </p:column>
+                <p:column style="white-space: nowrap; width: 130px;padding: 3px;" filterBy="#{listOrdenServicioCliente.fecha}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.fecha}">
                     <f:facet name="header">
-                        <h:outputText value="#{ordenservicioclienteAction.tituloHead}" />   
+                        <h:outputText value="Fecha" />
                     </f:facet>
-                    <p:column headerText="Nro. Documento" style="width:30%;" filterBy="#{listOrdenServicioCliente.iddocumento}-#{listOrdenServicioCliente.serie}-#{listOrdenServicioCliente.numero}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.iddocumento}-#{listOrdenServicioCliente.serie}-#{listOrdenServicioCliente.numero}">
-                        <h:outputText value="#{listOrdenServicioCliente.iddocumento}-#{listOrdenServicioCliente.serie}-#{listOrdenServicioCliente.numero}" />
-                    </p:column>
-                    <p:column headerText="Doc." style="width:30%;" filterBy="#{listOrdenServicioCliente.idclieprov}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.idclieprov}">
-                        <h:outputText value="#{listOrdenServicioCliente.idclieprov}" />
-                    </p:column>
-                    <p:column headerText="Razón" style="width:30%;" filterBy="#{listOrdenServicioCliente.razonsocial}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.razonsocial}">
-                        <h:outputText value="#{listOrdenServicioCliente.razonsocial}" />
-                    </p:column>
-                    <p:column style="width:20%;" filterBy="#{listOrdenServicioCliente.fecha}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.fecha}">
-                        <f:facet name="header">
-                            <h:outputText value="Fecha" />
-                        </f:facet>
-                        <h:outputText value="#{listOrdenServicioCliente.fecha}">
-                            <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
-                        </h:outputText>
-                    </p:column>
-                    <p:column headerText="Contenedor" style="width:30%;" filterBy="#{listOrdenServicioCliente.nrocontenedor}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.nrocontenedor}">
-                        <h:outputText value="#{listOrdenServicioCliente.nrocontenedor}" />
-                    </p:column>
-                    <p:column headerText="Precinto" style="width:30%;" filterBy="#{listOrdenServicioCliente.nroprecinto}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.nroprecinto}">
-                        <h:outputText value="#{listOrdenServicioCliente.nroprecinto}" />
-                    </p:column>
-                    <p:column headerText="Servicio" style="width:30%;" filterBy="#{listOrdenServicioCliente.ro_oservicio}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.ro_oservicio}">
-                        <h:outputText value="#{listOrdenServicioCliente.nro_oservicio}" />
-                    </p:column>
-                    <p:column headerText="Tipo" style="width:15%;" filterBy="#{listOrdenServicioCliente.tipo_servicio}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.tipo_servicio}">
-                        <h:outputText value="#{listOrdenServicioCliente.tipo_servicio}" />
-                    </p:column>
-                    <p:column headerText="Estado" style="width:15%;" filterBy="#{listOrdenServicioCliente.estado}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.estado}">
-                        <h:outputText value="#{listOrdenServicioCliente.estado}" />
-                    </p:column>
-                </p:dataTable>
-            </p:panelGrid>
+                    <h:outputText value="#{listOrdenServicioCliente.fecha}">
+                        <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="Supervisor" style="white-space: nowrap; width: 250px;padding: 3px;" filterBy="#{listOrdenServicioCliente.operario}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.operario}">
+                    <h:outputText value="#{listOrdenServicioCliente.operario}" />
+                </p:column>
+                <p:column headerText="Operador" style="white-space: nowrap; width: 250px;padding: 3px;" filterBy="#{listOrdenServicioCliente.operario2}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.operario2}">
+                    <h:outputText value="#{listOrdenServicioCliente.operario2}" />
+                </p:column>
+                <p:column headerText="Contenedor" style="white-space: nowrap; width: 130px;padding: 3px;" filterBy="#{listOrdenServicioCliente.nrocontenedor}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.nrocontenedor}">
+                    <h:outputText value="#{listOrdenServicioCliente.nrocontenedor}" />
+                </p:column>
+                <p:column headerText="Precinto" style="white-space: nowrap; width: 130px;padding: 3px;" filterBy="#{listOrdenServicioCliente.nroprecinto}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.nroprecinto}">
+                    <h:outputText value="#{listOrdenServicioCliente.nroprecinto}" />
+                </p:column>
+                <p:column headerText="Servicio" style="white-space: nowrap; width: 130px;padding: 3px;" filterBy="#{listOrdenServicioCliente.nro_oservicio}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.nro_oservicio}">
+                    <h:outputText value="#{listOrdenServicioCliente.nro_oservicio}" />
+                </p:column>
+                <p:column headerText="Tipo" style="white-space: nowrap; width: 130px;padding: 3px;" filterBy="#{listOrdenServicioCliente.tipo_servicio}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.tipo_servicio}">
+                    <h:outputText value="#{listOrdenServicioCliente.tipo_servicio}" />
+                </p:column>
+                <p:column headerText="Estado" style="white-space: nowrap; width: 130px;padding: 3px;" filterBy="#{listOrdenServicioCliente.estado}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.estado}">
+                    <h:outputText value="#{listOrdenServicioCliente.estado}" />
+                </p:column>
+            </p:dataTable>
             <p:growl id="growl" life="4000" showDetail="false"  />
             <cmp:mDialogElimina_lst id="cmpDialog" bean="#{ordenservicioclienteAction}" ventana="LST" />
         </h:form>

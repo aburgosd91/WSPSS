@@ -11,56 +11,56 @@
     <ui:define name="body">
         <h:form id="datos"> 
             <cmp:barra_lst bean="#{cotizacionventasAction}" mostrar_opciones="false" cfgfiltro="true"/>
-            <p:panelGrid columns="1" columnClasses="no-border, no-border" style="width: 150%">
-                <p:dataTable  id="tbl" var="listCotizacionventas" value="#{cotizacionventasAction.listaDatos}" filteredValue="#{cotizacionventasAction.filtroDatos}"  widgetVar="listCotizacionventas" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
-                              paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{cotizacionventasAction.datoSeleccionado}" rowKey="#{listCotizacionventas.idcotizacionv}" resizableColumns="true">
-                    <f:facet name="header">
-                        <h:outputText value="#{cotizacionventasAction.tituloHead}" />   
-                    </f:facet>
-                    <p:column style="width:9%">
-                        <h:commandButton value="PDF" action="#{cotizacionventasAction.PDF_cotizacion_listado()}" title="Pdf">
-                            <f:setPropertyActionListener value="#{listCotizacionventas}" target="#{cotizacionventasAction.selectCotizacionventas_local}" />
-                       </h:commandButton>
-                   </p:column>
-                    <p:column style="width:15%">
-                        <h:commandButton value="ENVIO" action="#{cotizacionventasAction.envioCorreo_open()}" title="Envio Correo">
-                            <f:setPropertyActionListener value="#{listCotizacionventas}" target="#{cotizacionventasAction.selectCotizacionventas_local}" />
-                       </h:commandButton>
-                   </p:column>
-                    <p:column headerText="Tipo Servicio" style="width:40%;" filterBy="#{listCotizacionventas.tipo_servicio}" filterMatchMode="contains" sortBy="#{listCotizacionventas.tipo_servicio}">
-                        <h:outputText value="#{listCotizacionventas.tipo_servicio}" />
-                    </p:column>
-                    <p:column headerText="Documento" style="width:8%;" filterBy="#{listCotizacionventas.iddocumento}" filterMatchMode="contains" sortBy="#{listCotizacionventas.iddocumento}">
-                        <h:outputText value="#{listCotizacionventas.iddocumento}" />
-                    </p:column>
-                    <p:column headerText="Serie" style="width:10%;" filterBy="#{listCotizacionventas.serie}" filterMatchMode="contains" sortBy="#{listCotizacionventas.serie}">
-                        <h:outputText value="#{listCotizacionventas.serie}" />
-                    </p:column>
-                    <p:column headerText="Número" style="width:11%;" filterBy="#{listCotizacionventas.numero}" filterMatchMode="contains" sortBy="#{listCotizacionventas.numero}">
-                        <h:outputText value="#{listCotizacionventas.numero}" />
-                    </p:column>
-                    <p:column headerText="RUC/DNI" style="width:20%;" filterBy="#{listCotizacionventas.idclieprov}" filterMatchMode="contains" sortBy="#{listCotizacionventas.idclieprov}">
-                        <h:outputText value="#{listCotizacionventas.idclieprov}" />
-                    </p:column>
-                    <p:column headerText="Cliente-Proveedor" style="width:30%;" filterBy="#{listCotizacionventas.razon_social}" filterMatchMode="contains" sortBy="#{listCotizacionventas.razon_social}">
-                        <h:outputText value="#{listCotizacionventas.razon_social}" />
-                    </p:column>
-                    <p:column headerText="Fecha" style="width:30%;" filterBy="#{listCotizacionventas.fecha}" filterMatchMode="contains" sortBy="#{listCotizacionventas.fecha}">
-                        <h:outputText value="#{listCotizacionventas.fecha}" />
-                    </p:column>
-                    <p:column headerText="Glosa" style="width:30%;" filterBy="#{listCotizacionventas.glosa}" filterMatchMode="contains" sortBy="#{listCotizacionventas.glosa}">
-                        <h:outputText value="#{listCotizacionventas.glosa}" />
-                    </p:column>
-                    <p:column headerText="Fecha Vigencia" style="width:30%;" filterBy="#{listCotizacionventas.fechavigencia}" filterMatchMode="contains" sortBy="#{listCotizacionventas.fechavigencia}">
-                        <h:outputText value="#{listCotizacionventas.fechavigencia}" />
-                    </p:column>
-                    <p:column headerText="Estado" style="width:30%;background-color:#{listCotizacionventas.color_estado};" 
-                              filterBy="#{listCotizacionventas.estado}" filterMatchMode="contains" sortBy="#{listCotizacionventas.estado}">
-                        <h:outputText value="#{listCotizacionventas.estado}" />
-                    </p:column>
-                    
-                </p:dataTable>
-            </p:panelGrid>
+            <p:dataTable  id="tbl" var="listCotizacionventas" value="#{cotizacionventasAction.listaDatos}" filteredValue="#{cotizacionventasAction.filtroDatos}"  widgetVar="listCotizacionventas" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                          paginator="true" rows="15" style="border: 0px solid ;font-size: 13px !important;padding: 0px !important"  
+                          selectionMode="single" selection="#{cotizacionventasAction.datoSeleccionado}" 
+                          rowKey="#{listCotizacionventas.idcotizacionv}" resizableColumns="true"
+                          scrollable="true" scrollWidth="99%">
+                <f:facet name="header">
+                    <h:outputText value="#{cotizacionventasAction.tituloHead}" />   
+                </f:facet>
+                <p:column style="white-space: nowrap; width: 38px;padding: 3px;">
+                    <h:commandButton value="PDF" action="#{cotizacionventasAction.PDF_cotizacion_listado()}" title="Pdf">
+                        <f:setPropertyActionListener value="#{listCotizacionventas}" target="#{cotizacionventasAction.selectCotizacionventas_local}" />
+                   </h:commandButton>
+               </p:column>
+                <p:column style="white-space: nowrap; width: 53px;padding: 3px;">
+                    <h:commandButton value="ENVIO" action="#{cotizacionventasAction.envioCorreo_open()}" title="Envio Correo">
+                        <f:setPropertyActionListener value="#{listCotizacionventas}" target="#{cotizacionventasAction.selectCotizacionventas_local}" />
+                   </h:commandButton>
+               </p:column>
+                <p:column headerText="Tipo Servicio" style="white-space: nowrap; width: 330px;padding: 3px;" filterBy="#{listCotizacionventas.tipo_servicio}" filterMatchMode="contains" sortBy="#{listCotizacionventas.tipo_servicio}">
+                    <h:outputText value="#{listCotizacionventas.tipo_servicio}" />
+                </p:column>
+                <p:column headerText="Documento" style="white-space: nowrap; width: 82px;padding: 3px;" filterBy="#{listCotizacionventas.iddocumento}" filterMatchMode="contains" sortBy="#{listCotizacionventas.iddocumento}">
+                    <h:outputText value="#{listCotizacionventas.iddocumento}" />
+                </p:column>
+                <p:column headerText="Serie" style="white-space: nowrap; width: 50px;padding: 3px;" filterBy="#{listCotizacionventas.serie}" filterMatchMode="contains" sortBy="#{listCotizacionventas.serie}">
+                    <h:outputText value="#{listCotizacionventas.serie}" />
+                </p:column>
+                <p:column headerText="Número" style="white-space: nowrap; width: 70px;padding: 3px;" filterBy="#{listCotizacionventas.numero}" filterMatchMode="contains" sortBy="#{listCotizacionventas.numero}">
+                    <h:outputText value="#{listCotizacionventas.numero}" />
+                </p:column>
+                <p:column headerText="RUC/DNI" style="white-space: nowrap; width: 100px;padding: 3px;" filterBy="#{listCotizacionventas.idclieprov}" filterMatchMode="contains" sortBy="#{listCotizacionventas.idclieprov}">
+                    <h:outputText value="#{listCotizacionventas.idclieprov}" />
+                </p:column>
+                <p:column headerText="Cliente-Proveedor" style="white-space: nowrap; width: 330px;padding: 3px;" filterBy="#{listCotizacionventas.razon_social}" filterMatchMode="contains" sortBy="#{listCotizacionventas.razon_social}">
+                    <h:outputText value="#{listCotizacionventas.razon_social}" />
+                </p:column>
+                <p:column headerText="Fecha" style="white-space: nowrap; width: 100px;padding: 3px;" filterBy="#{listCotizacionventas.fecha}" filterMatchMode="contains" sortBy="#{listCotizacionventas.fecha}">
+                    <h:outputText value="#{listCotizacionventas.fecha}" />
+                </p:column>
+                <p:column headerText="Estado" style="white-space: nowrap; width: 80px;padding: 3px;background-color:#{listCotizacionventas.color_estado};" 
+                          filterBy="#{listCotizacionventas.estado}" filterMatchMode="contains" sortBy="#{listCotizacionventas.estado}">
+                    <h:outputText value="#{listCotizacionventas.estado}" />
+                </p:column>
+                <p:column headerText="Glosa" style="white-space: nowrap; width: 230px;padding: 3px;" filterBy="#{listCotizacionventas.glosa}" filterMatchMode="contains" sortBy="#{listCotizacionventas.glosa}">
+                    <h:outputText value="#{listCotizacionventas.glosa}" />
+                </p:column>
+                <p:column headerText="Fecha Vigencia" style="white-space: nowrap; width: 100px;padding: 3px;" filterBy="#{listCotizacionventas.fechavigencia}" filterMatchMode="contains" sortBy="#{listCotizacionventas.fechavigencia}">
+                    <h:outputText value="#{listCotizacionventas.fechavigencia}" />
+                </p:column>
+            </p:dataTable>
             <p:dialog id="dlg_pdf" header="..:: Cotización N° #{cotizacionventasAction.selectCotizacionventas_local.serie} -
                       #{cotizacionventasAction.selectCotizacionventas_local.numero} ::.." 
                       widgetVar="dlg_pdf" modal="true" showEffect="popup" maximizable="true" closable="true" height="410px" width="600px">

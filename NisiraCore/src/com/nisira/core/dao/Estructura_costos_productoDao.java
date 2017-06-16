@@ -109,12 +109,12 @@ public class Estructura_costos_productoDao extends BaseDao<Estructura_costos_pro
             }
             return lista;
         }
-        public ArrayList<Float> listarNhoras(String idempresa,String idclieprov,String codoperativo) throws NisiraORMException {
+        public ArrayList<Float> listarNhoras(String idempresa,String idclieprov,String codoperativo,String idruta) throws NisiraORMException {
             ArrayList<Float> lista = new ArrayList<Float>();
             try
             {
                 ResultSet rs = null;
-                rs = execProcedure("GETESTRUCTURA_COSTOS_PRODUCTO_NHORA_TMPSS",idempresa,idclieprov,codoperativo);
+                rs = execProcedure("GETESTRUCTURA_COSTOS_PRODUCTO_NHORA_TMPSS",idempresa,idclieprov,codoperativo,idruta);
                 Float nhoras = 0.0f;
                 while (rs.next()) {
                     nhoras=rs.getFloat("NHORAS");

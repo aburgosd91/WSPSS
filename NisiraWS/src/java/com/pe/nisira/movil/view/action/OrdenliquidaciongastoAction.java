@@ -21,6 +21,7 @@ import com.nisira.core.dao.Personal_servicioDao;
 import com.nisira.core.dao.Ruta_serviciosDao;
 import com.nisira.core.dao.SucursalesDao;
 import com.nisira.core.dao.TcambioDao;
+import com.nisira.core.dao.TipogastoDao;
 import com.nisira.core.entity.Cargos_personal;
 import com.nisira.core.entity.Clieprov;
 import com.nisira.core.entity.Concepto_cuenta;
@@ -42,6 +43,7 @@ import com.nisira.core.entity.Ruta;
 import com.nisira.core.entity.Ruta_servicios;
 import com.nisira.core.entity.Rutas;
 import com.nisira.core.entity.Tcambio;
+import com.nisira.core.entity.Tipogasto;
 import com.nisira.core.util.CoreUtil;
 import static com.pe.nisira.movil.view.action.AbstactListAction.modalGoogleMapOptions;
 import com.pe.nisira.movil.view.bean.UsuarioBean;
@@ -73,12 +75,14 @@ import org.primefaces.event.SelectEvent;
 public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidaciongasto> {
     private boolean botonEditarDOrdenliquidaciongasto;
     private boolean botonEliminarDOrdenliquidaciongasto;
+    private boolean check_igv;
     /*********************************LISTAS*******************************************/
     private List<Clieprov> listClieprov;
     private List<Documentos> listDocumentos;
     private List<Numemisor> listNumemisor;
     private List<Dordenliquidaciongasto> lstdordenliquidaciongasto;
     private List<Estados> listEstado;
+    private List<Tipogasto> listTipoGasto;
     /*************************************DAO***************************************/
     private OrdenliquidaciongastoDao ordenliquidaciongastoDao;
     private DordenliquidaciongastoDao dordenliquidaciongastoDao;
@@ -90,6 +94,7 @@ public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidac
     private TcambioDao tcambioDao;
     private MonedasDao monedasDao;
     private SucursalesDao sucursalesDao;
+    private TipogastoDao  tipogastoDao;
     /*************************************ENTITY***************************************/
     private UsuarioBean user;
     private String numero;
@@ -103,38 +108,61 @@ public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidac
     private Concepto_cuenta selectConcepto_cuenta;
     private Destinoadquisicion selectDestinoadquisicion;
     private ArrayList<String> lista_solution;
+    /*************************************CONTROL***************************************/
+    private String periodoBase;
+    private String periodoDisenio;
+    private String mesNumeroDisenio;
+    private String mesNombreDisenio;
     public OrdenliquidaciongastoAction() {
-        /*********************************ENTITY*******************************************/
-        user = (UsuarioBean) WebUtil.getObjetoSesion(Constantes.SESION_USUARIO);
-        numero = "";
-        mensaje = "";
-        dordenliquidaciongasto = new Dordenliquidaciongasto();
-        /*********************************LISTAS*******************************************/
-        lstdordenliquidaciongasto = new ArrayList<Dordenliquidaciongasto>();
-        listDocumentos = new ArrayList<Documentos>();
-        listNumemisor = new ArrayList<Numemisor>();
-        listEstado = new ArrayList<Estados>();
-        listClieprov = new ArrayList<Clieprov>();
-        /*********************************DAO*******************************************/
-        ordenliquidaciongastoDao = new OrdenliquidaciongastoDao();
-        docDao = new DocumentosDao();
-        numemisorDao = new NumemisorDao();
-        clieprovDao = new ClieprovDao();
-        dordenliquidaciongastoDao = new DordenliquidaciongastoDao();
-        emisorDao= new EmisorDao();
-        tcambioDao=new TcambioDao();
-        monedasDao=new MonedasDao();
-        sucursalesDao=new SucursalesDao();
-        /**********************************CONTROLADOR********************************/
-        botonEditarDOrdenliquidaciongasto=true;
-        botonEliminarDOrdenliquidaciongasto=true;
-        actualiza_ventana("wMnt_Ordenliquidaciongasto");
+        try {
+            /*********************************ENTITY*******************************************/
+            user = (UsuarioBean) WebUtil.getObjetoSesion(Constantes.SESION_USUARIO);
+            numero = "";
+            mensaje = "";
+            dordenliquidaciongasto = new Dordenliquidaciongasto();
+            /*********************************LISTAS*******************************************/
+            lstdordenliquidaciongasto = new ArrayList<Dordenliquidaciongasto>();
+            listDocumentos = new ArrayList<Documentos>();
+            listNumemisor = new ArrayList<Numemisor>();
+            listEstado = new ArrayList<Estados>();
+            listClieprov = new ArrayList<Clieprov>();
+            listTipoGasto = new ArrayList<>();
+            /*********************************DAO*******************************************/
+            ordenliquidaciongastoDao = new OrdenliquidaciongastoDao();
+            docDao = new DocumentosDao();
+            numemisorDao = new NumemisorDao();
+            clieprovDao = new ClieprovDao();
+            dordenliquidaciongastoDao = new DordenliquidaciongastoDao();
+            emisorDao= new EmisorDao();
+            tcambioDao=new TcambioDao();
+            monedasDao=new MonedasDao();
+            sucursalesDao=new SucursalesDao();
+            estadosDao = new EstadosDao();
+            tipogastoDao = new TipogastoDao();
+            /**********************************CONTROLADOR********************************/
+            botonEditarDOrdenliquidaciongasto=true;
+            botonEliminarDOrdenliquidaciongasto=true;
+            /**********************************CONFIGURACIÓN - SERVIDOR********************************/
+            listDocumentos=docDao.getOrdenServicio(user.getIDEMPRESA());
+            listNumemisor=numemisorDao.listarPorDocWeb(user.getIDEMPRESA(), listDocumentos.get(0).getIddocumento());
+            numero=listNumemisor.get(0).getNumero();
+            listEstado = estadosDao.listarPorEmpresaWeb(user.getIDEMPRESA(),null);
+            
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy");
+            periodoBase=dateFormat.format(new Date())+WebUtil.idGeneradoDos((new Date()).getMonth()+1);
+            periodoDisenio=dateFormat.format(new Date());
+            mesNumeroDisenio=WebUtil.idGeneradoDos((new Date()).getMonth()+1);
+            mesNombreDisenio=WebUtil.strMonths[(new Date()).getMonth()];
+            
+            actualiza_ventana("wMnt_Ordenliquidaciongasto");
+        } catch (NisiraORMException ex) {
+            Logger.getLogger(OrdenliquidaciongastoAction.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     @Override
     public void buscarTodo() {
         try {
-            getIniciar();
-            setListaDatos(getOrdenliquidaciongastoDao().listarPorEmpresaWeb(user.getIDEMPRESA()));
+            buscar_filtrofecha();
         } catch (Exception ex) {
             Logger.getLogger(OrdenliquidaciongastoAction.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -183,6 +211,8 @@ public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidac
         getDatoEdicion().setVventa(0.0f);
         getDatoEdicion().setImpuesto(0.0f);
         getDatoEdicion().setImporte(0.0f);
+        getDatoEdicion().setIdclieprov(WebUtil.cerosIzquierda(user.getIdcodigogeneral(),10));
+        getDatoEdicion().setRazonsocial(user.getNombres());
         try {
             /*CONSULTAS A BD*/
             String sucursal = sucursalesDao.getPorEmpresaSucursal(user.getIDEMPRESA(),Constantes.IDSUCURSALGENERAL).getDescripcion();
@@ -256,13 +286,77 @@ public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidac
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
+    @Override
+    public String buscarFiltro(int tipo) {
+        try {
+            this.mensaje = "";
+            SimpleDateFormat  f = new SimpleDateFormat("yyyy-MM-dd");
+            String f_ini = f.format(getDesde());
+            String f_fin = f.format(getHasta());
+            f_ini = f_ini.replace("-", "");
+            f_fin = f_fin.replace("-", "");
+            setListaDatos(getOrdenliquidaciongastoDao().listarPorEmpresaWebFiltroFecha(user.getIDEMPRESA(),f_ini,f_fin));
+        } catch (Exception e) {
+            mensaje = WebUtil.mensajeError();
+            WebUtil.error(mensaje);
+        }
+        RequestContext.getCurrentInstance().update("datos:tbl");
+        if(tipo == 2)
+            lista_accion_filtro("wLst_Ordenliquidaciongasto");
+        return "";
+    }
+    
+    @Override
+    public void cerrar() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public JRDataSource getDataSourceReport() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public JRDataSource getDataSourceReport_lst() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    public void buscar_filtrofecha() {
+        try {
+            this.mensaje = "";
+            SimpleDateFormat  f = new SimpleDateFormat("yyyy-MM-dd");
+            String f_ini = f.format(getDesde());
+            String f_fin = f.format(getHasta());
+            f_ini = f_ini.replace("-", "");
+            f_fin = f_fin.replace("-", "");
+            setListaDatos(getOrdenliquidaciongastoDao().listarPorEmpresaWebFiltroFecha(user.getIDEMPRESA(),f_ini,f_fin));
+            RequestContext.getCurrentInstance().update("datos");
+        } catch (Exception e) {
+            mensaje = WebUtil.mensajeError();
+            WebUtil.error(mensaje);
+        }
+        RequestContext.getCurrentInstance().update("datos:tbl");
+        return;
+    }
     public void findetalle() throws Exception {
         try{
+            /**********************************CONFIGURACIÓN - SERVIDOR********************************/
             listDocumentos=docDao.getOrdenServicio(user.getIDEMPRESA());
             listNumemisor=numemisorDao.listarPorDocWeb(user.getIDEMPRESA(), listDocumentos.get(0).getIddocumento());
             numero=listNumemisor.get(0).getNumero();
             listEstado = estadosDao.listarPorEmpresaWeb(user.getIDEMPRESA(),null);
             lstdordenliquidaciongasto = dordenliquidaciongastoDao.listarPorOrdenliquidaciongastoWeb(user.getIDEMPRESA(),getDatoEdicion().getIdorden());
+            
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy");
+            periodoBase=dateFormat.format(new Date())+WebUtil.idGeneradoDos((new Date()).getMonth()+1);
+            periodoDisenio=dateFormat.format(new Date());
+            mesNumeroDisenio=WebUtil.idGeneradoDos((new Date()).getMonth()+1);
+            mesNombreDisenio=WebUtil.strMonths[(new Date()).getMonth()];
+            if(getLadd()==2){/*EDITAR*/
+                periodoBase=getDatoEdicion().getPeriodo();
+                periodoDisenio=getDatoEdicion().getPeriodo().substring(0, 4);
+                mesNumeroDisenio=getDatoEdicion().getPeriodo().substring(4);
+                mesNombreDisenio=WebUtil.strMonths[Integer.parseInt(getDatoEdicion().getPeriodo().substring(4))-1];
+            }
             RequestContext.getCurrentInstance().update("datos");
             RequestContext.getCurrentInstance().update("datos:lstdordenliquidaciongasto");
         }catch(Exception ex){
@@ -291,7 +385,7 @@ public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidac
     }
     /*** detalle ***/
     public void verCntClieprovDetalle() {
-        RequestContext.getCurrentInstance().openDialog("cntClieprov", modalOptions, null);
+        RequestContext.getCurrentInstance().openDialog("cntClieprovProveedor", modalOptions, null);
     }
     public void verCntConcepto_cuenta() {
         RequestContext.getCurrentInstance().openDialog("cntConcepto_cuenta", modalOptions, null);
@@ -299,7 +393,14 @@ public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidac
     public void verCntDestinoadquisicion() {
         RequestContext.getCurrentInstance().openDialog("cntDestinoadquisicion", modalOptions, null);
     }
-    
+    public void verCntDocumentoscodigosunat(){
+        RequestContext.getCurrentInstance().openDialog("cntDocumentoCodigosunat", modalOptions, null);
+    }
+    public void valorDocumentoscodigosunat(SelectEvent event) {
+        Documentos doc = (Documentos) event.getObject();
+        getDordenliquidaciongasto().setIddocumento(doc.getIddocumento());
+        getDordenliquidaciongasto().setDocumento(doc.getDescripcion());
+    }
     public void valorClieprov(SelectEvent event) {
         this.selectClieprov = (Clieprov) event.getObject();
         getDatoEdicion().setIdclieprov(selectClieprov.getIdclieprov());
@@ -332,23 +433,54 @@ public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidac
         RequestContext.getCurrentInstance().execute("PF('dlgnew_dordenliquidaciongasto').hide()");
     }
     public void nuevoDordenliquidaciongasto() {
-        setDordenliquidaciongasto(new Dordenliquidaciongasto());
-        getDordenliquidaciongasto().setIdempresa(user.getIDEMPRESA());
-        getDordenliquidaciongasto().setIdorden(getDatoEdicion().getIdorden());
-        getDordenliquidaciongasto().setItem(agregarItemDordenservicio());
-        getDordenliquidaciongasto().setAfecto(0.0f);
-        getDordenliquidaciongasto().setInafecto(0.0f);
-        getDordenliquidaciongasto().setPimpuesto(0.0f);
-        getDordenliquidaciongasto().setImpuesto(0.0f);
-        getDordenliquidaciongasto().setImporte(0.0f);
-        getDordenliquidaciongasto().setFecha(getDatoEdicion().getFecharegistro());
-        RequestContext.getCurrentInstance().update("datos:dlgnew_dordenliquidaciongasto");
-        RequestContext.getCurrentInstance().execute("PF('dlgnew_dordenliquidaciongasto').show()");
+        try {
+            setDordenliquidaciongasto(new Dordenliquidaciongasto());
+            getDordenliquidaciongasto().setIdempresa(user.getIDEMPRESA());
+            getDordenliquidaciongasto().setIdorden(getDatoEdicion().getIdorden());
+            getDordenliquidaciongasto().setItem(agregarItemDordenservicio());
+            getDordenliquidaciongasto().setAfecto(0.0f);
+            getDordenliquidaciongasto().setInafecto(0.0f);
+            getDordenliquidaciongasto().setPimpuesto(0.0f);
+            getDordenliquidaciongasto().setImpuesto(0.0f);
+            getDordenliquidaciongasto().setImporte(0.0f);
+            getDordenliquidaciongasto().setIdloteproduccion("0");/*CONTIENE IGV? (1)/(0)*/
+            this.check_igv = false;
+            getDordenliquidaciongasto().setFecha(getDatoEdicion().getFecharegistro());
+            listTipoGasto = tipogastoDao.listarPorEmpresa_Tipogasto(user.getIDEMPRESA());
+            RequestContext.getCurrentInstance().update("datos:dlgnew_dordenliquidaciongasto");
+            RequestContext.getCurrentInstance().execute("PF('dlgnew_dordenliquidaciongasto').show()");
+        } catch (NisiraORMException ex) {
+            this.mensaje = ex.getMessage();
+            WebUtil.error(this.mensaje);
+            RequestContext.getCurrentInstance().update("datos:growl");
+            Logger.getLogger(OrdenliquidaciongastoAction.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     public void editarDordenliquidaciongasto() {
-        setDordenliquidaciongasto(selectDordenliquidaciongasto);
-        RequestContext.getCurrentInstance().update("datos:dlgnew_dordenliquidaciongasto");
-        RequestContext.getCurrentInstance().execute("PF('dlgnew_dordenliquidaciongasto').show()");
+        try {
+            if(selectDordenliquidaciongasto!=null){
+                if(selectDordenliquidaciongasto.getIdloteproduccion()!=null)
+                   if(selectDordenliquidaciongasto.getIdloteproduccion().equals("1"))
+                      this.check_igv =  true;
+                   else
+                       this.check_igv =  false;
+                else
+                    this.check_igv =  false;
+                listTipoGasto = tipogastoDao.listarPorEmpresa_Tipogasto(user.getIDEMPRESA());
+                setDordenliquidaciongasto(selectDordenliquidaciongasto);
+                RequestContext.getCurrentInstance().update("datos:dlgnew_dordenliquidaciongasto");
+                RequestContext.getCurrentInstance().execute("PF('dlgnew_dordenliquidaciongasto').show()");  
+            }else{
+                this.mensaje = "Seleccionar Detalle";
+                WebUtil.MensajeAdvertencia(this.mensaje);
+                RequestContext.getCurrentInstance().update("datos:growl");   
+            }
+        } catch (NisiraORMException ex) {
+            this.mensaje = ex.getMessage();
+            WebUtil.error(this.mensaje);
+            RequestContext.getCurrentInstance().update("datos:growl");
+            Logger.getLogger(OrdenliquidaciongastoAction.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     public void eliminarDordenliquidaciongasto() {
         try {
@@ -792,24 +924,87 @@ public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidac
         this.sucursalesDao = sucursalesDao;
     }
 
-    @Override
-    public String buscarFiltro(int tipo) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    /**
+     * @return the periodoBase
+     */
+    public String getPeriodoBase() {
+        return periodoBase;
     }
 
-    @Override
-    public void cerrar() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    /**
+     * @param periodoBase the periodoBase to set
+     */
+    public void setPeriodoBase(String periodoBase) {
+        this.periodoBase = periodoBase;
     }
 
-    @Override
-    public JRDataSource getDataSourceReport() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    /**
+     * @return the periodoDisenio
+     */
+    public String getPeriodoDisenio() {
+        return periodoDisenio;
     }
 
-    @Override
-    public JRDataSource getDataSourceReport_lst() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    /**
+     * @param periodoDisenio the periodoDisenio to set
+     */
+    public void setPeriodoDisenio(String periodoDisenio) {
+        this.periodoDisenio = periodoDisenio;
     }
 
+    /**
+     * @return the mesNumeroDisenio
+     */
+    public String getMesNumeroDisenio() {
+        return mesNumeroDisenio;
+    }
+
+    /**
+     * @param mesNumeroDisenio the mesNumeroDisenio to set
+     */
+    public void setMesNumeroDisenio(String mesNumeroDisenio) {
+        this.mesNumeroDisenio = mesNumeroDisenio;
+    }
+
+    /**
+     * @return the mesNombreDisenio
+     */
+    public String getMesNombreDisenio() {
+        return mesNombreDisenio;
+    }
+
+    /**
+     * @param mesNombreDisenio the mesNombreDisenio to set
+     */
+    public void setMesNombreDisenio(String mesNombreDisenio) {
+        this.mesNombreDisenio = mesNombreDisenio;
+    }
+
+    /**
+     * @return the listTipoGasto
+     */
+    public List<Tipogasto> getListTipoGasto() {
+        return listTipoGasto;
+    }
+
+    /**
+     * @param listTipoGasto the listTipoGasto to set
+     */
+    public void setListTipoGasto(List<Tipogasto> listTipoGasto) {
+        this.listTipoGasto = listTipoGasto;
+    }
+
+    /**
+     * @return the check_igv
+     */
+    public boolean isCheck_igv() {
+        return check_igv;
+    }
+
+    /**
+     * @param check_igv the check_igv to set
+     */
+    public void setCheck_igv(boolean check_igv) {
+        this.check_igv = check_igv;
+    }
 }

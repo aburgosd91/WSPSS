@@ -20,6 +20,7 @@ import com.nisira.core.dao.SucursalesDao;
 import com.nisira.core.dao.Det_tareowebDao;
 import com.nisira.core.dao.Tipo_asistenciaDao;
 import com.nisira.core.dao.Turno_trabajoDao;
+import com.nisira.core.dao.UsuarioDao;
 import com.nisira.core.entity.Almacen;
 import com.nisira.core.entity.Almacenes;
 import com.nisira.core.entity.Cabtareoweb;
@@ -142,6 +143,7 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
     private Det_tareowebDao det_tareowebDao;
     private Turno_trabajoDao turno_trabajoDao;
     private Tipo_asistenciaDao tipo_asistenciaDao;
+    private UsuarioDao usuariodao;
     /* ENTITY */
     private Det_tareoweb tareoWeb;
     private Det_tareoweb selectDet_tareoweb;
@@ -196,6 +198,7 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
             emisorDao = new EmisorDao();
             turno_trabajoDao = new Turno_trabajoDao();
             tipo_asistenciaDao = new Tipo_asistenciaDao();
+            usuariodao = new UsuarioDao();
             /* ENTITY */
             tareoWeb = new Det_tareoweb();
             selectPersonal = new Clieprov();
@@ -309,29 +312,20 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
                 Det_tareoweb det = listDet_tareoweb.get(x);
                 det.setTareo(new ArrayList<>());
                 for(int y=0;y<dataTableColumns.size(); y++){
+                    DataTableColumn col = dataTableColumns.get(y);
                     ob_dias = new Object[7];
-                    ob_dias[0] = "00:00";
-                    ob_dias[1] = "i";
+                    ob_dias[0] = col.getAdicional2().trim().equals("i")?(det.getShora_req()==null?"00:00":det.getShora_req()):(det.getShora_fin()==null?"00:00":det.getShora_fin());// "00:00";
+                    ob_dias[1] = col.getAdicional2();// "i"/"f";
                     ob_dias[2] = det.getItem();
-                    ob_dias[3] = WebUtil.fechaDMY(dataTableColumns.get(y).getAdicional1(),2);
-                    ob_dias[4] = ob_dias[3]+"\nHora Inicio";
-                    ob_dias[5] = dataTableColumns.get(y).getAdicional1();
-                    ob_dias[6] = 0.0f;
-                    det.getTareo().add(ob_dias);
-                    
-                    ob_dias = new Object[7];
-                    ob_dias[0] = "00:00";
-                    ob_dias[1] = "f";
-                    ob_dias[2] = det.getItem();
-                    ob_dias[3] = WebUtil.fechaDMY(dataTableColumns.get(y).getAdicional1(),2);
-                    ob_dias[4] = ob_dias[3]+"\nHora Fin";
-                    ob_dias[5] = dataTableColumns.get(y).getAdicional1();
+                    ob_dias[3] = WebUtil.fechaDMY(col.getAdicional1(),2);
+                    ob_dias[4] = col.getHeader(); //ob_dias[3]+"\nHora Inicio";
+                    ob_dias[5] = col.getAdicional1();
                     ob_dias[6] = 0.0f;
                     det.getTareo().add(ob_dias);
                 }
                 listDet_tareoweb.set(x, det);
             }
-            RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
+//            RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
             RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
         }
     }
@@ -409,7 +403,7 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
             WebUtil.error(mensaje);
             System.out.println(mensaje);
         }
-        RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
+//        RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
         RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
     }
     public void generarEstructuraBase() throws ClassNotFoundException{
@@ -537,7 +531,7 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
                 }   
                 listDet_tareoweb.set(x, xc);
             }
-            RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
+//            RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
             RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
         }
     }
@@ -597,117 +591,117 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
     public void onCellEdit(CellEditEvent event) {
         try {
                 Object newValue = event.getNewValue();
-                if(newValue!=null){
-                    Det_tareoweb entity =(Det_tareoweb)((DataTable)event.getComponent()).getRowData();
-                    int pos = listDet_tareoweb.indexOf(entity);
-    //                int pos = event.getRowIndex();
-                    if(event.getColumn().getHeaderText()!=null){
-                        String colHead = event.getColumn().getHeaderText().trim();
-                        switch(colHead){
-                            case "Personal":
+                Det_tareoweb entity =(Det_tareoweb)((DataTable)event.getComponent()).getRowData();
+                int pos = listDet_tareoweb.indexOf(entity);
+//                int pos = event.getRowIndex();
+                if(event.getColumn().getHeaderText()!=null){
+                    String colHead = event.getColumn().getHeaderText().trim();
+                    switch(colHead){
+                        case "Personal":
+                            if(newValue!=null){
                                 Clieprov ob = (Clieprov)newValue;
                                 entity.setIdpersonal(ob.getIdclieprov());
                                 entity.setDni(ob.getDni());
-                                entity.setPersonal(ob.getRazonsocial());break;
-                            case "Vehículo":
-                                Consumidor oc = (Consumidor)newValue;
-                                entity.setIdvehiculo(oc.getIdconsumidor());
-                                entity.setVehiculo(oc.getDescripcion());;break;
-                            case "Hora Llegada":
-                                if(!WebUtil.validateTime(newValue.toString())){
-                                    if(entity.getFhora_req()!=null){
-                                        entity.setShora_llegada(entity.getShora_req());
-                                        entity.setFhora_llegada(entity.getFhora_req());
-                                    }else
-                                        entity.setShora_llegada("00:00");
-                                }else{
-                                    entity.setFhora_llegada(WebUtil.convertStringTime(newValue.toString()));
-                                    entity.setShora_inicio(newValue.toString());
+                                entity.setPersonal(ob.getRazonsocial());
+                            }else{
+                                entity.setIdpersonal("");
+                                entity.setDni("");
+                                entity.setPersonal(""); 
+                            }
+                            ;break;
+                        case "Vehículo":
+                            Consumidor oc = (Consumidor)newValue;
+                            entity.setIdvehiculo(oc.getIdconsumidor());
+                            entity.setVehiculo(oc.getDescripcion());;break;
+                        case "Hora Llegada":
+                            if(!WebUtil.validateTime(newValue.toString())){
+                                if(entity.getFhora_req()!=null){
+                                    entity.setShora_llegada(entity.getShora_req());
+                                    entity.setFhora_llegada(entity.getFhora_req());
+                                }else
+                                    entity.setShora_llegada("00:00");
+                            }else{
+                                entity.setFhora_llegada(WebUtil.convertStringTime(newValue.toString()));
+                                entity.setShora_inicio(newValue.toString());
+                                entity.setFhora_inicio(entity.getFhora_llegada());
+                                if(WebUtil.compareToDate(entity.getFhora_req(),entity.getFhora_llegada())>0 &&
+                                        WebUtil.compareToDate(entity.getFhora_req(),entity.getFhora_llegada())!=-2){
+                                    entity.setFhora_llegada(entity.getFhora_req());
+                                    entity.setShora_llegada(entity.getShora_req());
+                                }
+                            }
+                            break;
+                        case "Hora Inicio":
+                            if(!WebUtil.validateTime(newValue.toString())){
+                                if(entity.getFhora_llegada()!=null){
+                                    entity.setShora_inicio(entity.getShora_llegada());
                                     entity.setFhora_inicio(entity.getFhora_llegada());
-                                    if(WebUtil.compareToDate(entity.getFhora_req(),entity.getFhora_llegada())>0 &&
-                                            WebUtil.compareToDate(entity.getFhora_req(),entity.getFhora_llegada())!=-2){
-                                        entity.setFhora_llegada(entity.getFhora_req());
-                                        entity.setShora_llegada(entity.getShora_req());
-                                    }
+                                }else
+                                    entity.setShora_inicio("00:00");
+                            }else{
+                                entity.setShora_inicio(newValue.toString());
+                                entity.setFhora_inicio(WebUtil.convertStringTime(newValue.toString()));
+                                if(WebUtil.compareToDate(entity.getFhora_llegada(),entity.getFhora_inicio())>0 &&
+                                        WebUtil.compareToDate(entity.getFhora_llegada(),entity.getFhora_inicio())!=-2){
+                                    entity.setFhora_inicio(entity.getFhora_llegada());
+                                    entity.setShora_inicio(entity.getShora_llegada());
                                 }
-                                break;
-                            case "Hora Inicio":
-                                if(!WebUtil.validateTime(newValue.toString())){
-                                    if(entity.getFhora_llegada()!=null){
-                                        entity.setShora_inicio(entity.getShora_llegada());
-                                        entity.setFhora_inicio(entity.getFhora_llegada());
-                                    }else
-                                        entity.setShora_inicio("00:00");
-                                }else{
-                                    entity.setShora_inicio(newValue.toString());
-                                    entity.setFhora_inicio(WebUtil.convertStringTime(newValue.toString()));
-                                    if(WebUtil.compareToDate(entity.getFhora_llegada(),entity.getFhora_inicio())>0 &&
-                                            WebUtil.compareToDate(entity.getFhora_llegada(),entity.getFhora_inicio())!=-2){
-                                        entity.setFhora_inicio(entity.getFhora_llegada());
-                                        entity.setShora_inicio(entity.getShora_llegada());
-                                    }
-                                }
-                                break;
-                            case "Hora Fin":
-                                if(!WebUtil.validateTime(newValue.toString())){
-                                    entity.setShora_fin("00:00");
-                                }else{
-                                    entity.setFhora_fin(WebUtil.convertStringTime(newValue.toString()));
-                                    entity.setShora_liberacion(newValue.toString());
+                            }
+                            break;
+                        case "Hora Fin":
+                            if(!WebUtil.validateTime(newValue.toString())){
+                                entity.setShora_fin("00:00");
+                            }else{
+                                entity.setFhora_fin(WebUtil.convertStringTime(newValue.toString()));
+                                entity.setShora_liberacion(newValue.toString());
+                                entity.setFhora_liberacion(entity.getFhora_fin());
+                            }
+                            break;
+                        case "Hora Liberación":
+                            if(!WebUtil.validateTime(newValue.toString())){
+                                if(entity.getFhora_fin()!=null){
                                     entity.setFhora_liberacion(entity.getFhora_fin());
-                                }
-                                break;
-                            case "Hora Liberación":
-                                if(!WebUtil.validateTime(newValue.toString())){
-                                    if(entity.getFhora_fin()!=null){
-                                        entity.setFhora_liberacion(entity.getFhora_fin());
-                                        entity.setShora_liberacion(entity.getShora_fin());
-                                    }else
-                                        entity.setShora_liberacion("00:00");
-                                }else{
-                                    entity.setFhora_liberacion(WebUtil.convertStringTime(newValue.toString()));
-                                }
-                                break;
-                            case "T.Asistencia":
-                                Tipo_asistencia ob2 = buscarTipoAsistencia(newValue.toString());
-                                entity.setCodasistencia(ob2.getIdtipoasistencia());
-                                entity.setAsistencia(ob2.getNombre_corto());
-                                entity.setExige_glosa(ob2.getExige_glosa()==1?true:false);
-                                entity.setColor(ob2.getColor());
-                                break;
-                        }
+                                    entity.setShora_liberacion(entity.getShora_fin());
+                                }else
+                                    entity.setShora_liberacion("00:00");
+                            }else{
+                                entity.setFhora_liberacion(WebUtil.convertStringTime(newValue.toString()));
+                            }
+                            break;
+                        case "T.Asistencia":
+                            Tipo_asistencia ob2 = buscarTipoAsistencia(newValue.toString());
+                            entity.setCodasistencia(ob2.getIdtipoasistencia());
+                            entity.setAsistencia(ob2.getNombre_corto());
+                            entity.setExige_glosa(ob2.getExige_glosa()==1?true:false);
+                            entity.setColor(ob2.getColor());
+                            break;
                     }
-
-            //        Det_tareoweb entity = ((Det_tareoweb)event.getObject());
-            //        int pos = listDet_tareoweb.indexOf(entity);
-                    /*VALIDACION DE TIME A DECIMAL*/
-                    if(entity.getFhora_req()!=null)
-                        entity.setHora_req(WebUtil.convertTimeDecimal(entity.getFhora_req()));
-                    else
-                        entity.setHora_req(0.0f);
-                    if(entity.getFhora_inicio()!=null)
-                        entity.setHora_inicio_serv(WebUtil.convertTimeDecimal(entity.getFhora_inicio()));
-                    else
-                        entity.setHora_inicio_serv(0.0f);
-                    if(entity.getFhora_fin()!=null)
-                        entity.setHora_fin_serv(WebUtil.convertTimeDecimal(entity.getFhora_fin()));
-                    else
-                        entity.setHora_fin_serv(0.0f);
-                    if(entity.getFhora_llegada()!=null)
-                        entity.setHora_llegada(WebUtil.convertTimeDecimal(entity.getFhora_llegada()));
-                    else
-                        entity.setHora_llegada(0.0f);
-                    if(entity.getFhora_liberacion()!=null)
-                        entity.setHora_liberacion(WebUtil.convertTimeDecimal(entity.getFhora_liberacion()));
-                    else
-                        entity.setHora_liberacion(0.0f);
-                    listDet_tareoweb.set(pos, entity);
                 }
-                /*VALIDACIÓN DE HORAS GENERADAS*/
-                else{
-                    
-                }
-                
+        //        Det_tareoweb entity = ((Det_tareoweb)event.getObject());
+        //        int pos = listDet_tareoweb.indexOf(entity);
+                /*VALIDACION DE TIME A DECIMAL*/
+                if(entity.getFhora_req()!=null)
+                    entity.setHora_req(WebUtil.convertTimeDecimal(entity.getFhora_req()));
+                else
+                    entity.setHora_req(0.0f);
+                if(entity.getFhora_inicio()!=null)
+                    entity.setHora_inicio_serv(WebUtil.convertTimeDecimal(entity.getFhora_inicio()));
+                else
+                    entity.setHora_inicio_serv(0.0f);
+                if(entity.getFhora_fin()!=null)
+                    entity.setHora_fin_serv(WebUtil.convertTimeDecimal(entity.getFhora_fin()));
+                else
+                    entity.setHora_fin_serv(0.0f);
+                if(entity.getFhora_llegada()!=null)
+                    entity.setHora_llegada(WebUtil.convertTimeDecimal(entity.getFhora_llegada()));
+                else
+                    entity.setHora_llegada(0.0f);
+                if(entity.getFhora_liberacion()!=null)
+                    entity.setHora_liberacion(WebUtil.convertTimeDecimal(entity.getFhora_liberacion()));
+                else
+                    entity.setHora_liberacion(0.0f);
+                listDet_tareoweb.set(pos, entity);
+                grabar_local();                
             } catch (ParseException ex) {
                 Logger.getLogger(TareowebAction.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -720,7 +714,7 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
 //        tabView.setActiveIndex(indexTab);
     }
     public void onRefresh(){
-        RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
+//        RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
         RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
     }
     public void onCargaPersonalServicio() throws NisiraORMException {
@@ -789,14 +783,14 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
         this.btn_asignar_personal = true;
         listPersonal_servicio = new ArrayList<>();
         selectClieprovPersonal = new Clieprov();
-        RequestContext.getCurrentInstance().update("datos:dlgasignar_personal");
+        RequestContext.getCurrentInstance().update("datos:id_dlgasignar_personal");
         RequestContext.getCurrentInstance().execute("PF('dlgasignar_personal').show()");
     }
     public void openDialogAddItemTareo(){
         cargarComboEspecial();
         this.num_repetir = 1;
         this.selectCargo_personal = new Cargos_personal();
-        RequestContext.getCurrentInstance().update("datos:dlgAddItemTareo");
+        RequestContext.getCurrentInstance().update("datos:id_dlgAddItemTareo");
         RequestContext.getCurrentInstance().execute("PF('dlgAddItemTareo').show()");
     }
     public void asignacionPersonal_servicio(){
@@ -835,7 +829,7 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
             for(Personal_servicio per : listPersonal_servicio){
                 actualizarPersonal_servicio_tareoweb(this.iddocumento_local,this.serie_local,this.numero_local,per);
             }
-            RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
+//            RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
             RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
             RequestContext.getCurrentInstance().execute("PF('dlgasignar_personal').hide()");
         }
@@ -909,6 +903,10 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
                         xrept.setItem_dordenservicio(rept.getItem_dordenservicio());
                         xrept.setItem2_personalservicio(rept.getItem2_personalservicio());
                         xrept.setItem_dpersonalservicio(agregarItemDet_tareoweb(lst_in));
+                        xrept.setHora_rc(rept.getHora_rc());
+                        xrept.setFhora_fin(rept.getFhora_fin());
+                        xrept.setHora_fin_serv(rept.getHora_fin_serv());
+                        xrept.setShora_fin(rept.getShora_fin());
                         if(!listTipo_asistencia.isEmpty()){
                             xrept.setCodasistencia(listTipo_asistencia.get(0).getIdtipoasistencia());
                             xrept.setAsistencia(listTipo_asistencia.get(0).getNombre_corto());
@@ -960,7 +958,7 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
                     RequestContext.getCurrentInstance().execute("PF('dlgAddItemTareo').hide()");
 
             }
-            RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
+//            RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
             RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(Tareoweb_fijoAction.class.getName()).log(Level.SEVERE, null, ex);
@@ -979,7 +977,7 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
         if(selectDet_tareoweb!=null){
             this.glosa_local = selectDet_tareoweb.getGlosa();
             posSelect_det_tareoweb  = posicionListDet_tareoweb(selectDet_tareoweb.getItem());
-            RequestContext.getCurrentInstance().update("datos:dlgDetalleAsistencia");
+            RequestContext.getCurrentInstance().update("datos:id_dlgDetalleAsistencia");
             RequestContext.getCurrentInstance().execute("PF('dlgDetalleAsistencia').show()");
         }
     }
@@ -988,7 +986,7 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
             if(this.glosa_local!=null)
                 selectDet_tareoweb.setGlosa(glosa_local);
             listDet_tareoweb.set(posSelect_det_tareoweb, selectDet_tareoweb);
-            RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
+//            RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
             RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
             RequestContext.getCurrentInstance().execute("PF('dlgDetalleAsistencia').hide()");
         }
@@ -1026,7 +1024,7 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
         Det_tareoweb sl = selectDet_tareoweb;
         if(sl!=null){
             listDet_tareoweb.remove(sl);
-            RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
+//            RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
             RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
         }
     }
@@ -1039,7 +1037,7 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
             String f_fin = f.format(getHasta());
             f_ini = f_ini.replace("-", "");
             f_fin = f_fin.replace("-", "");
-            setListaDatos(getCabtareowebDao().listarPorEmpresaWebFiltroFecha_Fijo(user.getIDEMPRESA(),f_ini,f_fin));
+            setListaDatos(getCabtareowebDao().listarPorEmpresaWebFiltroFecha_Fijo(user.getIDEMPRESA(),f_ini,f_fin,user.getIDUSUARIO()));
             RequestContext.getCurrentInstance().update("datos:tbl");
         } catch (Exception e) {
             mensaje = WebUtil.mensajeError();
@@ -1082,32 +1080,41 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
 
     @Override
     public void nuevo() {
-        getIniciar();
-        setDatoEdicion(new Cabtareoweb());
-        getDatoEdicion().setIdempresa(user.getIDEMPRESA());
-        getDatoEdicion().setFecha(new Date());
-        fgeneracion = getDatoEdicion().getFecha();
-        getDatoEdicion().setIdsucursal(Constantes.getIDSUCURSALGENERAL());
-        getDatoEdicion().setPeriodo(periodoDisenio);
-        getDatoEdicion().setMes(mesNombreDisenio);
-        getDatoEdicion().setNumero(numero);
-        getDatoEdicion().setIdemisor(lista_solution.get(5));
-        getDatoEdicion().setFinicio(new Date());
-        getDatoEdicion().setFfin(new Date());
-        getDatoEdicion().setIdresponsable(user.getIDUSUARIO());
         try {
+            getIniciar();
+            setDatoEdicion(new Cabtareoweb());
+            getDatoEdicion().setIdempresa(user.getIDEMPRESA());
+            getDatoEdicion().setFecha(new Date());
+            fgeneracion = getDatoEdicion().getFecha();
+            getDatoEdicion().setIdsucursal(Constantes.getIDSUCURSALGENERAL());
+            getDatoEdicion().setPeriodo(periodoDisenio);
+            getDatoEdicion().setMes(mesNombreDisenio);
+            getDatoEdicion().setNumero(numero);
+            getDatoEdicion().setIdemisor(lista_solution.get(5));
+            getDatoEdicion().setIdusuario(user.getIDUSUARIO());
+            getDatoEdicion().setUsuario(user.getNombres());
+            getDatoEdicion().setFinicio(new Date());
+            getDatoEdicion().setFfin(new Date());
+            getDatoEdicion().setIdestado("PE");
+            getDatoEdicion().setIdresponsable(user.getIDUSUARIO());
+            Clieprov us = usuariodao.getUsuarioCliente(user.getIDUSUARIO());
+            if(us!=null){
+                getDatoEdicion().setIdresponsable(us.getIdclieprov());
+                getDatoEdicion().setResponsable(us.getRazonsocial());
+            }
             String emisor= emisorDao.getPorClavePrimariaWeb(user.getIDEMPRESA(), getDatoEdicion().getIdemisor()).getDescripcion();
             getDatoEdicion().setEmisor(emisor);
             String sucursal = sucursalesDao.getPorEmpresaSucursal(user.getIDEMPRESA(),Constantes.IDSUCURSALGENERAL).getDescripcion();
             getDatoEdicion().setSucursal(sucursal);
             if(!listAlmacenes.isEmpty())
-            getDatoEdicion().setIdalmacen(listAlmacenes.get(0).getIdalmacen());
-        } catch (NisiraORMException ex) {
-            Logger.getLogger(OrdenliquidaciongastoAction.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(OrdenliquidaciongastoAction.class.getName()).log(Level.SEVERE, null, ex);
+                getDatoEdicion().setIdalmacen(listAlmacenes.get(0).getIdalmacen());
+            RequestContext.getCurrentInstance().update("datos");
+        } catch (NisiraORMException |SQLException ex) {
+            setMensaje(ex.getMessage());
+            WebUtil.MensajeError(mensaje);
+            RequestContext.getCurrentInstance().update("datos:growl");
+            Logger.getLogger(Tareoweb_fijoAction.class.getName()).log(Level.SEVERE, null, ex);
         }
-        RequestContext.getCurrentInstance().update("datos");
     }
     public boolean esVistaValida() {
         if (getDatoEdicion().getIdresponsable() == null){
@@ -1135,7 +1142,7 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
                 }
                 else
                     mensaje=getCabtareowebDao().grabar_fijo(2, getDatoEdicion(),getListDet_tareoweb());
-                setMensaje(WebUtil.exitoRegistrar("Tareo Web", mensaje));
+                setMensaje(WebUtil.exitoRegistrar("Tareo Web Fijo", mensaje));
                 WebUtil.info(getMensaje());
                 setLvalidate(true);
                 RequestContext.getCurrentInstance().update("datos");
@@ -1147,10 +1154,59 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
             RequestContext.getCurrentInstance().update("datos:growl");
         }
     }
-
+    public void grabar_local(){
+        try {
+            if (esVistaValida()) {
+                /*DATOS INICIALES*/
+                groupProgramation();
+                if(getDatoEdicion().getIdcabtareoweb()==null){
+                    mensaje=getCabtareowebDao().grabar_fijo(1, getDatoEdicion(), 
+                            getListDet_tareoweb());
+                    if(mensaje!=null)
+                        if(mensaje.trim().length()==15){
+                            getDatoEdicion().setIdcabtareoweb(mensaje.trim());
+                            setLadd(2);
+                        }
+                }else{
+                    mensaje=getCabtareowebDao().grabar_fijo(2, getDatoEdicion(),getListDet_tareoweb());
+                }
+//                setMensaje(WebUtil.exitoRegistrar("Tareo Web", mensaje));
+//                WebUtil.info(getMensaje());
+                setLvalidate(false);
+//                setLvalidate(true);
+//                RequestContext.getCurrentInstance().update("datos");
+            }
+        } catch (Exception ex) {
+            setMensaje(ex.getMessage() + "\n" + ex.getLocalizedMessage());
+            Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, null, ex);
+            WebUtil.fatal(mensaje);
+            RequestContext.getCurrentInstance().update("datos:growl");
+        }
+    }
     @Override
     public void eliminar() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            if (getOpc_anular_eliminar().equalsIgnoreCase("ANULAR")) {
+                mensaje=getCabtareowebDao().anular(getDatoEdicion().getIdempresa(), getDatoEdicion().getIdcabtareoweb(), user.getIDUSUARIO());
+                setMensaje(WebUtil.exitoAnular("Tareo Fijo ", mensaje));
+                WebUtil.info(getMensaje());
+                RequestContext.getCurrentInstance().update("datos:growl");
+                buscarFiltro(2);
+            }
+            if (getOpc_anular_eliminar().equalsIgnoreCase("ELIMINAR")) {
+                mensaje=getCabtareowebDao().eliminar(getDatoEdicion().getIdempresa(), getDatoEdicion().getIdcabtareoweb(), user.getIDUSUARIO());
+                setMensaje(WebUtil.exitoEliminar("Tareo Fijo ", mensaje));
+                WebUtil.info(getMensaje());
+                RequestContext.getCurrentInstance().update("datos:growl");
+                buscarFiltro(2);
+            }
+            
+        } catch (Exception ex) {
+            Logger.getLogger(EstructuraCostosRecursoAction.class.getName()).log(Level.SEVERE, null, ex);
+            this.mensaje=ex.getMessage();
+            WebUtil.error(getMensaje());
+            RequestContext.getCurrentInstance().update("datos:growl");
+        }
     }
 
     @Override
@@ -1195,6 +1251,13 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
             RequestContext.getCurrentInstance().update("datos:growl");
         }
         
+    }
+    
+    public String fechaDMY(Date fecha){
+        if(fecha!=null)
+            return WebUtil.fechaDMY(fecha, 7);
+        else
+            return "";
     }
     
     /**
@@ -1784,14 +1847,6 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
     public void setDataTableColumns(List<DataTableColumn> dataTableColumns) {
         this.dataTableColumns = dataTableColumns;
     }
-    
-    public static void main(String[] args) {
-        Calendar finicial = new GregorianCalendar(2017, 0, 15);
-        Calendar ffinal = new GregorianCalendar(2017, 2, 9);
-//        int diasHabiles = getDiasHabiles(finicial,ffinal);
-//        System.out.println("Días Hábiles : "+diasHabiles);
-    }
-
     /**
      * @return the lstDias
      */
@@ -1919,57 +1974,3 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
     }
     
 }
-
-/*
-public void onCellEdit(RowEditEvent event) {
-        Det_tareoweb entity = ((Det_tareoweb)event.getObject());
-        int pos = listDet_tareoweb.indexOf(entity);
-
-        if(entity.getFhora_req()!=null)
-            entity.setHora_req(WebUtil.convertTimeDecimal(entity.getFhora_req()));
-        else
-            entity.setHora_req(0.0f);
-        if(entity.getFhora_inicio()!=null)
-            entity.setHora_inicio_serv(WebUtil.convertTimeDecimal(entity.getFhora_inicio()));
-        else
-            entity.setHora_inicio_serv(0.0f);
-        if(entity.getFhora_fin()!=null)
-            entity.setHora_fin_serv(WebUtil.convertTimeDecimal(entity.getFhora_fin()));
-        else
-            entity.setHora_fin_serv(0.0f);
-        if(entity.getFhora_llegada()!=null)
-            entity.setHora_llegada(WebUtil.convertTimeDecimal(entity.getFhora_llegada()));
-        else
-            entity.setHora_llegada(0.0f);
-        if(entity.getFhora_liberacion()!=null)
-            entity.setHora_liberacion(WebUtil.convertTimeDecimal(entity.getFhora_liberacion()));
-        else
-            entity.setHora_liberacion(0.0f);
-        listDet_tareoweb.set(pos, entity);
-    }
-*/
-//    public static int getDiasHabiles(Calendar fechaInicial, Calendar fechaFinal) {
-//        int count= 0;
-//        int diffDays= 0;
-//        String dayOfWeek = null;
-//        String of_date = null;
-//        SimpleDateFormat ft = new SimpleDateFormat("dd-MM-YYYY");
-//        //mientras la fecha inicial sea menor o igual que la fecha final se cuentan los dias
-//        while (fechaInicial.before(fechaFinal) || fechaInicial.equals(fechaFinal)) {
-//            //si el dia de la semana de la fecha minima es diferente de sabado o domingo
-//            Date date = fechaInicial.getTime();
-//            dayOfWeek = WebUtil.convertDayOfSpanish(new SimpleDateFormat("EEEE", Locale.ENGLISH).format(date).trim());
-//            of_date = ft.format(date);
-//            if (fechaInicial.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY &&
-//                fechaInicial.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY) {
-//                //se aumentan los dias de diferencia entre min y max
-//                diffDays++;
-//                System.out.println(diffDays+" :"+dayOfWeek+" -> "+of_date);
-//            }
-//            count++;
-//            //se suma 1 dia para hacer la validacion del siguiente dia.
-//            fechaInicial.add(Calendar.DATE, 1);
-//            
-//        }
-//        return diffDays;
-//    }

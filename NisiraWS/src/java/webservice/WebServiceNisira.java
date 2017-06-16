@@ -760,6 +760,7 @@ public class WebServiceNisira{
             List<Ordenserviciocliente> list = (List<Ordenserviciocliente>) WebUtil.stringObject("com.nisira.core.entity.Ordenserviciocliente", datos);
             if(list !=null){
                 if(type.trim().equals("JSON")){
+                    
                     for(Ordenserviciocliente dt:list){
                         result = ordenservicioclienteDao.syncro_movil_object(dt,user);
                     }
@@ -892,4 +893,45 @@ public class WebServiceNisira{
         }
         return result;
     }
- }
+    
+    @WebMethod(operationName = "METHOD_ASCENT_ORDENLIQUIDACIONGASTO")
+    public String METHOD_ASCENT_ORDENLIQUIDACIONGASTO(@WebParam(name = "type") String type,
+            @WebParam(name = "lista1") String lista1,@WebParam(name = "lista2") String lista2,
+            @WebParam(name = "user") String user){
+        String result=null;
+        try {
+            String conexion = WebMethodNisira.cargarBaseDatos();
+            setConexion(conexion);
+            ArrayList<String> lista_solution=com.nisira.core.util.CoreUtil.valoresBase();/*Obtener Datos de solution.ini*/            
+            String idempresa = lista_solution.get(5);
+            ConstantesBD.setIDEMPRESA(idempresa);
+            OrdenliquidaciongastoDao ordenliquidaciongastoDao = new OrdenliquidaciongastoDao();
+
+            if(lista1!=null && lista2!=null){
+                if(type.trim().equals("JSON")){
+                    List<Ordenliquidaciongasto> list1 = (List<Ordenliquidaciongasto>) WebUtil.stringGson("com.nisira.core.entity.Ordenliquidaciongasto", lista1);
+                    List<Dordenliquidaciongasto> list2 = (List<Dordenliquidaciongasto>) WebUtil.stringGson("com.nisira.core.entity.Dordenliquidaciongasto", lista2);
+                    result = ordenliquidaciongastoDao.syncro_movil_list(idempresa,list1,list2,user);
+                }
+                if(type.trim().equals("XML")){
+                    List<Ordenliquidaciongasto> list1 = (List<Ordenliquidaciongasto>) WebUtil.stringObject("com.nisira.core.entity.Ordenliquidaciongasto", lista1);
+                    List<Dordenliquidaciongasto> list2 = (List<Dordenliquidaciongasto>) WebUtil.stringObject("com.nisira.core.entity.Dordenliquidaciongasto", lista2);
+                    result = ordenliquidaciongastoDao.syncro_movil_list(idempresa,list1,list2,user);
+                }
+            }
+            else
+            {
+                result = "ERROR";
+            }
+            
+        } catch (NisiraORMException  ex) {
+            Logger.getLogger(WebServiceNisira.class.getName()).log(Level.SEVERE, null, ex);
+            result = "ERROR :"+ex.getMessage();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(WebServiceNisira.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(WebServiceNisira.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
+    }
+}

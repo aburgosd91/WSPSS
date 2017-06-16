@@ -337,7 +337,7 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
             if(!lst.isEmpty()){
                 HSSFWorkbook objWB = (HSSFWorkbook) document;
 //                HSSFWorkbook objWB = new HSSFWorkbook();
-                HSSFSheet sheet1 = objWB.createSheet("ESTRUCTURA_COSTOS");
+                HSSFSheet sheet1 = objWB.createSheet("DETALLADO_ESTRUCTURA_COSTOS");
                 HSSFRow fila_cabecera = sheet1.createRow((short)0);
                 
                 // Aunque no es necesario podemos establecer estilos a las celdas.
@@ -398,7 +398,7 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
                         celda.setCellValue(lst_col.get(col).toString());
                     }
                 }
-                //wb = objWB;
+//                wb = objWB;
             }else{
                this.mensaje="No existe registros";
                WebUtil.info(getMensaje());

@@ -106,4 +106,20 @@ public class UsuarioDao extends BaseDao<Usuario> {
             }
             return lst;
         }
+        public Clieprov getUsuarioCliente(String idusuario) throws NisiraORMException {
+            Clieprov user=null;
+            try
+            {
+                ResultSet rs = null;
+                rs = execProcedure("GETUSUARIO_IDCLIEPROV_TMPSS",idusuario);
+                while (rs.next()) {
+                    user = new Clieprov();
+                    user.setIdclieprov(rs.getString("IDCLIEPROV"));
+                    user.setRazonsocial(rs.getString("RAZON_SOCIAL"));
+                }
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
+            return user;
+        }
 }

@@ -33,10 +33,18 @@
                                         <p:inputText id="num" style="width: 90px !important" value="#{ordenservicioclienteAction.datoEdicion.numero}" disabled="#{!ordenservicioclienteAction.edicion}" readonly="true"/>
                                     </p:panelGrid>
                                     <p:outputLabel for="motivo_orden"  value="Motivo:" />
-                                    <p:selectOneMenu id="motivo_orden" value="#{ordenservicioclienteAction.datoEdicion.idmotivo}"  disabled="#{!ordenservicioclienteAction.edicion}" >    
-                                        <p:ajax listener="#{ordenservicioclienteAction.onMotivoOrdenservicio()}"/>
-                                        <f:selectItems value="#{ordenservicioclienteAction.listMotivoproduccion}" var="motivo" itemLabel="#{motivo.descripcion}" itemValue="#{motivo.idmotivo}" />
-                                    </p:selectOneMenu>
+                                    <h:panelGrid cellpadding="0" cellspacing="0" columns="3">
+                                        <p:selectOneMenu id="motivo_orden" value="#{ordenservicioclienteAction.datoEdicion.idmotivo}"  disabled="#{!ordenservicioclienteAction.edicion}" >    
+                                            <p:ajax listener="#{ordenservicioclienteAction.onMotivoOrdenservicio()}"/>
+                                            <f:selectItems value="#{ordenservicioclienteAction.listMotivoproduccion}" var="motivo" itemLabel="#{motivo.descripcion}" itemValue="#{motivo.idmotivo}" />
+                                        </p:selectOneMenu>
+                                        <p:outputLabel for="tiposervicio"  value="Tipo Servicio:" />
+                                        <p:selectOneMenu id="tiposervicio" value="#{ordenservicioclienteAction.datoEdicion.tipo_servicio}"  disabled="#{!ordenservicioclienteAction.edicion}">
+                                            <p:ajax listener="#{ordenservicioclienteAction.onTiposervicio()}"/>
+                                            <f:selectItem itemLabel="Especial" itemValue="E"/>
+                                            <f:selectItem itemLabel="Fijo" itemValue="F"/>
+                                        </p:selectOneMenu>
+                                    </h:panelGrid>
                                     <p:outputLabel for="nromanual"  value="Nro Manual:" />
                                     <p:inputText id="nromanual" style="width: 200px !important;" value="#{ordenservicioclienteAction.datoEdicion.nromanual}" disabled="#{!ordenservicioclienteAction.edicion}"/>
                                     <p:outputLabel for="nrocontenedor"  value="Nro Contenedor:" />
@@ -47,15 +55,6 @@
                                     <p:inputText id="nro_oservicio" style="width: 200px !important;" value="#{ordenservicioclienteAction.datoEdicion.nro_oservicio}" disabled="#{!ordenservicioclienteAction.edicion}"/>
                                     <p:outputLabel value="Glosa" escape="false"/>
                                     <p:inputTextarea rows="2" cols="50" value="#{ordenservicioclienteAction.datoEdicion.glosa}" disabled="#{!ordenservicioclienteAction.edicion}"/>
-                                    <p:outputLabel value="Supervisor:" escape="false" />
-                                    <h:panelGrid id="cntPersonalOperario" cellpadding="0" cellspacing="0" columns="3">
-                                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{ordenservicioclienteAction.verCntClieprovPersonalSupervisor()}" 
-                                                         disabled="#{!ordenservicioclienteAction.edicion}"  icon="ui-icon-search">
-                                            <p:ajax event="dialogReturn" listener="#{ordenservicioclienteAction.valorOperario}" update="cntPersonalOperario"/>
-                                        </p:commandButton>
-                                        <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{ordenservicioclienteAction.datoEdicion.idoperario}"/>
-                                        <p:inputText size="50" readonly="true" value="#{ordenservicioclienteAction.datoEdicion.operario}" />
-                                    </h:panelGrid>
                                 </p:panelGrid>
                             </div>
                             <div class="ui-grid-col-6">
@@ -79,16 +78,10 @@
                                         <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{ordenservicioclienteAction.datoEdicion.idclieprov}" disabled="#{!ordenservicioclienteAction.edicion}"/>
                                         <p:inputText size="50" readonly="true" value="#{ordenservicioclienteAction.datoEdicion.razonsocial}" disabled="#{!ordenservicioclienteAction.edicion}"/>
                                     </h:panelGrid>
-                                    <p:outputLabel for="tiposervicio"  value="Tipo Servicio:" />
-                                    <p:selectOneMenu id="tiposervicio" value="#{ordenservicioclienteAction.datoEdicion.tipo_servicio}"  disabled="#{!ordenservicioclienteAction.edicion}">
-                                        <p:ajax listener="#{ordenservicioclienteAction.onTiposervicio()}"/>
-                                        <f:selectItem itemLabel="Fijo" itemValue="F"/>
-                                        <f:selectItem itemLabel="Especial" itemValue="E"/>
-                                    </p:selectOneMenu>
                                     <p:outputLabel value="Doc. Referencia:" />
                                     <p:panelGrid  columns="3" columnClasses="no-border, no-border,no-border" style="margin-left: -10px;">
                                         <p:commandButton id="btnbuscardocreferencia" styleClass="boton_buscar" ajax="true" actionListener="#{ordenservicioclienteAction.verCntDocReferencia()}" 
-                                                    disabled="#{ordenservicioclienteAction.fdocreferencia}"  icon="ui-icon-search">
+                                                    disabled="#{ordenservicioclienteAction.fdocreferencia or !ordenservicioclienteAction.edicion}"  icon="ui-icon-search">
                                         </p:commandButton>
                                         <p:outputLabel for="ambito_servicio"  value="Ámbito:" />
                                         <p:selectOneMenu id="ambito_servicio" value="#{ordenservicioclienteAction.datoEdicion.ambito_servicio}"  disabled="#{!ordenservicioclienteAction.edicion}">
@@ -129,6 +122,15 @@
                                             <p:rowEditor/>
                                         </p:column>
                                    </p:dataTable>
+                                    <p:outputLabel value="Supervisor:" escape="false" />
+                                    <h:panelGrid id="cntPersonalOperario" cellpadding="0" cellspacing="0" columns="3">
+                                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{ordenservicioclienteAction.verCntClieprovPersonalSupervisor()}" 
+                                                         disabled="#{!ordenservicioclienteAction.edicion}"  icon="ui-icon-search">
+                                            <p:ajax event="dialogReturn" listener="#{ordenservicioclienteAction.valorOperario}" update="cntPersonalOperario"/>
+                                        </p:commandButton>
+                                        <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{ordenservicioclienteAction.datoEdicion.idoperario}"/>
+                                        <p:inputText size="50" readonly="true" value="#{ordenservicioclienteAction.datoEdicion.operario}" />
+                                    </h:panelGrid>
                                     <p:outputLabel value="Operario:" escape="false" />
                                     <h:panelGrid id="cntPersonalOperario2" cellpadding="0" cellspacing="0" columns="3">
                                         <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{ordenservicioclienteAction.verCntClieprovPersonalOperador()}" 
@@ -149,9 +151,9 @@
                                 paginator="true" paginatorPosition="top" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{ordenservicioclienteAction.selectDordenserviciocliente}" rowKey="#{lstdordenserviciocliente.item}">
                                 <p:ajax event="rowSelect" listener="#{ordenservicioclienteAction.onRowSelectDordenservicio}" />
                                 <f:facet name="{Comandos}">
-                                    <p:commandButton value="Agregar" ajax="true" image="ui-icon-nuevo" actionListener="#{ordenservicioclienteAction.nuevoDordenserviciocliente()}" disabled="#{ordenservicioclienteAction.botonNuevoDOrdenservicio}"/>
-                                    <p:commandButton value="Editar" ajax="true" image="ui-icon-edit" actionListener="#{ordenservicioclienteAction.editarDordenserviciocliente()}" disabled="#{ordenservicioclienteAction.botonEditarDOrdenservicio}"/> 
-                                    <p:commandButton value="Eliminar" ajax="true" image="ui-icon-eliminar" actionListener="#{ordenservicioclienteAction.eliminarDordenserviciocliente()}" disabled="#{ordenservicioclienteAction.botonEliminarDOrdenservicio}"/>
+                                    <p:commandButton value="Agregar" ajax="true" image="ui-icon-nuevo" actionListener="#{ordenservicioclienteAction.nuevoDordenserviciocliente()}" disabled="#{ordenservicioclienteAction.botonNuevoDOrdenservicio or !ordenservicioclienteAction.edicion}"/>
+                                    <p:commandButton value="Editar" ajax="true" image="ui-icon-edit" actionListener="#{ordenservicioclienteAction.editarDordenserviciocliente()}" disabled="#{ordenservicioclienteAction.botonEditarDOrdenservicio or !ordenservicioclienteAction.edicion}"/> 
+                                    <p:commandButton value="Eliminar" ajax="true" image="ui-icon-eliminar" actionListener="#{ordenservicioclienteAction.eliminarDordenserviciocliente()}" disabled="#{ordenservicioclienteAction.botonEliminarDOrdenservicio or !ordenservicioclienteAction.edicion}"/>
                                 </f:facet>
                                 <p:column style="width:10%;" filterBy="#{lstdordenserviciocliente.item}" filterMatchMode="contains" sortBy="#{lstdordenserviciocliente.item}">
                                     <f:facet name="header">
@@ -203,9 +205,9 @@
                                     paginator="true" paginatorPosition="top" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{ordenservicioclienteAction.selectPersonal_servicio}" rowKey="#{listPersonal_Servicio.item2}">
                                        <p:ajax event="rowSelect" listener="#{ordenservicioclienteAction.onRowSelectPersonal_Servicio}" />
                                        <f:facet name="{Comandos}">
-                                           <p:commandButton value="Agregar" ajax="true" image="ui-icon-nuevo" actionListener="#{ordenservicioclienteAction.nuevoPersonal_servicio()}" disabled="#{ordenservicioclienteAction.botonNuevoPersonal_servicio}"/>
-                                           <p:commandButton value="Editar" ajax="true" image="ui-icon-edit" actionListener="#{ordenservicioclienteAction.editarPersonal_servicio()}" disabled="#{ordenservicioclienteAction.botonEditarPersonal_servicio}"/> 
-                                           <p:commandButton value="Eliminar" ajax="true" image="ui-icon-eliminar" actionListener="#{ordenservicioclienteAction.eliminarPersonal_servicio()}" disabled="#{ordenservicioclienteAction.botonEliminarPersonal_servicio}"/>
+                                           <p:commandButton value="Agregar" ajax="true" image="ui-icon-nuevo" actionListener="#{ordenservicioclienteAction.nuevoPersonal_servicio()}" disabled="#{ordenservicioclienteAction.botonNuevoPersonal_servicio or !ordenservicioclienteAction.edicion}"/>
+                                           <p:commandButton value="Editar" ajax="true" image="ui-icon-edit" actionListener="#{ordenservicioclienteAction.editarPersonal_servicio()}" disabled="#{ordenservicioclienteAction.botonEditarPersonal_servicio or !ordenservicioclienteAction.edicion}"/> 
+                                           <p:commandButton value="Eliminar" ajax="true" image="ui-icon-eliminar" actionListener="#{ordenservicioclienteAction.eliminarPersonal_servicio()}" disabled="#{ordenservicioclienteAction.botonEliminarPersonal_servicio or !ordenservicioclienteAction.edicion}"/>
                                        </f:facet>
                                        <p:column style="width:10%;" filterBy="#{listPersonal_Servicio.item2}" filterMatchMode="contains" sortBy="#{listPersonal_Servicio.item2}">
                                            <f:facet name="header">
@@ -251,9 +253,9 @@
                                     paginator="true" paginatorPosition="top" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{ordenservicioclienteAction.selectDPersonal_servicio}" rowKey="#{listDpersonal_Servicio.item}">
                                        <p:ajax event="rowSelect" listener="#{ordenservicioclienteAction.onRowSelectDPersonal_Servicio}" />
                                        <f:facet name="{Comandos}">
-                                           <p:commandButton value="Nuevo" ajax="true" image="ui-icon-nuevo" actionListener="#{ordenservicioclienteAction.nuevoDPersonal_servicio()}"/>
-                                           <p:commandButton value="Editar" ajax="true" image="ui-icon-edit" actionListener="#{ordenservicioclienteAction.editarDPersonal_servicio()}" disabled="#{ordenservicioclienteAction.botonEditarDPersonal_servicio}"/> 
-                                           <p:commandButton value="Eliminar" ajax="true" image="ui-icon-eliminar" actionListener="#{ordenservicioclienteAction.eliminarDPersonal_servicio()}" disabled="#{ordenservicioclienteAction.botonEliminarDPersonal_servicio}"/>
+                                           <p:commandButton value="Nuevo" ajax="true" image="ui-icon-nuevo" actionListener="#{ordenservicioclienteAction.nuevoDPersonal_servicio()}"  disabled="#{!ordenservicioclienteAction.edicion}"/>
+                                           <p:commandButton value="Editar" ajax="true" image="ui-icon-edit" actionListener="#{ordenservicioclienteAction.editarDPersonal_servicio()}" disabled="#{ordenservicioclienteAction.botonEditarDPersonal_servicio or !ordenservicioclienteAction.edicion}"/> 
+                                           <p:commandButton value="Eliminar" ajax="true" image="ui-icon-eliminar" actionListener="#{ordenservicioclienteAction.eliminarDPersonal_servicio()}" disabled="#{ordenservicioclienteAction.botonEliminarDPersonal_servicio or !ordenservicioclienteAction.edicion}"/>
                                        </f:facet>
                                        <p:column style="width:10%;" filterBy="#{listDpersonal_Servicio.item}" filterMatchMode="contains" sortBy="#{listDpersonal_Servicio.item}">
                                            <f:facet name="header">
@@ -326,9 +328,9 @@
                                        <p:ajax event="rowSelect" listener="#{ordenservicioclienteAction.onRowSelectRuta_Servicios}" />
                                        <f:facet name="{Comandos}">
                                            <p:commandButton value="Ruta" ajax="true" image="ui-icon-map" actionListener="#{ordenservicioclienteAction.viewRuta()}" />
-                                           <p:commandButton value="Nuevo" ajax="true" image="ui-icon-nuevo" actionListener="#{ordenservicioclienteAction.nuevoRuta_servicios()}" disabled="#{ordenservicioclienteAction.botonNuevoRuta_servicios}"/>
-                                           <p:commandButton value="Editar" ajax="true" image="ui-icon-edit" actionListener="#{ordenservicioclienteAction.editarRuta_servicios()}" disabled="#{(ordenservicioclienteAction.botonEditarRuta_servicios or ordenservicioclienteAction.botonNuevoRuta_servicios)?true:false}"/> 
-                                           <p:commandButton value="Eliminar" ajax="true" image="ui-icon-eliminar" actionListener="#{ordenservicioclienteAction.eliminarRuta_servicios()}" disabled="#{(ordenservicioclienteAction.botonEliminarRuta_servicios or ordenservicioclienteAction.botonNuevoRuta_servicios)?true:false}"/>
+                                           <p:commandButton value="Nuevo" ajax="true" image="ui-icon-nuevo" actionListener="#{ordenservicioclienteAction.nuevoRuta_servicios()}" disabled="#{ordenservicioclienteAction.botonNuevoRuta_servicios or !ordenservicioclienteAction.edicion}"/>
+                                           <p:commandButton value="Editar" ajax="true" image="ui-icon-edit" actionListener="#{ordenservicioclienteAction.editarRuta_servicios()}" disabled="#{(ordenservicioclienteAction.botonEditarRuta_servicios or (ordenservicioclienteAction.botonNuevoRuta_servicios)?true:false) or !ordenservicioclienteAction.edicion}"/> 
+                                           <p:commandButton value="Eliminar" ajax="true" image="ui-icon-eliminar" actionListener="#{ordenservicioclienteAction.eliminarRuta_servicios()}" disabled="#{(ordenservicioclienteAction.botonEliminarRuta_servicios or (ordenservicioclienteAction.botonNuevoRuta_servicios)?true:false) or !ordenservicioclienteAction.edicion}"/>
                                        </f:facet>
                                        <p:column style="width:10%;" filterBy="#{listRuta_servicios.itemruta}" filterMatchMode="contains" sortBy="#{listRuta_servicios.itemruta}">
                                            <f:facet name="header">
@@ -381,16 +383,14 @@
                                         <p:inputTextarea  style="text-align: left" rows="3" cols="5" readonly="true"  value="#{ordenservicioclienteAction.dordenserviciocliente.codoperaciones}" disabled="#{!ordenservicioclienteAction.edicion}"/>
                                         <p:inputTextarea cols="40" rows="3" readonly="true" value="#{ordenservicioclienteAction.dordenserviciocliente.descripcion}" disabled="#{!ordenservicioclienteAction.edicion}"/>
                                     </h:panelGrid>
-                                    <p:outputLabel value="#Horas:" />
-                                    <p:selectOneMenu id="nhoras" value="#{ordenservicioclienteAction.dordenserviciocliente.hora_rc}" style="width: 80px">    
-                                        <p:ajax listener="#{ordenservicioclienteAction.onNhoras_estructura()}" update="ruta_ec,idreferenciacot,itemreferencia"/>
-                                        <f:selectItems value="#{ordenservicioclienteAction.lstHoras}" var="hora" itemLabel="#{hora}" itemValue="#{hora}" />
-                                    </p:selectOneMenu>
+                                    
                                     <p:outputLabel value="Ruta E.C.:" />
                                     <p:selectOneMenu id="ruta_ec" value="#{ordenservicioclienteAction.dordenserviciocliente.idruta_ec}" style="width: 150px">    
-                                        <p:ajax listener="#{ordenservicioclienteAction.onIdruta_estructura()}" update="idreferenciacot,itemreferencia"/>
+                                        <p:ajax listener="#{ordenservicioclienteAction.onIdruta_estructura()}" update="nhoras,idreferenciacot,itemreferencia"/>
                                         <f:selectItems value="#{ordenservicioclienteAction.lstComboRutas}" var="ruta" itemLabel="#{ruta.descripcion}" itemValue="#{ruta.idruta}" />
                                     </p:selectOneMenu>
+                                    <p:outputLabel value="#Cantidad:" escape="false" />
+                                    <p:spinner value="#{ordenservicioclienteAction.num_repetir_detalle}" min="1" disabled="#{ordenservicioclienteAction.fnum_repetir}"/>
                                     <p:outputLabel value="Placa/Cliente:" />
                                     <p:inputTextarea  cols="60" rows="2"  value="#{ordenservicioclienteAction.dordenserviciocliente.placa_cliente}" onkeyup="javascript:this.value = this.value.toUpperCase();" disabled="#{ordenservicioclienteAction.ftipo_servicio}">
                                     </p:inputTextarea>
@@ -401,9 +401,13 @@
                                     </p:inputTextarea>
                                     <p:outputLabel for="fecha_fin_servicio" value="F. Fin:" />
                                     <p:calendar id="fecha_fin_servicio" value="#{ordenservicioclienteAction.dordenserviciocliente.fecha_fin_servicio}" pattern="dd-MM-yyyy" mask="true" />
-                                    
                                     <p:outputLabel value="Glosa"/>
                                     <p:inputTextarea rows="2" cols="50" value="#{ordenservicioclienteAction.dordenserviciocliente.glosa}"/>
+                                    <p:outputLabel value="#Horas:" />
+                                    <p:selectOneMenu id="nhoras" value="#{ordenservicioclienteAction.dordenserviciocliente.hora_rc}" style="width: 80px" disabled="true">    
+                                        <p:ajax listener="#{ordenservicioclienteAction.onNhoras_estructura()}" update="ruta_ec,idreferenciacot,itemreferencia"/>
+                                        <f:selectItems value="#{ordenservicioclienteAction.lstHoras}" var="hora" itemLabel="#{hora}" itemValue="#{hora}" />
+                                    </p:selectOneMenu>
                                     <p:outputLabel for="idreferenciacot" value="Id Ref.:" />
                                     <p:inputText id="idreferenciacot" size="40"  disabled="true" value="#{ordenservicioclienteAction.dordenserviciocliente.idreferencia}" />
                                     <p:outputLabel for="itemreferencia" value="Item Ref.:" />

@@ -141,6 +141,10 @@ public class Det_tareoweb implements Serializable {
         @XStreamAlias("GLOSA")
         @Columna
         private String glosa;
+        @XStreamAlias("HORA_RC")
+        @Columna
+        private Float hora_rc;
+        private Date fecha_osc;
         private String vehiculo;
         private String cargo;
         private String dni;
@@ -780,5 +784,33 @@ public class Det_tareoweb implements Serializable {
      */
     public void setSelectConsumidor(Consumidor selectConsumidor) {
         this.selectConsumidor = selectConsumidor;
+    }
+
+    /**
+     * @return the fecha_osc
+     */
+    public Date getFecha_osc() {
+        return fecha_osc;
+    }
+
+    /**
+     * @param fecha_osc the fecha_osc to set
+     */
+    public void setFecha_osc(Date fecha_osc) {
+        this.fecha_osc = fecha_osc;
+    }
+
+    /**
+     * @return the hora_rc
+     */
+    public Float getHora_rc() {
+        return hora_rc;
+    }
+
+    /**
+     * @param hora_rc the hora_rc to set
+     */
+    public void setHora_rc(Float hora_rc) {
+        this.hora_rc = hora_rc;
     }
 }

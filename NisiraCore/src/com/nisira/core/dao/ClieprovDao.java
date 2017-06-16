@@ -199,7 +199,7 @@ public class ClieprovDao extends BaseDao<Clieprov> {
         try
         {
             ResultSet rs = null;
-            rs = execProcedure("GETCLIEPROV_TMPSS",idempresa,"P");
+            rs = execProcedure("GETCLIEPROV_PROVEEDOR_TMPSS",idempresa);
             while (rs.next()) {
                 Clieprov clieprov = new Clieprov();
                 clieprov.setIdbasedatos(rs.getString("IDBASEDATOS").trim());

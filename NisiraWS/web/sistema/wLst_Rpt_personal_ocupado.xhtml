@@ -22,7 +22,7 @@
                         Personal Ocupado
                     </f:facet>
                     <p:columns style="white-space: nowrap; width: 130px;padding: 3px;text-align: #{colIndex=='0'?'center':'center'}" value="#{rpt_personal_ocupadoAction.rpt_result.name}" var="column" columnIndexVar="colIndex"   
-                               resizable="true" filterBy="#{lst_rpt[colIndex]}" filterMatchMode="contains" filterStyle="width: 75%" sortBy="#{lst_rpt[colIndex]}">  
+                               resizable="true" sortBy="#{lst_rpt[colIndex]}">  
                         <f:facet name="header">  
                             <h:outputText value="#{rpt_personal_ocupadoAction.rpt_result.name[colIndex]}"/> 
                         </f:facet>  

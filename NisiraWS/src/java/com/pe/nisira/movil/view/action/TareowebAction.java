@@ -18,8 +18,10 @@ import com.nisira.core.dao.NumemisorDao;
 import com.nisira.core.dao.Personal_servicioDao;
 import com.nisira.core.dao.SucursalesDao;
 import com.nisira.core.dao.Det_tareowebDao;
+import com.nisira.core.dao.Privilegio_global_pssDao;
 import com.nisira.core.dao.Tipo_asistenciaDao;
 import com.nisira.core.dao.Turno_trabajoDao;
+import com.nisira.core.dao.UsuarioDao;
 import com.nisira.core.entity.Almacen;
 import com.nisira.core.entity.Almacenes;
 import com.nisira.core.entity.Cabtareoweb;
@@ -33,6 +35,7 @@ import com.nisira.core.entity.Numemisor;
 import com.nisira.core.entity.Ordenserviciocliente;
 import com.nisira.core.entity.Personal_servicio;
 import com.nisira.core.entity.Det_tareoweb;
+import com.nisira.core.entity.Privilegio_global_pss;
 import com.nisira.core.entity.Tipo_asistencia;
 import com.nisira.core.entity.Turno_trabajo;
 import com.nisira.core.util.ConstantesBD;
@@ -99,6 +102,7 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
     private String numero_add;
     private String dni_local;
     private boolean btn_asignar_personal;
+    private boolean filtro_super_usuario;
     private int num_repetir;
     private String numero;
     private Date fgeneracion;
@@ -121,6 +125,7 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
     private List<Turno_trabajo> listTurno_trabajo;
     private List<Tipo_asistencia> listTipo_asistencia;
     private List<ComboEspecial> listComboEspecial;
+    private List<Det_tareoweb> listDet_tareoweb_verification;
     /* DAO */
     private ConsumidorDao consumidorDao;
     private Det_tareowebDao tareoWebDao;
@@ -135,6 +140,8 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
     private Det_tareowebDao det_tareowebDao;
     private Turno_trabajoDao turno_trabajoDao;
     private Tipo_asistenciaDao tipo_asistenciaDao;
+    private Privilegio_global_pssDao privilegioDao;
+    private UsuarioDao usuariodao;
     /* ENTITY */
     private Det_tareoweb tareoWeb;
     private Det_tareoweb selectDet_tareoweb;
@@ -189,6 +196,8 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
             turno_trabajoDao = new Turno_trabajoDao();
             tipo_asistenciaDao = new Tipo_asistenciaDao();
             consumidorDao = new ConsumidorDao();
+            privilegioDao = new Privilegio_global_pssDao();
+            usuariodao = new UsuarioDao();
             /* ENTITY */
             tareoWeb = new Det_tareoweb();
             selectPersonal = new Clieprov();
@@ -196,6 +205,7 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
             selectComboEspecial = new ComboEspecial("","");
             /********************************** CONFIGURACIÓN - SERVIDOR ********************************/
             glosa_local = "";
+            filtro_super_usuario = false;
             lista_solution=CoreUtil.valoresBase();
             listDocumentos=docDao.getCabtareoweb(user.getIDEMPRESA());
             listNumemisor=numemisorDao.listarPorDocWeb(user.getIDEMPRESA(), listDocumentos.get(0).getIddocumento());
@@ -271,9 +281,9 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
         try{
             if(getLadd()==1){/*NUEVO*/
                 getDatoEdicion().setIdtipoasistencia("ASN");
-                listDet_tareoweb = tareoWebDao.listarPorEmpresaWeb_new(user.getIDEMPRESA(), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5),user.getIdcodigogeneral());
+                listDet_tareoweb = tareoWebDao.listarPorEmpresaWeb_new(user.getIDEMPRESA(), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5),getDatoEdicion().getIdresponsable(),user.getIDUSUARIO()); 
             }else if(getLadd()==2){/*EDITAR*/
-                listDet_tareoweb = tareoWebDao.listarPorEmpresaWeb_update(getDatoEdicion().getIdempresa(),getDatoEdicion().getIdcabtareoweb(),WebUtil.fechaDMY(getDatoEdicion().getFecha(),5), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5),user.getIdcodigogeneral());
+                listDet_tareoweb = tareoWebDao.listarPorEmpresaWeb_update(getDatoEdicion().getIdempresa(),getDatoEdicion().getIdcabtareoweb(),WebUtil.fechaDMY(getDatoEdicion().getFecha(),5), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5),getDatoEdicion().getIdresponsable(),user.getIDUSUARIO());
                 cargarPersonalVehiculo();
             }
             RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
@@ -393,58 +403,76 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
                         }
                         break;
                     case "Hora Llegada":
-                        if(!WebUtil.validateTime(newValue.toString())){
-                            if(entity.getFhora_req()!=null){
-                                entity.setShora_llegada(entity.getShora_req());
-                                entity.setFhora_llegada(entity.getFhora_req());
-                            }else
-                                entity.setShora_llegada("00:00");
-                        }else{
+                        /*VALIDAR FORMATO DE TIME*/
+                        if(WebUtil.validateTime(newValue.toString())){
                             entity.setFhora_llegada(WebUtil.convertStringTime(newValue.toString()));
-                            entity.setShora_inicio(newValue.toString());
-                            entity.setFhora_inicio(entity.getFhora_llegada());
-                            if(WebUtil.compareToDate(entity.getFhora_req(),entity.getFhora_llegada())>0 &&
-                                    WebUtil.compareToDate(entity.getFhora_req(),entity.getFhora_llegada())!=-2){
-                                entity.setFhora_llegada(entity.getFhora_req());
-                                entity.setShora_llegada(entity.getShora_req());
-                            }
+                        }else{
+                            entity.setShora_llegada("00:00");
                         }
                         break;
                     case "Hora Inicio":
-                        if(!WebUtil.validateTime(newValue.toString())){
-                            if(entity.getFhora_llegada()!=null){
-                                entity.setShora_inicio(entity.getShora_llegada());
-                                entity.setFhora_inicio(entity.getFhora_llegada());
-                            }else
-                                entity.setShora_inicio("00:00");
-                        }else{
-                            entity.setShora_inicio(newValue.toString());
+                        /*VALIDAR FORMATO DE TIME*/
+                        if(WebUtil.validateTime(newValue.toString())){
+                            /*ASIGNARLE VALOR*/
                             entity.setFhora_inicio(WebUtil.convertStringTime(newValue.toString()));
+                            entity.setShora_inicio(newValue.toString());
+                            /*VALIDACIONES
+                                No debe ser menor que hora de llegada
+                            */
                             if(WebUtil.compareToDate(entity.getFhora_llegada(),entity.getFhora_inicio())>0 &&
                                     WebUtil.compareToDate(entity.getFhora_llegada(),entity.getFhora_inicio())!=-2){
                                 entity.setFhora_inicio(entity.getFhora_llegada());
                                 entity.setShora_inicio(entity.getShora_llegada());
                             }
+                        }else{
+                            if(entity.getFhora_llegada() != null){
+                                entity.setShora_inicio(entity.getShora_llegada());
+                                entity.setFhora_inicio(entity.getFhora_llegada());
+                            }else{
+                              entity.setShora_inicio("00:00");  
+                            }
                         }
                         break;
                     case "Hora Fin":
-                        if(!WebUtil.validateTime(newValue.toString())){
-                            entity.setShora_fin("00:00");
-                        }else{
+                        /*VALIDAR FORMATO DE TIME*/
+                        if(WebUtil.validateTime(newValue.toString())){
                             entity.setFhora_fin(WebUtil.convertStringTime(newValue.toString()));
-                            entity.setShora_liberacion(newValue.toString());
-                            entity.setFhora_liberacion(entity.getFhora_fin());
+                            entity.setShora_fin(newValue.toString());
+                            if(!newValue.toString().trim().equals("00:00")){
+                                if(WebUtil.compareToDate(entity.getFhora_inicio(),entity.getFhora_fin())>0 &&
+                                    WebUtil.compareToDate(entity.getFhora_inicio(),entity.getFhora_fin())!=-2){
+                                    entity.setFhora_fin(entity.getFhora_inicio());
+                                    entity.setShora_fin(entity.getShora_inicio());
+    //                                entity.setFhora_fin(WebUtil.convertStringTime(newValue.toString()));
+                                    entity.setShora_liberacion(newValue.toString());
+                                    entity.setFhora_liberacion(entity.getFhora_fin()); 
+                                }else{
+                                   entity.setFhora_fin(WebUtil.convertStringTime(newValue.toString()));
+                                   entity.setShora_liberacion(newValue.toString());
+                                   entity.setFhora_liberacion(entity.getFhora_fin()); 
+                                }
+                            }
+                        }else{
+                            entity.setShora_fin("00:00");
                         }
                         break;
                     case "Hora Liberación":
-                        if(!WebUtil.validateTime(newValue.toString())){
+                        /*VALIDAR FORMATO DE TIME*/
+                        if(WebUtil.validateTime(newValue.toString())){
+                            entity.setFhora_fin(WebUtil.convertStringTime(newValue.toString()));
+                            entity.setShora_fin(newValue.toString());
                             if(entity.getFhora_fin()!=null){
                                 entity.setFhora_liberacion(entity.getFhora_fin());
                                 entity.setShora_liberacion(entity.getShora_fin());
-                            }else
-                                entity.setShora_liberacion("00:00");
+                            }else{
+                                if(WebUtil.compareToDate(entity.getFhora_inicio(),entity.getFhora_liberacion())>0 &&
+                                    WebUtil.compareToDate(entity.getFhora_inicio(),entity.getFhora_liberacion())!=-2){
+                                    entity.setFhora_liberacion(entity.getFhora_inicio());
+                                    entity.setShora_liberacion(entity.getShora_inicio());
+                                }
+                            }
                         }else{
-                            entity.setFhora_liberacion(WebUtil.convertStringTime(newValue.toString()));
+                            entity.setShora_liberacion("00:00");
                         }
                         break;
                     case "T.Asistencia":
@@ -481,6 +509,7 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
                 listDet_tareoweb.set(pos, entity);
                 /*GRABAR DIRECTO*/
                 grabar_local();
+                RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
             } catch (ParseException ex) {
                 Logger.getLogger(TareowebAction.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -493,8 +522,16 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
 //        tabView.setActiveIndex(indexTab);
     }
     public void onRefresh(){
-        RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
-        RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
+        try {
+            listDet_tareoweb = tareoWebDao.listarPorEmpresaWeb_new(user.getIDEMPRESA(), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5),getDatoEdicion().getIdresponsable(),user.getIDUSUARIO());
+            RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
+            RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
+        } catch (NisiraORMException | SQLException ex) {
+            this.mensaje = ex.getMessage();
+            WebUtil.error(mensaje);
+            RequestContext.getCurrentInstance().update("datos:growl");
+            Logger.getLogger(TareowebAction.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     public void onCargaPersonalServicio() throws NisiraORMException {
         if(!this.iddocumento_local.isEmpty() && !this.serie_local.isEmpty() && !this.numero_local.isEmpty()){
@@ -515,6 +552,9 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
     }
     public void valorCargos_personal(SelectEvent event) {
         selectCargo_personal = (Cargos_personal) event.getObject();
+    }
+    public void verCntClieprovPersonalSupervisor() {
+        RequestContext.getCurrentInstance().openDialog("cntClieprovPersonalSupervisor", modalOptions, null);
     }
     /**************************METHOD***********************/
     public Tipo_asistencia buscarTipoAsistencia(String idtipoasistencia){
@@ -795,6 +835,71 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
             RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
         }
     }
+    public void replicarItem_tareo(){
+        if(selectDet_tareoweb!=null){
+            for(int i=0;i<listDet_tareoweb.size();i++){
+                Det_tareoweb dtw = listDet_tareoweb.get(i);
+                if(
+                    selectDet_tareoweb.getIddocumento().trim().equals(dtw.getIddocumento().trim()) &&
+                    selectDet_tareoweb.getSerie().trim().equals(dtw.getSerie().trim()) &&
+                    selectDet_tareoweb.getNumero().trim().equals(dtw.getNumero().trim()) &&
+                    selectDet_tareoweb.getRuc().trim().equals(dtw.getRuc().trim())    
+                  ){
+                    dtw.setFhora_llegada(selectDet_tareoweb.getFhora_llegada());
+                    dtw.setFhora_inicio(selectDet_tareoweb.getFhora_inicio());
+                    dtw.setFhora_liberacion(selectDet_tareoweb.getFhora_liberacion());
+                    dtw.setFhora_fin(selectDet_tareoweb.getFhora_fin());
+                    dtw.setShora_llegada(selectDet_tareoweb.getShora_llegada());
+                    dtw.setShora_inicio(selectDet_tareoweb.getShora_inicio());
+                    dtw.setShora_liberacion(selectDet_tareoweb.getShora_liberacion());
+                    dtw.setShora_fin(selectDet_tareoweb.getShora_fin());
+                    dtw.setHora_llegada(selectDet_tareoweb.getHora_llegada());
+                    dtw.setHora_inicio_serv(selectDet_tareoweb.getHora_inicio_serv());
+                    dtw.setHora_liberacion(selectDet_tareoweb.getHora_liberacion());
+                    dtw.setHora_fin_serv(selectDet_tareoweb.getHora_fin_serv());
+                    dtw.setFechafinregistro(selectDet_tareoweb.getFechafinregistro());
+                    dtw.setFecharegistro(selectDet_tareoweb.getFechafinregistro());
+                    listDet_tareoweb.set(i, dtw);
+                }
+            }
+            RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
+            RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
+        }
+    }
+    public boolean verificar_aprobacion(){
+        boolean flag = true;
+        String validacion ="";
+        listDet_tareoweb_verification = new ArrayList<>();
+        for(int i=0;i<listDet_tareoweb.size();i++){
+            Det_tareoweb obj = listDet_tareoweb.get(i);
+            validacion ="";
+            if(obj.getIdpersonal()==null){
+                flag = false;
+                this.mensaje="Servicio Item:"+obj.getItem()+" - "+obj.getIddocumento()+"-"+obj.getSerie()+"-"+obj.getNumero()+" ("+obj.getFecha_osc()+")"+
+                        " <Personal> no asignado";
+                WebUtil.fatal(mensaje);
+                RequestContext.getCurrentInstance().update("datos:growl");
+                break;
+            }else{
+                if(obj.getHora_llegada()==0.0f)
+                    validacion+="\nHora LLegada <00:00> no asignado";
+                if(obj.getHora_inicio_serv()==0.0f)
+                    validacion+="\nHora Inicio <00:00> no asignado";
+                if(obj.getHora_fin_serv()==0.0f)
+                    validacion+="\nHora Fin <00:00> no asignado";
+                if(!validacion.equals("")){
+                    flag = false;
+                    this.mensaje="Servicio Item:"+obj.getItem()+" - "+obj.getIddocumento()+"-"+obj.getSerie()+"-"+obj.getNumero()+" ("+obj.getFecha_osc()+")"+""+validacion;
+                    WebUtil.fatal(mensaje);
+                    RequestContext.getCurrentInstance().update("datos:growl");
+                    break;
+                }else{
+                    listDet_tareoweb_verification.add(obj);
+                }
+            }
+        }
+        return flag;
+    }
     @Override
     public String buscarFiltro(int tipo) {
         try {
@@ -804,7 +909,7 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
             String f_fin = f.format(getHasta());
             f_ini = f_ini.replace("-", "");
             f_fin = f_fin.replace("-", "");
-            setListaDatos(getCabtareowebDao().listarPorEmpresaWebFiltroFecha(user.getIDEMPRESA(),f_ini,f_fin,user.getIdcodigogeneral()));
+            setListaDatos(getCabtareowebDao().listarPorEmpresaWebFiltroFecha(user.getIDEMPRESA(),f_ini,f_fin,user.getIDUSUARIO()));
         } catch (Exception e) {
             mensaje = WebUtil.mensajeError();
             WebUtil.error(mensaje);
@@ -859,9 +964,15 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
             getDatoEdicion().setSerie(listNumemisor.get(0).getSerie());
             getDatoEdicion().setNumero(numero);
             getDatoEdicion().setIdemisor(lista_solution.get(5));
-            getDatoEdicion().setIdresponsable(user.getIDUSUARIO());
-            getDatoEdicion().setResponsable(user.getNombres());
-            getDatoEdicion().setIdestado(listEstado.get(0).getIdestado());
+            getDatoEdicion().setIdusuario(user.getIDUSUARIO());
+            getDatoEdicion().setUsuario(user.getNombres());
+            getDatoEdicion().setIdestado("PE");
+            
+            Clieprov us = usuariodao.getUsuarioCliente(user.getIDUSUARIO());
+            if(us!=null){
+                getDatoEdicion().setIdresponsable(us.getIdclieprov());
+                getDatoEdicion().setResponsable(us.getRazonsocial());
+            }
             String emisor= emisorDao.getPorClavePrimariaWeb(user.getIDEMPRESA(), getDatoEdicion().getIdemisor()).getDescripcion();
             getDatoEdicion().setEmisor(emisor);
             String sucursal = sucursalesDao.getPorEmpresaSucursal(user.getIDEMPRESA(),Constantes.IDSUCURSALGENERAL).getDescripcion();
@@ -910,7 +1021,7 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
                 }
                 else
                     mensaje=getCabtareowebDao().grabar(2, getDatoEdicion(),getListDet_tareoweb());
-                setMensaje(WebUtil.exitoRegistrar("Tareo Web", mensaje));
+                setMensaje(WebUtil.exitoRegistrar("Tareo Web - Especial", mensaje));
                 WebUtil.info(getMensaje());
                 setLvalidate(true);
 //                setLvalidate(true);
@@ -931,8 +1042,10 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
                     mensaje=getCabtareowebDao().grabar(1, getDatoEdicion(), 
                             getListDet_tareoweb());
                     if(mensaje!=null)
-                        if(mensaje.trim().length()==15)
+                        if(mensaje.trim().length()==15){
                             getDatoEdicion().setIdcabtareoweb(mensaje.trim());
+                            setLadd(2);
+                        }
                 }else{
                     mensaje=getCabtareowebDao().grabar(2, getDatoEdicion(),getListDet_tareoweb());
                 }
@@ -954,14 +1067,14 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
         try {
             if (getOpc_anular_eliminar().equalsIgnoreCase("ANULAR")) {
                 mensaje=getCabtareowebDao().anular(getDatoEdicion().getIdempresa(), getDatoEdicion().getIdcabtareoweb(), user.getIDUSUARIO());
-                setMensaje(WebUtil.exitoAnular("Estructura Costo ", mensaje));
+                setMensaje(WebUtil.exitoAnular("Tareo especial", mensaje));
                 WebUtil.info(getMensaje());
                 RequestContext.getCurrentInstance().update("datos:growl");
                 buscarFiltro(2);
             }
             if (getOpc_anular_eliminar().equalsIgnoreCase("ELIMINAR")) {
                 mensaje=getCabtareowebDao().eliminar(getDatoEdicion().getIdempresa(), getDatoEdicion().getIdcabtareoweb(), user.getIDUSUARIO());
-                setMensaje(WebUtil.exitoEliminar("Estructura Costo ", mensaje));
+                setMensaje(WebUtil.exitoEliminar("Tareo especial", mensaje));
                 WebUtil.info(getMensaje());
                 RequestContext.getCurrentInstance().update("datos:growl");
                 buscarFiltro(2);
@@ -1002,11 +1115,13 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
 //                WebUtil.MensajeAdvertencia(this.mensaje );
 //            }
             else{
-                mensaje=getCabtareowebDao().aprobarTareo(getDatoEdicion());
+                verificar_aprobacion();
+                mensaje=getCabtareowebDao().aprobarTareo(getDatoEdicion(),listDet_tareoweb_verification);
                 if(mensaje!=null)
                     if(mensaje.trim().length()==15)
                         getDatoEdicion().setIdcabtareoweb(mensaje.trim());
-                WebUtil.info("Se aprobó el documento :"+getMensaje());
+                WebUtil.info("Se aprobó el documento :"+getDatoEdicion().getIddocumento()+"-"+
+                        getDatoEdicion().getSerie()+"-"+getDatoEdicion().getNumero()+" ("+getMensaje()+")");
                 setLvalidate(true);
                 RequestContext.getCurrentInstance().update("datos");
             }
@@ -1017,7 +1132,12 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
             RequestContext.getCurrentInstance().update("datos:growl");
         }
     }
-    
+    public String fechaDMY(Date fecha){
+        if(fecha!=null)
+            return WebUtil.fechaDMY(fecha, 7);
+        else
+            return "";
+    }
     /**
      * @return the user
      */
@@ -1674,6 +1794,20 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
      */
     public void setSelectCargo_personal(Cargos_personal selectCargo_personal) {
         this.selectCargo_personal = selectCargo_personal;
+    }
+
+    /**
+     * @return the filtro_super_usuario
+     */
+    public boolean isFiltro_super_usuario() {
+        return filtro_super_usuario;
+    }
+
+    /**
+     * @param filtro_super_usuario the filtro_super_usuario to set
+     */
+    public void setFiltro_super_usuario(boolean filtro_super_usuario) {
+        this.filtro_super_usuario = filtro_super_usuario;
     }
 }
 

@@ -207,8 +207,9 @@ public abstract class AbstactListAction<T> {
     public void doEditar_lista() throws IOException {
         if (this.datoSeleccionado == null) {
             WebUtil.MensajeAdvertencia("Debe seleccionar registro a editar.");
-
-        } else {
+        }else if(verificar_edicion()){
+            //WebUtil.MensajeAdvertencia("El documento no se puede editar");
+        }else {
             this.datoEdicion = this.datoSeleccionado;
             pag_acceso(this.edt_name);
             this.ladd = 2;
@@ -274,6 +275,8 @@ public abstract class AbstactListAction<T> {
     public abstract void cerrar();
     
     public abstract void aprobar();
+    
+    public boolean verificar_edicion(){return false;}
     
     public abstract  JRDataSource getDataSourceReport();
     

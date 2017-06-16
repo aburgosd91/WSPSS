@@ -26,10 +26,10 @@ public class Det_tareowebDao extends BaseDao<Det_tareoweb> {
             }
 	}
         /*APP WEB*/
-        public ArrayList<Det_tareoweb> listarPorEmpresaWeb_new(String idempresa,String desde, String hasta,String dni) throws NisiraORMException, SQLException {
+        public ArrayList<Det_tareoweb> listarPorEmpresaWeb_new(String idempresa,String desde, String hasta,String idresponsable,String idusuario) throws NisiraORMException, SQLException {
             ArrayList<Det_tareoweb> lista = new ArrayList<Det_tareoweb>();
             ResultSet rs = null;
-            rs = execProcedure("SP_TAREO_WEB_ORDENSERVICIOCLIENTE_TMPSS",idempresa,desde,hasta,dni);
+            rs = execProcedure("SP_TAREO_WEB_ORDENSERVICIOCLIENTE_TMPSS",idempresa,desde,hasta,idresponsable,idusuario);
             while (rs.next()) {
                 Det_tareoweb tareoweb = new Det_tareoweb();
                 tareoweb.setItem(rs.getInt("ITEM"));
@@ -39,6 +39,7 @@ public class Det_tareowebDao extends BaseDao<Det_tareoweb> {
                 tareoweb.setIddocumento(rs.getString("IDDOCUMENTO")!=null?rs.getString("IDDOCUMENTO").trim():"");
                 tareoweb.setSerie(rs.getString("SERIE")!=null?rs.getString("SERIE").trim():"");
                 tareoweb.setNumero(rs.getString("NUMERO")!=null?rs.getString("NUMERO").trim():"");
+                tareoweb.setFecha_osc(rs.getDate("FECHA_OSC"));
                 tareoweb.setRuc(rs.getString("RUC")!=null?rs.getString("RUC").trim():"");
                 tareoweb.setRazon(rs.getString("RAZON")!=null?rs.getString("RAZON").trim():"");
                 tareoweb.setIdservicio(rs.getString("IDSERVICIO")!=null?rs.getString("IDSERVICIO").trim():"");
@@ -106,11 +107,11 @@ public class Det_tareowebDao extends BaseDao<Det_tareoweb> {
 
         return lista;
         }
-        public ArrayList<Det_tareoweb> listarPorEmpresaWeb_update(String idempresa,String idcabtareoweb,String desde, String hasta,String dni) throws NisiraORMException, SQLException {
+        public ArrayList<Det_tareoweb> listarPorEmpresaWeb_update(String idempresa,String idcabtareoweb,String desde, String hasta,String idresponsable,String idusuario) throws NisiraORMException, SQLException {
             ArrayList<Det_tareoweb> lista = new ArrayList<Det_tareoweb>();
 
             ResultSet rs = null;
-            rs = execProcedure("GETDET_TAREOWEB_TMPSS",idempresa,idcabtareoweb,desde,hasta,dni);
+            rs = execProcedure("GETDET_TAREOWEB_TMPSS",idempresa,idcabtareoweb,desde,hasta,idresponsable,idusuario);
             while (rs.next()) {
                 Det_tareoweb tareoweb = new Det_tareoweb();
                 tareoweb.setItem(rs.getInt("ITEM"));
@@ -120,6 +121,7 @@ public class Det_tareowebDao extends BaseDao<Det_tareoweb> {
                 tareoweb.setIddocumento(rs.getString("IDDOCUMENTO")!=null?rs.getString("IDDOCUMENTO").trim():"");
                 tareoweb.setSerie(rs.getString("SERIE")!=null?rs.getString("SERIE").trim():"");
                 tareoweb.setNumero(rs.getString("NUMERO")!=null?rs.getString("NUMERO").trim():"");
+                tareoweb.setFecha_osc(rs.getDate("FECHA_OSC"));
                 tareoweb.setRuc(rs.getString("RUC")!=null?rs.getString("RUC").trim():"");
                 tareoweb.setIdservicio(rs.getString("IDSERVICIO")!=null?rs.getString("IDSERVICIO").trim():"");
                 tareoweb.setServicio(rs.getString("SERVICIO")!=null?rs.getString("SERVICIO").trim():"");
@@ -216,6 +218,7 @@ public class Det_tareowebDao extends BaseDao<Det_tareoweb> {
                 tareoweb.setChecklist(rs.getString("CHECKLIST")!=null?rs.getString("CHECKLIST").trim():"");
                 tareoweb.setItem_dpersonalservicio(rs.getString("ITEM_DPERSONALSERVICIO")!=null?rs.getString("ITEM_DPERSONALSERVICIO").trim():"");
                 tareoweb.setHora_req(rs.getFloat("HORA_REQ"));
+                tareoweb.setHora_rc(rs.getFloat("HORA_RC"));
                 if(tareoweb.getHora_req()!=0.0f){
                     tareoweb.setFhora_req(CoreUtil.convertDecimalTime(tareoweb.getHora_req()));
                     tareoweb.setShora_req(CoreUtil.convertTimeString(tareoweb.getFhora_req()));
@@ -251,6 +254,7 @@ public class Det_tareowebDao extends BaseDao<Det_tareoweb> {
                 tareoweb.setConductor_rpt(rs.getString("CONDUCTOR_RPT")!=null?rs.getString("CONDUCTOR_RPT").trim():"");
                 tareoweb.setPrecinto_rpt(rs.getString("PRECINTO_RPT")!=null?rs.getString("PRECINTO_RPT").trim():"");
                 tareoweb.setPlaca_cliente_rpt(rs.getString("PLACA_CLIENTE_RPT")!=null?rs.getString("PLACA_CLIENTE_RPT").trim():"");
+                tareoweb.setFecha_osc(rs.getDate("FECHA_OSC"));
                 tareoweb.setTareo(new ArrayList<>());
                 lista.add(tareoweb); 
             }
@@ -288,6 +292,7 @@ public class Det_tareowebDao extends BaseDao<Det_tareoweb> {
                 tareoweb.setChecklist(rs.getString("CHECKLIST")!=null?rs.getString("CHECKLIST").trim():"");
                 tareoweb.setItem_dpersonalservicio(rs.getString("ITEM_DPERSONALSERVICIO")!=null?rs.getString("ITEM_DPERSONALSERVICIO").trim():"");
                 tareoweb.setHora_req(rs.getFloat("HORA_REQ"));
+                tareoweb.setHora_rc(rs.getFloat("HORA_RC"));
                 if(tareoweb.getHora_req()!=0.0f){
                     tareoweb.setFhora_req(CoreUtil.convertDecimalTime(tareoweb.getHora_req()));
                     tareoweb.setShora_req(CoreUtil.convertTimeString(tareoweb.getFhora_req()));
@@ -324,6 +329,7 @@ public class Det_tareowebDao extends BaseDao<Det_tareoweb> {
                 tareoweb.setConductor_rpt(rs.getString("CONDUCTOR_RPT")!=null?rs.getString("CONDUCTOR_RPT").trim():"");
                 tareoweb.setPrecinto_rpt(rs.getString("PRECINTO_RPT")!=null?rs.getString("PRECINTO_RPT").trim():"");
                 tareoweb.setPlaca_cliente_rpt(rs.getString("PLACA_CLIENTE_RPT")!=null?rs.getString("PLACA_CLIENTE_RPT").trim():"");
+                tareoweb.setFecha_osc(rs.getDate("FECHA_OSC"));
                 tareoweb.setTareo(new ArrayList<>());
                 lista.add(tareoweb); 
             }
