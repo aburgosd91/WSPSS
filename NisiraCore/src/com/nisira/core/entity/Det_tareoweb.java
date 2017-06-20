@@ -144,6 +144,24 @@ public class Det_tareoweb implements Serializable {
         @XStreamAlias("HORA_RC")
         @Columna
         private Float hora_rc;
+        @Columna
+        @XStreamAlias("NROCONTENEDOR")
+	private String nrocontenedor;
+	@Columna
+        @XStreamAlias("NROPRECINTO")
+	private String nroprecinto;
+	@Columna
+        @XStreamAlias("NRO_OSERVICIO")
+	private String nro_oservicio;
+        @Columna
+        @XStreamAlias("PLACA_CLIENTE")
+	private String placa_cliente;
+        @Columna
+        @XStreamAlias("CONDUCTOR_CLIENTE")
+	private String conductor_cliente;
+        @Columna
+        @XStreamAlias("BREVETE_CLIENTE")
+	private String brevete_cliente;
         private Date fecha_osc;
         private String vehiculo;
         private String cargo;
@@ -164,6 +182,7 @@ public class Det_tareoweb implements Serializable {
         private boolean exige_glosa;
         private String color;
         private List<Object[]> tareo;
+        private String codoperaciones;
         /*adicional*/
         private Clieprov selectPersonal;
         private Consumidor selectConsumidor;
@@ -812,5 +831,103 @@ public class Det_tareoweb implements Serializable {
      */
     public void setHora_rc(Float hora_rc) {
         this.hora_rc = hora_rc;
+    }
+
+    /**
+     * @return the nrocontenedor
+     */
+    public String getNrocontenedor() {
+        return nrocontenedor;
+    }
+
+    /**
+     * @param nrocontenedor the nrocontenedor to set
+     */
+    public void setNrocontenedor(String nrocontenedor) {
+        this.nrocontenedor = nrocontenedor;
+    }
+
+    /**
+     * @return the nroprecinto
+     */
+    public String getNroprecinto() {
+        return nroprecinto;
+    }
+
+    /**
+     * @param nroprecinto the nroprecinto to set
+     */
+    public void setNroprecinto(String nroprecinto) {
+        this.nroprecinto = nroprecinto;
+    }
+
+    /**
+     * @return the nro_oservicio
+     */
+    public String getNro_oservicio() {
+        return nro_oservicio;
+    }
+
+    /**
+     * @param nro_oservicio the nro_oservicio to set
+     */
+    public void setNro_oservicio(String nro_oservicio) {
+        this.nro_oservicio = nro_oservicio;
+    }
+
+    /**
+     * @return the placa_cliente
+     */
+    public String getPlaca_cliente() {
+        return placa_cliente;
+    }
+
+    /**
+     * @param placa_cliente the placa_cliente to set
+     */
+    public void setPlaca_cliente(String placa_cliente) {
+        this.placa_cliente = placa_cliente;
+    }
+
+    /**
+     * @return the conductor_cliente
+     */
+    public String getConductor_cliente() {
+        return conductor_cliente;
+    }
+
+    /**
+     * @param conductor_cliente the conductor_cliente to set
+     */
+    public void setConductor_cliente(String conductor_cliente) {
+        this.conductor_cliente = conductor_cliente;
+    }
+
+    /**
+     * @return the brevete_cliente
+     */
+    public String getBrevete_cliente() {
+        return brevete_cliente;
+    }
+
+    /**
+     * @param brevete_cliente the brevete_cliente to set
+     */
+    public void setBrevete_cliente(String brevete_cliente) {
+        this.brevete_cliente = brevete_cliente;
+    }
+
+    /**
+     * @return the codoperaciones
+     */
+    public String getCodoperaciones() {
+        return codoperaciones;
+    }
+
+    /**
+     * @param codoperaciones the codoperaciones to set
+     */
+    public void setCodoperaciones(String codoperaciones) {
+        this.codoperaciones = codoperaciones;
     }
 }

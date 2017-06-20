@@ -55,6 +55,15 @@ public class Det_tareowebDao extends BaseDao<Det_tareoweb> {
                 tareoweb.setIdvehiculo(rs.getString("IDVEHICULO")!=null?rs.getString("IDVEHICULO").trim():"");
                 tareoweb.setVehiculo(rs.getString("VEHICULO")!=null?rs.getString("VEHICULO").trim():"");
                 tareoweb.setChecklist(rs.getString("CHECKLIST")!=null?rs.getString("CHECKLIST").trim():"");
+                
+                tareoweb.setNrocontenedor(rs.getString("NROCONTENEDOR")!=null?rs.getString("NROCONTENEDOR").trim():"");
+                tareoweb.setNroprecinto(rs.getString("NROPRECINTO")!=null?rs.getString("NROPRECINTO").trim():"");
+                tareoweb.setNro_oservicio(rs.getString("NRO_OSERVICIO")!=null?rs.getString("NRO_OSERVICIO").trim():"");
+                tareoweb.setPlaca_cliente(rs.getString("PLACA_CLIENTE")!=null?rs.getString("PLACA_CLIENTE").trim():"");
+                tareoweb.setConductor_cliente(rs.getString("CONDUCTOR_CLIENTE")!=null?rs.getString("CONDUCTOR_CLIENTE").trim():"");
+                tareoweb.setBrevete_cliente(rs.getString("BREVETE_CLIENTE")!=null?rs.getString("BREVETE_CLIENTE").trim():"");
+                tareoweb.setCodoperaciones(rs.getString("CODOPERACIONES")!=null?rs.getString("CODOPERACIONES").trim():"");
+                
                 tareoweb.setItem_dpersonalservicio(rs.getString("ITEM_DPERSONALSERVICIO")!=null?rs.getString("ITEM_DPERSONALSERVICIO").trim():"");
                 tareoweb.setHora_req(rs.getFloat("HORA_REQ"));
                 if(tareoweb.getHora_req()!=0.0f){
@@ -137,6 +146,13 @@ public class Det_tareowebDao extends BaseDao<Det_tareoweb> {
                 tareoweb.setIdvehiculo(rs.getString("IDVEHICULO")!=null?rs.getString("IDVEHICULO").trim():"");
                 tareoweb.setVehiculo(rs.getString("VEHICULO")!=null?rs.getString("VEHICULO").trim():"");
                 tareoweb.setChecklist(rs.getString("CHECKLIST")!=null?rs.getString("CHECKLIST").trim():"");
+                tareoweb.setNrocontenedor(rs.getString("NROCONTENEDOR")!=null?rs.getString("NROCONTENEDOR").trim():"");
+                tareoweb.setNroprecinto(rs.getString("NROPRECINTO")!=null?rs.getString("NROPRECINTO").trim():"");
+                tareoweb.setNro_oservicio(rs.getString("NRO_OSERVICIO")!=null?rs.getString("NRO_OSERVICIO").trim():"");
+                tareoweb.setPlaca_cliente(rs.getString("PLACA_CLIENTE")!=null?rs.getString("PLACA_CLIENTE").trim():"");
+                tareoweb.setConductor_cliente(rs.getString("CONDUCTOR_CLIENTE")!=null?rs.getString("CONDUCTOR_CLIENTE").trim():"");
+                tareoweb.setBrevete_cliente(rs.getString("BREVETE_CLIENTE")!=null?rs.getString("BREVETE_CLIENTE").trim():"");
+                tareoweb.setCodoperaciones(rs.getString("CODOPERACIONES")!=null?rs.getString("CODOPERACIONES").trim():"");
                 tareoweb.setItem_dpersonalservicio(rs.getString("ITEM_DPERSONALSERVICIO")!=null?rs.getString("ITEM_DPERSONALSERVICIO").trim():"");
                 tareoweb.setHora_req(rs.getFloat("HORA_REQ"));
                 if(tareoweb.getHora_req()!=0.0f){
