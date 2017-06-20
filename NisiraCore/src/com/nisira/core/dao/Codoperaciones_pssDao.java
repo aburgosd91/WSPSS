@@ -66,6 +66,27 @@ public class Codoperaciones_pssDao extends BaseDao<Codoperaciones_pss> {
         return lista;
         }
         
+        public ArrayList<Codoperaciones_pss> listarPorEmpresaService() throws NisiraORMException {
+            ArrayList<Codoperaciones_pss> lista = new ArrayList<Codoperaciones_pss>();
+        try
+        {
+            ResultSet rs = null;
+            rs = execProcedure("GETCODOPERACIONES_TMPSS");
+            while (rs.next()) {
+                Codoperaciones_pss codoperaciones_pss = new Codoperaciones_pss();
+                codoperaciones_pss.setIdcodoperaciones(rs.getString("IDCODOPERACIONES").trim());
+                codoperaciones_pss.setDescripcion(rs.getString("DESCRIPCION")!=null?rs.getString("DESCRIPCION").trim():"");
+                codoperaciones_pss.setDescripcion_corta(rs.getString("DESCRIPCION_CORTA")!=null?rs.getString("DESCRIPCION_CORTA").trim():"");
+                codoperaciones_pss.setFechacreacion(rs.getDate("FECHACREACION"));
+                codoperaciones_pss.setEstado(rs.getFloat("ESTADO"));
+                lista.add(codoperaciones_pss);  
+            }
+        } catch(Exception ex) {
+            ex.printStackTrace();
+        }
+        return lista;
+        }
+        
         /*nuevo / editar*/
         public String grabar(int tipo,Codoperaciones_pss obj) throws Exception {
             String mensaje="";
