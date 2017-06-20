@@ -286,12 +286,12 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
                 listDet_tareoweb = tareoWebDao.listarPorEmpresaWeb_update(getDatoEdicion().getIdempresa(),getDatoEdicion().getIdcabtareoweb(),WebUtil.fechaDMY(getDatoEdicion().getFecha(),5), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5),getDatoEdicion().getIdresponsable(),user.getIDUSUARIO());
                 cargarPersonalVehiculo();
             }
-            RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
+            //RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
         }catch(Exception ex){
             this.mensaje=ex.getMessage();
             WebUtil.error(mensaje);
         }
-        RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
+        //RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
         RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
     }
     public void cargarPersonalVehiculo(){
@@ -392,7 +392,7 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
                             entity.setPersonal(ob.getRazonsocial()); 
                         }
                         break;
-                    case "Vehículo":
+                    case "Placa PSS":
                         if(newValue==null){
                             entity.setIdvehiculo("");
                             entity.setVehiculo("");
@@ -524,7 +524,7 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
     public void onRefresh(){
         try {
             listDet_tareoweb = tareoWebDao.listarPorEmpresaWeb_new(user.getIDEMPRESA(), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5),getDatoEdicion().getIdresponsable(),user.getIDUSUARIO());
-            RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
+            //RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
             RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
         } catch (NisiraORMException | SQLException ex) {
             this.mensaje = ex.getMessage();
@@ -647,7 +647,7 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
             for(Personal_servicio per : listPersonal_servicio){
                 actualizarPersonal_servicio_tareoweb(this.iddocumento_local,this.serie_local,this.numero_local,per);
             }
-            RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
+            //RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
             RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
             RequestContext.getCurrentInstance().execute("PF('dlgasignar_personal').hide()");
         }
@@ -768,7 +768,7 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
             listDet_tareoweb=lst_total;
             RequestContext.getCurrentInstance().execute("PF('dlgAddItemTareo').hide()");
         }
-        RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
+        //RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
         RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
     }
     public ComboEspecial findComboEspecial(String idordenservicio){
@@ -794,7 +794,7 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
                 selectDet_tareoweb.setGlosa(glosa_local);
             listDet_tareoweb.set(posSelect_det_tareoweb, selectDet_tareoweb);
             RequestContext.getCurrentInstance().execute("PF('dlgDetalleAsistencia').hide()");
-            RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
+            //RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
             RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
         }
     }
@@ -831,7 +831,7 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
         Det_tareoweb sl = selectDet_tareoweb;
         if(sl!=null){
             listDet_tareoweb.remove(sl);
-            RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
+            //RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
             RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
         }
     }
@@ -859,10 +859,11 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
                     dtw.setHora_fin_serv(selectDet_tareoweb.getHora_fin_serv());
                     dtw.setFechafinregistro(selectDet_tareoweb.getFechafinregistro());
                     dtw.setFecharegistro(selectDet_tareoweb.getFechafinregistro());
+                    /****************************************************************************/
                     listDet_tareoweb.set(i, dtw);
                 }
             }
-            RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
+            //RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
             RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
         }
     }
@@ -877,9 +878,9 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
                 flag = false;
                 this.mensaje="Servicio Item:"+obj.getItem()+" - "+obj.getIddocumento()+"-"+obj.getSerie()+"-"+obj.getNumero()+" ("+obj.getFecha_osc()+")"+
                         " <Personal> no asignado";
-                WebUtil.fatal(mensaje);
-                RequestContext.getCurrentInstance().update("datos:growl");
-                break;
+//                WebUtil.fatal(mensaje);
+//                RequestContext.getCurrentInstance().update("datos:growl");
+//                break;
             }else{
                 if(obj.getHora_llegada()==0.0f)
                     validacion+="\nHora LLegada <00:00> no asignado";
@@ -890,9 +891,9 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
                 if(!validacion.equals("")){
                     flag = false;
                     this.mensaje="Servicio Item:"+obj.getItem()+" - "+obj.getIddocumento()+"-"+obj.getSerie()+"-"+obj.getNumero()+" ("+obj.getFecha_osc()+")"+""+validacion;
-                    WebUtil.fatal(mensaje);
-                    RequestContext.getCurrentInstance().update("datos:growl");
-                    break;
+//                    WebUtil.fatal(mensaje);
+//                    RequestContext.getCurrentInstance().update("datos:growl");
+//                    break;
                 }else{
                     listDet_tareoweb_verification.add(obj);
                 }
@@ -1012,7 +1013,7 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
         try {
             if (esVistaValida()) {
                 /*DATOS INICIALES*/
-                if(getLadd()==1){
+                if(getDatoEdicion().getIdcabtareoweb()==null){
                     mensaje=getCabtareowebDao().grabar(1, getDatoEdicion(), 
                             getListDet_tareoweb());
                     if(mensaje!=null)

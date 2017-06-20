@@ -757,14 +757,14 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
         listRuta_servicios = cargarRuta_servicios();
         RequestContext.getCurrentInstance().update("datos:lstdordenserviciocliente");
         RequestContext.getCurrentInstance().update("datos:tabs:listPersonal_Servicio");
-        RequestContext.getCurrentInstance().update("datos:tabs:listRuta_servicios");
+        RequestContext.getCurrentInstance().update("datos:listRuta_servicios");
     }
     public void onRowSelectRuta_Servicios(SelectEvent event) throws IOException {
         setBotonEditarRuta_servicios(false);
         setBotonEliminarRuta_servicios(false);
         //RequestContext.getCurrentInstance().update("datos:listRuta_servicios");
-        RequestContext.getCurrentInstance().update("datos:tabs");
-        tabView.setActiveIndex(indexTab);
+        RequestContext.getCurrentInstance().update("datos:listRuta_servicios");
+        //tabView.setActiveIndex(indexTab);
     }
     public void onRowSelectPersonal_Servicio(SelectEvent event) throws IOException {
         try {
@@ -774,7 +774,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
             /*CARGAR DATOS DPERSONAL_SERVICIO*/
             listDpersonal_Servicio = cargarDpersonal_servicio();
             RequestContext.getCurrentInstance().update("datos:tabs");
-            //tabView.setActiveIndex(indexTab);
+            ////tabView.setActiveIndex(indexTab);
             //RequestContext.getCurrentInstance().update("datos:tabs:tab_personal_Servicio");
             //RequestContext.getCurrentInstance().update("datos:tabs:tab_personal_Servicio:listPersonal_Servicio");
         } catch (NisiraORMException ex) {
@@ -1166,6 +1166,11 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                                 per_ser.setItem(obj_p.getItem());
                                 per_ser.setItem2(agregarItemPersonal_servicio());
                                 per_ser.setFechaoperacion(new Date());
+                                per_ser.setNrocontenedor(getDatoEdicion().getNrocontenedor());
+                                per_ser.setNroprecinto(getDatoEdicion().getNroprecinto());
+                                per_ser.setNro_oservicio(getDatoEdicion().getNro_oservicio());
+                                per_ser.setPlaca_cliente(obj_p.getPlaca_cliente());
+                                per_ser.setConductor_cliente(obj_p.getConductor_cliente());
                                 listPersonalservicio_total.add(per_ser);
                             }
                         }
@@ -1184,7 +1189,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                 
                 RequestContext.getCurrentInstance().update("datos:lstdordenserviciocliente");
                 RequestContext.getCurrentInstance().update("datos:tabs:listPersonal_Servicio");
-                RequestContext.getCurrentInstance().update("datos:tabs:listRuta_servicios");
+                RequestContext.getCurrentInstance().update("datos:listRuta_servicios");
                 RequestContext.getCurrentInstance().update("datos:dlgnew_dordenserviciocliente");
                 RequestContext.getCurrentInstance().execute("PF('dlgnew_dordenserviciocliente').hide()");
             }
@@ -1831,21 +1836,14 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
     public void grabarRuta_servicio(){
         try {
             int pos=-1;
-            if(getSelectRuta_servicios()!=null){
-                pos=listRutasTotales.indexOf(getSelectRuta_servicios());
-//                pos=listRuta_servicios.indexOf(getSelectRuta_servicios());
-            }
-            if(pos==-1){
+            pos=listRutasTotales.indexOf(getRuta_servicios());
+            if(pos==-1)
                 listRutasTotales.add(ruta_servicios);
-//                listRuta_servicios.add(ruta_servicios);
-            }
-            else{
+            else
                 listRutasTotales.set(pos, ruta_servicios);
-//                listRuta_servicios.set(pos, ruta_servicios);
-            }
             listRuta_servicios = cargarRuta_servicios();
-            RequestContext.getCurrentInstance().update("datos:tabs");
-            tabView.setActiveIndex(indexTab);
+            RequestContext.getCurrentInstance().update("datos:listRuta_servicios");
+            //tabView.setActiveIndex(indexTab);
             RequestContext.getCurrentInstance().update("datos:dlgnew_ruta_servicios");
         } catch (Exception ex) {
             Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, null, ex);

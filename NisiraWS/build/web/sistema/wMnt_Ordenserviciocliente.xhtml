@@ -196,6 +196,50 @@
                                     </h:outputText>
                                 </p:column>
                              </p:dataTable> 
+                            <h:outputLabel value="*Seleccionar Detalle de servicio para agregar rutas" style="color: rgb(37, 42, 84);font-size: 12px;"/>
+                            <p:fieldset legend="Rutas" style="width: 100%" toggleable="true" collapsed="true" >
+                                <p:dataTable id="listRuta_servicios" var="listRuta_servicios" value="#{ordenservicioclienteAction.listRuta_servicios}" widgetVar="listRuta_servicios"
+                                    paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                    paginator="true" paginatorPosition="top" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{ordenservicioclienteAction.selectRuta_servicios}" rowKey="#{listRuta_servicios.itemruta}">
+                                       <p:ajax event="rowSelect" listener="#{ordenservicioclienteAction.onRowSelectRuta_Servicios}" />
+                                       <f:facet name="{Comandos}">
+                                           <p:commandButton value="Ruta" ajax="true" image="ui-icon-map" actionListener="#{ordenservicioclienteAction.viewRuta()}" />
+                                           <p:commandButton value="Nuevo" ajax="true" image="ui-icon-nuevo" actionListener="#{ordenservicioclienteAction.nuevoRuta_servicios()}" disabled="#{ordenservicioclienteAction.botonNuevoRuta_servicios or !ordenservicioclienteAction.edicion}"/>
+                                           <p:commandButton value="Editar" ajax="true" image="ui-icon-edit" actionListener="#{ordenservicioclienteAction.editarRuta_servicios()}" disabled="#{(ordenservicioclienteAction.botonEditarRuta_servicios or (ordenservicioclienteAction.botonNuevoRuta_servicios)?true:false) or !ordenservicioclienteAction.edicion}"/> 
+                                           <p:commandButton value="Eliminar" ajax="true" image="ui-icon-eliminar" actionListener="#{ordenservicioclienteAction.eliminarRuta_servicios()}" disabled="#{(ordenservicioclienteAction.botonEliminarRuta_servicios or (ordenservicioclienteAction.botonNuevoRuta_servicios)?true:false) or !ordenservicioclienteAction.edicion}"/>
+                                       </f:facet>
+                                       <p:column style="width:10%;" filterBy="#{listRuta_servicios.itemruta}" filterMatchMode="contains" sortBy="#{listRuta_servicios.itemruta}">
+                                           <f:facet name="header">
+                                               <h:outputText value="N°"/>
+                                           </f:facet>
+                                           <h:outputText value="#{listRuta_servicios.itemruta}"/>
+                                       </p:column>
+                                       <p:column style="width:40%;" filterBy="#{listRuta_servicios.ruta}" filterMatchMode="contains" sortBy="#{lstdordenserviciocliente.ruta}">
+                                           <f:facet name="header" >
+                                               <h:outputText value="Ruta" />
+                                           </f:facet>
+                                           <h:outputText value="#{listRuta_servicios.ruta}" />
+                                       </p:column>
+                                       <p:column style="width:15%;" filterBy="#{listRuta_servicios.latitud}" filterMatchMode="contains" sortBy="#{listRuta_servicios.latitud}">
+                                           <f:facet name="header" >
+                                               <h:outputText value="Latitud" />
+                                           </f:facet>
+                                           <h:outputText value="#{listRuta_servicios.latitud}" />
+                                       </p:column>
+                                       <p:column style="width:15%;" filterBy="#{listRuta_servicios.longitud}" filterMatchMode="contains" sortBy="#{listRuta_servicios.longitud}">
+                                           <f:facet name="header" >
+                                               <h:outputText value="Longitud" />
+                                           </f:facet>
+                                           <h:outputText value="#{listRuta_servicios.longitud}" />
+                                       </p:column>
+                                       <p:column style="width:30%;" filterBy="#{listRuta_servicios.glosa}" filterMatchMode="contains" sortBy="#{listRuta_servicios.glosa}">
+                                           <f:facet name="header" >
+                                               <h:outputText value="Glosa" />
+                                           </f:facet>
+                                           <h:outputText value="#{listRuta_servicios.glosa}" />
+                                       </p:column>
+                                   </p:dataTable> 
+                            </p:fieldset>
                         </div>
                         <p:tabView id="tabs">
                             <p:ajax event="tabChange" listener="#{ordenservicioclienteAction.onSPTabChange}" />
@@ -215,7 +259,7 @@
                                            </f:facet>
                                            <h:outputText value="#{listPersonal_Servicio.item2}"/>
                                        </p:column>
-                                       <p:column style="width:20%;" filterBy="#{listPersonal_Servicio.cargo}" filterMatchMode="contains" sortBy="#{listPersonal_Servicio.cargo}">
+                                       <p:column style="width:15%;" filterBy="#{listPersonal_Servicio.cargo}" filterMatchMode="contains" sortBy="#{listPersonal_Servicio.cargo}">
                                            <f:facet name="header" >
                                                <h:outputText value="Cargo" />
                                            </f:facet>
@@ -233,11 +277,48 @@
                                            </f:facet>
                                            <h:outputText value="#{listPersonal_Servicio.nombres}" />
                                        </p:column>
-                                       <p:column style="width:20%;" filterBy="#{listPersonal_Servicio.checklist}" filterMatchMode="contains" sortBy="#{listPersonal_Servicio.checklist}">
+                                       <p:column style="width:10%;" filterBy="#{listPersonal_Servicio.checklist}" filterMatchMode="contains" sortBy="#{listPersonal_Servicio.checklist}">
                                            <f:facet name="header" >
                                                <h:outputText value="Checklist" />
                                            </f:facet>
                                            <h:outputText value="#{listPersonal_Servicio.checklist}" />
+                                       </p:column>
+                                       <p:column style="width:10%;" filterBy="#{listPersonal_Servicio.nrocontenedor}" filterMatchMode="contains" sortBy="#{listPersonal_Servicio.nrocontenedor}">
+                                           <f:facet name="header" >
+                                               <h:outputText value="Nro Contenedor" />
+                                           </f:facet>
+                                           <h:outputText value="#{listPersonal_Servicio.nrocontenedor}" />
+                                       </p:column>
+                                       <p:column style="width:10%;" filterBy="#{listPersonal_Servicio.nroprecinto}" filterMatchMode="contains" sortBy="#{listPersonal_Servicio.nroprecinto}">
+                                           <f:facet name="header" >
+                                               <h:outputText value="Nro Precinto" />
+                                           </f:facet>
+                                           <h:outputText value="#{listPersonal_Servicio.nroprecinto}" />
+                                       </p:column>
+                                       <p:column style="width:10%;" filterBy="#{listPersonal_Servicio.nro_oservicio}" filterMatchMode="contains" sortBy="#{listPersonal_Servicio.nro_oservicio}">
+                                           <f:facet name="header" >
+                                               <h:outputText value="Nro Servicio" />
+                                           </f:facet>
+                                           <h:outputText value="#{listPersonal_Servicio.nro_oservicio}" />
+                                       </p:column>
+                                       
+                                       <p:column style="width:10%;" filterBy="#{listPersonal_Servicio.placa_cliente}" filterMatchMode="contains" sortBy="#{listPersonal_Servicio.placa_cliente}">
+                                           <f:facet name="header" >
+                                               <h:outputText value="Placa Cliente" />
+                                           </f:facet>
+                                           <h:outputText value="#{listPersonal_Servicio.placa_cliente}" />
+                                       </p:column>
+                                       <p:column style="width:10%;" filterBy="#{listPersonal_Servicio.conductor_cliente}" filterMatchMode="contains" sortBy="#{listPersonal_Servicio.conductor_cliente}">
+                                           <f:facet name="header" >
+                                               <h:outputText value="Conductor Cliente" />
+                                           </f:facet>
+                                           <h:outputText value="#{listPersonal_Servicio.conductor_cliente}" />
+                                       </p:column>
+                                       <p:column style="width:10%;" filterBy="#{listPersonal_Servicio.brevete_cliente}" filterMatchMode="contains" sortBy="#{listPersonal_Servicio.brevete_cliente}">
+                                           <f:facet name="header" >
+                                               <h:outputText value="Brevete Cliente" />
+                                           </f:facet>
+                                           <h:outputText value="#{listPersonal_Servicio.brevete_cliente}" />
                                        </p:column>
                                        <p:column style="width:10%;" filterBy="#{listPersonal_Servicio.idvehiculo}" filterMatchMode="contains" sortBy="#{listPersonal_Servicio.idvehiculo}">
                                            <f:facet name="header" >
@@ -321,49 +402,6 @@
                                        </p:column>
                                </p:dataTable>  
                             </p:tab>
-                            <p:tab id="tab_ruta_servicios" title="Rutas">
-                                <p:dataTable id="listRuta_servicios" var="listRuta_servicios" value="#{ordenservicioclienteAction.listRuta_servicios}" widgetVar="listRuta_servicios"
-                                    paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
-                                    paginator="true" paginatorPosition="top" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{ordenservicioclienteAction.selectRuta_servicios}" rowKey="#{listRuta_servicios.itemruta}">
-                                       <p:ajax event="rowSelect" listener="#{ordenservicioclienteAction.onRowSelectRuta_Servicios}" />
-                                       <f:facet name="{Comandos}">
-                                           <p:commandButton value="Ruta" ajax="true" image="ui-icon-map" actionListener="#{ordenservicioclienteAction.viewRuta()}" />
-                                           <p:commandButton value="Nuevo" ajax="true" image="ui-icon-nuevo" actionListener="#{ordenservicioclienteAction.nuevoRuta_servicios()}" disabled="#{ordenservicioclienteAction.botonNuevoRuta_servicios or !ordenservicioclienteAction.edicion}"/>
-                                           <p:commandButton value="Editar" ajax="true" image="ui-icon-edit" actionListener="#{ordenservicioclienteAction.editarRuta_servicios()}" disabled="#{(ordenservicioclienteAction.botonEditarRuta_servicios or (ordenservicioclienteAction.botonNuevoRuta_servicios)?true:false) or !ordenservicioclienteAction.edicion}"/> 
-                                           <p:commandButton value="Eliminar" ajax="true" image="ui-icon-eliminar" actionListener="#{ordenservicioclienteAction.eliminarRuta_servicios()}" disabled="#{(ordenservicioclienteAction.botonEliminarRuta_servicios or (ordenservicioclienteAction.botonNuevoRuta_servicios)?true:false) or !ordenservicioclienteAction.edicion}"/>
-                                       </f:facet>
-                                       <p:column style="width:10%;" filterBy="#{listRuta_servicios.itemruta}" filterMatchMode="contains" sortBy="#{listRuta_servicios.itemruta}">
-                                           <f:facet name="header">
-                                               <h:outputText value="N°"/>
-                                           </f:facet>
-                                           <h:outputText value="#{listRuta_servicios.itemruta}"/>
-                                       </p:column>
-                                       <p:column style="width:40%;" filterBy="#{listRuta_servicios.ruta}" filterMatchMode="contains" sortBy="#{lstdordenserviciocliente.ruta}">
-                                           <f:facet name="header" >
-                                               <h:outputText value="Ruta" />
-                                           </f:facet>
-                                           <h:outputText value="#{listRuta_servicios.ruta}" />
-                                       </p:column>
-                                       <p:column style="width:15%;" filterBy="#{listRuta_servicios.latitud}" filterMatchMode="contains" sortBy="#{listRuta_servicios.latitud}">
-                                           <f:facet name="header" >
-                                               <h:outputText value="Latitud" />
-                                           </f:facet>
-                                           <h:outputText value="#{listRuta_servicios.latitud}" />
-                                       </p:column>
-                                       <p:column style="width:15%;" filterBy="#{listRuta_servicios.longitud}" filterMatchMode="contains" sortBy="#{listRuta_servicios.longitud}">
-                                           <f:facet name="header" >
-                                               <h:outputText value="Longitud" />
-                                           </f:facet>
-                                           <h:outputText value="#{listRuta_servicios.longitud}" />
-                                       </p:column>
-                                       <p:column style="width:30%;" filterBy="#{listRuta_servicios.glosa}" filterMatchMode="contains" sortBy="#{listRuta_servicios.glosa}">
-                                           <f:facet name="header" >
-                                               <h:outputText value="Glosa" />
-                                           </f:facet>
-                                           <h:outputText value="#{listRuta_servicios.glosa}" />
-                                       </p:column>
-                                   </p:dataTable> 
-                            </p:tab>
                         </p:tabView>
                         <p:dialog id="dlgnew_dordenserviciocliente" header="..::Detalle::." widgetVar="dlgnew_dordenserviciocliente" modal="true" showEffect="popup" closable="false">
                             <p:panelGrid columns="1" columnClasses="no-border">
@@ -392,12 +430,12 @@
                                     <p:outputLabel value="#Cantidad:" escape="false" />
                                     <p:spinner value="#{ordenservicioclienteAction.num_repetir_detalle}" min="1" disabled="#{ordenservicioclienteAction.fnum_repetir}"/>
                                     <p:outputLabel value="Placa/Cliente:" />
-                                    <p:inputTextarea  cols="60" rows="2"  value="#{ordenservicioclienteAction.dordenserviciocliente.placa_cliente}" onkeyup="javascript:this.value = this.value.toUpperCase();" disabled="#{ordenservicioclienteAction.ftipo_servicio}">
+                                    <p:inputTextarea  cols="60" rows="1"  value="#{ordenservicioclienteAction.dordenserviciocliente.placa_cliente}" onkeyup="javascript:this.value = this.value.toUpperCase();" disabled="#{ordenservicioclienteAction.ftipo_servicio}">
                                     </p:inputTextarea>
                                     <p:outputLabel for="hora_req" value="Hora. Req.:" />
                                     <p:calendar id="hora_req" value="#{ordenservicioclienteAction.dordenserviciocliente.hora_reqConvert}" mask="99:99" pattern="HH:mm" timeOnly="true"  />
                                     <p:outputLabel value="Conductor/Cliente:" />
-                                    <p:inputTextarea  cols="60" rows="2"  value="#{ordenservicioclienteAction.dordenserviciocliente.conductor_cliente}" onkeyup="javascript:this.value = this.value.toUpperCase();">
+                                    <p:inputTextarea  cols="60" rows="1"  value="#{ordenservicioclienteAction.dordenserviciocliente.conductor_cliente}" onkeyup="javascript:this.value = this.value.toUpperCase();">
                                     </p:inputTextarea>
                                     <p:outputLabel for="fecha_fin_servicio" value="F. Fin:" />
                                     <p:calendar id="fecha_fin_servicio" value="#{ordenservicioclienteAction.dordenserviciocliente.fecha_fin_servicio}" pattern="dd-MM-yyyy" mask="true" />
@@ -477,6 +515,25 @@
                                     <p:spinner value="#{ordenservicioclienteAction.num_repetir}" min="1" disabled="#{ordenservicioclienteAction.fnum_repetir}"/>
                                     <p:outputLabel for="checklist_personalservicio" value="Checklist:" />
                                     <p:inputText id="checklist_personalservicio" size="60" value="#{ordenservicioclienteAction.personal_servicio.checklist}" onkeyup="javascript:this.value = this.value.toUpperCase();"/>
+                                    
+                                    <p:outputLabel for="nrocontenedor_personalservicio" value="Nro Contenedor:" />
+                                    <p:inputText id="nrocontenedor_personalservicio" size="60" value="#{ordenservicioclienteAction.personal_servicio.nrocontenedor}" onkeyup="javascript:this.value = this.value.toUpperCase();"/>
+                                    
+                                    <p:outputLabel for="nroprecinto_personalservicio" value="Nro Precinto:" />
+                                    <p:inputText id="nroprecinto_personalservicio" size="60" value="#{ordenservicioclienteAction.personal_servicio.nroprecinto}" onkeyup="javascript:this.value = this.value.toUpperCase();"/>
+                                    
+                                    <p:outputLabel for="nro_oservicio_personalservicio" value="Nro Servicio" />
+                                    <p:inputText id="nro_oservicio_personalservicio" size="60" value="#{ordenservicioclienteAction.personal_servicio.nro_oservicio}" onkeyup="javascript:this.value = this.value.toUpperCase();"/>
+                                    
+                                    <p:outputLabel for="placa_cliente_personalservicio" value="Placa Cliente" />
+                                    <p:inputText id="placa_cliente_personalservicio" size="60" value="#{ordenservicioclienteAction.personal_servicio.placa_cliente}" onkeyup="javascript:this.value = this.value.toUpperCase();"/>
+                                    
+                                    <p:outputLabel for="conductor_cliente_personalservicio" value="Conductor Cliente" />
+                                    <p:inputText id="conductor_cliente_personalservicio" size="60" value="#{ordenservicioclienteAction.personal_servicio.conductor_cliente}" onkeyup="javascript:this.value = this.value.toUpperCase();"/>
+                                    
+                                    <p:outputLabel for="brevete_cliente_personalservicio" value="Brevete Cliente" />
+                                    <p:inputText id="brevete_cliente_personalservicio" size="60" value="#{ordenservicioclienteAction.personal_servicio.brevete_cliente}" onkeyup="javascript:this.value = this.value.toUpperCase();"/>
+                                    
                                     <p:outputLabel value="Vehículo" escape="false" />
                                     <h:panelGrid id="cntConsumidor" cellpadding="0" cellspacing="0" columns="3">
                                         <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{ordenservicioclienteAction.verCntConsumidor()}" icon="ui-icon-search"  disabled="#{ordenservicioclienteAction.ftipo_servicio}">

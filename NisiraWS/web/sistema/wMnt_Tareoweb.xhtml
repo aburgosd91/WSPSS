@@ -134,7 +134,7 @@
                 style="margin-bottom:20px;font-size: 12px;width:100%;" 
                 resizableColumns="true" 
                 selection="#{tareowebAction.selectDet_tareoweb}" selectionMode="single" 
-                frozenColumns="8" 
+                frozenColumns="9" 
                 rowKey="#{listDet_tareoweb.item}" editable="#{tareowebAction.edicion}" editMode="cell">
                 <p:ajax event="cellEdit" listener="#{tareowebAction.onCellEdit}" update="listDet_tareoweb"/>
                 <f:facet name="header">
@@ -152,19 +152,19 @@
                        </f:facet>
                        <h:outputText value="#{listDet_tareoweb.iddocumento}"/>
                     </p:column>
-                    <p:column filterBy="#{listDet_tareoweb.serie}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.serie}" style="white-space: nowrap; width: 28px;padding: 3px;text-align: center">
+                    <p:column filterBy="#{listDet_tareoweb.serie}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.serie}" style="white-space: nowrap; width: 18px;padding: 3px;text-align: center">
                        <f:facet name="header">
                            <h:outputText value="Serie"/>
                        </f:facet>
                        <h:outputText value="#{listDet_tareoweb.serie}"/>
                     </p:column>
-                    <p:column filterBy="#{listDet_tareoweb.numero}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.numero}" style="white-space: nowrap; width: 48px;padding: 3px;text-align: center">
+                    <p:column filterBy="#{listDet_tareoweb.numero}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.numero}" style="white-space: nowrap; width: 25px;padding: 3px;text-align: center">
                        <f:facet name="header">
                            <h:outputText value="Número"/>
                        </f:facet>
                        <h:outputText value="#{listDet_tareoweb.numero}"/>
                     </p:column>
-                    <p:column style="white-space: nowrap; width: 48px;padding: 3px;" filterBy="#{tareowebAction.fechaDMY(listDet_tareoweb.fecha_osc)}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.fecha_osc}">
+                    <p:column style="white-space: nowrap; width: 30px;padding: 3px;" filterBy="#{tareowebAction.fechaDMY(listDet_tareoweb.fecha_osc)}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.fecha_osc}">
                         <f:facet name="header">
                             <h:outputText value="Fecha" />
                         </f:facet>
@@ -172,37 +172,57 @@
                             <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
                         </h:outputText>
                     </p:column>
-                    <p:column filterBy="#{listDet_tareoweb.ruc} #{listDet_tareoweb.razon}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.ruc} #{listDet_tareoweb.razon}" style="white-space: nowrap; width: 180px;padding: 3px;text-align: left">
+                    <p:column filterBy="#{listDet_tareoweb.ruc} #{listDet_tareoweb.razon}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.ruc} #{listDet_tareoweb.razon}" style="white-space: nowrap; width: 120px;padding: 3px;text-align: left">
                        <f:facet name="header">
                            <h:outputText value="Cliente"/>
                        </f:facet>
                        <h:outputText value="#{listDet_tareoweb.ruc} - #{listDet_tareoweb.razon}"/>
                     </p:column>
-                    <p:column filterBy="#{listDet_tareoweb.cargo}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.cargo}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: left">
+                    <p:column filterBy="#{listDet_tareoweb.codoperaciones}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.codoperaciones}" style="white-space: nowrap; width: 20px;padding: 3px;text-align: left">
+                       <f:facet name="header">
+                           <h:outputText value="Cod.Ope."/>
+                       </f:facet>
+                       <h:outputText value="#{listDet_tareoweb.codoperaciones}"/>
+                    </p:column>
+                    <p:column filterBy="#{listDet_tareoweb.cargo}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.cargo}" style="white-space: nowrap; width: 50px;padding: 3px;text-align: left">
                        <f:facet name="header">
                            <h:outputText value="Cargo"/>
                        </f:facet>
                        <h:outputText value="#{listDet_tareoweb.cargo}"/>
                     </p:column>
-                    <p:column headerText="Personal" filterBy="#{listDet_tareoweb.dni}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.dni}" style="white-space: nowrap; width: 150px;padding: 3px;text-align: left">
-                        <p:cellEditor >
-                            <f:facet name="output">
-                                <h:outputText value="#{listDet_tareoweb.dni} - #{listDet_tareoweb.personal}"/>
-                            </f:facet>
-                            <f:facet name="input" >
-                                <p:autoComplete size="80" id="personal" value="#{listDet_tareoweb.selectPersonal}" maxResults="10" completeMethod="#{tareowebAction.completePersonal}"
-                                            var="personal" itemLabel="#{personal.dni}" itemValue="#{personal}" converter="personalConverter" forceSelection="true">
-                                    <p:column style="width:10%">
-                                         <h:outputText value="#{personal.dni}" />
-                                     </p:column>
-                                     <p:column style="width:90%">
-                                         <h:outputText value="#{personal.razonsocial}" />
-                                     </p:column>
-                                </p:autoComplete>
-                            </f:facet>
-                        </p:cellEditor>
+                
+                    <p:column headerText="Personal" filterBy="#{listDet_tareoweb.dni} - #{listDet_tareoweb.personal}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.personal}" style="white-space: nowrap; width: 150px;padding: 3px;text-align: left">
+                            <p:cellEditor >
+                                <f:facet name="output">
+                                    <h:outputText value="#{listDet_tareoweb.dni} - #{listDet_tareoweb.personal}"/>
+                                </f:facet>
+                                <f:facet name="input" >
+                                    <p:autoComplete size="80" id="personal" value="#{listDet_tareoweb.selectPersonal}" maxResults="10" completeMethod="#{tareowebAction.completePersonal}"
+                                                var="personal" itemLabel="#{personal.dni}" itemValue="#{personal}" converter="personalConverter" forceSelection="true">
+                                        <p:column style="width:10%">
+                                             <h:outputText value="#{personal.dni}" />
+                                         </p:column>
+                                         <p:column style="width:90%">
+                                             <h:outputText value="#{personal.razonsocial}" />
+                                         </p:column>
+                                    </p:autoComplete>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                    <p:column headerText="Placa Cliente" filterBy="#{listDet_tareoweb.placa_cliente}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.placa_cliente}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: left">
+                        <p:cellEditor>
+                           <f:facet name="output">
+                               <h:outputText value="#{listDet_tareoweb.placa_cliente}">
+                               </h:outputText>
+                           </f:facet>
+                            <f:facet name="input">
+                                <p:inputText style="font-size:10px;" id="placa_cliente_det" value="#{listDet_tareoweb.placa_cliente}">
+                                </p:inputText>
+                           </f:facet>
+                       </p:cellEditor>
                     </p:column>
-                    <p:column headerText="Vehículo" filterBy="#{listDet_tareoweb.idvehiculo}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.idvehiculo}" style="white-space: nowrap; width: 150px;padding: 3px;text-align: left">
+                    
+                    <p:column headerText="Placa PSS" filterBy="#{listDet_tareoweb.idvehiculo}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.idvehiculo}" style="white-space: nowrap; width: 150px;padding: 3px;text-align: left">
                         <p:cellEditor >
                             <f:facet name="output">
                                 <h:outputText value="#{listDet_tareoweb.idvehiculo} - #{listDet_tareoweb.vehiculo}"/>
@@ -220,6 +240,30 @@
                             </f:facet>
                         </p:cellEditor>
                     </p:column>
+                    <p:column headerText="Conductor Cliente" filterBy="#{listDet_tareoweb.conductor_cliente}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.conductor_cliente}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: left">
+                        <p:cellEditor>
+                           <f:facet name="output">
+                               <h:outputText value="#{listDet_tareoweb.conductor_cliente}">
+                               </h:outputText>
+                           </f:facet>
+                            <f:facet name="input">
+                                <p:inputText style="font-size:10px;" id="conductor_cliente_det" value="#{listDet_tareoweb.conductor_cliente}">
+                                </p:inputText>
+                           </f:facet>
+                       </p:cellEditor>
+                    </p:column>
+                    <p:column headerText="Brevete Cliente" filterBy="#{listDet_tareoweb.brevete_cliente}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.brevete_cliente}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: left">
+                        <p:cellEditor>
+                           <f:facet name="output">
+                               <h:outputText value="#{listDet_tareoweb.brevete_cliente}">
+                               </h:outputText>
+                           </f:facet>
+                            <f:facet name="input">
+                                <p:inputText style="font-size:10px;" id="brevete_cliente_det" value="#{listDet_tareoweb.brevete_cliente}">
+                                </p:inputText>
+                           </f:facet>
+                       </p:cellEditor>
+                    </p:column>
                     <p:column headerText="Checklist" filterBy="#{listDet_tareoweb.checklist}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.checklist}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: left">
                         <p:cellEditor>
                            <f:facet name="output">
@@ -228,6 +272,18 @@
                            </f:facet>
                             <f:facet name="input">
                                 <p:inputText style="font-size:10px;" id="checklist" value="#{listDet_tareoweb.checklist}">
+                                </p:inputText>
+                           </f:facet>
+                       </p:cellEditor>
+                    </p:column>
+                    <p:column headerText="Nro Contenedor" filterBy="#{listDet_tareoweb.nrocontenedor}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.nrocontenedor}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: left">
+                        <p:cellEditor>
+                           <f:facet name="output">
+                               <h:outputText value="#{listDet_tareoweb.nrocontenedor}">
+                               </h:outputText>
+                           </f:facet>
+                            <f:facet name="input">
+                                <p:inputText style="font-size:10px;" id="nrocontenedor_det" value="#{listDet_tareoweb.nrocontenedor}">
                                 </p:inputText>
                            </f:facet>
                        </p:cellEditor>
@@ -302,10 +358,10 @@
                     </p:column>
                     <p:column style="white-space: nowrap; width: 130px;padding: 3px;text-align: center;background-color:##{listDet_tareoweb.color}" headerText="T.Asistencia" filterBy="(#{listDet_tareoweb.codasistencia})#{listDet_tareoweb.asistencia}" filterMatchMode="contains" sortBy="(#{listDet_tareoweb.codasistencia})#{listDet_tareoweb.asistencia}">
                         <p:cellEditor>
-                            <f:facet name="output"><h:outputText value="(#{listDet_tareoweb.codasistencia})#{listDet_tareoweb.asistencia}" /></f:facet>
+                            <f:facet name="output"><h:outputText value="#{listDet_tareoweb.asistencia}" /></f:facet>
                            <f:facet name="input">
                                <h:selectOneMenu value="#{listDet_tareoweb.codasistencia}" style="width:100%">
-                                   <f:selectItems value="#{tareowebAction.listTipo_asistencia}" var="ta" itemLabel="#{ta.nombre_corto}" itemValue="#{ta.idtipoasistencia}" />
+                                   <f:selectItems value="#{tareowebAction.listTipo_asistencia}" var="ta" itemLabel="#{ta.nombre_corto}-#{ta.descripcion}" itemValue="#{ta.idtipoasistencia}" />
                                </h:selectOneMenu>
                            </f:facet>
                        </p:cellEditor>
@@ -315,6 +371,30 @@
                            <h:outputText value="Observación"/>
                        </f:facet>
                        <h:outputText value="#{listDet_tareoweb.glosa}"/>
+                    </p:column>
+                    <p:column headerText="Nro Precinto" filterBy="#{listDet_tareoweb.nroprecinto}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.nroprecinto}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: left">
+                        <p:cellEditor>
+                           <f:facet name="output">
+                               <h:outputText value="#{listDet_tareoweb.nroprecinto}">
+                               </h:outputText>
+                           </f:facet>
+                            <f:facet name="input">
+                                <p:inputText style="font-size:10px;" id="nroprecinto_det" value="#{listDet_tareoweb.nroprecinto}">
+                                </p:inputText>
+                           </f:facet>
+                       </p:cellEditor>
+                    </p:column>
+                    <p:column headerText="Nro Servicio" filterBy="#{listDet_tareoweb.nro_oservicio}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.nro_oservicio}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: left">
+                        <p:cellEditor>
+                           <f:facet name="output">
+                               <h:outputText value="#{listDet_tareoweb.nro_oservicio}">
+                               </h:outputText>
+                           </f:facet>
+                            <f:facet name="input">
+                                <p:inputText style="font-size:10px;" id="nro_oservicio_det" value="#{listDet_tareoweb.nro_oservicio}">
+                                </p:inputText>
+                           </f:facet>
+                       </p:cellEditor>
                     </p:column>
                     <!-- FOR REPORT -->
                     <p:column visible="false">
@@ -488,6 +568,8 @@
                         <h:outputText value="#{tareowebAction.selectDet_tareoweb.iddocumento}-#{tareowebAction.selectDet_tareoweb.serie}-#{tareowebAction.selectDet_tareoweb.numero}" />
                         <h:outputText value="Cliente" />
                         <h:outputText value="#{tareowebAction.selectDet_tareoweb.razon}" />
+                        <h:outputText value="Servicio" />
+                        <h:outputText value="#{tareowebAction.selectDet_tareoweb.servicio}" />
                         <h:outputText value="Personal:" />
                         <h:outputText value="#{tareowebAction.selectDet_tareoweb.personal}" />
                         <h:outputText value="Checklist:" />

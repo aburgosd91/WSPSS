@@ -125,7 +125,6 @@
                          widgetVar="listDet_tareoweb" scrollable="true" scrollWidth="510px;"
                 style="margin-bottom:20px;font-size: 12px;" 
                 selection="#{tareoweb_fijoAction.selectDet_tareoweb}" selectionMode="single" 
-                resizableColumns="true" 
                 frozenColumns="7" 
                 rowKey="#{listDet_tareoweb.item}" editable="true" editMode="cell"
                 rowIndexVar="rownum" >
@@ -160,7 +159,7 @@
                     <p:column headerText="Cargo" filterBy="#{listDet_tareoweb.cargo}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.cargo}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: left">
                        <h:outputText value="#{listDet_tareoweb.cargo}"/>
                     </p:column>
-                    <p:column headerText="Personal" filterBy="#{listDet_tareoweb.dni}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.dni}" style="white-space: nowrap; width: 300px;padding: 3px;text-align: left">
+                    <p:column headerText="Personal" filterBy="#{listDet_tareoweb.dni} - #{listDet_tareoweb.personal}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.personal}" style="white-space: nowrap; width: 300px;padding: 3px;text-align: left">
                         <p:cellEditor >
                             <f:facet name="output">
                                 <h:outputText value="#{listDet_tareoweb.dni} - #{listDet_tareoweb.personal}"/>
