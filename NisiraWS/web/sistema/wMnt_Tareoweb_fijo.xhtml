@@ -220,12 +220,12 @@
                     <!-- CHECK -->
                     
                     <p:column style="white-space: nowrap; width: 130px;padding: 3px;text-align: center;background-color:##{listDet_tareoweb.color}" 
-                              headerText="T.Asistencia" filterBy="(#{listDet_tareoweb.codasistencia})#{listDet_tareoweb.asistencia}" filterMatchMode="contains" sortBy="(#{listDet_tareoweb.codasistencia})#{listDet_tareoweb.asistencia}">
+                              headerText="T.Asistencia" filterBy="#{listDet_tareoweb.asistencia}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.asistencia}">
                         <p:cellEditor>
-                            <f:facet name="output"><h:outputText value="(#{listDet_tareoweb.codasistencia})#{listDet_tareoweb.asistencia}" /></f:facet>
+                            <f:facet name="output"><h:outputText value="#{listDet_tareoweb.asistencia}" /></f:facet>
                            <f:facet name="input">
                                <h:selectOneMenu value="#{listDet_tareoweb.codasistencia}" style="width:100%">
-                                   <f:selectItems value="#{tareoweb_fijoAction.listTipo_asistencia}" var="ta" itemLabel="#{ta.nombre_corto}" itemValue="#{ta.idtipoasistencia}" />
+                                   <f:selectItems value="#{tareoweb_fijoAction.listTipo_asistencia}" var="ta" itemLabel="#{ta.nombre_corto}-#{ta.descripcion}" itemValue="#{ta.idtipoasistencia}" />
                                </h:selectOneMenu>
                            </f:facet>
                        </p:cellEditor>

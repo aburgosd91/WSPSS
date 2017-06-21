@@ -35,16 +35,67 @@
                     </div>
                     <div class="ui-g">
                         <div class="ui-g-6">
+                            <p:fieldset legend="Detalle Estructura Costos - Clieprov"  style="width: 100%">
+                                <p:dataTable id="listEstructura_costos_clieprov" var="listEstructura_costos_clieprov" value="#{estructuracostosrecursoAction.listEstructura_costos_clieprov}" widgetVar="listEstructura_costos_clieprov"
+                                 paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                 paginator="true" paginatorPosition="top" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{estructuracostosrecursoAction.selectEstructura_costos_clieprov}" rowKey="#{listEstructura_costos_clieprov.idclieprov}">
+                                    <p:ajax event="rowSelect" listener="#{estructuracostosrecursoAction.onRowSelectEstructura_costos_clieprov}" />
+                                    <f:facet name="{Comandos}">
+                                        <p:commandButton value="Nuevo" ajax="true" image="ui-icon-nuevo" actionListener="#{estructuracostosrecursoAction.nuevoEstructuraCostosClieprov()}" disabled="#{!estructuracostosrecursoAction.edicion}" />
+                                        <p:commandButton value="Editar" ajax="true" image="ui-icon-edit" actionListener="#{estructuracostosrecursoAction.editarEstructuraCostosClieprov()}" disabled="#{estructuracostosrecursoAction.botonEditarEstructura_costos_clieprov or !estructuracostosrecursoAction.edicion}"/> 
+                                        <p:commandButton value="Eliminar" ajax="true" image="ui-icon-eliminar" actionListener="#{estructuracostosrecursoAction.eliminarEstructuraCostosClieprov()}" disabled="#{estructuracostosrecursoAction.botonEditarEstructura_costos_clieprov or !estructuracostosrecursoAction.edicion}"/>
+                                    </f:facet>
+                                    <p:column style="width:10%;" filterBy="#{listEstructura_costos_clieprov.idclieprov}" filterMatchMode="contains" sortBy="#{listEstructura_costos_clieprov.idclieprov}">
+                                        <f:facet name="header">
+                                            <h:outputText value="Cod. Cliente"/>
+                                        </f:facet>
+                                        <h:outputText value="#{listEstructura_costos_clieprov.idclieprov}"/>
+                                    </p:column>
+                                    <p:column style="width:15%;" filterBy="#{listEstructura_costos_clieprov.razon_social}" filterMatchMode="contains" sortBy="#{listEstructura_costos_clieprov.razon_social}">
+                                        <f:facet name="header" >
+                                            <h:outputText value="Razón" />
+                                        </f:facet>
+                                        <h:outputText value="#{listEstructura_costos_clieprov.razon_social}" />
+                                    </p:column>
+                                </p:dataTable>  
+                            </p:fieldset>
+                            <p:dialog id="dlgnew_estructura_costos_clieprov" header="..::Estructura - Costos - Clieprov::." widgetVar="dlgnew_estructura_costos_clieprov" modal="true" showEffect="popup" closable="false">
+                                <p:panelGrid columns="1" columnClasses="no-border">
+                                    <p:panelGrid columns="2" columnClasses="no-border, no-border">
+                                        <p:outputLabel value="Código: " />
+                                        <p:inputText size="15" disabled="true" value="#{estructuracostosrecursoAction.estructura_costos_clieprov.codigo}" />
+                                        <p:outputLabel value="Cliente:" escape="false" />
+                                        <h:panelGrid id="cntClie" cellpadding="0" cellspacing="0" columns="3">
+                                            <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{estructuracostosrecursoAction.verCntClieprov}" 
+                                                             disabled="#{!estructuracostosrecursoAction.edicion}"  icon="ui-icon-search">
+                                                <p:ajax event="dialogReturn" listener="#{estructuracostosrecursoAction.valorClieprov}" update="cntClie"/>
+                                            </p:commandButton>
+                                            <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{estructuracostosrecursoAction.estructura_costos_clieprov.idclieprov}" disabled="#{!estructuracostosrecursoAction.edicion}"/>
+                                            <p:inputText size="50" readonly="true" value="#{estructuracostosrecursoAction.estructura_costos_clieprov.razon_social}" disabled="#{!estructuracostosrecursoAction.edicion}"/>
+                                        </h:panelGrid>
+                                    </p:panelGrid>
+                                    <br/>
+                                    <p:toolbar>
+                                        <f:facet name="right">
+                                            <p:commandButton value="Grabar" ajax="true" actionListener="#{estructuracostosrecursoAction.grabarEstructuraCostosClieprov()}" 
+                                                             image="ui-icon-grabar" update="datos:growl"/>
+                                            <p:commandButton value="Cancelar" process="@this"  image="ui-icon-cancelar" onclick="PF('dlgnew_estructura_costos_clieprov').hide()" />
+                                        </f:facet>
+                                    </p:toolbar>                          
+                                </p:panelGrid>                      
+                            </p:dialog>
+                        </div>
+                        <div class="ui-g-6">
                             <p:fieldset legend="Detalle Estructura Costos - Producto"  style="width: 100%">
                                 <p:dataTable id="listEstructura_costos_producto" var="listEstructura_costos_producto" value="#{estructuracostosrecursoAction.listEstructura_costos_producto}" widgetVar="listEstructura_costos_producto"
                                  paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
                                  paginator="true" paginatorPosition="top" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{estructuracostosrecursoAction.selectEstructura_costos_producto}" rowKey="#{listEstructura_costos_producto.numerador}">
                                     <p:ajax event="rowSelect" listener="#{estructuracostosrecursoAction.onRowSelectEstructura_costos_producto}" />
                                     <f:facet name="{Comandos}">
-                                        <p:commandButton value="Copy" ajax="true" image="ui-icon-autogenerar" actionListener="#{estructuracostosrecursoAction.openDialogCopyEstructura()}"/>
-                                        <p:commandButton value="Nuevo" ajax="true" image="ui-icon-nuevo" actionListener="#{estructuracostosrecursoAction.nuevoEstructuraCostosProducto()}" />
-                                        <p:commandButton value="Editar" ajax="true" image="ui-icon-edit" actionListener="#{estructuracostosrecursoAction.editarEstructuraCostosProducto()}" disabled="#{estructuracostosrecursoAction.botonEditarEstructura_costos_producto}"/> 
-                                        <p:commandButton value="Eliminar" ajax="true" image="ui-icon-eliminar" actionListener="#{estructuracostosrecursoAction.eliminarEstructuraCostosProducto()}" disabled="#{estructuracostosrecursoAction.botonEditarEstructura_costos_producto}"/>
+                                        <p:commandButton value="Copy" ajax="true" image="ui-icon-autogenerar" actionListener="#{estructuracostosrecursoAction.openDialogCopyEstructura()}" disabled="#{!estructuracostosrecursoAction.edicion}"/>
+                                        <p:commandButton value="Nuevo" ajax="true" image="ui-icon-nuevo" actionListener="#{estructuracostosrecursoAction.nuevoEstructuraCostosProducto()}" disabled="#{!estructuracostosrecursoAction.edicion}"/>
+                                        <p:commandButton value="Editar" ajax="true" image="ui-icon-edit" actionListener="#{estructuracostosrecursoAction.editarEstructuraCostosProducto()}" disabled="#{estructuracostosrecursoAction.botonEditarEstructura_costos_producto or !estructuracostosrecursoAction.edicion}"/> 
+                                        <p:commandButton value="Eliminar" ajax="true" image="ui-icon-eliminar" actionListener="#{estructuracostosrecursoAction.eliminarEstructuraCostosProducto()}" disabled="#{estructuracostosrecursoAction.botonEditarEstructura_costos_producto or !estructuracostosrecursoAction.edicion}"/>
                                     </f:facet>
                                     <p:column style="width:5%;" filterBy="#{listEstructura_costos_producto.item}" filterMatchMode="contains" sortBy="#{listEstructura_costos_producto.item}">
                                         <f:facet name="header">
@@ -130,14 +181,14 @@
                                             widgetVar="listDestructura_costos_recursos"
                                             paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
                                             paginator="true" paginatorPosition="top" rows="15" style="margin-bottom:20px" selection="#{estructuracostosrecursoAction.selectDestructura_costos_recursos}" 
-                                            rowKey="#{listDestructura_costos_recursos.item}" editable="true" editMode="cell">
+                                            rowKey="#{listDestructura_costos_recursos.item}" editable="#{estructuracostosrecursoAction.edicion}" editMode="cell">
                                                <p:ajax event="rowSelectRadio" listener="#{estructuracostosrecursoAction.onRowSelectDestructura_costos_recursos}" />
                                                <p:ajax event="cellEdit" listener="#{estructuracostosrecursoAction.onCellEdit}"/>
                                                <p:ajax event="rowEdit" listener="#{estructuracostosrecursoAction.onRowEdit}"/>
                                                <f:facet name="{Comandos}">
-                                                   <p:commandButton value="Calcular" ajax="true" image="ui-icon-reload" actionListener="#{estructuracostosrecursoAction.actualizarDestructuraCostosRecurso()}" disabled="#{estructuracostosrecursoAction.botonNuevoDestructura_costos_recurso}"/>
-                                                   <p:commandButton value="Agregar" ajax="true" image="ui-icon-nuevo" actionListener="#{estructuracostosrecursoAction.agregarDestructuraCostosRecurso()}" disabled="#{estructuracostosrecursoAction.botonNuevoDestructura_costos_recurso}"/>
-                                                   <p:commandButton value="Eliminar" ajax="true" image="ui-icon-eliminar" actionListener="#{estructuracostosrecursoAction.eliminarDestructuraCostosRecurso()}" disabled="#{estructuracostosrecursoAction.botonEliminarDestructura_costos_recurso}"/>
+                                                   <p:commandButton value="Calcular" ajax="true" image="ui-icon-reload" actionListener="#{estructuracostosrecursoAction.actualizarDestructuraCostosRecurso()}" disabled="#{estructuracostosrecursoAction.botonNuevoDestructura_costos_recurso or !estructuracostosrecursoAction.edicion}"/>
+                                                   <p:commandButton value="Agregar" ajax="true" image="ui-icon-nuevo" actionListener="#{estructuracostosrecursoAction.agregarDestructuraCostosRecurso()}" disabled="#{estructuracostosrecursoAction.botonNuevoDestructura_costos_recurso or !estructuracostosrecursoAction.edicion}"/>
+                                                   <p:commandButton value="Eliminar" ajax="true" image="ui-icon-eliminar" actionListener="#{estructuracostosrecursoAction.eliminarDestructuraCostosRecurso()}" disabled="#{estructuracostosrecursoAction.botonEliminarDestructura_costos_recurso or !estructuracostosrecursoAction.edicion}"/>
                                                </f:facet>
                                                <p:column selectionMode="single" style="width:16px;text-align:center"/>
                                                <p:column style="width:10%;" filterBy="#{listDestructura_costos_recursos.item}" filterMatchMode="contains" sortBy="#{listDestructura_costos_recursos.item}">
@@ -240,9 +291,9 @@
                                      paginator="true" paginatorPosition="top" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{estructuracostosrecursoAction.selecteEstructura_costos_mano_obra}" rowKey="#{listEstructura_costos_mano_obra.item}">
                                         <p:ajax event="rowSelect" listener="#{estructuracostosrecursoAction.onRowSelectEstructura_costos_mano_obra}" />
                                         <f:facet name="{Comandos}">
-                                            <p:commandButton value="Nuevo" ajax="true" image="ui-icon-nuevo" actionListener="#{estructuracostosrecursoAction.nuevoEstructuraCostosManoObra()}" />
-                                            <p:commandButton value="Editar" ajax="true" image="ui-icon-edit" actionListener="#{estructuracostosrecursoAction.editarEstructuraCostosManoObra()}" disabled="#{estructuracostosrecursoAction.botonEditarEstructura_costos_mano_obra}"/> 
-                                            <p:commandButton value="Eliminar" ajax="true" image="ui-icon-eliminar" actionListener="#{estructuracostosrecursoAction.eliminarEstructuraCostosManoObra()}" disabled="#{estructuracostosrecursoAction.botonEditarEstructura_costos_mano_obra}"/>
+                                            <p:commandButton value="Nuevo" ajax="true" image="ui-icon-nuevo" actionListener="#{estructuracostosrecursoAction.nuevoEstructuraCostosManoObra()}" disabled="#{!estructuracostosrecursoAction.edicion}"/>
+                                            <p:commandButton value="Editar" ajax="true" image="ui-icon-edit" actionListener="#{estructuracostosrecursoAction.editarEstructuraCostosManoObra()}" disabled="#{estructuracostosrecursoAction.botonEditarEstructura_costos_mano_obra or !estructuracostosrecursoAction.edicion}"/> 
+                                            <p:commandButton value="Eliminar" ajax="true" image="ui-icon-eliminar" actionListener="#{estructuracostosrecursoAction.eliminarEstructuraCostosManoObra()}" disabled="#{estructuracostosrecursoAction.botonEditarEstructura_costos_mano_obra or !estructuracostosrecursoAction.edicion}"/>
                                         </f:facet>
                                         <p:column style="width:10%;" filterBy="#{listEstructura_costos_mano_obra.item}" filterMatchMode="contains" sortBy="#{listEstructura_costos_mano_obra.item}">
                                             <f:facet name="header">
@@ -296,57 +347,6 @@
                                             <p:commandButton value="Grabar" ajax="true" actionListener="#{estructuracostosrecursoAction.grabarEstructuraCostosManoObra()}" 
                                                              image="ui-icon-grabar" update="datos:growl"/>
                                             <p:commandButton value="Cancelar" process="@this"  image="ui-icon-cancelar" onclick="PF('dlgnew_estructura_costos_mano_obra').hide()" />
-                                        </f:facet>
-                                    </p:toolbar>                          
-                                </p:panelGrid>                      
-                            </p:dialog>
-                        </div>
-                        <div class="ui-g-6">
-                            <p:fieldset legend="Detalle Estructura Costos - Clieprov"  style="width: 100%">
-                                <p:dataTable id="listEstructura_costos_clieprov" var="listEstructura_costos_clieprov" value="#{estructuracostosrecursoAction.listEstructura_costos_clieprov}" widgetVar="listEstructura_costos_clieprov"
-                                 paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
-                                 paginator="true" paginatorPosition="top" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{estructuracostosrecursoAction.selectEstructura_costos_clieprov}" rowKey="#{listEstructura_costos_clieprov.idclieprov}">
-                                    <p:ajax event="rowSelect" listener="#{estructuracostosrecursoAction.onRowSelectEstructura_costos_clieprov}" />
-                                    <f:facet name="{Comandos}">
-                                        <p:commandButton value="Nuevo" ajax="true" image="ui-icon-nuevo" actionListener="#{estructuracostosrecursoAction.nuevoEstructuraCostosClieprov()}" />
-                                        <p:commandButton value="Editar" ajax="true" image="ui-icon-edit" actionListener="#{estructuracostosrecursoAction.editarEstructuraCostosClieprov()}" disabled="#{estructuracostosrecursoAction.botonEditarEstructura_costos_clieprov}"/> 
-                                        <p:commandButton value="Eliminar" ajax="true" image="ui-icon-eliminar" actionListener="#{estructuracostosrecursoAction.eliminarEstructuraCostosClieprov()}" disabled="#{estructuracostosrecursoAction.botonEditarEstructura_costos_clieprov}"/>
-                                    </f:facet>
-                                    <p:column style="width:10%;" filterBy="#{listEstructura_costos_clieprov.idclieprov}" filterMatchMode="contains" sortBy="#{listEstructura_costos_clieprov.idclieprov}">
-                                        <f:facet name="header">
-                                            <h:outputText value="Cod. Cliente"/>
-                                        </f:facet>
-                                        <h:outputText value="#{listEstructura_costos_clieprov.idclieprov}"/>
-                                    </p:column>
-                                    <p:column style="width:15%;" filterBy="#{listEstructura_costos_clieprov.razon_social}" filterMatchMode="contains" sortBy="#{listEstructura_costos_clieprov.razon_social}">
-                                        <f:facet name="header" >
-                                            <h:outputText value="Razón" />
-                                        </f:facet>
-                                        <h:outputText value="#{listEstructura_costos_clieprov.razon_social}" />
-                                    </p:column>
-                                </p:dataTable>  
-                            </p:fieldset>
-                            <p:dialog id="dlgnew_estructura_costos_clieprov" header="..::Estructura - Costos - Clieprov::." widgetVar="dlgnew_estructura_costos_clieprov" modal="true" showEffect="popup" closable="false">
-                                <p:panelGrid columns="1" columnClasses="no-border">
-                                    <p:panelGrid columns="2" columnClasses="no-border, no-border">
-                                        <p:outputLabel value="Código: " />
-                                        <p:inputText size="15" disabled="true" value="#{estructuracostosrecursoAction.estructura_costos_clieprov.codigo}" />
-                                        <p:outputLabel value="Cliente:" escape="false" />
-                                        <h:panelGrid id="cntClie" cellpadding="0" cellspacing="0" columns="3">
-                                            <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{estructuracostosrecursoAction.verCntClieprov}" 
-                                                             disabled="#{!estructuracostosrecursoAction.edicion}"  icon="ui-icon-search">
-                                                <p:ajax event="dialogReturn" listener="#{estructuracostosrecursoAction.valorClieprov}" update="cntClie"/>
-                                            </p:commandButton>
-                                            <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{estructuracostosrecursoAction.estructura_costos_clieprov.idclieprov}" disabled="#{!estructuracostosrecursoAction.edicion}"/>
-                                            <p:inputText size="50" readonly="true" value="#{estructuracostosrecursoAction.estructura_costos_clieprov.razon_social}" disabled="#{!estructuracostosrecursoAction.edicion}"/>
-                                        </h:panelGrid>
-                                    </p:panelGrid>
-                                    <br/>
-                                    <p:toolbar>
-                                        <f:facet name="right">
-                                            <p:commandButton value="Grabar" ajax="true" actionListener="#{estructuracostosrecursoAction.grabarEstructuraCostosClieprov()}" 
-                                                             image="ui-icon-grabar" update="datos:growl"/>
-                                            <p:commandButton value="Cancelar" process="@this"  image="ui-icon-cancelar" onclick="PF('dlgnew_estructura_costos_clieprov').hide()" />
                                         </f:facet>
                                     </p:toolbar>                          
                                 </p:panelGrid>                      

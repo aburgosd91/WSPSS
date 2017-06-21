@@ -392,10 +392,10 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
         try{
             if(getLadd()==1){/*NUEVO*/
                 getDatoEdicion().setIdtipoasistencia("ASN");
-                listDet_tareoweb = tareoWebDao.listarPorEmpresaWeb_new_fijo(user.getIDEMPRESA(), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5));
+                listDet_tareoweb = tareoWebDao.listarPorEmpresaWeb_new_fijo(user.getIDEMPRESA(), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5),getDatoEdicion().getIdresponsable(),user.getIDUSUARIO());
                 generarCalendario();
             }else if(getLadd()==2){/*EDITAR*/
-                listDet_tareoweb = tareoWebDao.listarPorEmpresaWeb_update_fijo(getDatoEdicion().getIdempresa(),getDatoEdicion().getIdcabtareoweb(),WebUtil.fechaDMY(getDatoEdicion().getFecha(),5), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5));
+                listDet_tareoweb = tareoWebDao.listarPorEmpresaWeb_update_fijo(getDatoEdicion().getIdempresa(),getDatoEdicion().getIdcabtareoweb(),WebUtil.fechaDMY(getDatoEdicion().getFecha(),5), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5),getDatoEdicion().getIdresponsable(),user.getIDUSUARIO());
                 generarEstructuraBase();
             }
         }catch(Exception ex){
@@ -714,8 +714,15 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
 //        tabView.setActiveIndex(indexTab);
     }
     public void onRefresh(){
-//        RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
-        RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
+        try {
+            listDet_tareoweb = tareoWebDao.listarPorEmpresaWeb_new_fijo(user.getIDEMPRESA(), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5),getDatoEdicion().getIdresponsable(),user.getIDUSUARIO());
+            RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
+        } catch (NisiraORMException | SQLException ex) {
+            this.mensaje = ex.getMessage();
+            WebUtil.error(mensaje);
+            RequestContext.getCurrentInstance().update("datos:growl");
+            Logger.getLogger(TareowebAction.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     public void onCargaPersonalServicio() throws NisiraORMException {
         if(!this.iddocumento_local.isEmpty() && !this.serie_local.isEmpty() && !this.numero_local.isEmpty()){

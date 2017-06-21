@@ -214,10 +214,10 @@ public class Det_tareowebDao extends BaseDao<Det_tareoweb> {
         return lista;
         }
         
-        public ArrayList<Det_tareoweb> listarPorEmpresaWeb_new_fijo(String idempresa,String desde, String hasta) throws NisiraORMException, SQLException {
+        public ArrayList<Det_tareoweb> listarPorEmpresaWeb_new_fijo(String idempresa,String desde, String hasta,String idresponsable,String idusuario) throws NisiraORMException, SQLException {
             ArrayList<Det_tareoweb> lista = new ArrayList<Det_tareoweb>();
             ResultSet rs = null;
-            rs = execProcedure("SP_TAREO_WEB_ORDENSERVICIOCLIENTE_FIJO_TMPSS",idempresa,desde,hasta);
+            rs = execProcedure("SP_TAREO_WEB_ORDENSERVICIOCLIENTE_FIJO_TMPSS",idempresa,desde,hasta,idresponsable,idusuario);
             while (rs.next()) {
                 Det_tareoweb tareoweb = new Det_tareoweb();
                 tareoweb.setItem(rs.getInt("ITEM"));
@@ -287,11 +287,11 @@ public class Det_tareowebDao extends BaseDao<Det_tareoweb> {
 
         return lista;
         }
-        public ArrayList<Det_tareoweb> listarPorEmpresaWeb_update_fijo(String idempresa,String idcabtareoweb,String desde, String hasta) throws NisiraORMException, SQLException {
+        public ArrayList<Det_tareoweb> listarPorEmpresaWeb_update_fijo(String idempresa,String idcabtareoweb,String desde, String hasta,String idresponsable,String idusuario) throws NisiraORMException, SQLException {
             ArrayList<Det_tareoweb> lista = new ArrayList<Det_tareoweb>();
 
             ResultSet rs = null;
-            rs = execProcedure("GETDET_TAREOWEB_FIJO_TMPSS",idempresa,idcabtareoweb,desde,hasta);
+            rs = execProcedure("GETDET_TAREOWEB_FIJO_TMPSS",idempresa,idcabtareoweb,desde,hasta,idresponsable,idusuario);
             while (rs.next()) {
                 Det_tareoweb tareoweb = new Det_tareoweb();
                 tareoweb.setItem(rs.getInt("ITEM"));

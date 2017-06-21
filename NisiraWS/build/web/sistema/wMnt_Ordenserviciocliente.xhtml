@@ -251,7 +251,7 @@
                             <p:ajax event="tabChange" listener="#{ordenservicioclienteAction.onSPTabChange}" />
                             <p:tab id="tab_personal_Servicio" title="Asignación Personal">
                                 <p:dataTable id="listPersonal_Servicio" var="listPersonal_Servicio" value="#{ordenservicioclienteAction.listPersonal_Servicio}" widgetVar="listPersonal_Servicio"
-                                    paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                    paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" 
                                     paginator="true" paginatorPosition="top" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{ordenservicioclienteAction.selectPersonal_servicio}" rowKey="#{listPersonal_Servicio.item2}">
                                        <p:ajax event="rowSelect" listener="#{ordenservicioclienteAction.onRowSelectPersonal_Servicio}" />
                                        <f:facet name="{Comandos}">

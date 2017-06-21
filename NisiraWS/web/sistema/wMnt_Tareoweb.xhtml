@@ -361,7 +361,7 @@
                            </f:facet>
                        </p:cellEditor>
                     </p:column>
-                    <p:column style="white-space: nowrap; width: 130px;padding: 3px;text-align: center;background-color:##{listDet_tareoweb.color}" headerText="T.Asistencia" filterBy="(#{listDet_tareoweb.codasistencia})#{listDet_tareoweb.asistencia}" filterMatchMode="contains" sortBy="(#{listDet_tareoweb.codasistencia})#{listDet_tareoweb.asistencia}">
+                    <p:column style="white-space: nowrap; width: 130px;padding: 3px;text-align: center;background-color:##{listDet_tareoweb.color}" headerText="T.Asistencia" filterBy="#{listDet_tareoweb.asistencia}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.asistencia}">
                         <p:cellEditor>
                             <f:facet name="output"><h:outputText value="#{listDet_tareoweb.asistencia}" /></f:facet>
                            <f:facet name="input">
