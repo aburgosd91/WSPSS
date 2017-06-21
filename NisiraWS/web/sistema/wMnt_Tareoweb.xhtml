@@ -134,7 +134,7 @@
                 style="margin-bottom:20px;font-size: 12px;width:100%;" 
                 resizableColumns="true" 
                 selection="#{tareowebAction.selectDet_tareoweb}" selectionMode="single" 
-                frozenColumns="9" 
+                frozenColumns="10" 
                 rowKey="#{listDet_tareoweb.item}" editable="#{tareowebAction.edicion}" editMode="cell">
                 <p:ajax event="cellEdit" listener="#{tareowebAction.onCellEdit}" update="listDet_tareoweb"/>
                 <f:facet name="header">
@@ -190,7 +190,12 @@
                        </f:facet>
                        <h:outputText value="#{listDet_tareoweb.cargo}"/>
                     </p:column>
-                
+                    <p:column filterBy="#{listDet_tareoweb.rutaservicios}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.rutaservicios}" style="white-space: nowrap; width: 50px;padding: 3px;text-align: left">
+                       <f:facet name="header">
+                           <h:outputText value="Ruta"/>
+                       </f:facet>
+                       <h:outputText value="#{listDet_tareoweb.rutaservicios}"/>
+                    </p:column>
                     <p:column headerText="Personal" filterBy="#{listDet_tareoweb.dni} - #{listDet_tareoweb.personal}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.personal}" style="white-space: nowrap; width: 150px;padding: 3px;text-align: left">
                             <p:cellEditor >
                                 <f:facet name="output">
@@ -518,8 +523,13 @@
                 <p:panelGrid columns="1" columnClasses="no-border">
                     <p:panelGrid columns="2" columnClasses="no-border, no-border">
                         <p:outputLabel value="Documento: " />
-                        <p:selectOneMenu value="#{tareowebAction.selectComboEspecial_idordenservicio}" style="width:100%">
-                            <f:selectItems value="#{tareowebAction.listComboEspecial}" var="lst" itemLabel="#{lst.documento_razon}" itemValue="#{lst.idordenservicio}" />
+                        <p:selectOneMenu id="idordenservicio_add" value="#{tareowebAction.selectComboEspecial_idordenservicio}" style="width:100%">
+                            <p:ajax listener="#{tareowebAction.cargarComboEspecialDetalle()}"/>
+                            <f:selectItems value="#{tareowebAction.listComboEspecial}" var="lst" itemLabel="#{lst.descripcion}" itemValue="#{lst.id}" />
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Servicio: " />
+                        <p:selectOneMenu id="iddordenservicio_add" value="#{tareowebAction.selectComboEspecialDetalle_idordenservicio}" style="width:100%">
+                            <f:selectItems value="#{tareowebAction.listComboEspecialDetalle}" var="lstdet" itemLabel="#{lstdet.descripcion}" itemValue="#{lstdet.id}" />
                         </p:selectOneMenu>
                         <p:outputLabel value="#Cantidad:"/>
                         <p:spinner value="#{tareowebAction.num_repetir}" min="1" />
@@ -570,6 +580,8 @@
                         <h:outputText value="#{tareowebAction.selectDet_tareoweb.razon}" />
                         <h:outputText value="Servicio" />
                         <h:outputText value="#{tareowebAction.selectDet_tareoweb.servicio}" />
+                        <h:outputText value="Ruta" />
+                        <h:outputText value="#{tareowebAction.selectDet_tareoweb.rutaservicios}" />
                         <h:outputText value="Personal:" />
                         <h:outputText value="#{tareowebAction.selectDet_tareoweb.personal}" />
                         <h:outputText value="Checklist:" />

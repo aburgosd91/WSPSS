@@ -167,6 +167,12 @@
                                     </f:facet>
                                     <h:outputText value="#{lstdordenserviciocliente.descripcion}" />
                                 </p:column>
+                                <p:column style="width:5%;" filterBy="#{lstdordenserviciocliente.codoperaciones}" filterMatchMode="contains" sortBy="#{lstdordenserviciocliente.codoperaciones}">
+                                    <f:facet name="header" >
+                                        <h:outputText value="Cod.Oper." />
+                                    </f:facet>
+                                    <h:outputText value="#{lstdordenserviciocliente.codoperaciones}"/>
+                                </p:column>
                                 <p:column style="width:5%;" filterBy="#{lstdordenserviciocliente.hora_rc}" filterMatchMode="contains" sortBy="#{lstdordenserviciocliente.hora_rc}">
                                     <f:facet name="header" >
                                         <h:outputText value="#Horas" />

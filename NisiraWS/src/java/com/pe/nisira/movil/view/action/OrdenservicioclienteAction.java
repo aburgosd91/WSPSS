@@ -1298,7 +1298,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                 listRuta_servicios = new ArrayList<>();
                 listDpersonal_Servicio = new ArrayList<>();
                 RequestContext.getCurrentInstance().update("datos:lstdordenserviciocliente");
-                RequestContext.getCurrentInstance().update("datos:tabs");
+                RequestContext.getCurrentInstance().update("datos:listRuta_servicios");
             }else{
                 WebUtil.MensajeAdvertencia("Seleccionar detalle dordenserviciocliente");
                 RequestContext.getCurrentInstance().update("datos:growl");

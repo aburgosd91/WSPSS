@@ -112,6 +112,7 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
     private String mesNumeroDisenio;
     private String mesNombreDisenio;
     private String selectComboEspecial_idordenservicio;
+    private String selectComboEspecialDetalle_idordenservicio;
     /* ARRAYLIST */
     private List<Det_tareoweb> listDet_tareoweb;
     private List<Clieprov> listPersonal;
@@ -125,6 +126,7 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
     private List<Turno_trabajo> listTurno_trabajo;
     private List<Tipo_asistencia> listTipo_asistencia;
     private List<ComboEspecial> listComboEspecial;
+    private List<ComboEspecial> listComboEspecialDetalle;
     private List<Det_tareoweb> listDet_tareoweb_verification;
     /* DAO */
     private ConsumidorDao consumidorDao;
@@ -150,6 +152,7 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
     private Clieprov selectClieprovPersonal;
     private Consumidor selectConsumidor;
     private ComboEspecial selectComboEspecial;
+    private ComboEspecial selectComboEspecialDetalle;
     private Cargos_personal selectCargo_personal;
     /******************************************************/
     private boolean activarBotones;
@@ -237,6 +240,28 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
             hs.addAll(listComboEspecial);
             listComboEspecial.clear();
             listComboEspecial.addAll(hs);
+        }
+    }
+    public void cargarComboEspecialDetalle(){
+        if(listDet_tareoweb != null){
+            if(selectComboEspecial!=null){
+                ComboEspecial cbe;
+                listComboEspecialDetalle = new ArrayList<>();
+                String descripcion;
+                for(Det_tareoweb wb : listDet_tareoweb){
+                    if(selectComboEspecial.getId().trim().equalsIgnoreCase(wb.getIdordenservicio())){
+                        descripcion = wb.getServicio();
+                        cbe = new ComboEspecial(wb.getIdreferencia()+","+wb.getItemreferencia()+","+wb.getIdruta_ec()+","+wb.getHora_rc(), descripcion);
+                        listComboEspecialDetalle.add(cbe);
+                    }
+                }
+                /*QUITAR DUPLICADOS*/
+                Set<ComboEspecial> hs = new TreeSet<ComboEspecial>();
+                hs.addAll(listComboEspecialDetalle);
+                listComboEspecialDetalle.clear();
+                listComboEspecialDetalle.addAll(hs);
+                RequestContext.getCurrentInstance().update("datos:dlgAddItemTareo:");
+            }
         }
     }
     public void postProcessXLS(Object document) {
@@ -607,6 +632,10 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
     }
     public void openDialogAddItemTareo(){
         cargarComboEspecial();
+        if(!listComboEspecial.isEmpty()){
+            selectComboEspecial=listComboEspecial.get(0);
+            cargarComboEspecialDetalle();
+        }
 //        this.num_repetir = 1;
         RequestContext.getCurrentInstance().update("datos:dlgAddItemTareo");
         RequestContext.getCurrentInstance().execute("PF('dlgAddItemTareo').show()");
@@ -678,6 +707,10 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
             this.mensaje="Seleccionar Documento/Cliente";
             WebUtil.error(mensaje);
             RequestContext.getCurrentInstance().update("datos:growl");
+        }else if(this.selectComboEspecialDetalle_idordenservicio==null){
+            this.mensaje="Seleccionar Servicio";
+            WebUtil.error(mensaje);
+            RequestContext.getCurrentInstance().update("datos:growl");
         }else if(this.selectCargo_personal==null){
             this.mensaje="Seleccionar Cargo";
             WebUtil.error(mensaje);
@@ -691,7 +724,7 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
             selectComboEspecial = findComboEspecial(selectComboEspecial_idordenservicio);
             for(int i=0;i<listDet_tareoweb.size();i++){
                 Det_tareoweb tw = listDet_tareoweb.get(i);
-                if(selectComboEspecial.getIdordenservicio().trim().equalsIgnoreCase(tw.getIdordenservicio())){
+                if(selectComboEspecial.getId().trim().equalsIgnoreCase(tw.getIdordenservicio())){
                     lst_in.add(tw);
                 }else{
                     lst_ex.add(tw);
@@ -700,7 +733,12 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
             /***** TEMPORAL *****/
             if(!lst_in.isEmpty()){
                 Det_tareoweb xrept;
-                rept = lst_in.get(0);
+                String[] dts = selectComboEspecialDetalle_idordenservicio.split(",");
+                /*
+                    wb.getIdreferencia()+","+wb.getItemreferencia()+","+wb.getIdruta_ec()+","+wb.getHora_rc()
+                */
+                rept=findDettareoweb_additem(lst_in,dts[0],dts[1],dts[2],Float.parseFloat(dts[3]));
+//                rept = lst_in.get(0);
                 for(int i=0;i<num_repetir;i++){
                     xrept = new Det_tareoweb();
                     xrept.setIdempresa(rept.getIdempresa());
@@ -726,6 +764,18 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
                         xrept.setExige_glosa(listTipo_asistencia.get(0).getExige_glosa()==1?true:false);
                         xrept.setColor(listTipo_asistencia.get(0).getColor());
                     }
+                    xrept.setShora_llegada("00:00");
+                    xrept.setShora_inicio("00:00");
+                    xrept.setShora_fin("00:00");
+                    xrept.setShora_liberacion("00:00");
+                    
+                    xrept.setIdreferencia(rept.getIdreferencia());
+                    xrept.setItemreferencia(rept.getItemreferencia());
+                    xrept.setIdruta_ec(rept.getIdruta_ec());
+                    xrept.setHora_rc(rept.getHora_rc());
+                    xrept.setFecha_osc(rept.getFecha_osc());
+                    xrept.setCodoperaciones(rept.getCodoperaciones());
+                    xrept.setRutaservicios(rept.getRutaservicios());
                     lst_in.add(xrept);
                 }
             }
@@ -771,10 +821,21 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
         //RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
         RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
     }
+    public Det_tareoweb findDettareoweb_additem(List<Det_tareoweb> lstdt,String idreferencia,String itemreferencia,String idruta_ec,float hora_rc){
+        //wb.getIdreferencia()+","+wb.getItemreferencia()+","+wb.getIdruta_ec()+","+wb.getHora_rc()
+        Det_tareoweb dt =null;
+        for(Det_tareoweb ob : lstdt){
+            if(ob.getIdreferencia().trim().equals(idreferencia.trim()) && ob.getItemreferencia().trim().equals(itemreferencia.trim())
+                    && ob.getIdruta_ec().trim().equals(idruta_ec.trim()) && ob.getHora_rc()==hora_rc){
+                dt=ob;break;
+            }
+        }
+        return dt;
+    }
     public ComboEspecial findComboEspecial(String idordenservicio){
         ComboEspecial tresp = null;
         for(ComboEspecial ob : listComboEspecial){
-            if(ob.getIdordenservicio().trim().equalsIgnoreCase(idordenservicio)){
+            if(ob.getId().trim().equalsIgnoreCase(idordenservicio)){
                 tresp = ob;break;
             }
         }
@@ -1809,6 +1870,48 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
      */
     public void setFiltro_super_usuario(boolean filtro_super_usuario) {
         this.filtro_super_usuario = filtro_super_usuario;
+    }
+
+    /**
+     * @return the listComboEspecialDetalle
+     */
+    public List<ComboEspecial> getListComboEspecialDetalle() {
+        return listComboEspecialDetalle;
+    }
+
+    /**
+     * @param listComboEspecialDetalle the listComboEspecialDetalle to set
+     */
+    public void setListComboEspecialDetalle(List<ComboEspecial> listComboEspecialDetalle) {
+        this.listComboEspecialDetalle = listComboEspecialDetalle;
+    }
+
+    /**
+     * @return the selectComboEspecialDetalle
+     */
+    public ComboEspecial getSelectComboEspecialDetalle() {
+        return selectComboEspecialDetalle;
+    }
+
+    /**
+     * @param selectComboEspecialDetalle the selectComboEspecialDetalle to set
+     */
+    public void setSelectComboEspecialDetalle(ComboEspecial selectComboEspecialDetalle) {
+        this.selectComboEspecialDetalle = selectComboEspecialDetalle;
+    }
+
+    /**
+     * @return the selectComboEspecialDetalle_idordenservicio
+     */
+    public String getSelectComboEspecialDetalle_idordenservicio() {
+        return selectComboEspecialDetalle_idordenservicio;
+    }
+
+    /**
+     * @param selectComboEspecialDetalle_idordenservicio the selectComboEspecialDetalle_idordenservicio to set
+     */
+    public void setSelectComboEspecialDetalle_idordenservicio(String selectComboEspecialDetalle_idordenservicio) {
+        this.selectComboEspecialDetalle_idordenservicio = selectComboEspecialDetalle_idordenservicio;
     }
 }
 

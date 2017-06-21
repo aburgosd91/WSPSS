@@ -8,6 +8,7 @@ import java.util.Date;
 import com.nisira.annotation.RelacionTabla;
 import com.nisira.annotation.CampoRelacionado;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import java.io.Serializable;
 import java.util.List;
 
@@ -162,6 +163,15 @@ public class Det_tareoweb implements Serializable {
         @Columna
         @XStreamAlias("BREVETE_CLIENTE")
 	private String brevete_cliente;
+        @Columna
+        @XStreamAlias("IDRUTA_EC")
+        private String idruta_ec;
+        @Columna
+        @XStreamAlias("IDREFERENCIA")
+        private String idreferencia;
+        @Columna
+        @XStreamAlias("ITEMREFERENCIA")
+        private String itemreferencia;
         private Date fecha_osc;
         private String vehiculo;
         private String cargo;
@@ -183,8 +193,12 @@ public class Det_tareoweb implements Serializable {
         private String color;
         private List<Object[]> tareo;
         private String codoperaciones;
+        private String rutaservicios;
+        
         /*adicional*/
+        @XStreamOmitField
         private Clieprov selectPersonal;
+        @XStreamOmitField
         private Consumidor selectConsumidor;
         /* Sets & Gets */
 	public void setIdempresa(String idempresa) {
@@ -929,5 +943,61 @@ public class Det_tareoweb implements Serializable {
      */
     public void setCodoperaciones(String codoperaciones) {
         this.codoperaciones = codoperaciones;
+    }
+
+    /**
+     * @return the rutaservicios
+     */
+    public String getRutaservicios() {
+        return rutaservicios;
+    }
+
+    /**
+     * @param rutaservicios the rutaservicios to set
+     */
+    public void setRutaservicios(String rutaservicios) {
+        this.rutaservicios = rutaservicios;
+    }
+
+    /**
+     * @return the idruta_rc
+     */
+    public String getIdruta_ec() {
+        return idruta_ec;
+    }
+
+    /**
+     * @param idruta_rc the idruta_rc to set
+     */
+    public void setIdruta_ec(String idruta_ec) {
+        this.idruta_ec = idruta_ec;
+    }
+
+    /**
+     * @return the idreferencia
+     */
+    public String getIdreferencia() {
+        return idreferencia;
+    }
+
+    /**
+     * @param idreferencia the idreferencia to set
+     */
+    public void setIdreferencia(String idreferencia) {
+        this.idreferencia = idreferencia;
+    }
+
+    /**
+     * @return the itemreferencia
+     */
+    public String getItemreferencia() {
+        return itemreferencia;
+    }
+
+    /**
+     * @param itemreferencia the itemreferencia to set
+     */
+    public void setItemreferencia(String itemreferencia) {
+        this.itemreferencia = itemreferencia;
     }
 }

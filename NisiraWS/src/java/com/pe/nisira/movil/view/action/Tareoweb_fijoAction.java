@@ -873,7 +873,7 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
                 selectComboEspecial = findComboEspecial(selectComboEspecial_idordenservicio);
                 for(int i=0;i<listDet_tareoweb.size();i++){
                     Det_tareoweb tw = listDet_tareoweb.get(i);
-                    if(selectComboEspecial.getIdordenservicio().trim().equalsIgnoreCase(tw.getIdordenservicio())){
+                    if(selectComboEspecial.getId().trim().equalsIgnoreCase(tw.getIdordenservicio())){
                         lst_in.add(tw);
                     }else{
                         lst_ex.add(tw);
@@ -967,7 +967,7 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
     public ComboEspecial findComboEspecial(String idordenservicio){
         ComboEspecial tresp = null;
         for(ComboEspecial ob : listComboEspecial){
-            if(ob.getIdordenservicio().trim().equalsIgnoreCase(idordenservicio)){
+            if(ob.getId().trim().equalsIgnoreCase(idordenservicio)){
                 tresp = ob;break;
             }
         }
