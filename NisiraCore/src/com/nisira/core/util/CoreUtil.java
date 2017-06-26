@@ -13,6 +13,8 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -167,8 +169,11 @@ public final class CoreUtil {
     }
     public static Date convertDecimalTime(float timeF){
         Date obj= new Date();
-        int hora = (int)timeF;
-        int minutos = (int)((timeF-(float)hora)*60);
+        BigDecimal number = new BigDecimal(timeF);
+        int hora = number.intValue();
+        BigDecimal fraccion = number.remainder(BigDecimal.ONE).multiply(new BigDecimal(60));
+        fraccion=fraccion.setScale(0, RoundingMode.HALF_UP);
+        int minutos = fraccion.intValue();
         obj.setHours(hora);
         obj.setMinutes(minutos);
         return obj;
@@ -177,5 +182,78 @@ public final class CoreUtil {
         SimpleDateFormat format = new SimpleDateFormat("HH:mm"); // 12 hour format
         String rsp = format.format(time);
         return rsp == null?"":rsp;
+    }
+    public static void main(String[] args) {
+        float[] times ={
+                0.00f,
+                0.02f,
+                0.03f,
+                0.05f,
+                0.07f,
+                0.08f,
+                0.10f,
+                0.12f,
+                0.13f,
+                0.15f,
+                0.17f,
+                0.18f,
+                0.20f,
+                0.22f,
+                0.23f,
+                0.25f,
+                0.27f,
+                0.28f,
+                0.30f,
+                0.32f,
+                0.33f,
+                0.35f,
+                0.37f,
+                0.38f,
+                0.40f,
+                0.42f,
+                0.43f,
+                0.45f,
+                0.47f,
+                0.48f,
+                0.50f,
+                0.52f,
+                0.53f,
+                0.55f,
+                0.57f,
+                0.58f,
+                0.60f,
+                0.62f,
+                0.63f,
+                0.65f,
+                0.67f,
+                0.68f,
+                0.70f,
+                0.72f,
+                0.73f,
+                0.75f,
+                0.77f,
+                0.78f,
+                0.80f,
+                0.82f,
+                0.83f,
+                0.85f,
+                0.87f,
+                0.88f,
+                0.90f,
+                0.92f,
+                0.93f,
+                0.95f,
+                0.97f,
+                0.98f
+        };
+        for(float timeF:times){
+            BigDecimal number = new BigDecimal(timeF);
+            int hora = number.intValue();
+            BigDecimal fraccion = number.remainder(BigDecimal.ONE).multiply(new BigDecimal(60));
+            fraccion=fraccion.setScale(0, RoundingMode.HALF_UP);
+            int minutos = fraccion.intValue();
+            //System.out.println("Hora: "+hora);
+            System.out.println("Minutos: "+minutos);
+        }
     }
 }

@@ -71,6 +71,8 @@ public class Det_tareowebDao extends BaseDao<Det_tareoweb> {
                 tareoweb.setItem_dpersonalservicio(rs.getString("ITEM_DPERSONALSERVICIO")!=null?rs.getString("ITEM_DPERSONALSERVICIO").trim():"");
                 tareoweb.setHora_req(rs.getFloat("HORA_REQ"));
                 tareoweb.setHora_rc(rs.getFloat("HORA_RC"));
+                tareoweb.setIdconceptotareo(rs.getString("IDCONCEPTOTAREO")!=null?rs.getString("IDCONCEPTOTAREO").trim():"");
+                tareoweb.setConceptotareo(rs.getString("CONCEPTOTAREO")!=null?rs.getString("CONCEPTOTAREO").trim():"");
                 if(tareoweb.getHora_req()!=0.0f){
                     tareoweb.setFhora_req(CoreUtil.convertDecimalTime(tareoweb.getHora_req()));
                     tareoweb.setShora_req(CoreUtil.convertTimeString(tareoweb.getFhora_req()));
@@ -165,6 +167,8 @@ public class Det_tareowebDao extends BaseDao<Det_tareoweb> {
                 tareoweb.setItem_dpersonalservicio(rs.getString("ITEM_DPERSONALSERVICIO")!=null?rs.getString("ITEM_DPERSONALSERVICIO").trim():"");
                 tareoweb.setHora_req(rs.getFloat("HORA_REQ"));
                 tareoweb.setHora_rc(rs.getFloat("HORA_RC"));
+                tareoweb.setIdconceptotareo(rs.getString("IDCONCEPTOTAREO")!=null?rs.getString("IDCONCEPTOTAREO").trim():"");
+                tareoweb.setConceptotareo(rs.getString("CONCEPTOTAREO")!=null?rs.getString("CONCEPTOTAREO").trim():"");
                 if(tareoweb.getHora_req()!=0.0f){
                     tareoweb.setFhora_req(CoreUtil.convertDecimalTime(tareoweb.getHora_req()));
                     tareoweb.setShora_req(CoreUtil.convertTimeString(tareoweb.getFhora_req()));
@@ -343,6 +347,7 @@ public class Det_tareowebDao extends BaseDao<Det_tareoweb> {
                     tareoweb.setFhora_liberacion(CoreUtil.convertDecimalTime(tareoweb.getHora_liberacion()));
                     tareoweb.setShora_liberacion(CoreUtil.convertTimeString(tareoweb.getFhora_liberacion()));
                 }
+                tareoweb.setFecharegistro(rs.getDate("FECHAREGISTRO"));
                 tareoweb.setFechafinregistro(rs.getDate("FECHAFINREGISTRO"));
                 tareoweb.setEncrypt_programacion(rs.getString("ENCRYPT_PROGRAMACION")!=null?rs.getString("ENCRYPT_PROGRAMACION").trim():"");
                 tareoweb.setCodasistencia(rs.getString("CODASISTENCIA")!=null?rs.getString("CODASISTENCIA").trim():"");

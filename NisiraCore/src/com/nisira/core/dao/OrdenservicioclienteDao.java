@@ -256,6 +256,11 @@ public class OrdenservicioclienteDao extends BaseDao<Ordenserviciocliente> {
             rs = execProcedure("RPT_ORDENSERVICIOCLIENTE_TMPSS",idempresa,fechainicio,fechafin);
             return ReportConfig.getNSRResultSet(rs);
         }
+        public NSRResultSet getConsultaRepote_fijo(String idempresa,String fechainicio,String fechafin) throws NisiraORMException{
+            ResultSet rs = null;
+            rs = execProcedure("RPT_ORDENSERVICIOCLIENTE_FIJO_TMPSS",idempresa,fechainicio,fechafin);
+            return ReportConfig.getNSRResultSet(rs);
+        }
         public NSRResultSet getConsultaRepote_personal_ocupado(String idempresa) throws NisiraORMException{
             ResultSet rs = null;
             rs = execProcedure("GET_REPORTE_PERSONAL_OCUPADO_TMPSS",idempresa);
