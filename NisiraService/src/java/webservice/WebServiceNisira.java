@@ -354,6 +354,40 @@ public class WebServiceNisira{
         }
         return result;
     }
+    @WebMethod(operationName = "METHOD_LIST_ESTRUCTURA_COSTO_PRODUCTO")
+    public String METHOD_LIST_ESTRUCTURA_COSTO_PRODUCTO(@WebParam(name = "type") String type){
+        String result=null;
+        try {
+            String conexion = WebMethodNisira.cargarBaseDatos();
+            setConexion(conexion);
+            ArrayList<String> lista_solution=com.nisira.core.util.CoreUtil.valoresBase();/*Obtener Datos de solution.ini*/            
+            String idempresa = lista_solution.get(5);
+            ConstantesBD.setIDEMPRESA(idempresa);
+            Estructura_costos_productoDao estructuradao =new Estructura_costos_productoDao();
+            List<Estructura_costos_producto> list= estructuradao.listarPorEmpresaService();
+            if(list !=null){
+                if(type.trim().equals("JSON")){
+                    result = WebUtil.objectGson(list.size(),list);
+                }
+                if(type.trim().equals("XML")){
+                    try {
+                        result = WebUtil.objectXml("com.nisira.core.entity.Estructura_costos_producto", list);
+                    } catch (ClassNotFoundException ex) {
+                        Logger.getLogger(WebServiceNisira.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+            else
+            {
+                result = "ERROR";
+            }
+            
+        } catch (NisiraORMException  ex) {
+            Logger.getLogger(WebServiceNisira.class.getName()).log(Level.SEVERE, null, ex);
+            result = "ERROR :"+ex.getMessage();
+        }
+        return result;
+    }
     @WebMethod(operationName = "METHOD_LIST_NUMEMISOR")
     public String METHOD_LIST_NUMEMISOR(@WebParam(name = "type") String type){
         String result=null;
