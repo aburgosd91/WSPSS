@@ -143,6 +143,13 @@ public class Personal_servicioDao extends BaseDao<Personal_servicio> {
                 personal_servicio.setChecklist(rs.getString("CHECKLIST")!=null?rs.getString("CHECKLIST").trim():"");
                 personal_servicio.setIdvehiculo(rs.getString("IDVEHICULO")!=null?rs.getString("IDVEHICULO").trim():"");
                 personal_servicio.setVehiculo(rs.getString("VEHICULO")!=null?rs.getString("VEHICULO").trim():"");
+                personal_servicio.setNrocontenedor(rs.getString("NROCONTENEDOR")!=null?rs.getString("NROCONTENEDOR").trim():"");
+                personal_servicio.setNroprecinto(rs.getString("NROPRECINTO")!=null?rs.getString("NROPRECINTO").trim():"");
+                personal_servicio.setNro_oservicio(rs.getString("NRO_OSERVICIO")!=null?rs.getString("NRO_OSERVICIO").trim():"");
+                
+                personal_servicio.setPlaca_cliente(rs.getString("PLACA_CLIENTE")!=null?rs.getString("PLACA_CLIENTE").trim():"");
+                personal_servicio.setConductor_cliente(rs.getString("CONDUCTOR_CLIENTE")!=null?rs.getString("CONDUCTOR_CLIENTE").trim():"");
+                personal_servicio.setBrevete_cliente(rs.getString("BREVETE_CLIENTE")!=null?rs.getString("BREVETE_CLIENTE").trim():"");
                 lista.add(personal_servicio); 
             }
         } catch(Exception ex) {

@@ -55,8 +55,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import net.sf.jasperreports.engine.JRDataSource;
 import org.primefaces.context.RequestContext;
-import org.primefaces.event.RowEditEvent;
-import org.primefaces.event.SelectEvent;
 
 /**
  *

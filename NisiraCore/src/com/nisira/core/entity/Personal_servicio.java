@@ -50,6 +50,24 @@ public class Personal_servicio implements Serializable{
         @XStreamAlias("IDVEHICULO")
 	@Columna
 	private String idvehiculo;
+        @Columna
+        @XStreamAlias("NROCONTENEDOR")
+	private String nrocontenedor;
+	@Columna
+        @XStreamAlias("NROPRECINTO")
+	private String nroprecinto;
+	@Columna
+        @XStreamAlias("NRO_OSERVICIO")
+	private String nro_oservicio;
+        @Columna
+        @XStreamAlias("PLACA_CLIENTE")
+	private String placa_cliente;
+        @Columna
+        @XStreamAlias("CONDUCTOR_CLIENTE")
+	private String conductor_cliente;
+        @Columna
+        @XStreamAlias("BREVETE_CLIENTE")
+	private String brevete_cliente;
         private String vehiculo;
         private String cargo;
 
@@ -212,5 +230,89 @@ public class Personal_servicio implements Serializable{
      */
     public void setVehiculo(String vehiculo) {
         this.vehiculo = vehiculo;
+    }
+
+    /**
+     * @return the nrocontenedor
+     */
+    public String getNrocontenedor() {
+        return nrocontenedor;
+    }
+
+    /**
+     * @param nrocontenedor the nrocontenedor to set
+     */
+    public void setNrocontenedor(String nrocontenedor) {
+        this.nrocontenedor = nrocontenedor;
+    }
+
+    /**
+     * @return the nroprecinto
+     */
+    public String getNroprecinto() {
+        return nroprecinto;
+    }
+
+    /**
+     * @param nroprecinto the nroprecinto to set
+     */
+    public void setNroprecinto(String nroprecinto) {
+        this.nroprecinto = nroprecinto;
+    }
+
+    /**
+     * @return the nro_oservicio
+     */
+    public String getNro_oservicio() {
+        return nro_oservicio;
+    }
+
+    /**
+     * @param nro_oservicio the nro_oservicio to set
+     */
+    public void setNro_oservicio(String nro_oservicio) {
+        this.nro_oservicio = nro_oservicio;
+    }
+
+    /**
+     * @return the placa_cliente
+     */
+    public String getPlaca_cliente() {
+        return placa_cliente;
+    }
+
+    /**
+     * @param placa_cliente the placa_cliente to set
+     */
+    public void setPlaca_cliente(String placa_cliente) {
+        this.placa_cliente = placa_cliente;
+    }
+
+    /**
+     * @return the conductor_cliente
+     */
+    public String getConductor_cliente() {
+        return conductor_cliente;
+    }
+
+    /**
+     * @param conductor_cliente the conductor_cliente to set
+     */
+    public void setConductor_cliente(String conductor_cliente) {
+        this.conductor_cliente = conductor_cliente;
+    }
+
+    /**
+     * @return the brevete_cliente
+     */
+    public String getBrevete_cliente() {
+        return brevete_cliente;
+    }
+
+    /**
+     * @param brevete_cliente the brevete_cliente to set
+     */
+    public void setBrevete_cliente(String brevete_cliente) {
+        this.brevete_cliente = brevete_cliente;
     }
 }

@@ -52,16 +52,18 @@ public class CabtareowebDao extends BaseDao<Cabtareoweb> {
                 cabtareoweb.setEmisor(rs.getString("EMISOR")!=null?rs.getString("EMISOR").trim():"");
                 cabtareoweb.setIdturnotrabajo(rs.getString("IDTURNOTRABAJO")!=null?rs.getString("IDTURNOTRABAJO").trim():"");
                 cabtareoweb.setIdtipoasistencia(rs.getString("IDTIPOASISTENCIA")!=null?rs.getString("IDTIPOASISTENCIA").trim():"");
+                cabtareoweb.setIdusuario(rs.getString("IDUSUARIO")!=null?rs.getString("IDUSUARIO").trim():"");
+                cabtareoweb.setUsuario(rs.getString("USUARIO")!=null?rs.getString("USUARIO").trim():"");
                 lista.add(cabtareoweb); 
             }
             return lista;
         }
 
-    public ArrayList<Cabtareoweb> listarPorEmpresaWebFiltroFecha_Fijo(String idempresa,String fechainicio,String fechafin) throws NisiraORMException,Exception {
+    public ArrayList<Cabtareoweb> listarPorEmpresaWebFiltroFecha_Fijo(String idempresa,String fechainicio,String fechafin,String idusuario) throws NisiraORMException,Exception {
         ArrayList<Cabtareoweb> lista = new ArrayList<Cabtareoweb>();
 
         ResultSet rs = null;
-        rs = execProcedure("GETCABTAREOWEB_FIJO_TMPSS",idempresa,fechainicio,fechafin);
+        rs = execProcedure("GETCABTAREOWEB_FIJO_TMPSS",idempresa,fechainicio,fechafin,idusuario);
         while (rs.next()) {
             Cabtareoweb cabtareoweb = new Cabtareoweb();
             cabtareoweb.setIdbasedatos(rs.getString("IDBASEDATOS").trim());
@@ -86,6 +88,8 @@ public class CabtareowebDao extends BaseDao<Cabtareoweb> {
             cabtareoweb.setFinicio(rs.getDate("FINICIO"));
             cabtareoweb.setFfin(rs.getDate("FFIN"));
             cabtareoweb.setIdtipoasistencia(rs.getString("IDTIPOASISTENCIA")!=null?rs.getString("IDTIPOASISTENCIA").trim():"");
+            cabtareoweb.setIdusuario(rs.getString("IDUSUARIO")!=null?rs.getString("IDUSUARIO").trim():"");
+            cabtareoweb.setUsuario(rs.getString("USUARIO")!=null?rs.getString("USUARIO").trim():"");
             lista.add(cabtareoweb); 
         }
         return lista;
@@ -146,11 +150,17 @@ public class CabtareowebDao extends BaseDao<Cabtareoweb> {
 
         return mensaje;
     }
-    public String aprobarTareo(Cabtareoweb ob) throws Exception {
+    public String aprobarTareo(Cabtareoweb ob,List<Det_tareoweb> listDet_tareoweb) throws Exception {
             String mensaje="";
+            String xml = "<?xml version='1.0' encoding='ISO-8859-1' ?>";
+            String xmlDet_tareoweb = "";
+            XStream xStream = new XStream();
+            xStream.processAnnotations(Det_tareoweb.class);
+            xmlDet_tareoweb = xml + xStream.toXML(listDet_tareoweb);
+            
             ResultSet rs = null;
             rs = execProcedure("SP_ORDENSERVICIOCLIENTE_TAREOWEB",
-                    ob.getIdempresa(),ob.getIdcabtareoweb()
+                    ob.getIdempresa(),ob.getIdcabtareoweb(),xmlDet_tareoweb
             );
             while (rs.next()) {
                 mensaje = rs.getString("mensaje");
@@ -188,20 +198,20 @@ public class CabtareowebDao extends BaseDao<Cabtareoweb> {
             }
             return mensaje;
         }
-        public String eliminar(String idempresa,String codigo,String idusuario) throws Exception {
-            String mensaje="";
-            /********* ESTRUCTURA COSTOS ***********/
-            try {
-                ResultSet rs = null;
-                rs = execProcedure("SP_TAREO_ELIMINAR",idempresa,codigo,idusuario
-                );
-                while (rs.next()) {
-                    mensaje = rs.getString("mensaje");
-                    break;
-                }
-            } catch(Exception ex) {
-                ex.printStackTrace();
+    public String eliminar(String idempresa,String codigo,String idusuario) throws Exception {
+        String mensaje="";
+        /********* ESTRUCTURA COSTOS ***********/
+        try {
+            ResultSet rs = null;
+            rs = execProcedure("SP_TAREO_ELIMINAR",idempresa,codigo,idusuario
+            );
+            while (rs.next()) {
+                mensaje = rs.getString("mensaje");
+                break;
             }
-            return mensaje;
+        } catch(Exception ex) {
+            ex.printStackTrace();
         }
+        return mensaje;
+    }
 }

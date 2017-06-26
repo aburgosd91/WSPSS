@@ -160,4 +160,26 @@ public class DocumentosDao extends BaseDao<Documentos> {
         return lista;
        
         }
+        public ArrayList<Documentos> listarPorEmpresaWeb_codigosunat(String idempresa) throws NisiraORMException {
+            ArrayList<Documentos> lista = new ArrayList<Documentos>();
+            try
+            {
+                ResultSet rs = null;
+                rs = execProcedure("GETDOCUMENTOS_CODIGO_SUNAT_TMPSS",idempresa);
+                while (rs.next()) {
+                    Documentos documentos = new Documentos();
+                    documentos.setIdbasedatos(rs.getString("IDBASEDATOS").trim());
+                    documentos.setIdempresa(rs.getString("IDEMPRESA").trim());
+                    documentos.setIddocumento(rs.getString("IDDOCUMENTO").trim());
+                    documentos.setDescripcion(rs.getString("DESCRIPCION")!=null?rs.getString("DESCRIPCION").trim():"");
+                    documentos.setCodigo_sunat(rs.getString("CODIGO_SUNAT")!=null?rs.getString("CODIGO_SUNAT").trim():"");
+    //                clieprov.setRazonsocial(rs.getString("RAZONSOCIAL"));
+                    documentos.setEstado(rs.getFloat("ESTADO"));
+                    lista.add(documentos);      
+                }
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
+            return lista;
+        }
 }

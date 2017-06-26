@@ -9,43 +9,40 @@
     <ui:define name="metadata">
     </ui:define>
     <ui:define name="body">
-        <h:form id="datos">            
-            #{ordenliquidaciongastoAction.buscarTodo()}  
-            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
-                <cmp:barra_lst bean="#{ordenliquidaciongastoAction}" mostrar_opciones="true" cfgfiltro="true"/>
-                <p:dataTable  id="tbl" var="listOrdenliquidaciongasto" value="#{ordenliquidaciongastoAction.listaDatos}" 
-                              filteredValue="#{ordenliquidaciongastoAction.filtroDatos}"  
-                              widgetVar="listOrdenliquidaciongasto" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" 
-                              paginatorPosition="top"
-                              paginator="true" rows="15" 
-                              style="margin-bottom:20px" selectionMode="single" 
-                              selection="#{ordenliquidaciongastoAction.datoSeleccionado}" 
-                              rowKey="#{listOrdenliquidaciongasto.idorden}" resizableColumns="true">
+        <h:form id="datos">
+            <cmp:barra_lst bean="#{ordenliquidaciongastoAction}" mostrar_opciones="false" cfgfiltro="true"/>
+            <p:dataTable  id="tbl" var="listOrdenliquidaciongasto" value="#{ordenliquidaciongastoAction.listaDatos}" 
+                          filteredValue="#{ordenliquidaciongastoAction.filtroDatos}"  
+                          widgetVar="listOrdenliquidaciongasto" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" 
+                          paginatorPosition="top"
+                          paginator="true" rows="15" 
+                          style="margin-bottom:20px" selectionMode="single" 
+                          selection="#{ordenliquidaciongastoAction.datoSeleccionado}" 
+                          rowKey="#{listOrdenliquidaciongasto.idorden}" resizableColumns="true">
+                <f:facet name="header">
+                    <h:outputText value="#{ordenliquidaciongastoAction.tituloHead}" />   
+                </f:facet>
+                <p:column style="width:20%;" filterBy="#{listOrdenliquidaciongasto.fecharegistro}" filterMatchMode="contains" sortBy="#{listOrdenliquidaciongasto.fecharegistro}">
                     <f:facet name="header">
-                        <h:outputText value="#{ordenliquidaciongastoAction.tituloHead}" />   
+                        <h:outputText value="Fecha" />
                     </f:facet>
-                    <p:column style="width:20%;" filterBy="#{listOrdenliquidaciongasto.fecharegistro}" filterMatchMode="contains" sortBy="#{listOrdenliquidaciongasto.fecharegistro}">
-                        <f:facet name="header">
-                            <h:outputText value="Fecha" />
-                        </f:facet>
-                        <h:outputText value="#{listOrdenliquidaciongasto.fecharegistro}">
-                            <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
-                        </h:outputText>
-                    </p:column>
-                    <p:column headerText="Documento" style="width:30%;" >
-                        <h:outputText value="#{listOrdenliquidaciongasto.iddocumento}-#{listOrdenliquidaciongasto.serie}-#{listOrdenliquidaciongasto.numero}" />
-                    </p:column>
-                    <p:column headerText="Razón Social" style="width:40%;" filterBy="#{listOrdenliquidaciongasto.razonsocial}" filterMatchMode="contains" sortBy="#{listOrdenliquidaciongasto.razonsocial}">
-                        <h:outputText value="#{listOrdenliquidaciongasto.razonsocial}" />
-                    </p:column>
-                    <p:column headerText="Moneda" style="width:10%;" filterBy="#{listOrdenliquidaciongasto.moneda}" filterMatchMode="contains" sortBy="#{listOrdenliquidaciongasto.moneda}">
-                        <h:outputText value="#{listOrdenliquidaciongasto.moneda}" />
-                    </p:column>
-                    <p:column headerText="Importe" style="width:10%;" filterBy="#{listOrdenliquidaciongasto.importe}" filterMatchMode="contains" sortBy="#{listOrdenliquidaciongasto.importe}">
-                        <h:outputText value="#{listOrdenliquidaciongasto.importe}" />
-                    </p:column>
-                </p:dataTable>
-            </p:panelGrid>
+                    <h:outputText value="#{listOrdenliquidaciongasto.fecharegistro}">
+                        <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="Documento" style="width:30%;" >
+                    <h:outputText value="#{listOrdenliquidaciongasto.iddocumento}-#{listOrdenliquidaciongasto.serie}-#{listOrdenliquidaciongasto.numero}" />
+                </p:column>
+                <p:column headerText="Razón Social" style="width:40%;" filterBy="#{listOrdenliquidaciongasto.razonsocial}" filterMatchMode="contains" sortBy="#{listOrdenliquidaciongasto.razonsocial}">
+                    <h:outputText value="#{listOrdenliquidaciongasto.razonsocial}" />
+                </p:column>
+                <p:column headerText="Moneda" style="width:10%;" filterBy="#{listOrdenliquidaciongasto.moneda}" filterMatchMode="contains" sortBy="#{listOrdenliquidaciongasto.moneda}">
+                    <h:outputText value="#{listOrdenliquidaciongasto.moneda}" />
+                </p:column>
+                <p:column headerText="Importe" style="width:10%;" filterBy="#{listOrdenliquidaciongasto.importe}" filterMatchMode="contains" sortBy="#{listOrdenliquidaciongasto.importe}">
+                    <h:outputText value="#{listOrdenliquidaciongasto.importe}" />
+                </p:column>
+            </p:dataTable>
             <p:growl id="growl" life="4000" showDetail="false"  />
             <cmp:mDialogElimina_lst id="cmpDialog" bean="#{ordenliquidaciongastoAction}" ventana="LST" />
         </h:form>

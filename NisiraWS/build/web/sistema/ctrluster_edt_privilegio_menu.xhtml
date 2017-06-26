@@ -16,7 +16,7 @@
                 <p:panelGrid columns="1" styleClass="bordePanelGrid" columnClasses="no-border, no-border" style="width: 80%">
                     <p:panelGrid columns="2" columnClasses="no-border, no-border">
                         <p:outputLabel value="Usuario: "/>
-                        <p:selectOneMenu id="usr" value="#{privilegioEdtMenuAction.idusuario}" filter="true" filterMatchMode="startsWith">  
+                        <p:selectOneMenu id="usr" value="#{privilegioEdtMenuAction.idusuario}" filter="true" filterMatchMode="contains">  
                             <f:selectItem itemLabel="Seleccione Usuario" itemValue=""/> 
                             <f:selectItems value="#{privilegioEdtMenuAction.lista_usuario}" var="est" itemValue="#{est[0]}" itemLabel="#{est[1]}"/>
                             <p:ajax listener="#{privilegioEdtMenuAction.llenarModulo()}" update=":datos:modu" />

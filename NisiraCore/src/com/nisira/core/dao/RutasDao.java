@@ -51,12 +51,12 @@ public class RutasDao extends BaseDao<Rutas> {
             return lista;
         }
         /*APP WEB*/
-        public ArrayList<Rutas> listarPorEmpresa_estructura_costos_producto(String idempresa,String idclieprov,String codoperativo,Float nhoras) throws NisiraORMException {
+        public ArrayList<Rutas> listarPorEmpresa_estructura_costos_producto(String idempresa,String idclieprov,String codoperativo) throws NisiraORMException {
             ArrayList<Rutas> lista = new ArrayList<Rutas>();
         try
         {
             ResultSet rs = null;
-            rs = execProcedure("GETRUTAS_CODOPERACIONES_TMPSS",idempresa,idclieprov,codoperativo,nhoras);
+            rs = execProcedure("GETRUTAS_CODOPERACIONES_TMPSS",idempresa,idclieprov,codoperativo);
             while (rs.next()) {
                 Rutas ruta = new Rutas();
                 ruta.setIdempresa(rs.getString("IDEMPRESA").trim());

@@ -1,0 +1,45 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">          
+        <h:form id="datos">
+            #{privilegio_global_pssAction.buscarTodo()}  
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
+                <cmp:barra_lst bean="#{privilegio_global_pssAction}" mostrar_opciones="false" />
+                <p:dataTable id="tbl" var="listPrivilegio_global_pss" value="#{privilegio_global_pssAction.listaDatos}" filteredValue="#{privilegio_global_pssAction.filtroDatos}" widgetVar="listPrivilegio_global_pss" 
+                             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                             paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{privilegio_global_pssAction.datoSeleccionado}" rowKey="#{listPrivilegio_global_pss.idusuario}" resizableColumns="true">
+                    <f:facet name="header">
+                        <h:outputText value="#{privilegio_global_pssAction.tituloHead}" />
+                    </f:facet>
+                    <p:column style="width:15%;" filterBy="#{listPrivilegio_global_pss.idusuario}" filterMatchMode="contains" sortBy="#{listPrivilegio_global_pss.idusuario}">
+                        <f:facet name="header">
+                            <h:outputText value="Código" />
+                        </f:facet>
+                        <h:outputText value="#{listPrivilegio_global_pss.idusuario}"/>
+                    </p:column>
+                    <p:column style="width:45%;" filterBy="#{listPrivilegio_global_pss.usuario}" filterMatchMode="contains" sortBy="#{listPrivilegio_global_pss.usuario}">
+                        <f:facet name="header">
+                            <h:outputText value="Nombres" />
+                        </f:facet>
+                        <h:outputText value="#{listPrivilegio_global_pss.usuario}"/>
+                    </p:column>
+                    <p:column style="width:25%;" filterBy="#{listPrivilegio_global_pss.vista}" filterMatchMode="contains" sortBy="#{listPrivilegio_global_pss.vista}">
+                        <f:facet name="header">
+                            <h:outputText value="Vista" />
+                        </f:facet>
+                        <h:outputText value="#{listPrivilegio_global_pss.vista}"/>
+                    </p:column>
+                </p:dataTable>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{privilegio_global_pssAction}" ventana="LST" />
+        </h:form>
+    </ui:define>
+</ui:composition>

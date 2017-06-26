@@ -27,6 +27,7 @@ import com.nisira.core.dao.NumemisorDao;
 import com.nisira.core.dao.Personal_servicioDao;
 import com.nisira.core.dao.Ruta_serviciosDao;
 import com.nisira.core.dao.RutasDao;
+import com.nisira.core.dao.UsuarioDao;
 import com.nisira.core.entity.Cargos_personal;
 import com.nisira.core.entity.Clieprov;
 import com.nisira.core.entity.Codoperaciones_pss;
@@ -161,6 +162,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
     private Cargos_personalDao cargos_personalDao;
     private Estructura_costos_productoDao estructura_costos_productoDao;
     private RutasDao rutasDao;
+    private UsuarioDao usuariodao;
     /*************************************ENTITY***************************************/
     private UsuarioBean user;
     private String numero;
@@ -196,6 +198,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
     private List<Rutas> lstComboRutas;
     /************************************* DATOS *****************************************/
     private int num_repetir;
+    private int num_repetir_detalle;
     private int type_personalservicio;
     public OrdenservicioclienteAction() {
         try {
@@ -252,6 +255,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
             estructura_costos_productoDao = new Estructura_costos_productoDao();
             rutasDao = new RutasDao();
             estructura_costos_mano_obraDao = new Estructura_costos_mano_obraDao();
+            usuariodao = new UsuarioDao();
             /**********************************CONTROLADOR********************************/
             /*DETALLE ORDEN SERVICIO*/
             botonNuevoDOrdenservicio=true;
@@ -356,12 +360,25 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
 
     @Override
     public void nuevo() {
-        getIniciar();
-        setDatoEdicion(new Ordenserviciocliente());
-        getDatoEdicion().setFecha(new Date());
-        getDatoEdicion().setIdempresa(user.getIDEMPRESA());
-        getDatoEdicion().setNumero(numero);
-        RequestContext.getCurrentInstance().update("datos");
+        try {
+            getIniciar();
+            setDatoEdicion(new Ordenserviciocliente());
+            getDatoEdicion().setFecha(new Date());
+            getDatoEdicion().setIdempresa(user.getIDEMPRESA());
+            getDatoEdicion().setNumero(numero);
+            getDatoEdicion().setIdestado("PE");
+            Clieprov us = usuariodao.getUsuarioCliente(user.getIDUSUARIO());
+            if(us!=null){
+                getDatoEdicion().setIdoperario2(us.getIdclieprov());
+                getDatoEdicion().setOperario2(us.getRazonsocial());
+            }
+            RequestContext.getCurrentInstance().update("datos");
+        } catch (NisiraORMException ex) {
+            this.mensaje = ex.getMessage();
+            WebUtil.error(mensaje);
+            RequestContext.getCurrentInstance().update("datos:growl");
+            Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     public boolean esVistaValida() {
         if (getDatoEdicion().getIdclieprov().isEmpty() & getDatoEdicion().getRazonsocial().isEmpty()) {
@@ -439,6 +456,83 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
+    @Override
+    public boolean verificar_edicion(){
+        boolean verification = false;
+        if(getDatoEdicion() != null){
+            if(getDatoEdicion().getIdestado()!=null){
+                if(getDatoEdicion().getIdestado().trim().equals("AN")){
+                    this.mensaje = "El documento "+getDatoEdicion().getIddocumento()+"-"+getDatoEdicion().getSerie()+"-"+getDatoEdicion().getNumero()+
+                            " se encuentra Anulado";
+                    WebUtil.error(getMensaje());
+                    verification = true;
+                }
+            }
+            //buscarFiltro(2);
+        }else if(getDatoSeleccionado() != null){
+            if(getDatoSeleccionado().getIdestado()!=null){
+                if(getDatoSeleccionado().getIdestado().trim().equals("AN")){
+                    this.mensaje = "El documento "+getDatoSeleccionado().getIddocumento()+"-"+getDatoSeleccionado().getSerie()+"-"+getDatoSeleccionado().getNumero()+
+                            " se encuentra Anulado";
+                    WebUtil.error(getMensaje());
+                    verification = true;
+                }
+            }
+            //buscarFiltro(2);
+        }
+        RequestContext.getCurrentInstance().update("datos:growl");
+        return verification;
+    }
+    @Override
+    public String buscarFiltro(int tipo){
+        try {
+            this.mensaje = "";
+            SimpleDateFormat  f = new SimpleDateFormat("yyyy-MM-dd");
+            String f_ini = f.format(getDesde());
+            String f_fin = f.format(getHasta());
+            f_ini = f_ini.replace("-", "");
+            f_fin = f_fin.replace("-", "");
+            setListaDatos(getOrdenservicioclienteDao().listarPorEmpresaWebFiltroFecha(user.getIDEMPRESA(),f_ini,f_fin));
+        } catch (Exception e) {
+            mensaje = WebUtil.mensajeError();
+            WebUtil.error(mensaje);
+        }
+        RequestContext.getCurrentInstance().update("datos:tbl");
+        if(tipo == 2)
+            lista_accion_filtro("wLst_Ordenserviciocliente");
+        return "";
+    }
+
+    @Override
+    public void cerrar() {
+        try {
+            List lst;
+            if(getDatoEdicion() != null){
+                lst = new ArrayList<>();
+                lst.add(getDatoEdicion());
+                this.mensaje = getOrdenservicioclienteDao().cierreMasivo(1,lst);
+                setMensaje(WebUtil.exitoRegistrar("Orden Servicio ", mensaje));
+                WebUtil.info(getMensaje());
+                setSelectListOrdenserviciocliente(new ArrayList<>());
+                buscarFiltro(2);
+            }else if(getDatoSeleccionado() != null){
+                lst = new ArrayList<>();
+                lst.add(getDatoSeleccionado());
+                this.mensaje = getOrdenservicioclienteDao().cierreMasivo(1,lst);
+                setMensaje(WebUtil.exitoRegistrar("Orden Servicio ", mensaje));
+                WebUtil.info(getMensaje());
+                setSelectListOrdenserviciocliente(new ArrayList<>());
+                buscarFiltro(2);
+            }else{
+                this.mensaje = "Seleccionar Documento";
+                WebUtil.MensajeError(this.mensaje);
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(Ordenserviciocliente_cierreAction.class.getName()).log(Level.SEVERE, null, ex);
+            WebUtil.MensajeError(ex.getMessage());
+        }
+    }
+
     /************** CONFIGURACIÓN *******************/
     public void onSPTabChange(TabChangeEvent event) 
     {   
@@ -454,36 +548,38 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                 if(motivo.getEs_cotizacion()==1 && motivo.getEs_requerimiento()==0 && motivo.getEs_ingpersonal()==0){
                     fdocreferencia=false;
                     fclieprov = true;
-                    setFproducto(true);
+                    /*
+                    fproducto = true;
                     botonNuevoDOrdenservicio = true;
                     botonEliminarDOrdenservicio=true;
-                    
                     botonNuevoPersonal_servicio = true;
                     botonEliminarPersonal_servicio = true;
-                    
+                    fmotivo_rc = false;
+                    */
+                    fproducto = false;
+                    botonNuevoDOrdenservicio = false;
+                    botonEliminarDOrdenservicio=false;
+                    botonNuevoPersonal_servicio = false;
+                    botonEliminarPersonal_servicio = false;
                     fmotivo_rc = false;
                 }else if(motivo.getEs_cotizacion()==0 && motivo.getEs_requerimiento()==0 && motivo.getEs_ingpersonal()==1){
                     fdocreferencia=true;
                     fclieprov = false;
-                    setFproducto(false);
+                    fproducto = false;
                     botonNuevoDOrdenservicio = false;
                     botonEliminarDOrdenservicio=false;
-                    
                     botonNuevoPersonal_servicio = false;
                     botonEliminarPersonal_servicio = false;
-                    
                     fmotivo_rc = false;
                 }else if(motivo.getEs_cotizacion()==0 && motivo.getEs_requerimiento()==1 && motivo.getEs_ingpersonal()==0){
                     fmotivo_rc = true;
                     fdocreferencia=true;
                     fclieprov = false;
-                    setFproducto(false);
+                    fproducto = false;
                     botonNuevoDOrdenservicio = false;
                     botonEliminarDOrdenservicio=false;
-                    
                     botonNuevoPersonal_servicio = false;
                     botonEliminarPersonal_servicio = false;
-                    
                 }
             }
         } catch (NisiraORMException ex) {
@@ -496,11 +592,16 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
             motivo = motivosproduccionDao.getPorClavePrimaria_(user.getIDEMPRESA(), idmotivo);
             if(motivo!=null){
                 if(motivo.getEs_cotizacion()==1 && motivo.getEs_requerimiento()==0 && motivo.getEs_ingpersonal()==0){
-                    botonNuevoDOrdenservicio = true;
+                    /*botonNuevoDOrdenservicio = true;
                     botonEliminarDOrdenservicio=true;
                     
                     botonNuevoPersonal_servicio = true;
-                    botonEliminarPersonal_servicio = true;
+                    botonEliminarPersonal_servicio = true;*/
+                    botonNuevoDOrdenservicio = false;
+                    botonEliminarDOrdenservicio=false;
+                    
+                    botonNuevoPersonal_servicio = false;
+                    botonEliminarPersonal_servicio = false;
                 }else if(motivo.getEs_cotizacion()==0 && motivo.getEs_requerimiento()==1 && motivo.getEs_ingpersonal()==0){
                     
                 }else if(motivo.getEs_cotizacion()==0 && motivo.getEs_requerimiento()==0 && motivo.getEs_ingpersonal()==1){
@@ -576,7 +677,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                     configuracion_motivo_cabecera(getDatoEdicion().getIdmotivo());
                     configuracion_motivo_detalle(getDatoEdicion().getIdmotivo());
                 }
-                this.ftipo_servicio=true;
+                this.ftipo_servicio=false;
             }
 //            if(!getListMotivoproduccion().isEmpty()){
 //                Motivosproduccion mov = getListMotivoproduccion().get(0);
@@ -656,14 +757,14 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
         listRuta_servicios = cargarRuta_servicios();
         RequestContext.getCurrentInstance().update("datos:lstdordenserviciocliente");
         RequestContext.getCurrentInstance().update("datos:tabs:listPersonal_Servicio");
-        RequestContext.getCurrentInstance().update("datos:tabs:listRuta_servicios");
+        RequestContext.getCurrentInstance().update("datos:listRuta_servicios");
     }
     public void onRowSelectRuta_Servicios(SelectEvent event) throws IOException {
         setBotonEditarRuta_servicios(false);
         setBotonEliminarRuta_servicios(false);
         //RequestContext.getCurrentInstance().update("datos:listRuta_servicios");
-        RequestContext.getCurrentInstance().update("datos:tabs");
-        tabView.setActiveIndex(indexTab);
+        RequestContext.getCurrentInstance().update("datos:listRuta_servicios");
+        //tabView.setActiveIndex(indexTab);
     }
     public void onRowSelectPersonal_Servicio(SelectEvent event) throws IOException {
         try {
@@ -673,7 +774,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
             /*CARGAR DATOS DPERSONAL_SERVICIO*/
             listDpersonal_Servicio = cargarDpersonal_servicio();
             RequestContext.getCurrentInstance().update("datos:tabs");
-            //tabView.setActiveIndex(indexTab);
+            ////tabView.setActiveIndex(indexTab);
             //RequestContext.getCurrentInstance().update("datos:tabs:tab_personal_Servicio");
             //RequestContext.getCurrentInstance().update("datos:tabs:tab_personal_Servicio:listPersonal_Servicio");
         } catch (NisiraORMException ex) {
@@ -687,9 +788,76 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
 //        RequestContext.getCurrentInstance().update("datos:tabs:listDpersonal_Servicio");
     }
     public void onRowCancelDocreferencia(RowEditEvent event) {
-        Docreferencia obj =(Docreferencia)event.getObject();
-        getListDocreferencia().remove(obj);
-        RequestContext.getCurrentInstance().update("datos:tabledocreferencia");
+        try {
+            Docreferencia obj =(Docreferencia)event.getObject();
+            getListDocreferencia().remove(obj);
+            /*ELIMINAR REFERENCIAS - DORDENSERVICIO - */
+            List<Dcotizacionventas> lstDcoti = dcotizacionventasDao.getListDCotizacionWeb(user.getIDEMPRESA(),obj.getIdreferencia());
+            List<Dordenserviciocliente> lstDordenser = new ArrayList<>();
+             List<Personal_servicio> lstPersonal_servicio = new ArrayList<>();
+             List<Dpersonal_servicio> lstDpersonal_servicio = new ArrayList<>();
+             List<Ruta_servicios> lstRuta_servicio = new ArrayList<>();
+            if(!lstDcoti.isEmpty()){
+                for(int i=0;i<lstDcoti.size();i++){
+                    Dcotizacionventas dc = lstDcoti.get(i);
+                    for(int j=0;j<getLstdordenserviciocliente().size();j++){
+                        Dordenserviciocliente dos = getLstdordenserviciocliente().get(i);
+                        if(!(dc.getIdcompra().trim().equals(dos.getIdreferencia()) && 
+                                dc.getItemcotizacion().trim().equals(dos.getItemreferencia()))){
+                            lstDordenser.add(dos);
+                        }
+                    }
+                }
+                lstdordenserviciocliente = lstDordenser;
+                for(int i=0;i<lstDordenser.size();i++){
+                    Dordenserviciocliente dosc = lstDordenser.get(i);
+                    for(int j=0;j<getListPersonalservicio_total().size();j++){
+                        Personal_servicio ps = getListPersonalservicio_total().get(j);
+                        if(!(dosc.getIdempresa().trim().equals(ps.getIdempresa()) &&
+                            dosc.getItem().trim().equals(ps.getItem()))
+                        ){
+                            lstPersonal_servicio.add(ps);
+                        }
+                    }
+                }
+                listPersonalservicio_total=lstPersonal_servicio;
+                for(int i=0;i<lstDordenser.size();i++){
+                    Dordenserviciocliente dosc = lstDordenser.get(i);
+                    for(int j=0;j<getListRutasTotales().size();j++){
+                        Ruta_servicios rs = getListRutasTotales().get(j);
+                        if(!(dosc.getIdempresa().trim().equals(rs.getIdempresa()) &&
+                            dosc.getItem().trim().equals(rs.getItem()))
+                        ){
+                            lstRuta_servicio.add(rs);
+                        }
+                    }
+                }
+                listRutasTotales = lstRuta_servicio;
+                for(int i=0;i<lstPersonal_servicio.size();i++){
+                    Personal_servicio ps = lstPersonal_servicio.get(i);
+                    for(int j=0;j<getListDpersonalservicio_total().size();j++){
+                        Dpersonal_servicio dps = getListDpersonalservicio_total().get(j);
+                        if(!(ps.getIdempresa().trim().equals(dps.getIdempresa()) &&
+                           ps.getItem().trim().equals(dps.getItem_dordenservicio()) &&
+                           ps.getItem2().trim().equals(dps.getItem2()))
+                          ){
+                          lstDpersonal_servicio.add(dps);
+                        }
+                    }
+                }
+                listDpersonalservicio_total = lstDpersonal_servicio;
+            }
+            RequestContext.getCurrentInstance().update("datos:lstdordenserviciocliente");
+            RequestContext.getCurrentInstance().update("datos:listPersonal_Servicio");
+            RequestContext.getCurrentInstance().update("datos:listRuta_servicios");
+            RequestContext.getCurrentInstance().update("datos:listDpersonal_Servicio");
+            RequestContext.getCurrentInstance().update("datos:tabledocreferencia");
+        } catch (NisiraORMException ex) {
+            this.mensaje = ex.getMessage();
+            WebUtil.error(mensaje);
+            Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, null, ex);
+            RequestContext.getCurrentInstance().update("datos:growl");
+        }
     }
     public void blur_hora_llegada(){
         getDpersonal_servicio().setFhora_inicio_serv(getDpersonal_servicio().getFhora_llegada());
@@ -716,11 +884,6 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
     public void onNhoras_estructura(){
         try {
             if(getDordenserviciocliente()!=null){
-                lstComboRutas = rutasDao.listarPorEmpresa_estructura_costos_producto(getDatoEdicion().getIdempresa(),
-                    getDatoEdicion().getIdclieprov(), getDordenserviciocliente().getCodoperaciones() , getDordenserviciocliente().getHora_rc());
-                if(!lstComboRutas.isEmpty()){
-                    getDordenserviciocliente().setIdruta_ec(lstComboRutas.get(0).getIdruta());
-                }
                 /*OBTENER ESTRUCTURA_COSTOS_PRODUCTO -> ANALIZAR */
                 List<Estructura_costos_producto> lstEscos_codoperaciones =estructura_costos_productoDao.listarCodOperaciones(getDatoEdicion().getIdempresa(),
                         getDatoEdicion().getIdclieprov(),getDordenserviciocliente().getCodoperaciones(),
@@ -756,6 +919,19 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
         try {
             if(getDordenserviciocliente()!=null){
                 /*OBTENER ESTRUCTURA_COSTOS_PRODUCTO -> ANALIZAR */
+                lstHoras = estructura_costos_productoDao.listarNhoras(user.getIDEMPRESA(), getDatoEdicion().getIdclieprov(), getDordenserviciocliente().getCodoperaciones(),
+                    getDordenserviciocliente().getIdruta_ec());
+                /*VERIFICAR ESTRUCTURA CON HORAS PARA SERVICIO*/
+                if(lstHoras.isEmpty()){
+                    getDordenserviciocliente().setIdreferencia(null);
+                    getDordenserviciocliente().setItemreferencia(null);
+                    mensaje = "No existe Estructura_Producto -> Horas , para el servicio seleccionado";
+                    WebUtil.error(mensaje);
+                    RequestContext.getCurrentInstance().update("datos:growl");
+                }else{
+                    getDordenserviciocliente().setHora_rc(lstHoras.get(0));
+                    RequestContext.getCurrentInstance().update("datos:growl");
+                }
                 List<Estructura_costos_producto> lstEscos_codoperaciones =estructura_costos_productoDao.listarCodOperaciones(getDatoEdicion().getIdempresa(),
                         getDatoEdicion().getIdclieprov(),getDordenserviciocliente().getCodoperaciones(),
                         getDordenserviciocliente().getHora_rc(),getDordenserviciocliente().getIdruta_ec());
@@ -938,39 +1114,71 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                 this.mensaje="Seleccionar Servicio";
                 WebUtil.error(mensaje);
                 RequestContext.getCurrentInstance().update("datos:growl");
+            }else if(dordenserviciocliente.getIdreferencia()==null || dordenserviciocliente.getItemreferencia()==null){
+                this.mensaje="No existe estructura";
+                WebUtil.error(mensaje);
+                RequestContext.getCurrentInstance().update("datos:growl");
             }else{
                 if(dordenserviciocliente.getHora_reqConvert()!=null)
-                dordenserviciocliente.setHora_req(WebUtil.convertTimeDecimal(dordenserviciocliente.getHora_reqConvert()));
+                    dordenserviciocliente.setHora_req(WebUtil.convertTimeDecimal(dordenserviciocliente.getHora_reqConvert()));
                 int pos=lstdordenserviciocliente.indexOf(dordenserviciocliente);
                 if(pos==-1){
-                    lstdordenserviciocliente.add(dordenserviciocliente);
-                    /*CREAR CARGOS APARTIR DE LA ESTRUCTURA*/
-                    List<Estructura_costos_mano_obra> lstmo = estructura_costos_mano_obraDao.listarPorEmpresaWebXproducto(user.getIDEMPRESA(), 
-                            dordenserviciocliente.getIdreferencia(),dordenserviciocliente.getIdservicio(),dordenserviciocliente.getItemreferencia());
-                    if(lstmo.isEmpty()){
-                        this.mensaje="No existe estructura - mano - obrea";
-                        WebUtil.error(mensaje);
-                        RequestContext.getCurrentInstance().update("datos:growl");
-                    }else{
-                        Personal_servicio per_ser;
-                        for(int i=0; i<lstmo.size();i++){
-                            listPersonal_Servicio = cargarPersonal_servicio(dordenserviciocliente);
-                            Estructura_costos_mano_obra obj = lstmo.get(i);
-                            per_ser = new Personal_servicio();
-                            per_ser.setIdempresa(obj.getIdempresa());
-                            per_ser.setIdordenservicio(getDatoEdicion().getIdordenservicio());
-                            per_ser.setIdcargo(obj.getIdcargo());
-                            per_ser.setCargo(obj.getCargo());
-                            per_ser.setItem(dordenserviciocliente.getItem());
-                            per_ser.setItem2(agregarItemPersonal_servicio());
-                            per_ser.setFechaoperacion(new Date());
-                            listPersonalservicio_total.add(per_ser);
+                    Dordenserviciocliente obj_p;
+                    for(int x=0;x<num_repetir_detalle;x++){
+                        obj_p = new  Dordenserviciocliente();
+                        obj_p.setIdempresa(dordenserviciocliente.getIdempresa());
+                        obj_p.setIdordenservicio(dordenserviciocliente.getIdordenservicio());
+                        obj_p.setItem(agregarItemDordenservicio());
+                        obj_p.setIdvehiculo(dordenserviciocliente.getIdvehiculo());
+                        obj_p.setPlaca_cliente(dordenserviciocliente.getPlaca_cliente());
+                        obj_p.setHora_req(dordenserviciocliente.getHora_req());
+                        obj_p.setFecha_fin_servicio(dordenserviciocliente.getFecha_fin_servicio());
+                        obj_p.setIdreferencia(dordenserviciocliente.getIdreferencia());
+                        obj_p.setItemreferencia(dordenserviciocliente.getItemreferencia());
+                        obj_p.setIdservicio(dordenserviciocliente.getIdservicio());
+                        obj_p.setConductor_cliente(dordenserviciocliente.getConductor_cliente());
+                        obj_p.setHora_rc(dordenserviciocliente.getHora_rc());
+                        obj_p.setGlosa(dordenserviciocliente.getGlosa());
+                        obj_p.setCodoperaciones(dordenserviciocliente.getCodoperaciones());
+                        obj_p.setIdruta_ec(dordenserviciocliente.getIdruta_ec());
+                        obj_p.setVehiculo(dordenserviciocliente.getVehiculo());
+                        obj_p.setHora_reqConvert(dordenserviciocliente.getHora_reqConvert());
+                        obj_p.setDescripcion(dordenserviciocliente.getDescripcion());
+                        obj_p.setRuta_ec(dordenserviciocliente.getRuta_ec());
+                        lstdordenserviciocliente.add(obj_p);
+                        /*CREAR CARGOS APARTIR DE LA ESTRUCTURA*/
+                        List<Estructura_costos_mano_obra> lstmo = estructura_costos_mano_obraDao.listarPorEmpresaWebXproducto(user.getIDEMPRESA(), 
+                                obj_p.getIdreferencia(),obj_p.getIdservicio(),obj_p.getItemreferencia());
+                        if(lstmo.isEmpty()){
+                            this.mensaje="No existe estructura - mano - obrea";
+                            WebUtil.error(mensaje);
+                            RequestContext.getCurrentInstance().update("datos:growl");
+                        }else{
+                            Personal_servicio per_ser;
+                            for(int i=0; i<lstmo.size();i++){
+                                listPersonal_Servicio = cargarPersonal_servicio(obj_p);
+                                Estructura_costos_mano_obra obj = lstmo.get(i);
+                                per_ser = new Personal_servicio();
+                                per_ser.setIdempresa(obj.getIdempresa());
+                                per_ser.setIdordenservicio(getDatoEdicion().getIdordenservicio());
+                                per_ser.setIdcargo(obj.getIdcargo());
+                                per_ser.setCargo(obj.getCargo());
+                                per_ser.setItem(obj_p.getItem());
+                                per_ser.setItem2(agregarItemPersonal_servicio());
+                                per_ser.setFechaoperacion(new Date());
+                                per_ser.setNrocontenedor(getDatoEdicion().getNrocontenedor());
+                                per_ser.setNroprecinto(getDatoEdicion().getNroprecinto());
+                                per_ser.setNro_oservicio(getDatoEdicion().getNro_oservicio());
+                                per_ser.setPlaca_cliente(obj_p.getPlaca_cliente());
+                                per_ser.setConductor_cliente(obj_p.getConductor_cliente());
+                                listPersonalservicio_total.add(per_ser);
+                            }
                         }
                     }
                 }
                 else
                     lstdordenserviciocliente.set(pos, dordenserviciocliente);
-                setSelectDordenserviciocliente(dordenserviciocliente);
+                setSelectDordenserviciocliente(lstdordenserviciocliente.get(0));
 
                 setBotonEditarDOrdenservicio(false);
                 setBotonNuevoRuta_servicios(false);
@@ -981,7 +1189,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                 
                 RequestContext.getCurrentInstance().update("datos:lstdordenserviciocliente");
                 RequestContext.getCurrentInstance().update("datos:tabs:listPersonal_Servicio");
-                RequestContext.getCurrentInstance().update("datos:tabs:listRuta_servicios");
+                RequestContext.getCurrentInstance().update("datos:listRuta_servicios");
                 RequestContext.getCurrentInstance().update("datos:dlgnew_dordenserviciocliente");
                 RequestContext.getCurrentInstance().execute("PF('dlgnew_dordenserviciocliente').hide()");
             }
@@ -1026,6 +1234,8 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
             getDordenserviciocliente().setHora_rc(0.0f);
             lstHoras = new ArrayList<>();
             lstComboRutas = new ArrayList<>();
+            fnum_repetir = false;
+            num_repetir_detalle = 1;
             RequestContext.getCurrentInstance().update("datos:dlgnew_dordenserviciocliente");
             RequestContext.getCurrentInstance().execute("PF('dlgnew_dordenserviciocliente').show()"); 
         }
@@ -1034,28 +1244,37 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
     public void editarDordenserviciocliente() {
         try {
             setDordenserviciocliente(selectDordenserviciocliente);
+            fnum_repetir = true;
+            num_repetir_detalle = 1;
             /* OBTENER DATOS DE BASE*/
-            lstHoras = estructura_costos_productoDao.listarNhoras(user.getIDEMPRESA(), getDatoEdicion().getIdclieprov(), getDordenserviciocliente().getCodoperaciones());
+            lstComboRutas = rutasDao.listarPorEmpresa_estructura_costos_producto(getDatoEdicion().getIdempresa(),
+                    getDatoEdicion().getIdclieprov(), getDordenserviciocliente().getCodoperaciones());
+            lstHoras = estructura_costos_productoDao.listarNhoras(user.getIDEMPRESA(), getDatoEdicion().getIdclieprov(), getDordenserviciocliente().getCodoperaciones(),
+                    getDordenserviciocliente().getIdruta_ec());
             if(lstHoras.isEmpty()){
                 mensaje = "No existe Estructura_Producto -> Horas , para el servicio seleccionado";
                 WebUtil.error(mensaje);
                 RequestContext.getCurrentInstance().update("datos:growl");
             }else{
-                lstComboRutas = rutasDao.listarPorEmpresa_estructura_costos_producto(getDatoEdicion().getIdempresa(),
-                    getDatoEdicion().getIdclieprov(), getDordenserviciocliente().getCodoperaciones() , getDordenserviciocliente().getHora_rc());
                 /*OBTENER ESTRUCTURA_COSTOS_PRODUCTO -> ANALIZAR */
                 List<Estructura_costos_producto> lstEscos_codoperaciones =estructura_costos_productoDao.listarCodOperaciones(getDatoEdicion().getIdempresa(),
                         getDatoEdicion().getIdclieprov(),getDordenserviciocliente().getCodoperaciones(),
                         getDordenserviciocliente().getHora_rc(),getDordenserviciocliente().getIdruta_ec());
                 if(lstEscos_codoperaciones.isEmpty()){
+                    getDordenserviciocliente().setIdreferencia(null);
+                    getDordenserviciocliente().setItemreferencia(null);
                     mensaje = "No existe Estructura para este servicio\n Verificar parámetros";
                     WebUtil.error(mensaje);
                     RequestContext.getCurrentInstance().update("datos:growl");
                 }else if(lstEscos_codoperaciones.size()==0){
+                    getDordenserviciocliente().setIdreferencia(null);
+                    getDordenserviciocliente().setItemreferencia(null);
                     mensaje = "No existe Estructura para este servicio\n Verificar parámetros";
                     WebUtil.error(mensaje);
                     RequestContext.getCurrentInstance().update("datos:growl");
                 }else if(lstEscos_codoperaciones.size()>1){
+                    getDordenserviciocliente().setIdreferencia(null);
+                    getDordenserviciocliente().setItemreferencia(null);
                     mensaje = "Hay mas de una estructura que cumple con las condiciones";
                     WebUtil.error(mensaje);
                     RequestContext.getCurrentInstance().update("datos:growl");
@@ -1064,7 +1283,6 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                     selectEstructura_costos_producto = selectEscospro;
                 }
             }
-            
             RequestContext.getCurrentInstance().update("datos:dlgnew_dordenserviciocliente");
             RequestContext.getCurrentInstance().execute("PF('dlgnew_dordenserviciocliente').show()");
         } catch (NisiraORMException ex) {
@@ -1080,6 +1298,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                 listRuta_servicios = new ArrayList<>();
                 listDpersonal_Servicio = new ArrayList<>();
                 RequestContext.getCurrentInstance().update("datos:lstdordenserviciocliente");
+                RequestContext.getCurrentInstance().update("datos:listRuta_servicios");
                 RequestContext.getCurrentInstance().update("datos:tabs");
             }else{
                 WebUtil.MensajeAdvertencia("Seleccionar detalle dordenserviciocliente");
@@ -1179,48 +1398,95 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
     }
     /***************** DETALLE CODIGO OPERACIONES ********************/
     public void verCntCodoperaciones_pss(){
-        RequestContext.getCurrentInstance().openDialog("cntCodoperaciones_pss", modalOptions, null);
+        if(getDatoEdicion().getTipo_servicio().trim().equals("E")){
+            RequestContext.getCurrentInstance().openDialog("cntCodoperaciones_pss", modalOptions, null);
+        }else if(getDatoEdicion().getTipo_servicio().trim().equals("F")){
+            verCntProducto();
+        }
     }
     public void valorCodoperaciones_pss(SelectEvent event) {
         try {
-            this.setSelectCodoperaciones_pss((Codoperaciones_pss) event.getObject());
-            getDordenserviciocliente().setCodoperaciones(selectCodoperaciones_pss.getIdcodoperaciones());
-            getDordenserviciocliente().setDescripcion(selectCodoperaciones_pss.getDescripcion());
-            lstHoras = estructura_costos_productoDao.listarNhoras(user.getIDEMPRESA(), getDatoEdicion().getIdclieprov(), getDordenserviciocliente().getCodoperaciones());
-            /*VERIFICAR ESTRUCTURA CON HORAS PARA SERVICIO*/
-            if(lstHoras.isEmpty()){
-                mensaje = "No existe Estructura_Producto -> Horas , para el servicio seleccionado";
-                WebUtil.error(mensaje);
-                RequestContext.getCurrentInstance().update("datos:growl");
-            }else{
-                getDordenserviciocliente().setHora_rc(lstHoras.get(0));
+            if(getDatoEdicion().getTipo_servicio().trim().equals("E")){
+                this.setSelectCodoperaciones_pss((Codoperaciones_pss) event.getObject());
+                getDordenserviciocliente().setCodoperaciones(selectCodoperaciones_pss.getIdcodoperaciones());
+                getDordenserviciocliente().setDescripcion(selectCodoperaciones_pss.getDescripcion());
+                /*LISTAR RUTAS*/
                 lstComboRutas = rutasDao.listarPorEmpresa_estructura_costos_producto(getDatoEdicion().getIdempresa(),
-                    getDatoEdicion().getIdclieprov(), getDordenserviciocliente().getCodoperaciones() , getDordenserviciocliente().getHora_rc());
+                        getDatoEdicion().getIdclieprov(), getDordenserviciocliente().getCodoperaciones());
                 if(!lstComboRutas.isEmpty()){
                     getDordenserviciocliente().setIdruta_ec(lstComboRutas.get(0).getIdruta());
                 }
-                /*OBTENER ESTRUCTURA_COSTOS_PRODUCTO -> ANALIZAR */
-                List<Estructura_costos_producto> lstEscos_codoperaciones =estructura_costos_productoDao.listarCodOperaciones(getDatoEdicion().getIdempresa(),
-                        getDatoEdicion().getIdclieprov(),getDordenserviciocliente().getCodoperaciones(),
-                        getDordenserviciocliente().getHora_rc(),getDordenserviciocliente().getIdruta_ec());
-                if(lstEscos_codoperaciones.isEmpty()){
-                    mensaje = "No existe Estructura para este servicio\n Verificar parámetros";
-                    WebUtil.error(mensaje);
-                    RequestContext.getCurrentInstance().update("datos:growl");
-                }else if(lstEscos_codoperaciones.size()==0){
-                    mensaje = "No existe Estructura para este servicio\n Verificar parámetros";
-                    WebUtil.error(mensaje);
-                    RequestContext.getCurrentInstance().update("datos:growl");
-                }else if(lstEscos_codoperaciones.size()>1){
-                    mensaje = "Hay mas de una estructura que cumple con las condiciones";
+                /*VERIFICAR ESTRUCTURA CON HORAS PARA SERVICIO*/
+                lstHoras = estructura_costos_productoDao.listarNhoras(user.getIDEMPRESA(), getDatoEdicion().getIdclieprov(), getDordenserviciocliente().getCodoperaciones(),
+                        getDordenserviciocliente().getIdruta_ec());
+                /*VERIFICAR ESTRUCTURA CON HORAS PARA SERVICIO*/
+                if(lstHoras.isEmpty()){
+                    getDordenserviciocliente().setIdreferencia(null);
+                    getDordenserviciocliente().setItemreferencia(null);
+                    mensaje = "No existe Estructura_Producto -> Horas , para el servicio seleccionado";
                     WebUtil.error(mensaje);
                     RequestContext.getCurrentInstance().update("datos:growl");
                 }else{
-                    Estructura_costos_producto selectEscospro = lstEscos_codoperaciones.get(0);
-                    selectEstructura_costos_producto = selectEscospro;
-                    getDordenserviciocliente().setIdreferencia(selectEscospro.getCodigo());
-                    getDordenserviciocliente().setItemreferencia(selectEscospro.getItem());
-                    getDordenserviciocliente().setIdservicio(selectEscospro.getIdproducto());
+                    getDordenserviciocliente().setHora_rc(lstHoras.get(0));
+                    /*OBTENER ESTRUCTURA_COSTOS_PRODUCTO -> ANALIZAR */
+                    List<Estructura_costos_producto> lstEscos_codoperaciones =estructura_costos_productoDao.listarCodOperaciones(getDatoEdicion().getIdempresa(),
+                            getDatoEdicion().getIdclieprov(),getDordenserviciocliente().getCodoperaciones(),
+                            getDordenserviciocliente().getHora_rc(),getDordenserviciocliente().getIdruta_ec());
+                    if(lstEscos_codoperaciones.isEmpty()){
+                        getDordenserviciocliente().setIdreferencia(null);
+                        getDordenserviciocliente().setItemreferencia(null);
+                        mensaje = "No existe Estructura para este servicio\n Verificar parámetros";
+                        WebUtil.error(mensaje);
+                        RequestContext.getCurrentInstance().update("datos:growl");
+                    }else if(lstEscos_codoperaciones.size()==0){
+                        getDordenserviciocliente().setIdreferencia(null);
+                        getDordenserviciocliente().setItemreferencia(null);
+                        mensaje = "No existe Estructura para este servicio\n Verificar parámetros";
+                        WebUtil.error(mensaje);
+                        RequestContext.getCurrentInstance().update("datos:growl");
+                    }else if(lstEscos_codoperaciones.size()>1){
+                        getDordenserviciocliente().setIdreferencia(null);
+                        getDordenserviciocliente().setItemreferencia(null);
+                        mensaje = "Hay mas de una estructura que cumple con las condiciones";
+                        WebUtil.error(mensaje);
+                        RequestContext.getCurrentInstance().update("datos:growl");
+                    }else{
+                        Estructura_costos_producto selectEscospro = lstEscos_codoperaciones.get(0);
+                        selectEstructura_costos_producto = selectEscospro;
+                        getDordenserviciocliente().setIdreferencia(selectEscospro.getCodigo());
+                        getDordenserviciocliente().setItemreferencia(selectEscospro.getItem());
+                        getDordenserviciocliente().setIdservicio(selectEscospro.getIdproducto());
+                    }
+                }
+            }else if(getDatoEdicion().getTipo_servicio().trim().equals("F")){
+                this.selectEstructura_costos_producto = (Estructura_costos_producto) event.getObject();
+                getDordenserviciocliente().setCodoperaciones(selectEstructura_costos_producto.getCodoperativo());
+                getDordenserviciocliente().setDescripcion(selectEstructura_costos_producto.getDescripcion());
+                getDordenserviciocliente().setIdreferencia(selectEstructura_costos_producto.getCodigo());
+                getDordenserviciocliente().setItemreferencia(selectEstructura_costos_producto.getItem());
+                getDordenserviciocliente().setIdservicio(selectEstructura_costos_producto.getIdproducto());
+//                getDordenserviciocliente().setHora_rc(selectEstructura_costos_producto.getNhoras());
+//                getDordenserviciocliente().setIdruta_ec(selectEstructura_costos_producto.getIdruta());
+                
+                lstComboRutas = rutasDao.listarPorEmpresa_estructura_costos_producto(getDatoEdicion().getIdempresa(),
+                        getDatoEdicion().getIdclieprov(), getDordenserviciocliente().getCodoperaciones());
+                if(!lstComboRutas.isEmpty()){
+                    getDordenserviciocliente().setIdruta_ec(selectEstructura_costos_producto.getIdruta());
+                }else{
+                   getDordenserviciocliente().setIdruta_ec(selectEstructura_costos_producto.getIdruta()); 
+                }
+                /*VERIFICAR ESTRUCTURA CON HORAS PARA SERVICIO*/
+                lstHoras = estructura_costos_productoDao.listarNhoras(user.getIDEMPRESA(), getDatoEdicion().getIdclieprov(), getDordenserviciocliente().getCodoperaciones(),
+                        getDordenserviciocliente().getIdruta_ec());
+                if(lstHoras.isEmpty()){
+                    getDordenserviciocliente().setIdreferencia(null);
+                    getDordenserviciocliente().setItemreferencia(null);
+                    getDordenserviciocliente().setHora_rc(selectEstructura_costos_producto.getNhoras());
+                    mensaje = "No existe Estructura_Producto -> Horas , para el servicio seleccionado";
+                    WebUtil.error(mensaje);
+                    RequestContext.getCurrentInstance().update("datos:growl");
+                }else{
+                    getDordenserviciocliente().setHora_rc(selectEstructura_costos_producto.getNhoras());
                 }
             }
         } catch (NisiraORMException ex) {
@@ -1233,21 +1499,21 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
     /***************** DETALLE PERSONA SERVICIO *********************/
     public void verCntProducto() {
         /*PERMITE INGRESAR PERSONAL*/
-        if(getDatoEdicion().getIdmotivo().trim().equalsIgnoreCase("FIP")){
-            if(getDatoEdicion().getIdclieprov()!=null){
-                Map<String, List<String>> params = new HashMap<String, List<String>>();
-                List<String> values = new ArrayList<String>();
-                values.add(getDatoEdicion().getIdclieprov());
-                params.put("codigo_estructura", values);
-                RequestContext.getCurrentInstance().openDialog("cntEstructura_Costos_Producto", modalParamsOptions, params);
-            }else{
-                mensaje = "No existe registro <ESTRUCTURA_COSTOS_CLIEPROV>";
-                WebUtil.error(mensaje);
-                RequestContext.getCurrentInstance().update("datos:growl");
-            }
+//        if(getDatoEdicion().getIdmotivo().trim().equalsIgnoreCase("FIP")){
+        if(getDatoEdicion().getIdclieprov()!=null){
+            Map<String, List<String>> params = new HashMap<String, List<String>>();
+            List<String> values = new ArrayList<String>();
+            values.add(getDatoEdicion().getIdclieprov());
+            params.put("codigo_estructura", values);
+            RequestContext.getCurrentInstance().openDialog("cntEstructura_Costos_Producto", modalParamsOptions, params);
         }else{
-            RequestContext.getCurrentInstance().openDialog("cntProducto", modalOptions, null);
+            mensaje = "No existe registro <ESTRUCTURA_COSTOS_CLIEPROV>";
+            WebUtil.error(mensaje);
+            RequestContext.getCurrentInstance().update("datos:growl");
         }
+//        }else{
+//            RequestContext.getCurrentInstance().openDialog("cntProducto", modalOptions, null);
+//        }
     }
     public void valorProducto(SelectEvent event) {
         if(getDatoEdicion().getIdmotivo().trim().equalsIgnoreCase("FIP")){
@@ -1286,6 +1552,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                     temp.setIdbasedatos(personal_servicio.getIdbasedatos());
                     temp.setFechaoperacion(personal_servicio.getFechaoperacion());
                     listPersonalservicio_total.add(temp);
+                    listPersonal_Servicio = cargarPersonal_servicio(selectDordenserviciocliente);
                 }
             }else if(type_personalservicio==2){/*EDITAR*/
                 if(getSelectPersonal_servicio()!=null){
@@ -1570,21 +1837,14 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
     public void grabarRuta_servicio(){
         try {
             int pos=-1;
-            if(getSelectRuta_servicios()!=null){
-                pos=listRutasTotales.indexOf(getSelectRuta_servicios());
-//                pos=listRuta_servicios.indexOf(getSelectRuta_servicios());
-            }
-            if(pos==-1){
+            pos=listRutasTotales.indexOf(getRuta_servicios());
+            if(pos==-1)
                 listRutasTotales.add(ruta_servicios);
-//                listRuta_servicios.add(ruta_servicios);
-            }
-            else{
+            else
                 listRutasTotales.set(pos, ruta_servicios);
-//                listRuta_servicios.set(pos, ruta_servicios);
-            }
             listRuta_servicios = cargarRuta_servicios();
-            RequestContext.getCurrentInstance().update("datos:tabs");
-            tabView.setActiveIndex(indexTab);
+            RequestContext.getCurrentInstance().update("datos:listRuta_servicios");
+            //tabView.setActiveIndex(indexTab);
             RequestContext.getCurrentInstance().update("datos:dlgnew_ruta_servicios");
         } catch (Exception ex) {
             Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, null, ex);
@@ -2585,31 +2845,6 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
         this.dcotizacionventasDao = dcotizacionventasDao;
     }
 
-    @Override
-    public String buscarFiltro(int tipo){
-        try {
-            this.mensaje = "";
-            SimpleDateFormat  f = new SimpleDateFormat("yyyy-MM-dd");
-            String f_ini = f.format(getDesde());
-            String f_fin = f.format(getHasta());
-            f_ini = f_ini.replace("-", "");
-            f_fin = f_fin.replace("-", "");
-            setListaDatos(getOrdenservicioclienteDao().listarPorEmpresaWebFiltroFecha(user.getIDEMPRESA(),f_ini,f_fin));
-        } catch (Exception e) {
-            mensaje = WebUtil.mensajeError();
-            WebUtil.error(mensaje);
-        }
-        RequestContext.getCurrentInstance().update("datos:tbl");
-        if(tipo == 2)
-            lista_accion_filtro("wLst_Ordenserviciocliente");
-        return "";
-    }
-
-    @Override
-    public void cerrar() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     /**
      * @return the selectListOrdenserviciocliente
      */
@@ -3036,6 +3271,20 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
      */
     public void setEstructura_costos_mano_obraDao(Estructura_costos_mano_obraDao estructura_costos_mano_obraDao) {
         this.estructura_costos_mano_obraDao = estructura_costos_mano_obraDao;
+    }
+
+    /**
+     * @return the num_repetir_detalle
+     */
+    public int getNum_repetir_detalle() {
+        return num_repetir_detalle;
+    }
+
+    /**
+     * @param num_repetir_detalle the num_repetir_detalle to set
+     */
+    public void setNum_repetir_detalle(int num_repetir_detalle) {
+        this.num_repetir_detalle = num_repetir_detalle;
     }
 
 }

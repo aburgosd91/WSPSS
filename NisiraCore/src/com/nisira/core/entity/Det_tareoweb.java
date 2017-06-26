@@ -8,6 +8,7 @@ import java.util.Date;
 import com.nisira.annotation.RelacionTabla;
 import com.nisira.annotation.CampoRelacionado;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import java.io.Serializable;
 import java.util.List;
 
@@ -99,11 +100,9 @@ public class Det_tareoweb implements Serializable {
 	@XStreamAlias("HORA_LIBERACION") 
 	@Columna
 	private Float hora_liberacion;
-        @SerializedName("fecharegistro") 
 	@XStreamAlias("FECHAREGISTRO") 
 	@Columna
-	private Date fecharegistro;
-        @SerializedName("fechafinregistro") 
+	private Date fecharegistro; 
 	@XStreamAlias("FECHAFINREGISTRO") 
 	@Columna
 	private Date fechafinregistro;
@@ -141,6 +140,41 @@ public class Det_tareoweb implements Serializable {
         @XStreamAlias("GLOSA")
         @Columna
         private String glosa;
+        @XStreamAlias("HORA_RC")
+        @Columna
+        private Float hora_rc;
+        @Columna
+        @XStreamAlias("NROCONTENEDOR")
+	private String nrocontenedor;
+	@Columna
+        @XStreamAlias("NROPRECINTO")
+	private String nroprecinto;
+	@Columna
+        @XStreamAlias("NRO_OSERVICIO")
+	private String nro_oservicio;
+        @Columna
+        @XStreamAlias("PLACA_CLIENTE")
+	private String placa_cliente;
+        @Columna
+        @XStreamAlias("CONDUCTOR_CLIENTE")
+	private String conductor_cliente;
+        @Columna
+        @XStreamAlias("BREVETE_CLIENTE")
+	private String brevete_cliente;
+        @Columna
+        @XStreamAlias("IDRUTA_EC")
+        private String idruta_ec;
+        @Columna
+        @XStreamAlias("IDREFERENCIA")
+        private String idreferencia;
+        @Columna
+        @XStreamAlias("ITEMREFERENCIA")
+        private String itemreferencia;
+        @Columna
+        @XStreamAlias("IDCONCEPTOTAREO")
+        private String idconceptotareo;
+        private String conceptotareo;
+        private Date fecha_osc;
         private String vehiculo;
         private String cargo;
         private String dni;
@@ -160,8 +194,13 @@ public class Det_tareoweb implements Serializable {
         private boolean exige_glosa;
         private String color;
         private List<Object[]> tareo;
+        private String codoperaciones;
+        private String rutaservicios;
+        
         /*adicional*/
+        @XStreamOmitField
         private Clieprov selectPersonal;
+        @XStreamOmitField
         private Consumidor selectConsumidor;
         /* Sets & Gets */
 	public void setIdempresa(String idempresa) {
@@ -780,5 +819,215 @@ public class Det_tareoweb implements Serializable {
      */
     public void setSelectConsumidor(Consumidor selectConsumidor) {
         this.selectConsumidor = selectConsumidor;
+    }
+
+    /**
+     * @return the fecha_osc
+     */
+    public Date getFecha_osc() {
+        return fecha_osc;
+    }
+
+    /**
+     * @param fecha_osc the fecha_osc to set
+     */
+    public void setFecha_osc(Date fecha_osc) {
+        this.fecha_osc = fecha_osc;
+    }
+
+    /**
+     * @return the hora_rc
+     */
+    public Float getHora_rc() {
+        return hora_rc;
+    }
+
+    /**
+     * @param hora_rc the hora_rc to set
+     */
+    public void setHora_rc(Float hora_rc) {
+        this.hora_rc = hora_rc;
+    }
+
+    /**
+     * @return the nrocontenedor
+     */
+    public String getNrocontenedor() {
+        return nrocontenedor;
+    }
+
+    /**
+     * @param nrocontenedor the nrocontenedor to set
+     */
+    public void setNrocontenedor(String nrocontenedor) {
+        this.nrocontenedor = nrocontenedor;
+    }
+
+    /**
+     * @return the nroprecinto
+     */
+    public String getNroprecinto() {
+        return nroprecinto;
+    }
+
+    /**
+     * @param nroprecinto the nroprecinto to set
+     */
+    public void setNroprecinto(String nroprecinto) {
+        this.nroprecinto = nroprecinto;
+    }
+
+    /**
+     * @return the nro_oservicio
+     */
+    public String getNro_oservicio() {
+        return nro_oservicio;
+    }
+
+    /**
+     * @param nro_oservicio the nro_oservicio to set
+     */
+    public void setNro_oservicio(String nro_oservicio) {
+        this.nro_oservicio = nro_oservicio;
+    }
+
+    /**
+     * @return the placa_cliente
+     */
+    public String getPlaca_cliente() {
+        return placa_cliente;
+    }
+
+    /**
+     * @param placa_cliente the placa_cliente to set
+     */
+    public void setPlaca_cliente(String placa_cliente) {
+        this.placa_cliente = placa_cliente;
+    }
+
+    /**
+     * @return the conductor_cliente
+     */
+    public String getConductor_cliente() {
+        return conductor_cliente;
+    }
+
+    /**
+     * @param conductor_cliente the conductor_cliente to set
+     */
+    public void setConductor_cliente(String conductor_cliente) {
+        this.conductor_cliente = conductor_cliente;
+    }
+
+    /**
+     * @return the brevete_cliente
+     */
+    public String getBrevete_cliente() {
+        return brevete_cliente;
+    }
+
+    /**
+     * @param brevete_cliente the brevete_cliente to set
+     */
+    public void setBrevete_cliente(String brevete_cliente) {
+        this.brevete_cliente = brevete_cliente;
+    }
+
+    /**
+     * @return the codoperaciones
+     */
+    public String getCodoperaciones() {
+        return codoperaciones;
+    }
+
+    /**
+     * @param codoperaciones the codoperaciones to set
+     */
+    public void setCodoperaciones(String codoperaciones) {
+        this.codoperaciones = codoperaciones;
+    }
+
+    /**
+     * @return the rutaservicios
+     */
+    public String getRutaservicios() {
+        return rutaservicios;
+    }
+
+    /**
+     * @param rutaservicios the rutaservicios to set
+     */
+    public void setRutaservicios(String rutaservicios) {
+        this.rutaservicios = rutaservicios;
+    }
+
+    /**
+     * @return the idruta_rc
+     */
+    public String getIdruta_ec() {
+        return idruta_ec;
+    }
+
+    /**
+     * @param idruta_rc the idruta_rc to set
+     */
+    public void setIdruta_ec(String idruta_ec) {
+        this.idruta_ec = idruta_ec;
+    }
+
+    /**
+     * @return the idreferencia
+     */
+    public String getIdreferencia() {
+        return idreferencia;
+    }
+
+    /**
+     * @param idreferencia the idreferencia to set
+     */
+    public void setIdreferencia(String idreferencia) {
+        this.idreferencia = idreferencia;
+    }
+
+    /**
+     * @return the itemreferencia
+     */
+    public String getItemreferencia() {
+        return itemreferencia;
+    }
+
+    /**
+     * @param itemreferencia the itemreferencia to set
+     */
+    public void setItemreferencia(String itemreferencia) {
+        this.itemreferencia = itemreferencia;
+    }
+
+    /**
+     * @return the idconceptotareo
+     */
+    public String getIdconceptotareo() {
+        return idconceptotareo;
+    }
+
+    /**
+     * @param idconceptotareo the idconceptotareo to set
+     */
+    public void setIdconceptotareo(String idconceptotareo) {
+        this.idconceptotareo = idconceptotareo;
+    }
+
+    /**
+     * @return the conceptotareo
+     */
+    public String getConceptotareo() {
+        return conceptotareo;
+    }
+
+    /**
+     * @param conceptotareo the conceptotareo to set
+     */
+    public void setConceptotareo(String conceptotareo) {
+        this.conceptotareo = conceptotareo;
     }
 }
