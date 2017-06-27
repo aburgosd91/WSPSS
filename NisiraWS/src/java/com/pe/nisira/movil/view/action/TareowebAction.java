@@ -9,6 +9,7 @@ import com.nisira.core.NisiraORMException;
 import com.nisira.core.dao.AlmacenesDao;
 import com.nisira.core.dao.CabtareowebDao;
 import com.nisira.core.dao.ClieprovDao;
+import com.nisira.core.dao.Concepto_tareoDao;
 import com.nisira.core.dao.ConsumidorDao;
 import com.nisira.core.dao.Det_tareowebDao;
 import com.nisira.core.dao.DocumentosDao;
@@ -27,6 +28,7 @@ import com.nisira.core.entity.Almacenes;
 import com.nisira.core.entity.Cabtareoweb;
 import com.nisira.core.entity.Cargos_personal;
 import com.nisira.core.entity.Clieprov;
+import com.nisira.core.entity.Concepto_tareo;
 import com.nisira.core.entity.Consumidor;
 import com.nisira.core.entity.Det_tareoweb;
 import com.nisira.core.entity.Documentos;
@@ -128,6 +130,7 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
     private List<ComboEspecial> listComboEspecial;
     private List<ComboEspecial> listComboEspecialDetalle;
     private List<Det_tareoweb> listDet_tareoweb_verification;
+    private List<Concepto_tareo> listConcepto_tareo;
     /* DAO */
     private ConsumidorDao consumidorDao;
     private Det_tareowebDao tareoWebDao;
@@ -143,6 +146,7 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
     private Turno_trabajoDao turno_trabajoDao;
     private Tipo_asistenciaDao tipo_asistenciaDao;
     private Privilegio_global_pssDao privilegioDao;
+    private Concepto_tareoDao concepto_tareoDao; 
     private UsuarioDao usuariodao;
     /* ENTITY */
     private Det_tareoweb tareoWeb;
@@ -184,7 +188,7 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
             listTurno_trabajo  = new ArrayList<>();
             listTipo_asistencia  = new ArrayList<>();
             listComboEspecial  = new ArrayList<>();
-           
+            listConcepto_tareo  = new ArrayList<>();
             /* DAO */
             tareoWebDao = new Det_tareowebDao();
             clieprovDao = new ClieprovDao();
@@ -201,6 +205,7 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
             consumidorDao = new ConsumidorDao();
             privilegioDao = new Privilegio_global_pssDao();
             usuariodao = new UsuarioDao();
+            concepto_tareoDao = new Concepto_tareoDao();
             /* ENTITY */
             tareoWeb = new Det_tareoweb();
             selectPersonal = new Clieprov();
@@ -217,6 +222,7 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
             listAlmacenes = alamcenesDao.getPorEmpresaSucursal(user.getIDEMPRESA(),Constantes.getIDSUCURSALGENERAL());
             listTurno_trabajo = turno_trabajoDao.getPorTurno_trabajo();
             listTipo_asistencia = tipo_asistenciaDao.getPorTipo_asistencia(user.getIDEMPRESA());
+            listConcepto_tareo = concepto_tareoDao.listarPorEmpresaWeb(user.getIDEMPRESA());
             /********************  ******************/
             actualiza_ventana("wMnt_Tareoweb");
         } catch (NisiraORMException ex) {
@@ -507,6 +513,10 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
                         entity.setExige_glosa(ob2.getExige_glosa()==1?true:false);
                         entity.setColor(ob2.getColor());
                         break;
+                    case "Concepto":
+                        Concepto_tareo ob3 = buscarConceptoTareo(newValue.toString());
+                        entity.setConceptotareo(ob3.getDescripcion());
+                        break;
                 } 
         //        Det_tareoweb entity = ((Det_tareoweb)event.getObject());
         //        int pos = listDet_tareoweb.indexOf(entity);
@@ -548,7 +558,8 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
     }
     public void onRefresh(){
         try {
-            listDet_tareoweb = tareoWebDao.listarPorEmpresaWeb_new(user.getIDEMPRESA(), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5),getDatoEdicion().getIdresponsable(),user.getIDUSUARIO());
+            if(getDatoEdicion().getIdcabtareoweb()==null)
+                listDet_tareoweb = tareoWebDao.listarPorEmpresaWeb_new(user.getIDEMPRESA(), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5),getDatoEdicion().getIdresponsable(),user.getIDUSUARIO());
             //RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
             RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
         } catch (NisiraORMException | SQLException ex) {
@@ -586,6 +597,16 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
         Tipo_asistencia rsp=null;
         for(Tipo_asistencia ob : listTipo_asistencia){
             if(ob.getIdtipoasistencia().trim().equalsIgnoreCase(idtipoasistencia)){
+                rsp = ob;
+                break;
+            }
+        }
+        return rsp;
+    }
+    public Concepto_tareo buscarConceptoTareo(String idconceptotareo){
+        Concepto_tareo rsp=null;
+        for(Concepto_tareo ob : listConcepto_tareo){
+            if(ob.getIdconceptotareo().trim().equalsIgnoreCase(idconceptotareo)){
                 rsp = ob;
                 break;
             }
@@ -631,12 +652,13 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
         RequestContext.getCurrentInstance().execute("PF('dlgasignar_personal').show()");
     }
     public void openDialogAddItemTareo(){
+        selectCargo_personal = new Cargos_personal();
         cargarComboEspecial();
         if(!listComboEspecial.isEmpty()){
             selectComboEspecial=listComboEspecial.get(0);
             cargarComboEspecialDetalle();
         }
-//        this.num_repetir = 1;
+        this.num_repetir = 1;
         RequestContext.getCurrentInstance().update("datos:dlgAddItemTareo");
         RequestContext.getCurrentInstance().execute("PF('dlgAddItemTareo').show()");
     }
@@ -764,6 +786,8 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
                         xrept.setExige_glosa(listTipo_asistencia.get(0).getExige_glosa()==1?true:false);
                         xrept.setColor(listTipo_asistencia.get(0).getColor());
                     }
+                    xrept.setIdservicio(rept.getIdservicio());
+                    xrept.setServicio(rept.getServicio());
                     xrept.setShora_llegada("00:00");
                     xrept.setShora_inicio("00:00");
                     xrept.setShora_fin("00:00");
@@ -918,9 +942,21 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
                     dtw.setHora_inicio_serv(selectDet_tareoweb.getHora_inicio_serv());
                     dtw.setHora_liberacion(selectDet_tareoweb.getHora_liberacion());
                     dtw.setHora_fin_serv(selectDet_tareoweb.getHora_fin_serv());
-                    dtw.setFechafinregistro(selectDet_tareoweb.getFechafinregistro());
-                    dtw.setFecharegistro(selectDet_tareoweb.getFechafinregistro());
+                    Date finicio=null;Date ffin=null;
+                    if(selectDet_tareoweb.getFechafinregistro()!=null){
+//                    Date finicio = new Date(selectDet_tareoweb.getFecharegistro().getTime());
+                        finicio = new Date(selectDet_tareoweb.getFechafinregistro().getTime());
+                        ffin = new Date(selectDet_tareoweb.getFechafinregistro().getTime());
+                    }
+                    dtw.setFecharegistro(finicio);
+                    dtw.setFechafinregistro(ffin);
                     /****************************************************************************/
+                    dtw.setBrevete_cliente(selectDet_tareoweb.getBrevete_cliente());
+                    dtw.setConductor_cliente(selectDet_tareoweb.getConductor_cliente());
+                    dtw.setPlaca_cliente(selectDet_tareoweb.getPlaca_cliente());
+                    dtw.setNro_oservicio(selectDet_tareoweb.getNro_oservicio());
+                    dtw.setNrocontenedor(selectDet_tareoweb.getNrocontenedor());
+                    dtw.setNroprecinto(selectDet_tareoweb.getNroprecinto());
                     listDet_tareoweb.set(i, dtw);
                 }
             }
@@ -1912,6 +1948,20 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
      */
     public void setSelectComboEspecialDetalle_idordenservicio(String selectComboEspecialDetalle_idordenservicio) {
         this.selectComboEspecialDetalle_idordenservicio = selectComboEspecialDetalle_idordenservicio;
+    }
+
+    /**
+     * @return the listConcepto_tareo
+     */
+    public List<Concepto_tareo> getListConcepto_tareo() {
+        return listConcepto_tareo;
+    }
+
+    /**
+     * @param listConcepto_tareo the listConcepto_tareo to set
+     */
+    public void setListConcepto_tareo(List<Concepto_tareo> listConcepto_tareo) {
+        this.listConcepto_tareo = listConcepto_tareo;
     }
 }
 

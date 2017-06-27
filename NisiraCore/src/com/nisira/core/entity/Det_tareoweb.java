@@ -100,11 +100,9 @@ public class Det_tareoweb implements Serializable {
 	@XStreamAlias("HORA_LIBERACION") 
 	@Columna
 	private Float hora_liberacion;
-        @SerializedName("fecharegistro") 
 	@XStreamAlias("FECHAREGISTRO") 
 	@Columna
-	private Date fecharegistro;
-        @SerializedName("fechafinregistro") 
+	private Date fecharegistro; 
 	@XStreamAlias("FECHAFINREGISTRO") 
 	@Columna
 	private Date fechafinregistro;
@@ -172,6 +170,10 @@ public class Det_tareoweb implements Serializable {
         @Columna
         @XStreamAlias("ITEMREFERENCIA")
         private String itemreferencia;
+        @Columna
+        @XStreamAlias("IDCONCEPTOTAREO")
+        private String idconceptotareo;
+        private String conceptotareo;
         private Date fecha_osc;
         private String vehiculo;
         private String cargo;
@@ -999,5 +1001,33 @@ public class Det_tareoweb implements Serializable {
      */
     public void setItemreferencia(String itemreferencia) {
         this.itemreferencia = itemreferencia;
+    }
+
+    /**
+     * @return the idconceptotareo
+     */
+    public String getIdconceptotareo() {
+        return idconceptotareo;
+    }
+
+    /**
+     * @param idconceptotareo the idconceptotareo to set
+     */
+    public void setIdconceptotareo(String idconceptotareo) {
+        this.idconceptotareo = idconceptotareo;
+    }
+
+    /**
+     * @return the conceptotareo
+     */
+    public String getConceptotareo() {
+        return conceptotareo;
+    }
+
+    /**
+     * @param conceptotareo the conceptotareo to set
+     */
+    public void setConceptotareo(String conceptotareo) {
+        this.conceptotareo = conceptotareo;
     }
 }

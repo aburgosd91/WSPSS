@@ -349,7 +349,7 @@
                            </f:facet>
                        </p:cellEditor>
                     </p:column>
-                    <p:column id="fechafinregistro" headerText="Fecha Fin" filterBy="#{listDet_tareoweb.fechafinregistro}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.fechafinregistro}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: center">
+                    <p:column id="fechafinregistro" headerText="Fecha Fin" filterBy="#{tareowebAction.fechaDMY(listDet_tareoweb.fechafinregistro)}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.fechafinregistro}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: center">
                         <p:cellEditor >
                            <f:facet name="output">
                                 <h:outputText value="#{listDet_tareoweb.fechafinregistro}">
@@ -358,6 +358,16 @@
                            </f:facet>
                            <f:facet name="input">
                                <p:calendar style="font-size:10px;" value="#{listDet_tareoweb.fechafinregistro}" pattern="dd-MM-yyyy" mask="true" />
+                           </f:facet>
+                       </p:cellEditor>
+                    </p:column>
+                    <p:column style="white-space: nowrap; width: 130px;padding: 3px;text-align: center;" headerText="Concepto" filterBy="#{listDet_tareoweb.conceptotareo}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.conceptotareo}">
+                        <p:cellEditor>
+                            <f:facet name="output"><h:outputText value="#{listDet_tareoweb.conceptotareo}" /></f:facet>
+                           <f:facet name="input">
+                               <h:selectOneMenu value="#{listDet_tareoweb.idconceptotareo}" style="width:100%">
+                                   <f:selectItems value="#{tareowebAction.listConcepto_tareo}" var="ct" itemLabel="#{ct.descripcion}" itemValue="#{ct.idconceptotareo}" />
+                               </h:selectOneMenu>
                            </f:facet>
                        </p:cellEditor>
                     </p:column>
