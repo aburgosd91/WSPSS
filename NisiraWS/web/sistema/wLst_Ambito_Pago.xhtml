@@ -1,0 +1,53 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">          
+        <h:form id="datos">
+            #{ambitoPagoAction.buscarTodo()}  
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
+                <cmp:barra_lst bean="#{ambitoPagoAction}" mostrar_opciones="false"/>
+                <p:dataTable id="tbl" var="listAmbito" value="#{ambitoPagoAction.listaDatos}" filteredValue="#{ambitoPagoAction.filtroDatos}" widgetVar="listAmbito" 
+                             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                             paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{ambitoPagoAction.datoSeleccionado}" rowKey="#{listAmbito.codigo}" resizableColumns="true">
+                    <f:facet name="header">
+                        <h:outputText value="#{ambitoPagoAction.tituloHead}" />
+                    </f:facet>
+                    <p:ajax event="rowDblselect" listener="#{ambitoPagoAction.ver()}" />
+                    <p:column style="width:15%;" filterBy="#{listAmbito.descripcion}" filterMatchMode="contains" sortBy="#{listAmbito.descripcion}">
+                        <f:facet name="header">
+                            <h:outputText value="Descripcion" />
+                        </f:facet>
+                        <h:outputText value="#{listAmbito.descripcion}"/>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{listAmbito.nombre_corto}" filterMatchMode="contains" sortBy="#{listAmbito.nombre_corto}">
+                        <f:facet name="header">
+                            <h:outputText value="Nombre" />
+                        </f:facet>
+                        <h:outputText value="#{listAmbito.nombre_corto}"/>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{listAmbito.costo_por_hora}" filterMatchMode="contains" sortBy="#{listAmbito.costo_por_hora}">
+                        <f:facet name="header">
+                            <h:outputText value="Costo por Hora" />
+                        </f:facet>
+                        <h:outputText value="#{listAmbito.costo_por_hora}"/>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{listAmbito.costo_adicional}" filterMatchMode="contains" sortBy="#{listAmbito.costo_adicional}">
+                        <f:facet name="header">
+                            <h:outputText value="Costo Adicional" />
+                        </f:facet>
+                        <h:outputText value="#{listAmbito.costo_adicional}"/>
+                    </p:column>
+                    
+                </p:dataTable>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{ambitoPagoAction}" ventana="LST" />
+        </h:form>
+    </ui:define>
+</ui:composition>

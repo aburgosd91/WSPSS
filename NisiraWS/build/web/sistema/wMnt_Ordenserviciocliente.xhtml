@@ -436,12 +436,12 @@
                                     <p:outputLabel value="#Cantidad:" escape="false" />
                                     <p:spinner value="#{ordenservicioclienteAction.num_repetir_detalle}" min="1" disabled="#{ordenservicioclienteAction.fnum_repetir}"/>
                                     <p:outputLabel value="Placa/Cliente:" />
-                                    <p:inputTextarea  cols="60" rows="1"  value="#{ordenservicioclienteAction.dordenserviciocliente.placa_cliente}" onkeyup="javascript:this.value = this.value.toUpperCase();" disabled="#{ordenservicioclienteAction.ftipo_servicio}">
+                                    <p:inputTextarea  cols="30" rows="1"  value="#{ordenservicioclienteAction.dordenserviciocliente.placa_cliente}" maxlength="20" onkeyup="javascript:this.value = this.value.toUpperCase();" disabled="#{ordenservicioclienteAction.ftipo_servicio}">
                                     </p:inputTextarea>
                                     <p:outputLabel for="hora_req" value="Hora. Req.:" />
                                     <p:calendar id="hora_req" value="#{ordenservicioclienteAction.dordenserviciocliente.hora_reqConvert}" mask="99:99" pattern="HH:mm" timeOnly="true"  />
                                     <p:outputLabel value="Conductor/Cliente:" />
-                                    <p:inputTextarea  cols="60" rows="1"  value="#{ordenservicioclienteAction.dordenserviciocliente.conductor_cliente}" onkeyup="javascript:this.value = this.value.toUpperCase();">
+                                    <p:inputTextarea  cols="60" rows="2"  value="#{ordenservicioclienteAction.dordenserviciocliente.conductor_cliente}" maxlength="80" onkeyup="javascript:this.value = this.value.toUpperCase();">
                                     </p:inputTextarea>
                                     <p:outputLabel for="fecha_fin_servicio" value="F. Fin:" />
                                     <p:calendar id="fecha_fin_servicio" value="#{ordenservicioclienteAction.dordenserviciocliente.fecha_fin_servicio}" pattern="dd-MM-yyyy" mask="true" />
