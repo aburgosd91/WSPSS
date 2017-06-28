@@ -36,17 +36,19 @@
                 <p:outputLabel for="costoadd" value="Costo Adicional: " />
                 <p:inputText id="costoadd" disabled="#{!ambitoPagoAction.edicion}" value="#{ambitoPagoAction.datoEdicion.costo_adicional}"/>
             </p:panelGrid>
-            <p:panelGrid columns="2" columnClasses="no-border,no-border">
-                <p:commandButton id="btnDgen" value="Llenar" onclick="PF('rutasdialog').show()" disabled="#{!ambitoPagoAction.edicion}"/>
-                <p:commandButton id="btDdel" value="borrar"  actionListener="#{ambitoPagoAction.dellAmbitoPagoRuta()}"/>
-            </p:panelGrid>
             <p:dataTable id="lstAmbPagoRuta" 
                          value="#{ambitoPagoAction.lstambpagRuta}" 
                          selectionMode="single"
                          selection="#{ambitoPagoAction.slcAmbPagRuta}"
                          var="pagRuta" 
+                         paginator="true" paginatorPosition="top"
+                         paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
                          widgetVar="lstAmbPagoRuta"
                          rowKey="#{pagRuta.item}">
+                <f:facet name="{Comandos}">
+                    <p:commandButton id="btnDgen" value="Nuevo" ajax="true" image="ui-icon-nuevo"  onclick="PF('rutasdialog').show()" disabled="#{!ambitoPagoAction.edicion}"/>
+                    <p:commandButton id="btDdel" value="Eliminar" ajax="true" image="ui-icon-eliminar"  actionListener="#{ambitoPagoAction.dellAmbitoPagoRuta()}"  disabled="#{!ambitoPagoAction.edicion}"/>
+                </f:facet>
                 <p:column style="width:15%;" filterBy="#{pagRuta.item}" filterMatchMode="contains" sortBy="#{pagRuta.item}">
                     <f:facet name="header">
                         <h:outputText value="Item" />

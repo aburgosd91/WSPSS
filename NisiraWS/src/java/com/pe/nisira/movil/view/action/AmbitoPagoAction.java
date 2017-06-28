@@ -93,14 +93,28 @@ public class AmbitoPagoAction extends AbstactListAction<Ambito_pago> implements 
         }
     }
 
+    public boolean validarDetalle() {
+        if (!lstambpagRuta.isEmpty()) {
+            for (Ambito_pago_rutas r : lstambpagRuta) {
+                if (r.getIdruta().equalsIgnoreCase(slcRutas.getIdruta())) {
+                    setMensaje("Ruta ya Ingresada");
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     public void addAmbitoPagoRuta() {
-        Ambito_pago_rutas amb = new Ambito_pago_rutas();
-        amb.setIdempresa(getDatoEdicion().getIdempresa());
-        amb.setIdruta(slcRutas.getIdruta());
-        amb.setDescripcion(slcRutas.getDescripcion());
-        amb.setItem(WebUtil.cerosIzquierda(String.valueOf(lstambpagRuta.size() + 1), 3));
-        lstambpagRuta.add(amb);
-        RequestContext.getCurrentInstance().update("datos:lstAmbPagoRuta");
+        if (validarDetalle()) {
+            Ambito_pago_rutas amb = new Ambito_pago_rutas();
+            amb.setIdempresa(getDatoEdicion().getIdempresa());
+            amb.setIdruta(slcRutas.getIdruta());
+            amb.setDescripcion(slcRutas.getDescripcion());
+            amb.setItem(WebUtil.cerosIzquierda(String.valueOf(lstambpagRuta.size() + 1), 3));
+            lstambpagRuta.add(amb);
+        }
+        RequestContext.getCurrentInstance().update("datos");
         RequestContext.getCurrentInstance().execute("PF('rutasdialog').hide()");
     }
 
@@ -118,6 +132,8 @@ public class AmbitoPagoAction extends AbstactListAction<Ambito_pago> implements 
         lstambpagRuta = new ArrayList<Ambito_pago_rutas>();
         setDatoEdicion(new Ambito_pago());
         getDatoEdicion().setIdempresa(user.getIDEMPRESA());
+        getDatoEdicion().setCosto_adicional(0.00f);
+        getDatoEdicion().setCosto_por_hora(0.00f);
     }
 
     public boolean validar() {
@@ -154,7 +170,7 @@ public class AmbitoPagoAction extends AbstactListAction<Ambito_pago> implements 
     public void eliminar() {
         try {
             if (getOpc_anular_eliminar().equalsIgnoreCase("ANULAR")) {
-                
+
             }
             if (getOpc_anular_eliminar().equalsIgnoreCase("ELIMINAR")) {
                 ambitopagoDao.delAmbitopago(getDatoEdicion().getIdempresa(), getDatoEdicion().getCodigo());
