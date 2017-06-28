@@ -32,9 +32,9 @@
                 <p:outputLabel for="nom" value="Nombre Corto"/>
                 <p:inputText id="nom" value="#{ambitoPagoAction.datoEdicion.nombre_corto}" disabled="#{!ambitoPagoAction.edicion}"/>
                 <p:outputLabel for="costohora" value="Costo por Hora: " />
-                <p:inputText id="costohora" disabled="#{!ambitoPagoAction.edicion}" value="#{ambitoPagoAction.datoEdicion.costo_por_hora}"/>
+                <p:inputNumber decimalPlaces="2" id="costohora" disabled="#{!ambitoPagoAction.edicion}" value="#{ambitoPagoAction.datoEdicion.costo_por_hora}"/>
                 <p:outputLabel for="costoadd" value="Costo Adicional: " />
-                <p:inputText id="costoadd" disabled="#{!ambitoPagoAction.edicion}" value="#{ambitoPagoAction.datoEdicion.costo_adicional}"/>
+                <p:inputNumber decimalPlaces="2"  id="costoadd" disabled="#{!ambitoPagoAction.edicion}" value="#{ambitoPagoAction.datoEdicion.costo_adicional}"/>
             </p:panelGrid>
             <p:dataTable id="lstAmbPagoRuta" 
                          value="#{ambitoPagoAction.lstambpagRuta}" 
@@ -61,6 +61,18 @@
                     </f:facet>
                     <h:outputText value="#{pagRuta.descripcion}"/>
                 </p:column>
+                <p:column style="width:15%;" filterBy="#{pagRuta.origen}" filterMatchMode="contains" sortBy="#{pagRuta.origen}">
+                    <f:facet name="header">
+                        <h:outputText value="Origen" />
+                    </f:facet>
+                    <h:outputText value="#{pagRuta.origen}"/>
+                </p:column>
+                <p:column style="width:15%;" filterBy="#{pagRuta.destino}" filterMatchMode="contains" sortBy="#{pagRuta.destino}">
+                    <f:facet name="header">
+                        <h:outputText value="Destino" />
+                    </f:facet>
+                    <h:outputText value="#{pagRuta.destino}"/>
+                </p:column>
             </p:dataTable>            
             <cmp:mDialogElimina_lst id="cmpDialog" bean="#{ambitoPagoAction}" ventana="MNT" />
             <p:dialog id="rutasdialog" widgetVar="rutasdialog" style="width: 300px; height: 300px" modal="true" closable="true">
@@ -79,6 +91,18 @@
                             <h:outputText value="Descripción" />
                         </f:facet>
                         <h:outputText value="#{listRuta.descripcion}"/>
+                    </p:column>
+                    <p:column style="width:45%;" filterBy="#{listRuta.origendesc}" filterMatchMode="contains" sortBy="#{listRuta.origendesc}">
+                        <f:facet name="header">
+                            <h:outputText value="Origen" />
+                        </f:facet>
+                        <h:outputText value="#{listRuta.origendesc}"/>
+                    </p:column>
+                    <p:column style="width:45%;" filterBy="#{listRuta.destinodesc}" filterMatchMode="contains" sortBy="#{listRuta.destinodesc}">
+                        <f:facet name="header">
+                            <h:outputText value="Destino" />
+                        </f:facet>
+                        <h:outputText value="#{listRuta.destinodesc}"/>
                     </p:column>
                     <p:column style="width:15%;" filterBy="#{listRuta.estado}">
                         <f:facet name="header">

@@ -98,6 +98,7 @@ public class AmbitoPagoAction extends AbstactListAction<Ambito_pago> implements 
             for (Ambito_pago_rutas r : lstambpagRuta) {
                 if (r.getIdruta().equalsIgnoreCase(slcRutas.getIdruta())) {
                     setMensaje("Ruta ya Ingresada");
+                    WebUtil.MensajeAdvertencia(getMensaje());
                     return false;
                 }
             }
@@ -111,11 +112,14 @@ public class AmbitoPagoAction extends AbstactListAction<Ambito_pago> implements 
             amb.setIdempresa(getDatoEdicion().getIdempresa());
             amb.setIdruta(slcRutas.getIdruta());
             amb.setDescripcion(slcRutas.getDescripcion());
+            amb.setOrigen(slcRutas.getOrigendesc());
+            amb.setDestino(slcRutas.getDestinodesc());
             amb.setItem(WebUtil.cerosIzquierda(String.valueOf(lstambpagRuta.size() + 1), 3));
             lstambpagRuta.add(amb);
         }
-        RequestContext.getCurrentInstance().update("datos");
+        RequestContext.getCurrentInstance().update("datos:lstAmbPagoRuta");
         RequestContext.getCurrentInstance().execute("PF('rutasdialog').hide()");
+        RequestContext.getCurrentInstance().update("datos:growl");
     }
 
     public void dellAmbitoPagoRuta() {
@@ -124,7 +128,9 @@ public class AmbitoPagoAction extends AbstactListAction<Ambito_pago> implements 
         } else {
             setMensaje("Seleccione un detalle");
         }
-        RequestContext.getCurrentInstance().update("datos");
+        WebUtil.MensajeAdvertencia(getMensaje());
+        RequestContext.getCurrentInstance().update("datos:lstAmbPagoRuta");
+        RequestContext.getCurrentInstance().update("datos:growl");
     }
 
     @Override
@@ -137,16 +143,16 @@ public class AmbitoPagoAction extends AbstactListAction<Ambito_pago> implements 
     }
 
     public boolean validar() {
+        if (getDatoEdicion().getDescripcion().equalsIgnoreCase("")) {
+            setMensaje("Falta Llenar Descripcion");
+            return false;
+        }
+        if (getDatoEdicion().getCosto_por_hora() == 0.0f) {
+            setMensaje("Falta Llenar Costo por Hora");
+            return false;
+        }
         if (lstambpagRuta.isEmpty()) {
-            return false;
-        }
-        if (getDatoEdicion().getDescripcion() == null) {
-            return false;
-        }
-        if (getDatoEdicion().getNombre_corto() == null) {
-            return false;
-        }
-        if (getDatoEdicion().getCosto_por_hora() != 0) {
+            setMensaje("Falta Llenar Rutas");
             return false;
         }
         return true;
@@ -160,7 +166,8 @@ public class AmbitoPagoAction extends AbstactListAction<Ambito_pago> implements 
                 WebUtil.info(getMensaje());
                 setLvalidate(true);
             }
-
+             WebUtil.MensajeAdvertencia(getMensaje());
+            RequestContext.getCurrentInstance().update("datos:growl");
         } catch (Exception ex) {
             this.setMensaje(ex.toString());
         }
