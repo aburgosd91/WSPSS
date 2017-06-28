@@ -4,6 +4,7 @@
  */
 package com.pe.nisira.movil.view.listener;
 
+import com.nisira.core.dao.UsuarioDao;
 import com.nisira.core.service.UsuarioService;
 import com.pe.nisira.movil.view.util.Constantes;
 import static com.pe.nisira.movil.view.util.NisiraWebLog.log;
@@ -25,7 +26,7 @@ import javax.servlet.http.HttpSessionListener;
 @WebListener
 public class HttpSessionChecker implements HttpSessionListener {
 
-    private UsuarioService usuarioService = new UsuarioService();
+    private UsuarioDao usuarioDao = new UsuarioDao();
 
     @Override
     public void sessionCreated(HttpSessionEvent event) {
@@ -54,11 +55,11 @@ public class HttpSessionChecker implements HttpSessionListener {
         return "";
     }
 
-    public UsuarioService getUsuarioService() {
-        return usuarioService;
+    public UsuarioDao getUsuarioDao() {
+        return usuarioDao;
     }
 
-    public void setUsuarioService(UsuarioService usuarioService) {
-        this.usuarioService = usuarioService;
+    public void setUsuarioDao(UsuarioDao usuarioDao) {
+        this.usuarioDao = usuarioDao;
     }
 }

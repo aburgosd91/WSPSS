@@ -52,60 +52,18 @@ public class SeguridadViewHandler extends ViewHandlerWrapper {
         String vista = viewId.substring(1, viewId.lastIndexOf("."));
         log.info("Vista: " + vista);
         if (!vista.equalsIgnoreCase("index") && !vista.equalsIgnoreCase("sistema/Expulsado")&& !vista.equalsIgnoreCase("indexm")) {
-            if(vista.indexOf("http")!=-1){
-                try {
-                    /*SINCRONIZACION POR URL*/
-                    Map<String,String> params = context.getExternalContext().getRequestParameterMap();
-                    String usuario=Encryption.decrypt(params.get("usuario")!=null?params.get("usuario"):"");
-                    String pass=(params.get("password")!=null?params.get("password"):"");
-                    List<Usuario> lst= (new UsuarioDao()).listar("IDUSUARIO = ? AND PASSWORD=? AND ESTADO=1", usuario,pass); 
-                    Usuario user=null;
-                    if(lst!=null)
-                        user=lst.get(0);
-                    if(user==null)
-                        sendRedirect(context, "index.xhtml");
-                } catch (Exception ex) {
-                    Logger.getLogger(SeguridadViewHandler.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            else{
-                if (session == null || session.getAttribute(Constantes.SESION_USUARIO) == null) {
+            if (session == null || session.getAttribute(Constantes.SESION_USUARIO) == null) {
+                sendRedirect(context, "index.xhtml");
+            }  else {
+                session.setMaxInactiveInterval(60 * 60000);/*1 hora activo -> 60 * 60000(1min) */
+                if (vista.equalsIgnoreCase("sistema/CerrarSesion")) {
+                    session.invalidate();
                     sendRedirect(context, "index.xhtml");
-                }  else {
-                    session.setMaxInactiveInterval(60 * 60000);/*1 hora activo -> 60 * 60000(1min) */
-                    if(!vista.equalsIgnoreCase("index") || !vista.equalsIgnoreCase("sistema/CerrarSesion") || !vista.equalsIgnoreCase("sistema/Expulsado") || !vista.equalsIgnoreCase("indexm")){
-    //                    Boolean monitorvalidado  =ValidarMonitor();
-    //                    monitorvalidado = true;
-    //                    if(monitorvalidado){
-    //                        System.out.println("EN EL SEGURIDAD HEANDER " +ValidarMonitor());
-    //                    }else{
-    //                    session.invalidate();
-    //                    System.out.println("EN EL SEGURIDAD HEANDER negativo " +ValidarMonitor());
-    //                    sendRedirect(context, "sistema/Expulsado.xhtml");
-    //                    }
-                    }
-                    if (vista.equalsIgnoreCase("sistema/CerrarSesion")) {
-                        session.invalidate();
-                        sendRedirect(context, "index.xhtml");
-
-                    }
                 }
             }
-            
         }
-        
     }
 
-    public boolean ValidarMonitor(){
-        boolean validar=false;
-        try {
-//            validar = new UsuarioDao().validarMonitor(Constantes.getIDSESION());
-        } catch (Exception ex) {
-            log.error(ex, ex);
-        }
-        return validar;
-    }
-    
     private void sendRedirect(FacesContext context, String ruta) {
         HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
         try {

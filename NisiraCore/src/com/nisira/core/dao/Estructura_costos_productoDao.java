@@ -83,7 +83,7 @@ public class Estructura_costos_productoDao extends BaseDao<Estructura_costos_pro
             try
             {
                 ResultSet rs = null;
-                rs = execProcedure("GETESTRUCTURA_COSTOS_PRODUCTO_TMPSS",idempresa,idclieprov);
+                rs = execProcedure("GETESTRUCTURA_COSTOS_PRODUCTO_CLIEPROV_TMPSS",idempresa,idclieprov);
                 while (rs.next()) {
                     Estructura_costos_producto estructura_costos_producto = new Estructura_costos_producto();
                     estructura_costos_producto.setIdbasedatos(rs.getString("IDBASEDATOS").trim());

@@ -607,6 +607,14 @@
                 <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
                 <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
             </p:confirmDialog>
+            <p:dialog id="dlg_text" header="..:: Aprobación N° #{tareowebAction.datoEdicion.serie} -
+                      #{tareowebAction.datoEdicion.numero} ::.." 
+                      widgetVar="dlg_text" modal="true" showEffect="popup" maximizable="true" closable="true" height="410px" width="600px">
+                <textarea style="width:99%;height:95%;" readonly="true">
+                    #{tareowebAction.log_consola}
+                </textarea>    
+                <br/>                        
+            </p:dialog>
             <p:growl id="growl" life="4000" showDetail="false" />
             <cmp:mDialogElimina_lst id="cmpDialog" bean="#{tareowebAction}" ventana="MNT" />
         </h:form>

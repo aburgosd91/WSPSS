@@ -11,6 +11,7 @@ import com.pe.nisira.movil.view.util.WebUtil;
 import com.pe.nisira.movil.view.util.menuDao;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -21,6 +22,7 @@ import java.util.logging.Logger;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletResponse;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import net.sf.jasperreports.engine.JRDataSource;
@@ -185,8 +187,7 @@ public abstract class AbstactListAction<T> {
         buscarFiltro(tipo);
         if(tipo == 2)
             this.ladd = 0;
-    }
-    
+    }  
     public void doNuevo() throws IOException {
         nuevo();
         pag_acceso(this.edt_name);
@@ -327,6 +328,8 @@ public abstract class AbstactListAction<T> {
                 return null;
         }
     }
+    
+    public void mostrarLog_txt(String contenido)throws IOException{};
     
     public String getLst_name() {
         return lst_name;
