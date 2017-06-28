@@ -65,7 +65,6 @@ public class Estructura_costos_productoDao extends BaseDao<Estructura_costos_pro
                     estructura_costos_producto.setCodigo(rs.getString("CODIGO")!=null?rs.getString("CODIGO").trim():"");
                     estructura_costos_producto.setIdproducto(rs.getString("IDPRODUCTO")!=null?rs.getString("IDPRODUCTO").trim():"");
                     estructura_costos_producto.setDescripcion(rs.getString("DESCRIPCION")!=null?rs.getString("DESCRIPCION").trim():"");
-                    estructura_costos_producto.setProducto(rs.getString("PRODUCTO")!=null?rs.getString("PRODUCTO").trim():"");
                     estructura_costos_producto.setItem(rs.getString("ITEM")!=null?rs.getString("ITEM").trim():"");
                     estructura_costos_producto.setAjuste(rs.getFloat("AJUSTE"));
                     estructura_costos_producto.setNhoras(rs.getFloat("NHORAS"));

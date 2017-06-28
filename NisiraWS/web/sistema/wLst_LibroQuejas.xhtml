@@ -1,0 +1,60 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        #{libroQuejaAction.buscarTodo()}
+        <h:form id="datos"> 
+            <cmp:barra_lst bean="#{libroQuejaAction}" mostrar_opciones="false" cfgfiltro="true"/>
+                            <p:dataTable id="tbl" var="lstQuejas" value="#{libroQuejaAction.listaDatos}" widgetVar="lstQuejas" 
+                             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" 
+                             paginatorPosition="top"
+                             paginator="true" rows="25" style="margin-bottom:20px" selectionMode="single" 
+                             selection="#{libroQuejaAction.datoSeleccionado}" 
+                             rowKey="#{lstQuejas.idlibqueja}" resizableColumns="true">
+                <f:facet name="header">
+                    <h:outputText value="Libro de Quejas" />   
+                </f:facet>
+                <p:column headerText="Motivos" style="white-space: nowrap; width: 330px;padding: 3px;" filterBy="#{lstQuejas.idmotivoreclamo}" filterMatchMode="contains" sortBy="#{lstQuejas.idmotivoreclamo}">
+                    <p:selectOneMenu value="#{lstQuejas.idmotivoreclamo}" disabled="true">
+                        <f:selectItem  itemLabel="Servicios" itemValue="1"/>
+                        <f:selectItem  itemLabel="Queja" itemValue="2"/>
+                    </p:selectOneMenu>
+                </p:column>
+                <p:column headerText="Tipo Persona" style="white-space: nowrap; width: 330px;padding: 3px;" filterBy="#{lstQuejas.tipo_servicio}" filterMatchMode="contains" sortBy="#{lstQuejas.tipo_servicio}" >
+                    <p:selectOneMenu value="#{lstQuejas.idtipopersona}" disabled="true">
+                        <f:selectItem  itemLabel="Juridico" itemValue="1"/>
+                        <f:selectItem  itemLabel="Natural" itemValue="2"/>
+                        <f:selectItem  itemLabel="Tercero" itemValue="3"/>
+                    </p:selectOneMenu>
+                </p:column>
+                <p:column headerText="Doc Identidad" style="white-space: nowrap; width: 330px;padding: 3px;" filterBy="#{lstQuejas.docidentidad}" filterMatchMode="contains" sortBy="#{lstQuejas.docidentidad}">
+                    <h:outputText value="#{lstQuejas.docidentidad}" />
+                </p:column>
+                <p:column headerText="Nro Doc Identidad" style="white-space: nowrap; width: 330px;padding: 3px;" filterBy="#{lstQuejas.nrodocidentidad}" filterMatchMode="contains" sortBy="#{lstQuejas.nrodocidentidad}">
+                    <h:outputText value="#{lstQuejas.nrodocidentidad}" />
+                </p:column>
+                <p:column headerText="Reclamo" style="white-space: nowrap; width: 330px;padding: 3px;" filterBy="#{lstQuejas.reclamo}" filterMatchMode="contains" sortBy="#{lstQuejas.reclamo}">
+                    <h:outputText value="#{lstQuejas.reclamo}" />
+                </p:column>
+                <p:column headerText="Doc Ref" style="white-space: nowrap; width: 330px;padding: 3px;" filterBy="#{lstQuejas.iddocumentoRef}" filterMatchMode="contains" sortBy="#{lstQuejas.iddocumentoRef}">
+                    <h:outputText value="#{lstQuejas.iddocumentoRef}" />
+                </p:column>
+                <p:column headerText="Serie Ref" style="white-space: nowrap; width: 330px;padding: 3px;" filterBy="#{lstQuejas.serieRef}" filterMatchMode="contains" sortBy="#{lstQuejas.serieRef}">
+                    <h:outputText value="#{lstQuejas.serieRef}" />
+                </p:column>
+                <p:column headerText="Numero Ref" style="white-space: nowrap; width: 330px;padding: 3px;" filterBy="#{lstQuejas.numeroRef}" filterMatchMode="contains" sortBy="#{lstQuejas.numeroRef}">
+                    <h:outputText value="#{lstQuejas.numeroRef}" />
+                </p:column>
+            </p:dataTable>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{libroQuejaAction}" ventana="LST" />
+        </h:form>
+    </ui:define>    
+</ui:composition>
