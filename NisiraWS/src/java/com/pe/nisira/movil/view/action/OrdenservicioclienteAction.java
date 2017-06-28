@@ -1436,6 +1436,12 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                         getDordenserviciocliente().setIdreferencia(null);
                         getDordenserviciocliente().setItemreferencia(null);
                         mensaje = "No existe Estructura para este servicio\n Verificar parámetros";
+                        lstComboRutas = new ArrayList<>();
+                        lstHoras = new ArrayList<>();
+                        RequestContext.getCurrentInstance().update("datos:dlgnew_dordenserviciocliente:ruta_ec");
+                        RequestContext.getCurrentInstance().update("datos:dlgnew_dordenserviciocliente:nhoras");
+                        RequestContext.getCurrentInstance().update("datos:dlgnew_dordenserviciocliente:idreferenciacot");
+                        RequestContext.getCurrentInstance().update("datos:dlgnew_dordenserviciocliente:itemreferencia");
                         WebUtil.error(mensaje);
                         RequestContext.getCurrentInstance().update("datos:growl");
                     }else if(lstEscos_codoperaciones.size()==0){

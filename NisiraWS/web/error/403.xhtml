@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <link type="text/css" rel="stylesheet" href="../css/skin.css" />
+    </h:head>
+    <body>
+        <h:form>
+            <h3>ACCESO DENEGADO!</h3>
+            <h2>Usted no tiene persmisos suficientes para acceder a este recurso</h2>
+            <p:commandLink value="Inicia sesión" 
+                           actionListener="#{errorBean.redirectIndex()}">
+            </p:commandLink>
+        </h:form>
+    </body>
+</html>

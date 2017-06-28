@@ -134,66 +134,41 @@ public class LogueoAction implements Serializable {
                 UsuarioDao usuariodao =new UsuarioDao(true);
                 Usuario usuario= usuariodao.getSesionUsuario(idempresa,usuarioBean.getIDUSUARIO(),Clave.Encriptar(usuarioBean.getPASSWORD())); 
                 if (usuario != null) {
-                    //List<Privilegios> listaPrivilegios = privilegiosService.filtrar(usuarioBean.getIdusuario());
-                    //System.out.println("despues de privilegio");
-                    //if (!listaPrivilegios.isEmpty()) {      
-                        Boolean ValidarLicenciasDisponibles = true;
-                        //boolean ValidarLicenciasDisponibles = new UsuarioDao().ValidarLicenciasDisponibles();
-                        System.out.println(ValidarLicenciasDisponibles);
-                        if (ValidarLicenciasDisponibles) {
-                            System.out.println("despues de licencias");
-                            log.info("Creando la sesion");
-                            FacesContext.getCurrentInstance().getExternalContext().getSession(true);
-                            WebUtil.getSesion().setMaxInactiveInterval(Constantes.SESION_MAX);
-                            UsuarioBean usuarioLogueadoBean = new UsuarioBean();
-                            usuarioLogueadoBean.setTime(Constantes.SESION_MAX);
-                            usuarioLogueadoBean.setIDUSUARIO(usuario.getIdusuario());
-                            usuarioLogueadoBean.setPASSWORD(usuario.getPassword());
-                            usuarioLogueadoBean.setIDEMPRESA(idempresa);
-                            usuarioLogueadoBean.setTIPOSINCRO(CoreUtil.valoresBase().get(4));
-                            usuarioLogueadoBean.setNombres(usuario.getUsr_nombres());
-                            usuarioLogueadoBean.setIdcodigogeneral(usuario.getIdcodigogeneral());
-                            usuarioLogueadoBean.setH(h);
-                            usuarioLogueadoBean.setW(w);
-                            WebUtil.setObjetoSesion(Constantes.SESION_USUARIO, usuarioLogueadoBean);
-                            
-                            Constantes.IDEMPRESAGENERAL=idempresa;
-//                            Constantes.ESADMINISTRADOR=usuario.isESADMINISTRADOR();
-                            Constantes.IDUSUARIO=usuario.getIdusuario();
-                            Constantes.TIPOSINCRO=usuarioLogueadoBean.getTIPOSINCRO();
-                            
-                            MensajeBean mensaje = new MensajeBean();
-                            mensaje.setMensaje("");
-                            WebUtil.setObjetoSesion(Constantes.SESION_MENSAJE, mensaje);
-                            System.out.println(Constantes.getIDSESION());
-                            // usuarioService.insertarMonitor(usuario.getIdusuario(), Constantes.getIDSESION());
-                            // usuarioService.eliminarMonitor(Constantes.getIDSESION());
-                            //WebUtil.sendRedirect("/sistema/ordencompra.xhtml");
-                            //FacesContext.getCurrentInstance().getExternalContext().dispatch("faces/sistema/menu.xhtml"); 
-                            ExternalContext ctx = FacesContext.getCurrentInstance().getExternalContext();
-                            String ctxPath = ((ServletContext) ctx.getContext()).getContextPath();
-                            try {
-                                this.conexion = "";//para que el menú de seleccion de empresa se reinicie
-                                if (navegador_es_movil()) {
-                                    ctx.redirect(ctxPath + "/sistema/menu.xhtml");
-                                } else {                                    
-                                    //Constantes.arrayPrivilegios=usuarioService.listarPrivilegiosUsuario(idempresa, usuarioBean.getIDUSUARIO());                                    
-                                    ctx.redirect(ctxPath + "/sistema/principal.xhtml");
-                                }
-                            } catch (IOException ex) {
-                                ex.printStackTrace();
-                            }
+                    log.info("Creando la sesion");
+                    FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+                    WebUtil.getSesion().setMaxInactiveInterval(Constantes.SESION_MAX);
+                    log.info("Tiempo de la sesion: " + WebUtil.getSesion().getMaxInactiveInterval());
 
-                            return "";
-                        } else {
-                            this.mensaje = "Número de licencias sobrepasado consulte con un asesor de ventas para adquirir más licencias";
-                            WebUtil.MensajeError(this.mensaje);
-                        }
+                    UsuarioBean usuarioLogueadoBean = new UsuarioBean();
+                    usuarioLogueadoBean.setTime(Constantes.SESION_MAX);
+                    usuarioLogueadoBean.setIDUSUARIO(usuario.getIdusuario());
+                    usuarioLogueadoBean.setPASSWORD(usuario.getPassword());
+                    usuarioLogueadoBean.setIDEMPRESA(idempresa);
+                    usuarioLogueadoBean.setTIPOSINCRO(CoreUtil.valoresBase().get(4));
+                    usuarioLogueadoBean.setNombres(usuario.getUsr_nombres());
+                    usuarioLogueadoBean.setIdcodigogeneral(usuario.getIdcodigogeneral());
+                    WebUtil.setObjetoSesion(Constantes.SESION_USUARIO, usuarioLogueadoBean);
 
-                    /*
-                     } else {
-                        this.mensaje = "Usted no tiene privilegios para usar esta aplicación";
-                    }*/
+                    Constantes.IDEMPRESAGENERAL=idempresa;
+                    Constantes.IDUSUARIO=usuario.getIdusuario();
+                    Constantes.TIPOSINCRO=usuarioLogueadoBean.getTIPOSINCRO();
+
+                    MensajeBean mensaje = new MensajeBean();
+                    mensaje.setMensaje("");
+                    WebUtil.setObjetoSesion(Constantes.SESION_MENSAJE, mensaje);
+                    System.out.println(Constantes.getIDSESION());
+                    ExternalContext ctx = FacesContext.getCurrentInstance().getExternalContext();
+                    String ctxPath = ((ServletContext) ctx.getContext()).getContextPath();
+                    try {
+                        System.out.println("CONTEXPACHT---->: " + ctxPath + " " + ctx);
+                        this.conexion = "";//para que el menú de seleccion de empresa se reinicie
+
+                        ctx.redirect(ctxPath + "/sistema/principal.xhtml");
+
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                    return "";
                 } else {
                     this.mensaje = "Usuario no existe o clave incorrecta";
                     WebUtil.MensajeError(this.mensaje);

@@ -49,7 +49,12 @@ import com.pe.nisira.movil.view.util.ComboEspecial;
 import com.pe.nisira.movil.view.util.Constantes;
 import com.pe.nisira.movil.view.util.WebUtil;
 import java.awt.Font;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -68,6 +73,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletResponse;
 import net.sf.jasperreports.engine.JRDataSource;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -162,7 +170,7 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
     private boolean activarBotones;
     private String mensaje;
     private int posSelect_det_tareoweb;
-    
+    private String log_consola;
     public TareowebAction(){
         try {
             /* CONTROLLER */
@@ -964,37 +972,37 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
             RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
         }
     }
-    public boolean verificar_aprobacion(){
+    public boolean verificar_aprobacion() throws IOException{
         boolean flag = true;
         String validacion ="";
+        String httpcontenido="";
         listDet_tareoweb_verification = new ArrayList<>();
         for(int i=0;i<listDet_tareoweb.size();i++){
             Det_tareoweb obj = listDet_tareoweb.get(i);
             validacion ="";
             if(obj.getIdpersonal()==null){
-                flag = false;
-                this.mensaje="Servicio Item:"+obj.getItem()+" - "+obj.getIddocumento()+"-"+obj.getSerie()+"-"+obj.getNumero()+" ("+obj.getFecha_osc()+")"+
-                        " <Personal> no asignado";
-//                WebUtil.fatal(mensaje);
-//                RequestContext.getCurrentInstance().update("datos:growl");
-//                break;
-            }else{
-                if(obj.getHora_llegada()==0.0f)
-                    validacion+="\nHora LLegada <00:00> no asignado";
-                if(obj.getHora_inicio_serv()==0.0f)
-                    validacion+="\nHora Inicio <00:00> no asignado";
-                if(obj.getHora_fin_serv()==0.0f)
-                    validacion+="\nHora Fin <00:00> no asignado";
-                if(!validacion.equals("")){
-                    flag = false;
-                    this.mensaje="Servicio Item:"+obj.getItem()+" - "+obj.getIddocumento()+"-"+obj.getSerie()+"-"+obj.getNumero()+" ("+obj.getFecha_osc()+")"+""+validacion;
-//                    WebUtil.fatal(mensaje);
-//                    RequestContext.getCurrentInstance().update("datos:growl");
-//                    break;
-                }else{
-                    listDet_tareoweb_verification.add(obj);
-                }
+                validacion+="\n\t<Personal> no asignado";
+            }else if(obj.getIdpersonal().trim().equals("")){
+                validacion+="\n\t<Personal> no asignado";  
             }
+            if(obj.getHora_llegada()==0.0f)
+                validacion+="\n\tHora LLegada <00:00> no asignado";
+            if(obj.getHora_inicio_serv()==0.0f)
+                validacion+="\n\tHora Inicio <00:00> no asignado";
+            if(obj.getHora_fin_serv()==0.0f)
+                validacion+="\n\tHora Fin <00:00> no asignado";
+            if(!validacion.equals("")){
+                flag = false;
+                this.mensaje="Servicio N°:"+obj.getItem()+" - "+obj.getIddocumento()+"-"+obj.getSerie()+"-"+obj.getNumero()+" ("+obj.getFecha_osc()+")"+" "+obj.getRazon()+"-"+obj.getRuc()+validacion;
+                httpcontenido+="\n"+this.mensaje;
+            }else{
+                listDet_tareoweb_verification.add(obj);
+            }
+        }
+        log_consola = null;
+        if(!httpcontenido.trim().equals("")){
+            httpcontenido="*****************DETALLE OBSERVADO*******************"+httpcontenido;
+            mostrarLog_txt(httpcontenido);
         }
         return flag;
     }
@@ -1228,6 +1236,16 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
             setMensaje(ex.getMessage());
             WebUtil.error(getMensaje());
             RequestContext.getCurrentInstance().update("datos:growl");
+        }
+    }
+    @Override
+    public void mostrarLog_txt(String contenido){
+        if(contenido!=null){
+            if(!contenido.trim().equals("")){
+                log_consola = contenido;
+                RequestContext.getCurrentInstance().update("datos:dlg_text");
+                RequestContext.getCurrentInstance().execute("PF('dlg_text').show()");
+            }
         }
     }
     public String fechaDMY(Date fecha){
@@ -1962,6 +1980,20 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
      */
     public void setListConcepto_tareo(List<Concepto_tareo> listConcepto_tareo) {
         this.listConcepto_tareo = listConcepto_tareo;
+    }
+
+    /**
+     * @return the log_consola
+     */
+    public String getLog_consola() {
+        return log_consola;
+    }
+
+    /**
+     * @param log_consola the log_consola to set
+     */
+    public void setLog_consola(String log_consola) {
+        this.log_consola = log_consola;
     }
 }
 
