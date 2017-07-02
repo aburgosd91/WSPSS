@@ -1,0 +1,196 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    >
+    <ui:define name="metadata">        
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos" >
+            <cmp:barra_mnt bean="#{memorandumInstaCMTAction}"/>
+            <p:panelGrid id="cabecera" columns="2" columnClasses="no-border,no-border,no-border">
+                <f:facet name="header">
+                    #{memorandumInstaCMTAction.tituloHead}
+                </f:facet>
+                <div class="ui-grid">
+                    <div class="ui-grid-row">
+                        <p:fieldset legend="Datos del Cliente" style="width: 100%" >
+                            <p:panelGrid  columns="2" columnClasses="no-border,no-border">
+                                <p:outputLabel value="Fecha"/>
+                                <p:calendar value="#{memorandumInstaCMTAction.slcCoti.fecha}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="#{!memorandumInstaCMTAction.edicion}"/>
+                                <p:outputLabel value="Nombre del Cliente"/>
+                                <p:inputText  value="#{memorandumInstaCMTAction.slcCoti.razon_social}" disabled="true"/>
+                                <p:outputLabel value="RUC"/>
+                                <p:panelGrid id="cntUbiOr" columns="2" columnClasses="no-border,no-border">
+                                    <p:inputText  value="#{memorandumInstaCMTAction.slcCoti.idclieprov}" disabled="true"/>
+                                    <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{memorandumInstaCMTAction.verCntCotizacionVenta()}" disabled="#{!memorandumInstaCMTAction.edicion}"  icon="ui-icon-search">
+                                        <p:ajax event="dialogReturn" listener="#{memorandumInstaCMTAction.valorCotizacionVenta}" update="datos"/>
+                                    </p:commandButton>
+                                </p:panelGrid>
+                                
+                                <p:outputLabel value="Direccion de Servicio"/>
+                                <p:inputText  value="#{memorandumInstaCMTAction.slcCoti.lugar_entrega}" disabled="true"/>
+                                <p:outputLabel value="Contacto"/>
+                                <p:inputText value="#{memorandumInstaCMTAction.slcCoti.razon_social}" disabled="true"/>
+                                <p:outputLabel  value="Email"/>
+                                <p:inputText value="#{memorandumInstaCMTAction.slcCoti.contacto_email}" disabled="true"/>
+                                <p:outputLabel value="Tipo de Servicio"/>
+                                <p:inputText  value="#{memorandumInstaCMTAction.slcCoti.tipo_servicio}" disabled="true"/>
+                                <p:outputLabel  value="Fecha de Instalacion"/>
+                                <p:calendar  value="#{memorandumInstaCMTAction.datoEdicion.fecha_inst}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="#{!memorandumInstaCMTAction.edicion}"/>
+                                <p:outputLabel value="Hora de Instalacion"/>
+                                <p:inputNumber decimalPlaces="2"  value="#{memorandumInstaCMTAction.datoEdicion.hora_inst}" disabled="#{!memorandumInstaCMTAction.edicion}"/>
+                                <p:outputLabel  value="Duracion de Contrato"/>
+                                <p:inputText  value="#{memorandumInstaCMTAction.datoEdicion.duracion_contrato}" disabled="#{!memorandumInstaCMTAction.edicion}"/>                    
+                            </p:panelGrid>
+                        </p:fieldset>
+                    </div>
+                    <div class="ui-grid-row">
+                        <p:fieldset legend="Atendido por C5I" style="width: 100%" >
+                            <p:dataTable id="lstAten" 
+                                         value="#{memorandumInstaCMTAction.lstAtencion}" 
+                                         var="atn" 
+                                         paginator="true" paginatorPosition="top"
+                                         selection="#{memorandumInstaCMTAction.slcAtencion}"
+                                         selectionMode="single"
+                                         rowKey="#{atn.item}"
+                                         paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                         widgetVar="lstAten"
+                                         editable="true">
+                                <f:facet name="{Comandos}">
+                                    <p:commandButton id="btnDgen" value="Nuevo" ajax="true" image="ui-icon-nuevo"  actionListener="#{memorandumInstaCMTAction.addAtendidoRow()}" disabled="#{!memorandumInstaCMTAction.edicion}"/>
+                                    <p:commandButton id="btDdel" value="Eliminar" ajax="true" image="ui-icon-eliminar"  actionListener="#{memorandumInstaCMTAction.delAtendidoRow()}"  disabled="#{!memorandumInstaCMTAction.edicion}"/>
+                                </f:facet>
+                                <p:column style="width:15%;" filterBy="#{atn.atendido}" filterMatchMode="contains" sortBy="#{atn.atendido}">
+                                    <f:facet name="header">
+                                        <h:outputText value="Atendido" />
+                                    </f:facet>
+                                    <p:selectOneMenu value="#{atn.atendido}" disabled="#{!memorandumInstaCMTAction.edicion}">
+                                        <f:selectItem itemLabel="Si" itemValue="#{1}"/>
+                                        <f:selectItem itemLabel="No" itemValue="#{0}"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                                <p:column style="width:15%;">
+                                    <f:facet name="header">
+                                        <h:outputText value="Fecha Atendido" />
+                                    </f:facet>
+                                    <p:calendar value="#{atn.fechaAten}"  pattern="dd-MM" mask="true" disabled="#{!memorandumInstaCMTAction.edicion}"/>
+                                </p:column>
+                                <p:column style="width:15%;">
+                                    <f:facet name="header">
+                                        <h:outputText value="Fecha Reprograma" />
+                                    </f:facet>
+                                    <p:calendar value="#{atn.fechaRepo}"  pattern="dd-MM" mask="true" disabled="#{!memorandumInstaCMTAction.edicion}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </p:fieldset>
+                    </div>
+                    <div class="ui-grid-row">
+                        <p:fieldset legend="Detalle del Pedido" style="width: 100%" >
+                            <p:dataTable id="lstdcotizacionventas" 
+                                         var="lstdcotizacionventas" 
+                                         value="#{memorandumInstaCMTAction.lstDcot}" 
+                                         widgetVar="lstdcotizacionventas" 
+                                         rowKey="#{lstdcotizacionventas.item}">
+                                <p:column style="width:10%;" filterBy="#{lstdcotizacionventas.destino}" filterMatchMode="contains" sortBy="#{lstdcotizacionventas.destino}">
+                                    <f:facet name="header">
+                                        <h:outputText value="Destino"/>
+                                    </f:facet>
+                                    <h:outputText value="#{lstdcotizacionventas.destino}"/>
+                                </p:column>
+                                <p:column style="width:10%;" filterBy="#{lstdcotizacionventas.cantidad}" filterMatchMode="contains" sortBy="#{lstdcotizacionventas.cantidad}">
+                                    <f:facet name="header">
+                                        <h:outputText value="Cantidad"/>
+                                    </f:facet>
+                                    <h:outputText value="#{lstdcotizacionventas.cantidad}"/>
+                                </p:column>
+                                <p:column style="width:10%;" filterBy="#{lstdcotizacionventas.descripcion}" filterMatchMode="contains" sortBy="#{lstdcotizacionventas.descripcion}">
+                                    <f:facet name="header">
+                                        <h:outputText value="Descripcion"/>
+                                    </f:facet>
+                                    <h:outputText value="#{lstdcotizacionventas.descripcion}"/>
+                                </p:column>
+                                <p:column style="width:10%;" filterBy="#{lstdcotizacionventas.nhoras}" filterMatchMode="contains" sortBy="#{lstdcotizacionventas.nhoras}">
+                                    <f:facet name="header">
+                                        <h:outputText value="Horas"/>
+                                    </f:facet>
+                                    <h:outputText value="#{lstdcotizacionventas.nhoras}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </p:fieldset>
+                    </div>
+                    <div class="ui-grid-row">
+                        <p:fieldset legend="Requerimientos Adicionales" style="width: 100%" >
+                            <p:dataTable id="lstDetDemo" 
+                                         value="#{memorandumInstaCMTAction.lstdetMemo}" 
+                                         var="detdemo" 
+                                         selection="#{memorandumInstaCMTAction.slcMemo}"
+                                         selectionMode="single"
+                                         rowKey="#{detdemo.item}"
+                                         paginator="true" paginatorPosition="top"
+                                         paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                         widgetVar="lstDetDemo"
+                                         editable="true">
+                                <f:facet name="{Comandos}">
+                                    <p:commandButton id="btnDgen" value="Nuevo" ajax="true" image="ui-icon-nuevo"  actionListener="#{memorandumInstaCMTAction.addReqRow()}" disabled="#{!memorandumInstaCMTAction.edicion}"/>
+                                    <p:commandButton id="btDdel" value="Eliminar" ajax="true" image="ui-icon-eliminar"  actionListener="#{memorandumInstaCMTAction.delReqRow()}"  disabled="#{!memorandumInstaCMTAction.edicion}"/>
+                                </f:facet>
+                                <p:column style="width:15%;">
+                                    <f:facet name="header">
+                                        <h:outputText value="Descripcion" />
+                                    </f:facet>
+                                    <p:inputText  value="#{detdemo.descripcion}"  disabled="#{!memorandumInstaCMTAction.edicion}"/>
+                                </p:column>
+                                <p:column style="width:15%;">
+                                    <f:facet name="header">
+                                        <h:outputText value="Cantidad" />
+                                    </f:facet>
+                                    <p:inputNumber decimalPlaces="0" value="#{detdemo.cantidad}" disabled="#{!memorandumInstaCMTAction.edicion}"/>
+                                </p:column>
+                                <p:column style="width:15%;" filterBy="#{detdemo.atendido}" filterMatchMode="contains" sortBy="#{detdemo.atendido}">
+                                    <f:facet name="header">
+                                        <h:outputText value="Atendido" />
+                                    </f:facet>
+                                    <p:selectOneMenu value="#{detdemo.atendido}" disabled="#{!memorandumInstaCMTAction.edicion}">
+                                        <f:selectItem itemLabel="Si" itemValue="#{1}"/>
+                                        <f:selectItem itemLabel="No" itemValue="#{0}"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                                <p:column style="width:15%;">
+                                    <f:facet name="header">
+                                        <h:outputText value="Fecha Atendido" />
+                                    </f:facet>
+                                    <p:calendar  value="#{detdemo.fechaAten}"  pattern="dd-MM" mask="true" disabled="#{!memorandumInstaCMTAction.edicion}"/>
+                                </p:column>
+                                <p:column style="width:15%;">
+                                    <f:facet name="header">
+                                        <h:outputText value="Fecha Reprograma" />
+                                    </f:facet>
+                                    <p:calendar  value="#{detdemo.fechaRepo}" pattern="dd-MM" mask="true" disabled="#{!memorandumInstaCMTAction.edicion}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </p:fieldset>
+                    </div>
+                    <div class="ui-grid-row">
+                        <p:fieldset legend="Datos Adicionales" style="width: 100%" >
+                            <p:panelGrid  columns="2" columnClasses="no-border,no-border">
+                                <p:outputLabel value="Salario"/>
+                                <p:inputText  value="#{memorandumInstaCMTAction.datoEdicion.salario}" disabled="#{!memorandumInstaCMTAction.edicion}"/>
+                                <p:outputLabel value="Condiciones adicionales"/>
+                                <p:inputText  value="#{memorandumInstaCMTAction.datoEdicion.condiciones_comerciales}" disabled="#{!memorandumInstaCMTAction.edicion}"/>
+                                <p:outputLabel value="Observaciones"/>
+                                <p:inputText  value="#{memorandumInstaCMTAction.datoEdicion.observaciones}" disabled="#{!memorandumInstaCMTAction.edicion}"/>
+                            </p:panelGrid>
+                        </p:fieldset>
+                    </div>
+                </div>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{memorandumInstaCMTAction}" ventana="MNT" />
+        </h:form>
+    </ui:define>
+</ui:composition>

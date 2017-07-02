@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <title>Cotizacion</title>
+        <style type="text/css">
+            .ui-widget {
+                font-size: 90%;
+            }
+        </style>
+    </h:head>
+
+    <h:body>
+        <h:form>
+            <p:dataTable var="car" value="#{cntCotizacionVentasAction.datos}" 
+                         paginator="true">
+                <p:column headerText="RUC/DNI"  filterBy="#{car.idclieprov}" filterMatchMode="contains" sortBy="#{car.idclieprov}">
+                    <h:outputText value="#{car.idclieprov}" />
+                </p:column>
+                <p:column headerText="Cliente-Proveedor" filterBy="#{car.razon_social}" filterMatchMode="contains" sortBy="#{car.razon_social}">
+                    <h:outputText value="#{car.razon_social}" />
+                </p:column>
+                <p:column headerText="Estado" style="background-color:#{car.color_estado};" 
+                          filterBy="#{car.estado}" filterMatchMode="contains" sortBy="#{car.estado}">
+                    <h:outputText value="#{car.estado}" />
+                </p:column>
+                <p:column headerText="Fecha Vigencia"  filterBy="#{car.fechavigencia}" filterMatchMode="contains" sortBy="#{car.fechavigencia}">
+                    <h:outputText value="#{car.fechavigencia}" />
+                </p:column>
+                <p:column headerText="Ver" style="text-align: center">
+                    <p:commandButton icon="ui-icon-check" actionListener="#{cntCotizacionVentasAction.selectFromDialog(car)}" />
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </h:body>
+
+</html>

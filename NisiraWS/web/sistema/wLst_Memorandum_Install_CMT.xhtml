@@ -1,0 +1,33 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">          
+        <h:form id="datos">
+            #{memorandumInstaCMTAction.buscarTodo()}  
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
+                <cmp:barra_lst bean="#{memorandumInstaCMTAction}" mostrar_opciones="false"/>
+                <p:dataTable id="tbl" var="lstMemo" value="#{memorandumInstaCMTAction.listaDatos}" filteredValue="#{memorandumInstaCMTAction.filtroDatos}" widgetVar="lstMemo" 
+                             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                             paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{memorandumInstaCMTAction.datoSeleccionado}" rowKey="#{lstMemo.idcotizacionv}" resizableColumns="true">
+                    <f:facet name="header">
+                        <h:outputText value="#{memorandumInstaCMTAction.tituloHead}" />
+                    </f:facet>
+                    <p:column style="width:15%;" filterBy="#{lstMemo.duracion_contrato}" filterMatchMode="contains" sortBy="#{lstMemo.duracion_contrato}">
+                        <f:facet name="header">
+                            <h:outputText value="Duracion de Contrato" />
+                        </f:facet>
+                        <h:outputText value="#{lstMemo.duracion_contrato}"/>
+                    </p:column>
+                </p:dataTable>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{memorandumInstaCMTAction}" ventana="LST" />
+        </h:form>
+    </ui:define>
+</ui:composition>

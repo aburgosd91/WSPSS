@@ -125,6 +125,11 @@ public class AmbitoPagoAction extends AbstactListAction<Ambito_pago> implements 
     public void dellAmbitoPagoRuta() {
         if (slcAmbPagRuta != null) {
             lstambpagRuta.remove(slcAmbPagRuta);
+            int i = 1;
+            for(Ambito_pago_rutas ap : lstambpagRuta){
+                ap.setItem(WebUtil.cerosIzquierda(String.valueOf(i), 3));
+                i++;
+            }
         } else {
             setMensaje("Seleccione un detalle");
         }
