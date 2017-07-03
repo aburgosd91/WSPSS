@@ -6,6 +6,7 @@ import com.nisira.core.NisiraORMException;
 import com.nisira.core.entity.Destructura_costos_recursos;
 import com.nisira.core.entity.Estructura_costos_clieprov;
 import com.nisira.core.entity.Estructura_costos_mano_obra;
+import com.nisira.core.entity.Estructura_costos_mano_obra_detallado;
 import com.nisira.core.entity.Estructura_costos_producto;
 import com.thoughtworks.xstream.XStream;
 import java.sql.ResultSet;
@@ -109,7 +110,9 @@ public class Estructura_costosDao extends BaseDao<Estructura_costos> {
                 List<Estructura_costos_clieprov> listEstructura_costos_clieprov,
                 List<Estructura_costos_producto> listEstructura_costos_producto,
                 List<Destructura_costos_recursos> listDestructura_costos_recursos,
-                List<Estructura_costos_mano_obra> listEstructura_costos_mano_obra,String idusuario) throws Exception {
+                List<Estructura_costos_mano_obra> listEstructura_costos_mano_obra,
+                List<Estructura_costos_mano_obra_detallado> listEstructura_costos_mano_obra_detallado,
+                String idusuario) throws Exception {
             String mensaje="";
             /********* ESTRUCTURA COSTOS ***********/
             String xmlNot = "";
@@ -137,11 +140,17 @@ public class Estructura_costosDao extends BaseDao<Estructura_costos> {
             xStream = new XStream();
             xStream.processAnnotations(Estructura_costos_mano_obra.class);
             xmlEstructura_costo_mano_obra = xml + xStream.toXML(listEstructura_costos_mano_obra);
+            /********* ESTRUCTURA COSTOS PRODUCTO MANO OBRA DETALLADO***********/
+            String xmlEstructura_costo_mano_obra_detallado = "";
+            xStream = new XStream();
+            xStream.processAnnotations(Estructura_costos_mano_obra_detallado.class);
+            xmlEstructura_costo_mano_obra_detallado = xml + xStream.toXML(listEstructura_costos_mano_obra_detallado);
             try {
                 ResultSet rs = null;
                 rs = execProcedure("SP_ESTRUCTURA_COSTOS_GRABAR",tipo,idempresa,codigo,
                         xmlNot,xmlEstructura_costo_clieprov,xmlEstructura_costo_producto,
-                        xmlDestructura_costo_recurso,xmlEstructura_costo_mano_obra,idusuario
+                        xmlDestructura_costo_recurso,xmlEstructura_costo_mano_obra,
+                        xmlEstructura_costo_mano_obra_detallado,idusuario
                 );
                 while (rs.next()) {
                     mensaje = rs.getString("mensaje");
