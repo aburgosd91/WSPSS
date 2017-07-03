@@ -447,6 +447,7 @@ public class Det_tareowebDao extends BaseDao<Det_tareoweb> {
                 }else{
                     tareoweb.setShora_liberacion("00:00");
                 }
+                tareoweb.setFecharegistro(rs.getDate("FECHAREGISTRO"));
                 tareoweb.setFechafinregistro(rs.getDate("FECHAFINREGISTRO"));
                 tareoweb.setCodasistencia(rs.getString("CODASISTENCIA")!=null?rs.getString("CODASISTENCIA").trim():"");
                 tareoweb.setGlosa(rs.getString("GLOSA")!=null?rs.getString("GLOSA").trim():"");
@@ -508,6 +509,7 @@ public class Det_tareowebDao extends BaseDao<Det_tareoweb> {
                 tareoweb.setHora_rc(rs.getFloat("HORA_RC"));
                 tareoweb.setIdconceptotareo(rs.getString("IDCONCEPTOTAREO")!=null?rs.getString("IDCONCEPTOTAREO").trim():"");
                 tareoweb.setConceptotareo(rs.getString("CONCEPTOTAREO")!=null?rs.getString("CONCEPTOTAREO").trim():"");
+                
                 if(tareoweb.getHora_req()!=0.0f){
                     tareoweb.setFhora_req(CoreUtil.convertDecimalTime(tareoweb.getHora_req()));
                     tareoweb.setShora_req(CoreUtil.convertTimeString(tareoweb.getFhora_req()));
@@ -540,6 +542,7 @@ public class Det_tareowebDao extends BaseDao<Det_tareoweb> {
                 }else{
                     tareoweb.setShora_liberacion("00:00");
                 }
+                tareoweb.setFecharegistro(rs.getDate("FECHAREGISTRO"));
                 tareoweb.setFechafinregistro(rs.getDate("FECHAFINREGISTRO"));
                 tareoweb.setCodasistencia(rs.getString("CODASISTENCIA")!=null?rs.getString("CODASISTENCIA").trim():"");
                 tareoweb.setGlosa(rs.getString("GLOSA")!=null?rs.getString("GLOSA").trim():"");
