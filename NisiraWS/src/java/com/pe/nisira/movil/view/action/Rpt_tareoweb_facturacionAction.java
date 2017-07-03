@@ -150,7 +150,7 @@ public class Rpt_tareoweb_facturacionAction extends AbstactListAction<Ordenservi
             String f_fin = f.format(getHasta());
             f_ini = f_ini.replace("-", "");
             f_fin = f_fin.replace("-", "");
-            setRpt_result(getOrdenservicioclienteDao().getConsultaRepote(user.getIDEMPRESA(),f_ini,f_fin));
+            setRpt_result(getOrdenservicioclienteDao().getConsultaRepote_facturacion(user.getIDEMPRESA(),f_ini,f_fin));
             RequestContext.getCurrentInstance().update("datos");
         } catch (Exception e) {
             setMensaje(WebUtil.mensajeError());
