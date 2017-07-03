@@ -86,6 +86,61 @@ public class CotizacionventasDao extends BaseDao<Cotizacionventas> {
             }
             return lista;
         }
+        
+        public Cotizacionventas findCotizacion(String idempresa,String idcotizacion) throws NisiraORMException {
+            Cotizacionventas cotizacionventas = new Cotizacionventas();
+            try
+            {
+                ResultSet rs = null;
+                rs = execProcedure("GETCOTIZACION_TMPSS_SL",idempresa,idcotizacion);
+                while (rs.next()) {
+                    
+                    cotizacionventas.setIdbasedatos(rs.getString("IDBASEDATOS").trim());
+                    cotizacionventas.setIdempresa(rs.getString("IDEMPRESA").trim());
+                    cotizacionventas.setIdcotizacionv(rs.getString("IDCOTIZACIONV").trim());
+                    cotizacionventas.setIddocumento(rs.getString("IDDOCUMENTO")!=null?rs.getString("IDDOCUMENTO").trim():"");
+                    cotizacionventas.setSerie(rs.getString("SERIE")!=null?rs.getString("SERIE").trim():"");
+                    cotizacionventas.setNumero(rs.getString("NUMERO")!=null?rs.getString("NUMERO").trim():"");
+                    cotizacionventas.setFecha(rs.getDate("FECHA"));
+                    cotizacionventas.setFechavigencia(rs.getDate("FECHAVIGENCIA"));
+                    cotizacionventas.setIdsucursal(rs.getString("IDSUCURSAL")!=null?rs.getString("IDSUCURSAL").trim():"");
+                    cotizacionventas.setIdalmacen(rs.getString("IDALMACEN")!=null?rs.getString("IDALMACEN").trim():"");
+                    cotizacionventas.setIdclieprov(rs.getString("IDCLIEPROV")!=null?rs.getString("IDCLIEPROV").trim():"");
+                    cotizacionventas.setRazon_social(rs.getString("RAZON_SOCIAL")!=null?rs.getString("RAZON_SOCIAL").trim():"");
+                    cotizacionventas.setIdmoneda(rs.getString("IDMONEDA")!=null?rs.getString("IDMONEDA").trim():"");
+                    cotizacionventas.setIdvendedor(rs.getString("IDVENDEDOR")!=null?rs.getString("IDVENDEDOR").trim():"");
+                    cotizacionventas.setContacto(rs.getString("CONTACTO")!=null?rs.getString("CONTACTO").trim():"");
+                    cotizacionventas.setLugar_entrega(rs.getString("LUGAR_ENTREGA")!=null?rs.getString("LUGAR_ENTREGA").trim():"");
+                    cotizacionventas.setIdproyecto(rs.getString("IDPROYECTO")!=null?rs.getString("IDPROYECTO").trim():"");
+                    cotizacionventas.setMultivendedores(rs.getFloat("MULTIVENDEDORES"));
+                    cotizacionventas.setIdfpago(rs.getString("IDFPAGO")!=null?rs.getString("IDFPAGO").trim():"");
+                    cotizacionventas.setIdembalaje(rs.getString("IDEMBALAJE")!=null?rs.getString("IDEMBALAJE").trim():"");
+                    cotizacionventas.setComision(rs.getFloat("COMISION"));
+                    cotizacionventas.setPlazoentrega(rs.getString("PLAZOENTREGA")!=null?rs.getString("PLAZOENTREGA").trim():"");
+                    cotizacionventas.setGlosa(rs.getString("GLOSA")!=null?rs.getString("GLOSA").trim():"");
+                    cotizacionventas.setConfirmastock(rs.getFloat("CONFIRMASTOCK"));
+                    cotizacionventas.setTcmoneda(rs.getFloat("TCMONEDA"));
+                    cotizacionventas.setEs_proyecto(rs.getFloat("ES_PROYECTO"));
+                    cotizacionventas.setIdunidadnegocio(rs.getString("IDUNIDADNEGOCIO")!=null?rs.getString("IDUNIDADNEGOCIO").trim():"");
+                    cotizacionventas.setIdsubunidadnegocio(rs.getString("IDSUBUNIDADNEGOCIO")!=null?rs.getString("IDSUBUNIDADNEGOCIO").trim():"");
+                    cotizacionventas.setArea_ha(rs.getFloat("AREA_HA"));
+                    cotizacionventas.setRedondeo(rs.getFloat("REDONDEO"));
+                    cotizacionventas.setIdflete(rs.getString("IDFLETE")!=null?rs.getString("IDFLETE").trim():"");
+                    cotizacionventas.setIdpuertoorigen(rs.getString("IDPUERTOORIGEN")!=null?rs.getString("IDPUERTOORIGEN").trim():"");
+                    cotizacionventas.setIdpuertodestino(rs.getString("IDPUERTODESTINO")!=null?rs.getString("IDPUERTODESTINO").trim():"");
+                    cotizacionventas.setIdtipoprecio(rs.getString("IDTIPOPRECIO")!=null?rs.getString("IDTIPOPRECIO").trim():"");
+                    cotizacionventas.setIdtiposervicio(rs.getString("IDTIPOSERVICIO")!=null?rs.getString("IDTIPOSERVICIO").trim():"");
+                    cotizacionventas.setEstado(rs.getString("ESTADO")!=null?rs.getString("ESTADO").trim():"");
+                    cotizacionventas.setColor_estado(rs.getString("COLOR_ESTADO")!=null?rs.getString("COLOR_ESTADO").trim():"");
+                    cotizacionventas.setTipo_servicio(rs.getString("TIPO_SERVICIO")!=null?rs.getString("TIPO_SERVICIO").trim():"");
+ 
+                }
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
+            return cotizacionventas;
+        }
+        
         public ArrayList<Cotizacionventas> listarPorTipoServicio(String idempresa,String idtiposervicio) throws NisiraORMException {
             ArrayList<Cotizacionventas> lista = new ArrayList<Cotizacionventas>();
             try
@@ -139,6 +194,7 @@ public class CotizacionventasDao extends BaseDao<Cotizacionventas> {
             }
             return lista;
         }
+        
         public ArrayList<Cotizacionventas> listarPorEmpresaWebFiltroFecha(String idempresa,String fechainicio,String fechafin) throws NisiraORMException {
             ArrayList<Cotizacionventas> lista = new ArrayList<Cotizacionventas>();
             try

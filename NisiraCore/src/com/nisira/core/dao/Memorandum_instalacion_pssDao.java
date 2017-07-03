@@ -35,7 +35,7 @@ public class Memorandum_instalacion_pssDao extends BaseDao<Memorandum_instalacio
         List<Memorandum_instalacion_pss> memo = new ArrayList<Memorandum_instalacion_pss>();
         try {
             ResultSet rs = null;
-            rs = execProcedure("MEMORANDUM_INSTALACION_PSS", idempresa,idtipo);
+            rs = execProcedure("GETMEMORANDUM_INSTALACION_PSS", idempresa,idtipo);
             while (rs.next()) {
                 Memorandum_instalacion_pss me = new Memorandum_instalacion_pss();
                 me.setIdemrpesa(rs.getString("IDEMRPESA"));
