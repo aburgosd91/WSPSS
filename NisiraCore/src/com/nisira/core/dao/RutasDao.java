@@ -68,6 +68,7 @@ public class RutasDao extends BaseDao<Rutas> {
                 ruta.setEstado(rs.getInt("ESTADO"));
                 ruta.setOrigen(rs.getString("ORIGEN")!=null?rs.getString("ORIGEN").trim():"");
                 ruta.setDestino(rs.getString("DESTINO")!=null?rs.getString("DESTINO").trim():"");
+                
                 lista.add(ruta);        
             }
         } catch(Exception ex) {
@@ -93,6 +94,8 @@ public class RutasDao extends BaseDao<Rutas> {
                 ruta.setEstado(rs.getInt("ESTADO"));
                 ruta.setOrigen(rs.getString("ORIGEN")!=null?rs.getString("ORIGEN").trim():"");
                 ruta.setDestino(rs.getString("DESTINO")!=null?rs.getString("DESTINO").trim():"");
+                ruta.setOrigendesc(rs.getString("ORIGEND")!=null?rs.getString("ORIGEND").trim():"");
+                ruta.setDestinodesc(rs.getString("DESTINOD")!=null?rs.getString("DESTINOD").trim():"");
                 lista.add(ruta);        
             }
         } catch(Exception ex) {

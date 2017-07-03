@@ -61,6 +61,8 @@ public class Ambito_pagoDao extends BaseDao<Ambito_pago> {
                 apr.setItem(rs.getString("ITEM").trim());
                 apr.setIdruta(rs.getString("IDRUTA").trim());
                 apr.setDescripcion(rs.getString("descripcion").trim());
+                apr.setOrigen(rs.getString("ORIGEND").trim());
+                apr.setDestino(rs.getString("DESTINOD").trim());
                 lista.add(apr);
             }
         } catch (Exception ex) {

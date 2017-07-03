@@ -93,24 +93,49 @@ public class AmbitoPagoAction extends AbstactListAction<Ambito_pago> implements 
         }
     }
 
+    public boolean validarDetalle() {
+        if (!lstambpagRuta.isEmpty()) {
+            for (Ambito_pago_rutas r : lstambpagRuta) {
+                if (r.getIdruta().equalsIgnoreCase(slcRutas.getIdruta())) {
+                    setMensaje("Ruta ya Ingresada");
+                    WebUtil.MensajeAdvertencia(getMensaje());
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     public void addAmbitoPagoRuta() {
-        Ambito_pago_rutas amb = new Ambito_pago_rutas();
-        amb.setIdempresa(getDatoEdicion().getIdempresa());
-        amb.setIdruta(slcRutas.getIdruta());
-        amb.setDescripcion(slcRutas.getDescripcion());
-        amb.setItem(WebUtil.cerosIzquierda(String.valueOf(lstambpagRuta.size() + 1), 3));
-        lstambpagRuta.add(amb);
+        if (validarDetalle()) {
+            Ambito_pago_rutas amb = new Ambito_pago_rutas();
+            amb.setIdempresa(getDatoEdicion().getIdempresa());
+            amb.setIdruta(slcRutas.getIdruta());
+            amb.setDescripcion(slcRutas.getDescripcion());
+            amb.setOrigen(slcRutas.getOrigendesc());
+            amb.setDestino(slcRutas.getDestinodesc());
+            amb.setItem(WebUtil.cerosIzquierda(String.valueOf(lstambpagRuta.size() + 1), 3));
+            lstambpagRuta.add(amb);
+        }
         RequestContext.getCurrentInstance().update("datos:lstAmbPagoRuta");
         RequestContext.getCurrentInstance().execute("PF('rutasdialog').hide()");
+        RequestContext.getCurrentInstance().update("datos:growl");
     }
 
     public void dellAmbitoPagoRuta() {
         if (slcAmbPagRuta != null) {
             lstambpagRuta.remove(slcAmbPagRuta);
+            int i = 1;
+            for(Ambito_pago_rutas ap : lstambpagRuta){
+                ap.setItem(WebUtil.cerosIzquierda(String.valueOf(i), 3));
+                i++;
+            }
         } else {
             setMensaje("Seleccione un detalle");
         }
-        RequestContext.getCurrentInstance().update("datos");
+        WebUtil.MensajeAdvertencia(getMensaje());
+        RequestContext.getCurrentInstance().update("datos:lstAmbPagoRuta");
+        RequestContext.getCurrentInstance().update("datos:growl");
     }
 
     @Override
@@ -118,19 +143,21 @@ public class AmbitoPagoAction extends AbstactListAction<Ambito_pago> implements 
         lstambpagRuta = new ArrayList<Ambito_pago_rutas>();
         setDatoEdicion(new Ambito_pago());
         getDatoEdicion().setIdempresa(user.getIDEMPRESA());
+        getDatoEdicion().setCosto_adicional(0.00f);
+        getDatoEdicion().setCosto_por_hora(0.00f);
     }
 
     public boolean validar() {
+        if (getDatoEdicion().getDescripcion().equalsIgnoreCase("")) {
+            setMensaje("Falta Llenar Descripcion");
+            return false;
+        }
+        if (getDatoEdicion().getCosto_por_hora() == 0.0f) {
+            setMensaje("Falta Llenar Costo por Hora");
+            return false;
+        }
         if (lstambpagRuta.isEmpty()) {
-            return false;
-        }
-        if (getDatoEdicion().getDescripcion() == null) {
-            return false;
-        }
-        if (getDatoEdicion().getNombre_corto() == null) {
-            return false;
-        }
-        if (getDatoEdicion().getCosto_por_hora() != 0) {
+            setMensaje("Falta Llenar Rutas");
             return false;
         }
         return true;
@@ -144,7 +171,8 @@ public class AmbitoPagoAction extends AbstactListAction<Ambito_pago> implements 
                 WebUtil.info(getMensaje());
                 setLvalidate(true);
             }
-
+             WebUtil.MensajeAdvertencia(getMensaje());
+            RequestContext.getCurrentInstance().update("datos:growl");
         } catch (Exception ex) {
             this.setMensaje(ex.toString());
         }
@@ -154,7 +182,7 @@ public class AmbitoPagoAction extends AbstactListAction<Ambito_pago> implements 
     public void eliminar() {
         try {
             if (getOpc_anular_eliminar().equalsIgnoreCase("ANULAR")) {
-                
+
             }
             if (getOpc_anular_eliminar().equalsIgnoreCase("ELIMINAR")) {
                 ambitopagoDao.delAmbitopago(getDatoEdicion().getIdempresa(), getDatoEdicion().getCodigo());

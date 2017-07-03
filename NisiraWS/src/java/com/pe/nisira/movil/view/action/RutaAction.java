@@ -10,6 +10,7 @@ import com.nisira.core.dao.RutasDao;
 import com.nisira.core.entity.Geopoint;
 import com.nisira.core.entity.Ruta;
 import com.nisira.core.entity.Rutas;
+import com.nisira.core.entity.Ubigeo;
 import com.pe.nisira.movil.view.bean.UsuarioBean;
 import com.pe.nisira.movil.view.util.Constantes;
 import com.pe.nisira.movil.view.util.WebUtil;
@@ -37,6 +38,7 @@ public class RutaAction extends AbstactListAction<Rutas> implements Serializable
     private RutasDao rutaDao;
     private UsuarioBean user;
     private boolean estado;
+
     public RutaAction() {
         mensaje = "";
         rutaDao = new RutasDao();
@@ -56,7 +58,7 @@ public class RutaAction extends AbstactListAction<Rutas> implements Serializable
             this.setMensaje(ex.toString());
         }
     }
-    
+
     @Override
     public String getIniciar() {
         mensaje = "";
@@ -81,22 +83,53 @@ public class RutaAction extends AbstactListAction<Rutas> implements Serializable
         if (getDatoEdicion().getDescripcion() == null) {
             return false;
         }
+        if(getDatoEdicion().getOrigen() == null){
+            return false;
+        }
+        if(getDatoEdicion().getDestino() == null){
+            return false;
+        }
+        if(getDatoEdicion().getDestino().equalsIgnoreCase(getDatoEdicion().getOrigen())){
+            return false;
+        }
         return true;
+    }
+
+    public void verCntUbigeoOrigen() {
+        RequestContext.getCurrentInstance().openDialog("cntUbigeo", modalOptions, null);
+    }
+
+    public void valorUbigeoOrigen(SelectEvent event) {
+        Ubigeo ob = (Ubigeo) event.getObject();
+        getDatoEdicion().setOrigen(ob.getIdubigeo());
+        getDatoEdicion().setOrigendesc(ob.getDescripcion());
+
+    }
+
+    public void verCntUbigeoDestino() {
+        RequestContext.getCurrentInstance().openDialog("cntUbigeo", modalOptions, null);
+    }
+
+    public void valorUbigeoDestino(SelectEvent event) {
+        Ubigeo ob = (Ubigeo) event.getObject();
+        getDatoEdicion().setDestino(ob.getIdubigeo());
+        getDatoEdicion().setDestinodesc(ob.getDescripcion());
     }
 
     @Override
     public void grabar() {
         try {
             if (validarEdicion()) {
-                if(getLadd()==1){
-                    mensaje = rutaDao.grabar(1,getDatoEdicion());
-                    if(mensaje!=null)
-                        if(mensaje.trim().length()==15)
+                if (getLadd() == 1) {
+                    mensaje = rutaDao.grabar(1, getDatoEdicion());
+                    if (mensaje != null) {
+                        if (mensaje.trim().length() == 15) {
                             getDatoEdicion().setIdruta(mensaje.trim());
-                }
-                else if(getLadd()==2){
-                    getDatoEdicion().setEstado(estado?1:0);
-                    mensaje = rutaDao.grabar(2,getDatoEdicion());
+                        }
+                    }
+                } else if (getLadd() == 2) {
+                    getDatoEdicion().setEstado(estado ? 1 : 0);
+                    mensaje = rutaDao.grabar(2, getDatoEdicion());
                 }
                 setMensaje(WebUtil.exitoRegistrar("Ruta ", mensaje));
                 WebUtil.info(getMensaje());
@@ -116,11 +149,11 @@ public class RutaAction extends AbstactListAction<Rutas> implements Serializable
         try {
             if (getOpc_anular_eliminar().equalsIgnoreCase("ANULAR")) {
                 getDatoEdicion().setEstado(0);
-                rutaDao.grabar(3,getDatoEdicion());
+                rutaDao.grabar(3, getDatoEdicion());
             }
             if (getOpc_anular_eliminar().equalsIgnoreCase("ELIMINAR")) {
                 getDatoEdicion().setEstado(2);
-                rutaDao.grabar(4,getDatoEdicion());
+                rutaDao.grabar(4, getDatoEdicion());
             }
             RequestContext.getCurrentInstance().update("datos");
         } catch (Exception ex) {
@@ -128,15 +161,15 @@ public class RutaAction extends AbstactListAction<Rutas> implements Serializable
         }
 
     }
-    
+
     @Override
     public void aprobar() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
-    public void findDetalle(){
-        if(getDatoEdicion()!=null){
-            estado = getDatoEdicion().getEstado()==0.0?false:true;
+
+    public void findDetalle() {
+        if (getDatoEdicion() != null) {
+            estado = getDatoEdicion().getEstado() == 0.0 ? false : true;
         }
     }
 

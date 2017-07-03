@@ -19,7 +19,7 @@
                 </f:facet>
                 <p:outputLabel value="Código: " />
                 <p:inputText id="idruta" size="3"
-                    disabled="true" value="#{rutaAction.datoEdicion.idruta}"/>
+                             disabled="true" value="#{rutaAction.datoEdicion.idruta}"/>
                 <p:outputLabel for="descripcion"  value="Descripcion:" />
                 <p:inputTextarea id="descripcion" cols="60" rows="2" 
                                  disabled="#{!rutaAction.edicion}"
@@ -30,6 +30,20 @@
                 </p:inputTextarea>
                 <p:outputLabel value="Estado: " />
                 <p:selectBooleanCheckbox value="#{rutaAction.estado}" disabled="#{!rutaAction.edicion}"/>
+                <p:outputLabel value="Origen: " />
+                <p:panelGrid id="cntUbiOr" columns="2" columnClasses="no-border,no-border">
+                    <p:inputText value="#{rutaAction.datoEdicion.origendesc}"/>
+                    <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{rutaAction.verCntUbigeoOrigen()}" disabled="#{!rutaAction.edicion}"  icon="ui-icon-search">
+                        <p:ajax event="dialogReturn" listener="#{rutaAction.valorUbigeoOrigen}" update="datos:cntUbiOr"/>
+                    </p:commandButton>
+                </p:panelGrid>
+                <p:outputLabel value="Destino: " />
+                <p:panelGrid id="cntUbiDest" columns="2" columnClasses="no-border,no-border">
+                    <p:inputText value="#{rutaAction.datoEdicion.destinodesc}"/>
+                    <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{rutaAction.verCntUbigeoDestino()}" disabled="#{!rutaAction.edicion}"  icon="ui-icon-search">
+                        <p:ajax event="dialogReturn" listener="#{rutaAction.valorUbigeoDestino}" update="datos:cntUbiDest"/>
+                    </p:commandButton>
+                </p:panelGrid>
             </p:panelGrid>
             <p:growl id="growl" life="4000" showDetail="false"  />
             <cmp:mDialogElimina_lst id="cmpDialog" bean="#{rutaAction}" ventana="MNT" />

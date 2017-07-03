@@ -4,6 +4,7 @@ import com.nisira.annotation.ClavePrimaria;
 import com.nisira.annotation.Columna;
 import com.nisira.annotation.Tabla;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import java.io.Serializable;
 import java.util.Date;
 @XStreamAlias("RUTAS")
@@ -69,7 +70,10 @@ public class Rutas implements Serializable{
         @XStreamAlias("EXIGE_GUIA_CONFIRMACION")
 	@Columna
 	private Float exige_guia_confirmacion;
-
+        @XStreamOmitField
+        private String Origendesc;
+        @XStreamOmitField
+        private String Destinodesc;
 
 
 	/* Sets & Gets */
@@ -228,5 +232,21 @@ public class Rutas implements Serializable{
 
 
 	/* Sets & Gets FK*/
+
+    public String getOrigendesc() {
+        return Origendesc;
+    }
+
+    public void setOrigendesc(String Origendesc) {
+        this.Origendesc = Origendesc;
+    }
+
+    public String getDestinodesc() {
+        return Destinodesc;
+    }
+
+    public void setDestinodesc(String Destinodesc) {
+        this.Destinodesc = Destinodesc;
+    }
 
 }
