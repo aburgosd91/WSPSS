@@ -4,6 +4,7 @@ import com.nisira.annotation.ClavePrimaria;
 import com.nisira.annotation.Columna;
 import com.nisira.annotation.Tabla;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -51,7 +52,9 @@ public class Memorandum_instalacion_pss implements Serializable{
 	@Columna
         @XStreamAlias("idusuario")
 	private String idusuario;
-
+        
+        @XStreamOmitField
+        private String razon_social;
 
 
 	/* Sets & Gets */
@@ -162,5 +165,13 @@ public class Memorandum_instalacion_pss implements Serializable{
 
 
 	/* Sets & Gets FK*/
+
+    public String getRazon_social() {
+        return razon_social;
+    }
+
+    public void setRazon_social(String razon_social) {
+        this.razon_social = razon_social;
+    }
 
 }

@@ -31,11 +31,11 @@ public class Memorandum_instalacion_pssDao extends BaseDao<Memorandum_instalacio
         }
     }
 
-    public List<Memorandum_instalacion_pss> lstMemorandum(String idempresa)  throws NisiraORMException{
+    public List<Memorandum_instalacion_pss> lstMemorandum(String idempresa,String idtipo)  throws NisiraORMException{
         List<Memorandum_instalacion_pss> memo = new ArrayList<Memorandum_instalacion_pss>();
         try {
             ResultSet rs = null;
-            rs = execProcedure("GETCOTIZACION_TMPSS", idempresa);
+            rs = execProcedure("MEMORANDUM_INSTALACION_PSS", idempresa,idtipo);
             while (rs.next()) {
                 Memorandum_instalacion_pss me = new Memorandum_instalacion_pss();
                 me.setIdemrpesa(rs.getString("IDEMRPESA"));
@@ -50,6 +50,7 @@ public class Memorandum_instalacion_pssDao extends BaseDao<Memorandum_instalacio
                 me.setCondiciones_comerciales(rs.getString("CONDICIONES_COMERCIALES"));
                 me.setObservaciones(rs.getString("OBSERVACIONES"));
                 me.setIdusuario(rs.getString("IDUSUARIO"));
+                me.setRazon_social(rs.getString("RAZON_SOCIAL")!=null?rs.getString("RAZON_SOCIAL").trim():"");
                 memo.add(me);
             }
         } catch (Exception ex) {

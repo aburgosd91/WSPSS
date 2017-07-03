@@ -78,7 +78,7 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
     public void buscarTodo() {
         try {
             Gson gson = new Gson();
-            setListaDatos(memoDao.lstMemorandum(user.getIDEMPRESA()));
+            setListaDatos(memoDao.lstMemorandum(user.getIDEMPRESA(),"003"));
             Type collectionType = new TypeToken<List<Atendido>>() {
             }.getType();
             lstAtencion = gson.fromJson(getDatoEdicion().getTabla_atendido(), collectionType);

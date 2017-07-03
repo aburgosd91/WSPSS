@@ -18,11 +18,35 @@
                     <f:facet name="header">
                         <h:outputText value="#{memorandumInstaCMTAction.tituloHead}" />
                     </f:facet>
+                    <p:column style="width:15%;" filterBy="#{lstMemo.razon_social}" filterMatchMode="contains" sortBy="#{lstMemo.razon_social}">
+                        <f:facet name="header">
+                            <h:outputText value="Duracion de Contrato" />
+                        </f:facet>
+                        <h:outputText value="#{lstMemo.razon_social}"/>
+                    </p:column>
                     <p:column style="width:15%;" filterBy="#{lstMemo.duracion_contrato}" filterMatchMode="contains" sortBy="#{lstMemo.duracion_contrato}">
                         <f:facet name="header">
                             <h:outputText value="Duracion de Contrato" />
                         </f:facet>
                         <h:outputText value="#{lstMemo.duracion_contrato}"/>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{lstMemo.fecha_inst}" filterMatchMode="contains" sortBy="#{lstMemo.fecha_inst}">
+                        <f:facet name="header">
+                            <h:outputText value="Duracion de Contrato" />
+                        </f:facet>
+                        <h:outputText value="#{lstMemo.fecha_inst}"/>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{lstMemo.hora_inst}" filterMatchMode="contains" sortBy="#{lstMemo.hora_inst}">
+                        <f:facet name="header">
+                            <h:outputText value="Duracion de Contrato" />
+                        </f:facet>
+                        <h:outputText value="#{lstMemo.hora_inst}"/>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{lstMemo.salario}" filterMatchMode="contains" sortBy="#{lstMemo.salario}">
+                        <f:facet name="header">
+                            <h:outputText value="Duracion de Contrato" />
+                        </f:facet>
+                        <h:outputText value="#{lstMemo.salario}"/>
                     </p:column>
                 </p:dataTable>
             </p:panelGrid>
