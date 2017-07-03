@@ -1339,11 +1339,12 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
 //                WebUtil.MensajeAdvertencia(this.mensaje );
 //            }
             else if(verificar_aprobacion()){
-                mensaje=getCabtareowebDao().aprobarTareo_fijo(getDatoEdicion());
+                mensaje=getCabtareowebDao().aprobarTareo_fijo(getDatoEdicion(),user.getIDUSUARIO());
                 if(mensaje!=null)
                     if(mensaje.trim().length()==15)
                         getDatoEdicion().setIdcabtareoweb(mensaje.trim());
-                WebUtil.info("Se aprobó el documento :"+getMensaje());
+                WebUtil.info("Se aprobó el documento :"+getDatoEdicion().getIddocumento()+"-"+
+                        getDatoEdicion().getSerie()+"-"+getDatoEdicion().getNumero()+" ("+getMensaje()+")");
                 setLvalidate(true);
                 RequestContext.getCurrentInstance().update("datos");
             }

@@ -12,6 +12,7 @@ import com.nisira.core.dao.Destructura_costos_recursosDao;
 import com.nisira.core.dao.Estructura_costosDao;
 import com.nisira.core.dao.Estructura_costos_clieprovDao;
 import com.nisira.core.dao.Estructura_costos_mano_obraDao;
+import com.nisira.core.dao.Estructura_costos_mano_obra_detalladoDao;
 import com.nisira.core.dao.Estructura_costos_productoDao;
 import com.nisira.core.dao.MonedaDao;
 import com.nisira.core.dao.MonedasDao;
@@ -26,6 +27,7 @@ import com.nisira.core.entity.Destructura_costos_recursos;
 import com.nisira.core.entity.Estructura_costos;
 import com.nisira.core.entity.Estructura_costos_clieprov;
 import com.nisira.core.entity.Estructura_costos_mano_obra;
+import com.nisira.core.entity.Estructura_costos_mano_obra_detallado;
 import com.nisira.core.entity.Estructura_costos_producto;
 import com.nisira.core.entity.Monedas;
 import com.nisira.core.entity.Multitabla;
@@ -41,7 +43,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -88,12 +92,16 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
     private boolean botonNuevoEstructura_costos_mano_obra;
     private boolean botonEditarEstructura_costos_mano_obra;
     private boolean botonEliminarEstructura_costos_mano_obra;
+    
+    private boolean botonNuevoEstructura_costos_mano_obra_detalle;
+    private boolean botonEliminarEstructura_costos_mano_obra_detalle;
     /*DAO*/
     private Estructura_costosDao estructura_costosDao; 
     private Estructura_costos_clieprovDao estructura_costos_clieprovDao;
     private Estructura_costos_productoDao estructura_costos_productoDao;
     private Destructura_costos_recursosDao destructura_costos_recursosDao;
     private Estructura_costos_mano_obraDao estructura_costos_mano_obraDao;
+    private Estructura_costos_mano_obra_detalladoDao estructura_costos_mano_obra_detalladoDao;
     /*ARRAY*/
     private List<String> lstTipoRecurso;
     private List<Es_PorcentajeCombo> lstEs_porcentaje;
@@ -107,13 +115,17 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
     private List<Estructura_costos_mano_obra> listTotalEstructura_costos_mano_obra;
     private List<Unimedida> listUnimedida;
     private List<Monedas> listMoneda;
+    private List<Estructura_costos_mano_obra_detallado> listTotalEstructura_costos_mano_obra_detallado;
+    private List<Estructura_costos_mano_obra_detallado> listEstructura_costos_mano_obra_detallado;
     /***************** ENTITY ****************/
     private Estructura_costos_mano_obra estructura_costos_mano_obra; 
+    private Estructura_costos_mano_obra_detallado estructura_costos_mano_obra_detallado; 
     private Estructura_costos_clieprov estructura_costos_clieprov;
     private Estructura_costos_producto estructura_costos_producto;
     private Destructura_costos_recursos destructura_costos_recursos;
     private Rutas selectRutas;
     private Clieprov selectClieprov_copy;
+    private Estructura_costos_mano_obra_detallado selectEstructura_costos_mano_obra_detallado; 
     /*********************************************/
     private Estructura_costos_clieprov selectEstructura_costos_clieprov;
     private Estructura_costos_producto selectEstructura_costos_producto;
@@ -153,12 +165,16 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
         botonNuevoEstructura_costos_mano_obra = true;
         botonEditarEstructura_costos_mano_obra = true;
         botonEliminarEstructura_costos_mano_obra = true;
+        
+        botonNuevoEstructura_costos_mano_obra_detalle = true;
+        botonEliminarEstructura_costos_mano_obra_detalle = true;
         /*DAO*/
         estructura_costosDao = new Estructura_costosDao();
         estructura_costos_clieprovDao = new Estructura_costos_clieprovDao();
         estructura_costos_productoDao = new Estructura_costos_productoDao();
         destructura_costos_recursosDao = new Destructura_costos_recursosDao();
         estructura_costos_mano_obraDao = new Estructura_costos_mano_obraDao();
+        estructura_costos_mano_obra_detalladoDao = new Estructura_costos_mano_obra_detalladoDao();
         /*ARRAY*/
         listEstructura_costos_clieprov = new ArrayList<>();
         listEstructura_costos_producto = new ArrayList<>();
@@ -167,6 +183,8 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
         listTotalEstructura_costos_mano_obra = new ArrayList<>();
         listUnimedida = new ArrayList<>();
         listMoneda = new ArrayList<>();
+        listEstructura_costos_mano_obra_detallado= new ArrayList<>();
+        listTotalEstructura_costos_mano_obra_detallado= new ArrayList<>();
         /*ENTITY*/
         selectEstructura_costos_clieprov = new Estructura_costos_clieprov();
         selectEstructura_costos_producto = new Estructura_costos_producto();
@@ -272,6 +290,7 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
                         getListEstructura_costos_producto(),
                         getListTotalDestructura_costos_recursos(),
                         getListTotalEstructura_costos_mano_obra(),
+                        getListTotalEstructura_costos_mano_obra_detallado(),
                         user.getIDUSUARIO());
                 if(mensaje!=null)
                     if(mensaje.trim().length()==15)
@@ -286,6 +305,7 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
                         getListEstructura_costos_producto(),
                         getListTotalDestructura_costos_recursos(),
                         getListTotalEstructura_costos_mano_obra(),
+                        getListTotalEstructura_costos_mano_obra_detallado(),
                         user.getIDUSUARIO());
             setMensaje(WebUtil.exitoRegistrar("Estructura Costo ", mensaje));
             WebUtil.info(getMensaje());
@@ -464,6 +484,8 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
                 /*ESTRUCTURA_COSTOS_MANO_OBRA->GLOBAL*/
                 listTotalEstructura_costos_mano_obra=estructura_costos_mano_obraDao.listarPorEmpresaWeb(getSelectEstructura_costos_producto().getIdempresa(),
                         getSelectEstructura_costos_producto().getCodigo());
+                listTotalEstructura_costos_mano_obra_detallado=estructura_costos_mano_obra_detalladoDao.listarPorEmpresaWeb(getSelectEstructura_costos_producto().getIdempresa(),
+                        getSelectEstructura_costos_producto().getCodigo());
                 if(getListTotalDestructura_costos_recursos().isEmpty()){
                     mensaje = "No existe registro <DESTRUCTURA_COSTOS_RECURSO>";
                     WebUtil.error(mensaje);
@@ -518,6 +540,25 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
                 if(ob.getItemrango().trim().equalsIgnoreCase(getSelectEstructura_costos_producto().getItem().trim()) &&
                         ob.getIdproducto().trim().equalsIgnoreCase(getSelectEstructura_costos_producto().getIdproducto().trim())){
                     temp.add(ob);
+                }
+            }
+            return temp;
+        }else{
+            return null;
+        }
+    }
+    public List<Estructura_costos_mano_obra_detallado> listarPorEmpresaWebXProducto_Estructura_costos_mano_obra_detallado_action(){
+        List<Estructura_costos_mano_obra_detallado> temp = new ArrayList<>();
+        if(getSelecteEstructura_costos_mano_obra()!=null){
+            for(Estructura_costos_mano_obra_detallado ob:listTotalEstructura_costos_mano_obra_detallado){
+                if(ob.getItem_ecm().trim().equals(getSelecteEstructura_costos_mano_obra().getItem()) &&
+                        ob.getIdcargo().trim().equals(getSelecteEstructura_costos_mano_obra().getIdcargo()) &&
+                        ob.getItemrango().trim().equals(getSelecteEstructura_costos_mano_obra().getItemrango()) &&
+                        ob.getNhoras().floatValue() == getSelectEstructura_costos_producto().getNhoras().floatValue() &&
+                        (ob.getCodoperativo()==null?"":ob.getCodoperativo()).trim().equals((getSelectEstructura_costos_producto().getCodoperativo()==null?"":getSelectEstructura_costos_producto().getCodoperativo()).trim()) &&
+                        (ob.getIdruta()==null?"":ob.getIdruta()).trim().equals((getSelectEstructura_costos_producto().getIdruta()==null?"":getSelectEstructura_costos_producto().getIdruta()).trim())
+                   ){
+                    temp.add(ob); 
                 }
             }
             return temp;
@@ -614,6 +655,10 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
         }
         RequestContext.getCurrentInstance().update("datos:tabs:listEstructura_costos_mano_obra");
         tabView.setActiveIndex(indexTab);
+    }
+    public void onRowSelectEstructura_costos_mano_obra_detalle(SelectEvent event) throws IOException {
+        setBotonEliminarEstructura_costos_mano_obra_detalle(false);
+        RequestContext.getCurrentInstance().update("datos:dlgEstructura_costos_mano_obra_detallado:listEstructura_costos_mano_obra_detallado");
     }
     public void onCellEdit(CellEditEvent event) {
         Destructura_costos_recursos entity =(Destructura_costos_recursos)((DataTable)event.getComponent()).getRowData();
@@ -731,6 +776,15 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
     public void onItemSelect(SelectEvent event) {
         
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Item Selected", event.getObject().toString()));
+    }
+    public void onFormularioEstructuraCostosRecursosDetalle(){
+        if(getSelecteEstructura_costos_mano_obra()!=null){
+            listEstructura_costos_mano_obra_detallado= listarPorEmpresaWebXProducto_Estructura_costos_mano_obra_detallado_action();
+            selectEstructura_costos_mano_obra_detallado = new Estructura_costos_mano_obra_detallado();
+            setBotonEliminarEstructura_costos_mano_obra_detalle(true);
+            RequestContext.getCurrentInstance().update("datos:dlgEstructura_costos_mano_obra_detallado");
+            RequestContext.getCurrentInstance().execute("PF('dlgEstructura_costos_mano_obra_detallado').show()");
+        }
     }
     /************COPIAR ESTRUCTURA COSTOS DE OTRO CLIENTE**************/
     public void openDialogCopyEstructura(){
@@ -1044,6 +1098,161 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
         this.getEstructura_costos_mano_obra().setCargo(cargo.getDescripcion());
         return;
     }
+    /************MANTENIMIENTO - ESTRUCTURA COSTOS MANO OBRA _ DETALLADO**************/
+    public void onCellEdit_Mano_Obra(CellEditEvent event) {
+        try {
+            Object newValue = event.getNewValue();
+            Estructura_costos_mano_obra_detallado entity =(Estructura_costos_mano_obra_detallado)((DataTable)event.getComponent()).getRowData();
+            int pos = listEstructura_costos_mano_obra_detallado.indexOf(entity);
+            String colHead = event.getColumn().getHeaderText().trim();
+            switch(colHead){
+                case "Hora Inicio":
+                    /*VALIDAR FORMATO DE TIME*/
+                    if(WebUtil.validateTime(newValue.toString())){
+                        /*ASIGNARLE VALOR*/
+                        //Date fhorai = WebUtil.convertStringTime(newValue.toString());
+                        entity.setShorai(newValue.toString());
+                    }else{
+                        entity.setShorai("00:00");
+                    }
+                    break;
+                case "Hora Fin":
+                    /*VALIDAR FORMATO DE TIME*/
+                    if(WebUtil.validateTime(newValue.toString())){
+                        Date fhoraf = WebUtil.convertStringTime(newValue.toString());
+                        entity.setShoraf(newValue.toString());
+                        if(!newValue.toString().trim().equals("00:00")){
+                            Date fhorai = WebUtil.convertStringTime(entity.getShorai());
+                            if(WebUtil.compareToDate(fhorai,fhoraf)>0 &&
+                                WebUtil.compareToDate(fhorai,fhoraf)!=-2){
+                                entity.setShoraf(entity.getShorai());
+                            }else{
+                                entity.setShoraf(newValue.toString());
+                            }
+                        }
+                    }else{
+                        entity.setShoraf("00:00");
+                    }
+                    break;
+            }
+            if(entity.getShorai()!=null){
+                Date fhorai = WebUtil.convertStringTime(entity.getShorai());
+                entity.setHorai(WebUtil.convertTimeDecimal(fhorai));
+            }
+            else
+                entity.setHoraf(0.0f);
+            if(entity.getShoraf()!=null){
+                Date fhoraf = WebUtil.convertStringTime(entity.getShoraf());
+                entity.setHoraf(WebUtil.convertTimeDecimal(fhoraf));
+            }
+            else
+                entity.setHoraf(0.0f);
+        }catch(ParseException ex) {
+            Logger.getLogger(TareowebAction.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+    }
+    public void agregarEstructuraCostosManoObra_detallado() {
+        if(getSelecteEstructura_costos_mano_obra()!=null){
+            setEstructura_costos_mano_obra_detallado(new Estructura_costos_mano_obra_detallado());
+            getEstructura_costos_mano_obra_detallado().setIdempresa(getSelecteEstructura_costos_mano_obra().getIdempresa());
+            getEstructura_costos_mano_obra_detallado().setCodigo(getSelecteEstructura_costos_mano_obra().getCodigo());
+            getEstructura_costos_mano_obra_detallado().setItemrango(getSelecteEstructura_costos_mano_obra().getItemrango());
+            getEstructura_costos_mano_obra_detallado().setItem_ecm(getSelecteEstructura_costos_mano_obra().getItem());
+            getEstructura_costos_mano_obra_detallado().setItem(agregarItemEstructuraCostosManoObra_detallado());
+            getEstructura_costos_mano_obra_detallado().setCosto(0.0f);
+            getEstructura_costos_mano_obra_detallado().setShorai("00:00");
+            getEstructura_costos_mano_obra_detallado().setShoraf("00:00");
+            getEstructura_costos_mano_obra_detallado().setHorai(0.0f);
+            getEstructura_costos_mano_obra_detallado().setHoraf(0.0f);
+            getEstructura_costos_mano_obra_detallado().setIdcargo(getSelecteEstructura_costos_mano_obra().getIdcargo());
+            getEstructura_costos_mano_obra_detallado().setNhoras(getSelectEstructura_costos_producto().getNhoras());
+            getEstructura_costos_mano_obra_detallado().setCodoperativo(getSelectEstructura_costos_producto().getCodoperativo());
+            getEstructura_costos_mano_obra_detallado().setIdruta(getSelectEstructura_costos_producto().getIdruta());
+            listTotalEstructura_costos_mano_obra_detallado.add(getEstructura_costos_mano_obra_detallado());
+            listEstructura_costos_mano_obra_detallado= listarPorEmpresaWebXProducto_Estructura_costos_mano_obra_detallado_action();
+//            RequestContext.getCurrentInstance().update("datos:dlgEstructura_costos_mano_obra_detallado");
+        }else{
+            mensaje = "Seleccionar Estructura - Costos - Mano - Obra";
+            WebUtil.error(mensaje);
+            RequestContext.getCurrentInstance().update("datos:growl");
+        }
+    }
+    public void eliminarEstructuraCostosManoObra_detallado(){
+        if(getSelectEstructura_costos_mano_obra_detallado()!=null){
+            listTotalEstructura_costos_mano_obra_detallado.remove(getSelectEstructura_costos_mano_obra_detallado());
+            listEstructura_costos_mano_obra_detallado= listarPorEmpresaWebXProducto_Estructura_costos_mano_obra_detallado_action();
+        }else{
+            mensaje = "Seleccionar Detalle de Rango";
+            WebUtil.error(mensaje);
+            RequestContext.getCurrentInstance().update("datos:growl");
+        }
+    }
+    public void replicarEstructuraCostosManoObra_detallado(){
+        if(getSelecteEstructura_costos_mano_obra()!=null){
+            List<Estructura_costos_mano_obra_detallado> lst = listarPorEmpresaWebXProducto_Estructura_costos_mano_obra_detallado_action();
+            Estructura_costos_mano_obra_detallado ecmd;
+            if(!lst.isEmpty()){
+                List<Estructura_costos_mano_obra> lst_temp = new ArrayList<>();
+                List<Estructura_costos_mano_obra_detallado> lst_temp_det = new ArrayList<>();
+                lst_temp.addAll(listEstructura_costos_mano_obra);
+                /**QUITAR ESTRUCTURA COSTOS MANO OBRA SELECCIONADO***/
+                lst_temp.remove(getSelecteEstructura_costos_mano_obra());
+                for(Estructura_costos_mano_obra ob :lst_temp){
+                    for(Estructura_costos_mano_obra_detallado x : lst){
+                        ecmd = new Estructura_costos_mano_obra_detallado();
+                        ecmd.setIdempresa(x.getIdempresa());
+                        ecmd.setCodigo(x.getCodigo());
+                        ecmd.setItemrango(ob.getItemrango());
+                        ecmd.setItem_ecm(ob.getItem());
+                        ecmd.setItem(x.getItem());
+                        ecmd.setHorai(x.getHorai());
+                        ecmd.setHoraf(x.getHoraf());
+                        ecmd.setCosto(x.getCosto());
+                        ecmd.setIdcargo(ob.getIdcargo());
+                        ecmd.setCargo(ob.getCargo());
+                        ecmd.setShorai(x.getShorai());
+                        ecmd.setShoraf(x.getShoraf());
+                        ecmd.setNhoras(x.getNhoras());
+                        ecmd.setCodoperativo(x.getCodoperativo());
+                        ecmd.setIdruta(x.getIdruta());
+                        lst_temp_det.add(ecmd);
+                    }
+                }
+                /* LIMPIAR ESTRUCTURA_COSTOS_MANO_OBRA_DETALLADO POR ESTRUCTURA_COSTOS_MANO_OBRA*/
+                List<Estructura_costos_mano_obra_detallado> lst_temp_detallado= new ArrayList<>();
+                boolean tfalg;
+                for(Estructura_costos_mano_obra_detallado dt:lst_temp_det){
+                    tfalg = true;
+                    for(int i=0;i<listTotalEstructura_costos_mano_obra_detallado.size();i++){
+                        Estructura_costos_mano_obra_detallado risk = listTotalEstructura_costos_mano_obra_detallado.get(i);
+                        if(dt.getIdempresa().trim().equals(risk.getIdempresa().trim()) &&
+                            dt.getIdcargo().trim().equals(risk.getIdcargo()) &&
+                            dt.getItemrango().trim().equals(risk.getItemrango()) &&
+                            dt.getItem_ecm().trim().equals(risk.getItem_ecm()) &&
+                            dt.getItem().trim().equals(risk.getItem().trim()) &&
+                            dt.getNhoras() == risk.getNhoras() &&
+                            (dt.getCodoperativo()==null?"":dt.getCodoperativo()).trim().equals((risk.getCodoperativo()==null?"":risk.getCodoperativo()).trim()) &&
+                            (dt.getIdruta()==null?"":dt.getIdruta()).trim().equals((risk.getIdruta()==null?"":risk.getIdruta()).trim())
+                            ){
+                            listTotalEstructura_costos_mano_obra_detallado.set(i, dt);
+                            tfalg = false;
+                            break;
+                        }
+                    }
+                    if(tfalg)
+                        listTotalEstructura_costos_mano_obra_detallado.add(dt);
+                }
+                
+                listTotalEstructura_costos_mano_obra_detallado.addAll(lst_temp_detallado);
+            }else{
+                mensaje = "Estructura_costo_mano_obra no tiene rango definido";
+                WebUtil.error(mensaje);
+                RequestContext.getCurrentInstance().update("datos:growl");
+            }
+        }
+    }
     /***************** GENERADOR ID *********************/
     public String agregarItemEstructuraCostosProducto(Estructura_costos_producto t){
             int dato = 1;
@@ -1081,6 +1290,21 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
         int dato = 1;
         int may=-999999999;
         for(Estructura_costos_mano_obra obj:getListEstructura_costos_mano_obra()){
+            dato = Integer.parseInt(obj.getItem());
+            if(dato>may)
+                may=dato;
+        }
+        if(may==-999999999)
+            may=1;
+        else
+            may++;
+        
+        return WebUtil.idGeneradoTres(may);
+    }
+    public String agregarItemEstructuraCostosManoObra_detallado(){
+        int dato = 1;
+        int may=-999999999;
+        for(Estructura_costos_mano_obra_detallado obj:getListEstructura_costos_mano_obra_detallado()){
             dato = Integer.parseInt(obj.getItem());
             if(dato>may)
                 may=dato;
@@ -1773,6 +1997,104 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
      */
     public void setSelectlistEstructura_costos_producto_copy(List<Estructura_costos_producto> selectlistEstructura_costos_producto_copy) {
         this.selectlistEstructura_costos_producto_copy = selectlistEstructura_costos_producto_copy;
+    }
+
+    /**
+     * @return the estructura_costos_mano_obra_detalladoDao
+     */
+    public Estructura_costos_mano_obra_detalladoDao getEstructura_costos_mano_obra_detalladoDao() {
+        return estructura_costos_mano_obra_detalladoDao;
+    }
+
+    /**
+     * @param estructura_costos_mano_obra_detalladoDao the estructura_costos_mano_obra_detalladoDao to set
+     */
+    public void setEstructura_costos_mano_obra_detalladoDao(Estructura_costos_mano_obra_detalladoDao estructura_costos_mano_obra_detalladoDao) {
+        this.estructura_costos_mano_obra_detalladoDao = estructura_costos_mano_obra_detalladoDao;
+    }
+
+    /**
+     * @return the listTotalEstructura_costos_mano_obra_detallado
+     */
+    public List<Estructura_costos_mano_obra_detallado> getListTotalEstructura_costos_mano_obra_detallado() {
+        return listTotalEstructura_costos_mano_obra_detallado;
+    }
+
+    /**
+     * @param listTotalEstructura_costos_mano_obra_detallado the listTotalEstructura_costos_mano_obra_detallado to set
+     */
+    public void setListTotalEstructura_costos_mano_obra_detallado(List<Estructura_costos_mano_obra_detallado> listTotalEstructura_costos_mano_obra_detallado) {
+        this.listTotalEstructura_costos_mano_obra_detallado = listTotalEstructura_costos_mano_obra_detallado;
+    }
+
+    /**
+     * @return the listEstructura_costos_mano_obra_detallado
+     */
+    public List<Estructura_costos_mano_obra_detallado> getListEstructura_costos_mano_obra_detallado() {
+        return listEstructura_costos_mano_obra_detallado;
+    }
+
+    /**
+     * @param listEstructura_costos_mano_obra_detallado the listEstructura_costos_mano_obra_detallado to set
+     */
+    public void setListEstructura_costos_mano_obra_detallado(List<Estructura_costos_mano_obra_detallado> listEstructura_costos_mano_obra_detallado) {
+        this.listEstructura_costos_mano_obra_detallado = listEstructura_costos_mano_obra_detallado;
+    }
+
+    /**
+     * @return the estructura_costos_mano_obra_detallado
+     */
+    public Estructura_costos_mano_obra_detallado getEstructura_costos_mano_obra_detallado() {
+        return estructura_costos_mano_obra_detallado;
+    }
+
+    /**
+     * @param estructura_costos_mano_obra_detallado the estructura_costos_mano_obra_detallado to set
+     */
+    public void setEstructura_costos_mano_obra_detallado(Estructura_costos_mano_obra_detallado estructura_costos_mano_obra_detallado) {
+        this.estructura_costos_mano_obra_detallado = estructura_costos_mano_obra_detallado;
+    }
+
+    /**
+     * @return the selectEstructura_costos_mano_obra_detallado
+     */
+    public Estructura_costos_mano_obra_detallado getSelectEstructura_costos_mano_obra_detallado() {
+        return selectEstructura_costos_mano_obra_detallado;
+    }
+
+    /**
+     * @param selectEstructura_costos_mano_obra_detallado the selectEstructura_costos_mano_obra_detallado to set
+     */
+    public void setSelectEstructura_costos_mano_obra_detallado(Estructura_costos_mano_obra_detallado selectEstructura_costos_mano_obra_detallado) {
+        this.selectEstructura_costos_mano_obra_detallado = selectEstructura_costos_mano_obra_detallado;
+    }
+
+    /**
+     * @return the botonNuevoEstructura_costos_mano_obra_detalle
+     */
+    public boolean isBotonNuevoEstructura_costos_mano_obra_detalle() {
+        return botonNuevoEstructura_costos_mano_obra_detalle;
+    }
+
+    /**
+     * @param botonNuevoEstructura_costos_mano_obra_detalle the botonNuevoEstructura_costos_mano_obra_detalle to set
+     */
+    public void setBotonNuevoEstructura_costos_mano_obra_detalle(boolean botonNuevoEstructura_costos_mano_obra_detalle) {
+        this.botonNuevoEstructura_costos_mano_obra_detalle = botonNuevoEstructura_costos_mano_obra_detalle;
+    }
+
+    /**
+     * @return the botonEliminarEstructura_costos_mano_obra_detalle
+     */
+    public boolean isBotonEliminarEstructura_costos_mano_obra_detalle() {
+        return botonEliminarEstructura_costos_mano_obra_detalle;
+    }
+
+    /**
+     * @param botonEliminarEstructura_costos_mano_obra_detalle the botonEliminarEstructura_costos_mano_obra_detalle to set
+     */
+    public void setBotonEliminarEstructura_costos_mano_obra_detalle(boolean botonEliminarEstructura_costos_mano_obra_detalle) {
+        this.botonEliminarEstructura_costos_mano_obra_detalle = botonEliminarEstructura_costos_mano_obra_detalle;
     }
     
     public class Es_PorcentajeCombo{

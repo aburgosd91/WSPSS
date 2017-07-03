@@ -94,6 +94,41 @@ public class CabtareowebDao extends BaseDao<Cabtareoweb> {
         }
         return lista;
     }
+    public ArrayList<Cabtareoweb> listarPorEmpresaWebFiltroFecha_provincial(String idempresa,String fechainicio,String fechafin,String idusuario) throws NisiraORMException,Exception {
+        ArrayList<Cabtareoweb> lista = new ArrayList<Cabtareoweb>();
+
+        ResultSet rs = null;
+        rs = execProcedure("GETCABTAREOWEB_TMPSS",idempresa,fechainicio,fechafin,idusuario);
+        while (rs.next()) {
+            Cabtareoweb cabtareoweb = new Cabtareoweb();
+            cabtareoweb.setIdbasedatos(rs.getString("IDBASEDATOS").trim());
+            cabtareoweb.setIdempresa(rs.getString("IDEMPRESA").trim());
+            cabtareoweb.setIdcabtareoweb(rs.getString("IDCABTAREOWEB")!=null?rs.getString("IDCABTAREOWEB").trim():"");
+            cabtareoweb.setIdemisor(rs.getString("IDEMISOR")!=null?rs.getString("IDEMISOR").trim():"");
+            cabtareoweb.setIdsucursal(rs.getString("IDSUCURSAL")!=null?rs.getString("IDSUCURSAL").trim():"");
+            cabtareoweb.setIdalmacen(rs.getString("IDALMACEN")!=null?rs.getString("IDALMACEN").trim():"");
+            cabtareoweb.setIddocumento(rs.getString("IDDOCUMENTO")!=null?rs.getString("IDDOCUMENTO").trim():"");
+            cabtareoweb.setSerie(rs.getString("SERIE")!=null?rs.getString("SERIE").trim():"");
+            cabtareoweb.setNumero(rs.getString("NUMERO")!=null?rs.getString("NUMERO").trim():"");
+            cabtareoweb.setPeriodo(rs.getString("PERIODO")!=null?rs.getString("PERIODO").trim():"");
+            cabtareoweb.setFecha(rs.getDate("FECHA"));
+            cabtareoweb.setIdestado(rs.getString("IDESTADO")!=null?rs.getString("IDESTADO").trim():"");
+            cabtareoweb.setIdresponsable(rs.getString("IDRESPONSABLE")!=null?rs.getString("IDRESPONSABLE").trim():"");
+            cabtareoweb.setSucursal(rs.getString("SUCURSAL")!=null?rs.getString("SUCURSAL").trim():"");
+            cabtareoweb.setAlmacen(rs.getString("ALMACEN")!=null?rs.getString("ALMACEN").trim():"");
+            cabtareoweb.setResponsable(rs.getString("RESPONSABLE")!=null?rs.getString("RESPONSABLE").trim():"");
+            cabtareoweb.setEstado(rs.getString("ESTADO")!=null?rs.getString("ESTADO").trim():"");
+            cabtareoweb.setEmisor(rs.getString("EMISOR")!=null?rs.getString("EMISOR").trim():"");
+            cabtareoweb.setIdturnotrabajo(rs.getString("IDTURNOTRABAJO")!=null?rs.getString("IDTURNOTRABAJO").trim():"");
+            cabtareoweb.setFinicio(rs.getDate("FINICIO"));
+            cabtareoweb.setFfin(rs.getDate("FFIN"));
+            cabtareoweb.setIdtipoasistencia(rs.getString("IDTIPOASISTENCIA")!=null?rs.getString("IDTIPOASISTENCIA").trim():"");
+            cabtareoweb.setIdusuario(rs.getString("IDUSUARIO")!=null?rs.getString("IDUSUARIO").trim():"");
+            cabtareoweb.setUsuario(rs.getString("USUARIO")!=null?rs.getString("USUARIO").trim():"");
+            lista.add(cabtareoweb); 
+        }
+        return lista;
+    }
     public String grabar(int tipo,Cabtareoweb ob,List<Det_tareoweb> listDet_tareoweb) throws Exception {
             String mensaje="";
             String xmlNot = "";
@@ -150,7 +185,35 @@ public class CabtareowebDao extends BaseDao<Cabtareoweb> {
 
         return mensaje;
     }
-    public String aprobarTareo(Cabtareoweb ob,List<Det_tareoweb> listDet_tareoweb) throws Exception {
+    public String grabar_provincial(int tipo,Cabtareoweb ob,List<Det_tareoweb> listDet_tareoweb) throws Exception {
+            String mensaje="";
+            String xmlNot = "";
+            String xml = "<?xml version='1.0' encoding='ISO-8859-1' ?>";
+            XStream xStream = new XStream();
+            xStream.processAnnotations(Cabtareoweb.class);
+            xmlNot = xml + xStream.toXML(ob);
+            /******************* DETALLES DORDENSERVICIOCLIENTE **********************/
+            String xmlDet_tareoweb = "";
+            xStream = new XStream();
+            xStream.processAnnotations(Det_tareoweb.class);
+            xmlDet_tareoweb = xml + xStream.toXML(listDet_tareoweb);
+            
+            ResultSet rs = null;
+            rs = execProcedure("SP_TAREOWEB_PROVINCIAL_GRABAR",
+                    tipo,
+                    ob.getIdempresa(),ob.getIdcabtareoweb(),
+                    ob.getIddocumento(),ob.getSerie(),ob.getNumero(),
+                    xmlNot,
+                    xmlDet_tareoweb
+            );
+            while (rs.next()) {
+                mensaje = rs.getString("mensaje");
+                break;
+            }
+
+        return mensaje;
+    }
+    public String aprobarTareo(Cabtareoweb ob,List<Det_tareoweb> listDet_tareoweb,String idusuario) throws Exception {
             String mensaje="";
             String xml = "<?xml version='1.0' encoding='ISO-8859-1' ?>";
             String xmlDet_tareoweb = "";
@@ -160,7 +223,7 @@ public class CabtareowebDao extends BaseDao<Cabtareoweb> {
             
             ResultSet rs = null;
             rs = execProcedure("SP_ORDENSERVICIOCLIENTE_TAREOWEB",
-                    ob.getIdempresa(),ob.getIdcabtareoweb(),xmlDet_tareoweb
+                    ob.getIdempresa(),ob.getIdcabtareoweb(),xmlDet_tareoweb,idusuario
             );
             while (rs.next()) {
                 mensaje = rs.getString("mensaje");
@@ -169,11 +232,11 @@ public class CabtareowebDao extends BaseDao<Cabtareoweb> {
 
         return mensaje;
     }
-    public String aprobarTareo_fijo(Cabtareoweb ob) throws Exception {
+    public String aprobarTareo_fijo(Cabtareoweb ob,String idusuario) throws Exception {
             String mensaje="";
             ResultSet rs = null;
             rs = execProcedure("SP_ORDENSERVICIOCLIENTE_TAREOWEB_FIJO",
-                    ob.getIdempresa(),ob.getIdcabtareoweb()
+                    ob.getIdempresa(),ob.getIdcabtareoweb(),idusuario
             );
             while (rs.next()) {
                 mensaje = rs.getString("mensaje");
