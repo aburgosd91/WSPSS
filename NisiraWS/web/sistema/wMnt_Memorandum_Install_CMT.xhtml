@@ -10,6 +10,7 @@
     <ui:define name="metadata">        
     </ui:define>
     <ui:define name="body">
+        #{memorandumInstaCMTAction.findDetaller()}
         <h:form id="datos" >
             <cmp:barra_mnt bean="#{memorandumInstaCMTAction}"/>
             <p:panelGrid id="cabecera" columns="2" columnClasses="no-border,no-border,no-border">
@@ -96,17 +97,17 @@
                                          value="#{memorandumInstaCMTAction.lstDcot}" 
                                          widgetVar="lstdcotizacionventas" 
                                          rowKey="#{lstdcotizacionventas.item}">
-                                <p:column style="width:10%;" filterBy="#{lstdcotizacionventas.destino}" filterMatchMode="contains" sortBy="#{lstdcotizacionventas.destino}">
+                                <p:column style="width:10%;" filterBy="#{lstdcotizacionventas.observaciones}" filterMatchMode="contains" sortBy="#{lstdcotizacionventas.observaciones}">
                                     <f:facet name="header">
                                         <h:outputText value="Destino"/>
                                     </f:facet>
-                                    <h:outputText value="#{lstdcotizacionventas.destino}"/>
+                                    <h:outputText value="#{lstdcotizacionventas.observaciones}"/>
                                 </p:column>
                                 <p:column style="width:10%;" filterBy="#{lstdcotizacionventas.cantidad}" filterMatchMode="contains" sortBy="#{lstdcotizacionventas.cantidad}">
                                     <f:facet name="header">
                                         <h:outputText value="Cantidad"/>
                                     </f:facet>
-                                    <h:outputText value="#{lstdcotizacionventas.cantidad}"/>
+                                    <p:inputNumber decimalPlaces="0" value="#{lstdcotizacionventas.cantidad}"/>
                                 </p:column>
                                 <p:column style="width:10%;" filterBy="#{lstdcotizacionventas.descripcion}" filterMatchMode="contains" sortBy="#{lstdcotizacionventas.descripcion}">
                                     <f:facet name="header">
@@ -179,7 +180,7 @@
                         <p:fieldset legend="Datos Adicionales" style="width: 100%" >
                             <p:panelGrid  columns="2" columnClasses="no-border,no-border">
                                 <p:outputLabel value="Salario"/>
-                                <p:inputText  value="#{memorandumInstaCMTAction.datoEdicion.salario}" disabled="#{!memorandumInstaCMTAction.edicion}"/>
+                                <p:inputNumber decimalPlaces="2"   value="#{memorandumInstaCMTAction.datoEdicion.salario}" disabled="#{!memorandumInstaCMTAction.edicion}"/>
                                 <p:outputLabel value="Condiciones adicionales"/>
                                 <p:inputText  value="#{memorandumInstaCMTAction.datoEdicion.condiciones_comerciales}" disabled="#{!memorandumInstaCMTAction.edicion}"/>
                                 <p:outputLabel value="Observaciones"/>

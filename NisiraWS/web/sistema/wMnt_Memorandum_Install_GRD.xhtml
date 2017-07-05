@@ -10,6 +10,7 @@
     <ui:define name="metadata">        
     </ui:define>
     <ui:define name="body">
+        #{memorandumInstaCMTAction.findDetaller()}
         <h:form id="datos" >
             <cmp:barra_mnt bean="#{memorandumInstaCRDAction}"/>
             <p:panelGrid id="cabecera" columns="2" columnClasses="no-border,no-border,no-border">
@@ -31,7 +32,7 @@
                                         <p:ajax event="dialogReturn" listener="#{memorandumInstaCRDAction.valorCotizacionVenta}" update="datos"/>
                                     </p:commandButton>
                                 </p:panelGrid>
-                                
+
                                 <p:outputLabel value="Direccion de Servicio"/>
                                 <p:inputText  value="#{memorandumInstaCRDAction.slcCoti.lugar_entrega}" disabled="true"/>
                                 <p:outputLabel value="Contacto"/>
@@ -95,7 +96,13 @@
                                          var="lstdcotizacionventas" 
                                          value="#{memorandumInstaCRDAction.lstDcot}" 
                                          widgetVar="lstdcotizacionventas" 
-                                         rowKey="#{lstdcotizacionventas.item}">                                
+                                         rowKey="#{lstdcotizacionventas.item}">     
+                                <p:column style="width:10%;" filterBy="#{lstdcotizacionventas.observaciones}" filterMatchMode="contains" sortBy="#{lstdcotizacionventas.observaciones}">
+                                    <f:facet name="header">
+                                        <h:outputText value="Lugar"/>
+                                    </f:facet>
+                                    <h:outputText value="#{lstdcotizacionventas.observaciones}"/>
+                                </p:column>
                                 <p:column style="width:10%;" filterBy="#{lstdcotizacionventas.descripcion}" filterMatchMode="contains" sortBy="#{lstdcotizacionventas.descripcion}">
                                     <f:facet name="header">
                                         <h:outputText value="Descripcion"/>
@@ -173,7 +180,7 @@
                         <p:fieldset legend="Datos Adicionales" style="width: 100%" >
                             <p:panelGrid  columns="2" columnClasses="no-border,no-border">
                                 <p:outputLabel value="Salario"/>
-                                <p:inputText  value="#{memorandumInstaCRDAction.datoEdicion.salario}" disabled="#{!memorandumInstaCRDAction.edicion}"/>
+                                <p:inputNumber decimalPlaces="2"   value="#{memorandumInstaCRDAction.datoEdicion.salario}" disabled="#{!memorandumInstaCRDAction.edicion}"/>
                                 <p:outputLabel value="Condiciones adicionales"/>
                                 <p:inputText  value="#{memorandumInstaCRDAction.datoEdicion.condiciones_comerciales}" disabled="#{!memorandumInstaCRDAction.edicion}"/>
                                 <p:outputLabel value="Observaciones"/>

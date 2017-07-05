@@ -78,17 +78,25 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
     public void buscarTodo() {
         try {
             Gson gson = new Gson();
-            setListaDatos(memoDao.lstMemorandum(user.getIDEMPRESA(),"003"));
+            setListaDatos(memoDao.lstMemorandum(user.getIDEMPRESA(), "003"));
+            RequestContext.getCurrentInstance().update("datos");
+            RequestContext.getCurrentInstance().update("datos:tbl");
+        } catch (NisiraORMException ex) {
+            this.setMensaje(ex.toString());
+        }
+    }
+
+    public void findDetaller() throws NisiraORMException {
+        if (getDatoEdicion().getIdcotizacionv() !=null) {
+            Gson gson = new Gson();
             Type collectionType = new TypeToken<List<Atendido>>() {
             }.getType();
             lstAtencion = gson.fromJson(getDatoEdicion().getTabla_atendido(), collectionType);
             Type collectionType2 = new TypeToken<List<DetalleMemorandum>>() {
             }.getType();
-            lstDcot = gson.fromJson(getDatoEdicion().getTabla_requerimiento(), collectionType2);
-            RequestContext.getCurrentInstance().update("datos");
-            RequestContext.getCurrentInstance().update("datos:tbl");
-        } catch (NisiraORMException ex) {
-            this.setMensaje(ex.toString());
+            lstdetMemo = gson.fromJson(getDatoEdicion().getTabla_requerimiento(), collectionType2);
+            slcCoti = (new CotizacionventasDao()).findCotizacion(user.getIDEMPRESA(),getDatoEdicion().getIdcotizacionv());
+            lstDcot = dcotDao.getListDCotizacionWeb(user.getIDEMPRESA(), slcCoti.getIdcotizacionv());
         }
     }
 
