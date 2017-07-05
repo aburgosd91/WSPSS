@@ -66,7 +66,7 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
         slcAtencion = new Atendido();
         lstdetMemo = new ArrayList<DetalleMemorandum>();
         slcMemo = new DetalleMemorandum();
-        actualiza_ventana("wMnt_Memorandum_Install_CMT");
+        actualiza_ventana("wMnt_Memorandum_Install_CRD");
     }
 
     @Override
@@ -113,7 +113,7 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
         slcAtencion = new Atendido();
         lstdetMemo = new ArrayList<DetalleMemorandum>();
         slcMemo = new DetalleMemorandum();
-        actualiza_ventana("wMnt_Memorandum_Install_CMT");
+        actualiza_ventana("wMnt_Memorandum_Install_CRD");
         return "";
     }
 
