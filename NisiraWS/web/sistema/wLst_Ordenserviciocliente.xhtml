@@ -56,6 +56,9 @@
                 <p:column headerText="Tipo" style="white-space: nowrap; width: 130px;padding: 3px;" filterBy="#{listOrdenServicioCliente.tipo_servicio}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.tipo_servicio}">
                     <h:outputText value="#{listOrdenServicioCliente.tipo_servicio}" />
                 </p:column>
+                <p:column headerText="Contacto" style="white-space: nowrap; width: 200px;padding: 3px;" filterBy="#{listOrdenServicioCliente.nro_oservicio}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.contacto}">
+                    <h:outputText value="#{listOrdenServicioCliente.contacto}" />
+                </p:column>
                 <p:column headerText="Estado" style="white-space: nowrap; width: 130px;padding: 3px;" filterBy="#{listOrdenServicioCliente.estado}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.estado}">
                     <h:outputText value="#{listOrdenServicioCliente.estado}" />
                 </p:column>

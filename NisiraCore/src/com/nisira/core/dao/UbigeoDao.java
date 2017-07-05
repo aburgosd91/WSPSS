@@ -35,6 +35,8 @@ public class UbigeoDao extends BaseDao<Ubigeo> {
                 ubi.setDescripcion(rs.getString("DESCRIPCION"));
                 ubi.setIdprovincia(rs.getString("IDPROVINCIA"));
                 ubi.setIddepartamento(rs.getString("IDDEPARTAMENTO"));
+                ubi.setProvincia(rs.getString("PROVINCIA"));
+                ubi.setDepartamento(rs.getString("DEPARTAMENTO"));
                 lista.add(ubi);                             
                 
             }

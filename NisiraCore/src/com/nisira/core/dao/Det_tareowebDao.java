@@ -107,6 +107,7 @@ public class Det_tareowebDao extends BaseDao<Det_tareoweb> {
                 }else{
                     tareoweb.setShora_liberacion("00:00");
                 }
+                tareoweb.setFecharegistro(rs.getDate("FECHAREGISTRO"));
                 tareoweb.setFechafinregistro(rs.getDate("FECHAFINREGISTRO"));
                 tareoweb.setCodasistencia(rs.getString("CODASISTENCIA")!=null?rs.getString("CODASISTENCIA").trim():"");
                 tareoweb.setGlosa(rs.getString("GLOSA")!=null?rs.getString("GLOSA").trim():"");
@@ -201,6 +202,7 @@ public class Det_tareowebDao extends BaseDao<Det_tareoweb> {
                 }else{
                     tareoweb.setShora_liberacion("00:00");
                 }
+                tareoweb.setFecharegistro(rs.getDate("FECHAREGISTRO"));
                 tareoweb.setFechafinregistro(rs.getDate("FECHAFINREGISTRO"));
                 tareoweb.setCodasistencia(rs.getString("CODASISTENCIA")!=null?rs.getString("CODASISTENCIA").trim():"");
                 tareoweb.setGlosa(rs.getString("GLOSA")!=null?rs.getString("GLOSA").trim():"");

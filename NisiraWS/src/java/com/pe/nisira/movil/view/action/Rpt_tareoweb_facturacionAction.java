@@ -23,6 +23,7 @@ import com.nisira.core.dao.NSRResultSet;
 import com.nisira.core.dao.NumemisorDao;
 import com.nisira.core.dao.Personal_servicioDao;
 import com.nisira.core.dao.Ruta_serviciosDao;
+import com.nisira.core.dao.WtiposervicioDao;
 import com.nisira.core.entity.Cargos_personal;
 import com.nisira.core.entity.Clieprov;
 import com.nisira.core.entity.Consumidor;
@@ -45,6 +46,7 @@ import com.nisira.core.entity.Producto;
 import com.nisira.core.entity.Ruta;
 import com.nisira.core.entity.Ruta_servicios;
 import com.nisira.core.entity.Rutas;
+import com.nisira.core.entity.Wtiposervicio;
 import static com.pe.nisira.movil.view.action.AbstactListAction.modalGoogleMapOptions;
 import static com.pe.nisira.movil.view.action.AbstactListAction.modalOptions;
 import com.pe.nisira.movil.view.bean.UsuarioBean;
@@ -78,24 +80,35 @@ import org.primefaces.event.TabChangeEvent;
 public class Rpt_tareoweb_facturacionAction extends AbstactListAction<Ordenserviciocliente> {
     /*************************************ArrayList***************************************/
     private List<DataTableColumn> dataTableColumns;
+    private List<Wtiposervicio> listWtiposervicio;
+    private WtiposervicioDao wtiposervicioDao;
     /*************************************DAO***************************************/
     private OrdenservicioclienteDao ordenservicioclienteDao;
     /*************************************ENTITY***************************************/
     private UsuarioBean user;
     private String mensaje;
     private Object[] selectRpt;
+    private String idtiposervicio;
     /************************************* CONTROLES *****************************************/
     private NSRResultSet rpt_result;
     public Rpt_tareoweb_facturacionAction() {
-        /*********************************ENTITY*******************************************/
-        user = (UsuarioBean) WebUtil.getObjetoSesion(Constantes.SESION_USUARIO);
-        mensaje = "";
-        /*********************************LISTAS*******************************************/
-        dataTableColumns = new ArrayList<>();
-        /*********************************DAO*******************************************/
-        ordenservicioclienteDao = new OrdenservicioclienteDao();
-        /**********************************CONTROLADOR********************************/
-        /********************************** CONFIGURACIÓN - SERVIDOR ********************************/
+        try {
+            /*********************************ENTITY*******************************************/
+            user = (UsuarioBean) WebUtil.getObjetoSesion(Constantes.SESION_USUARIO);
+            mensaje = "";
+            /*********************************LISTAS*******************************************/
+            dataTableColumns = new ArrayList<>();
+            listWtiposervicio = new ArrayList<>();
+            /*********************************DAO**********************************************/
+            ordenservicioclienteDao = new OrdenservicioclienteDao();
+            wtiposervicioDao = new WtiposervicioDao();
+            /**********************************CONTROLADOR*************************************/
+            listWtiposervicio = wtiposervicioDao.listarPorEmpresaWeb(user.getIDEMPRESA());
+            /********************************** CONFIGURACIÓN - SERVIDOR ***********************/
+            idtiposervicio = "002";
+        }catch (Exception ex) {
+            Logger.getLogger(Rpt_tareoweb_facturacionAction.class.getName()).log(Level.SEVERE, null, ex);
+        }
         actualiza_ventana("wMnt_Ordenserviciocliente");
     }
     @Override
@@ -150,7 +163,7 @@ public class Rpt_tareoweb_facturacionAction extends AbstactListAction<Ordenservi
             String f_fin = f.format(getHasta());
             f_ini = f_ini.replace("-", "");
             f_fin = f_fin.replace("-", "");
-            setRpt_result(getOrdenservicioclienteDao().getConsultaRepote_facturacion(user.getIDEMPRESA(),f_ini,f_fin));
+            setRpt_result(getOrdenservicioclienteDao().getConsultaRepote_facturacion(user.getIDEMPRESA(),f_ini,f_fin,idtiposervicio));
             RequestContext.getCurrentInstance().update("datos");
         } catch (Exception e) {
             setMensaje(WebUtil.mensajeError());
@@ -158,6 +171,9 @@ public class Rpt_tareoweb_facturacionAction extends AbstactListAction<Ordenservi
         }
         RequestContext.getCurrentInstance().update("datos:tbl");
         return;
+    }
+    public void onTiposervicio(){
+        
     }
     public UsuarioBean getUser() {
         return user;
@@ -177,7 +193,7 @@ public class Rpt_tareoweb_facturacionAction extends AbstactListAction<Ordenservi
             String f_fin = f.format(getHasta());
             f_ini = f_ini.replace("-", "");
             f_fin = f_fin.replace("-", "");
-            setRpt_result(getOrdenservicioclienteDao().getConsultaRepote(user.getIDEMPRESA(),f_ini,f_fin));
+            setRpt_result(getOrdenservicioclienteDao().getConsultaRepote_facturacion(user.getIDEMPRESA(),f_ini,f_fin,idtiposervicio));
             //setListaDatos(getOrdenservicioclienteDao().listarPorEmpresaWebFiltroFecha(user.getIDEMPRESA(),f_ini,f_fin));
         } catch (Exception e) {
             setMensaje(WebUtil.mensajeError());
@@ -185,7 +201,7 @@ public class Rpt_tareoweb_facturacionAction extends AbstactListAction<Ordenservi
         }
         RequestContext.getCurrentInstance().update("datos:tbl");
         if(tipo == 2)
-            lista_accion_filtro("wLst_Rpt_tareoweb");
+            lista_accion_filtro("wLst_Rpt_tareoweb_facturacion");
         return "";
     }
 
@@ -209,6 +225,27 @@ public class Rpt_tareoweb_facturacionAction extends AbstactListAction<Ordenservi
             return WebUtil.fechaDMY(fecha, 2);
         else
             return "";
+    }
+    
+    public String formatObjectMask(int col){
+        String mask="";
+        switch(col){
+            case 0:;break;
+            case 1:;break;
+            case 2:;break;
+            case 3:mask="";break;
+        }
+        return mask;
+    }
+    public boolean formatObjectDissable(int col){
+        boolean t=false;
+        switch(col){
+            case 0:t=true;break;
+            case 1:t=true;break;
+            case 2:t=true;break;
+            default : t=false;
+        }
+        return t;
     }
     /**
      * @return the ordenservicioclienteDao
@@ -279,4 +316,33 @@ public class Rpt_tareoweb_facturacionAction extends AbstactListAction<Ordenservi
     public void setDataTableColumns(List<DataTableColumn> dataTableColumns) {
         this.dataTableColumns = dataTableColumns;
     }
+
+    /**
+     * @return the listWtiposervicio
+     */
+    public List<Wtiposervicio> getListWtiposervicio() {
+        return listWtiposervicio;
+    }
+
+    /**
+     * @param listWtiposervicio the listWtiposervicio to set
+     */
+    public void setListWtiposervicio(List<Wtiposervicio> listWtiposervicio) {
+        this.listWtiposervicio = listWtiposervicio;
+    }
+
+    /**
+     * @return the idtiposervicio
+     */
+    public String getIdtiposervicio() {
+        return idtiposervicio;
+    }
+
+    /**
+     * @param idtiposervicio the idtiposervicio to set
+     */
+    public void setIdtiposervicio(String idtiposervicio) {
+        this.idtiposervicio = idtiposervicio;
+    }
+
 }

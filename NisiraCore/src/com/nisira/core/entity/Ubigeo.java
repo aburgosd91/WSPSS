@@ -23,7 +23,8 @@ public class Ubigeo implements Serializable{
 	private String iddepartamento;
 	@Columna
 	private String reniec;
-
+        private String provincia;
+	private String departamento;
 
 
 	/* Sets & Gets */
@@ -86,5 +87,33 @@ public class Ubigeo implements Serializable{
 
 
 	/* Sets & Gets FK*/
+
+    /**
+     * @return the provincia
+     */
+    public String getProvincia() {
+        return provincia;
+    }
+
+    /**
+     * @param provincia the provincia to set
+     */
+    public void setProvincia(String provincia) {
+        this.provincia = provincia;
+    }
+
+    /**
+     * @return the departamento
+     */
+    public String getDepartamento() {
+        return departamento;
+    }
+
+    /**
+     * @param departamento the departamento to set
+     */
+    public void setDepartamento(String departamento) {
+        this.departamento = departamento;
+    }
 
 }

@@ -142,7 +142,7 @@ public class OrdenservicioclienteDao extends BaseDao<Ordenserviciocliente> {
         }
         public String grabar(int tipo,Ordenserviciocliente ob,List<Dordenserviciocliente> listDorden,List<Personal_servicio> listPersonal_servicio,
                     List<Docreferencia> listDocreferencia,List<Ruta_servicios> listRuta_servicios,
-                    List<Dpersonal_servicio> listDpersonal_servicio,String estado) throws Exception {
+                    List<Dpersonal_servicio> listDpersonal_servicio,String estado,String idusuario) throws Exception {
             String mensaje="";
             String xmlNot = "";
             String xml = "<?xml version='1.0' encoding='ISO-8859-1' ?>";
@@ -186,7 +186,7 @@ public class OrdenservicioclienteDao extends BaseDao<Ordenserviciocliente> {
                     xmlDocreferencia,
                     xmlRuta_servicios,
                     xmlDPersonal_servicio,
-                    estado
+                    estado,idusuario
             );
             while (rs.next()) {
                 mensaje = rs.getString("mensaje");
@@ -228,6 +228,7 @@ public class OrdenservicioclienteDao extends BaseDao<Ordenserviciocliente> {
                 ordenserviciocliente.setIdoperario2(rs.getString("IDOPERARIO2")!=null?rs.getString("IDOPERARIO2").trim():"");
                 ordenserviciocliente.setOperario(rs.getString("OPERARIO")!=null?rs.getString("OPERARIO").trim():"");
                 ordenserviciocliente.setOperario2(rs.getString("OPERARIO2")!=null?rs.getString("OPERARIO2").trim():"");
+                ordenserviciocliente.setContacto(rs.getString("CONTACTO")!=null?rs.getString("CONTACTO").trim():"");
                 lista.add(ordenserviciocliente); 
             }
             return lista;
@@ -266,9 +267,9 @@ public class OrdenservicioclienteDao extends BaseDao<Ordenserviciocliente> {
             rs = execProcedure("GET_REPORTE_PERSONAL_OCUPADO_TMPSS",idempresa);
             return ReportConfig.getNSRResultSet(rs);
         }
-        public NSRResultSet getConsultaRepote_facturacion(String idempresa,String fechainicio,String fechafin) throws NisiraORMException{
+        public NSRResultSet getConsultaRepote_facturacion(String idempresa,String fechainicio,String fechafin,String idtiposervicio) throws NisiraORMException{
             ResultSet rs = null;
-            rs = execProcedure("RPT_ORDENSERVICIOCLIENTE_FACTURACION_TMPSS",idempresa,fechainicio,fechafin);
+            rs = execProcedure("RPT_ORDENSERVICIOCLIENTE_FACTURACION_TMPSS",idempresa,fechainicio,fechafin,idtiposervicio);
             return ReportConfig.getNSRResultSet(rs);
         }
         public String anular(Ordenserviciocliente ob,String idusuario) throws Exception {

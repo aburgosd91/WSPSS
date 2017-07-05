@@ -457,7 +457,8 @@ public class Tareoweb_provincialAction extends AbstactListAction<Cabtareoweb> {
         try {
                 Object newValue = event.getNewValue();
                 Det_tareoweb entity =(Det_tareoweb)((DataTable)event.getComponent()).getRowData();
-                int pos = listDet_tareoweb.indexOf(entity);
+                int pos = entity.getItem();
+//                int pos = listDet_tareoweb.indexOf(entity);
 //                int pos = event.getRowIndex();
                 if(event.getColumn().getHeaderText()!=null){
                     String colHead = event.getColumn().getHeaderText().trim();
@@ -590,12 +591,27 @@ public class Tareoweb_provincialAction extends AbstactListAction<Cabtareoweb> {
                     entity.setHora_liberacion(WebUtil.convertTimeDecimal(entity.getFhora_liberacion()));
                 else
                     entity.setHora_liberacion(0.0f);
-                listDet_tareoweb.set(pos, entity);
-                grabar_local();                
+                if(replazarCampo(entity,pos)){
+                   grabar_local(); 
+                } 
+//                listDet_tareoweb.set(pos, entity);
+//                grabar_local();                
             } catch (ParseException ex) {
                 Logger.getLogger(TareowebAction.class.getName()).log(Level.SEVERE, null, ex);
             }
         
+    }
+    public boolean replazarCampo(Det_tareoweb ob,int item){
+        boolean flag = false;
+        for(int i=0;i<listDet_tareoweb.size();i++){
+            Det_tareoweb dw = listDet_tareoweb.get(i);
+            if(dw.getItem() == item){
+                listDet_tareoweb.set(i, dw);
+                flag = true;
+                break;
+            }
+        }
+        return flag;
     }
     public void onCellCancel(RowEditEvent event) {
         Det_tareoweb entity = ((Det_tareoweb)event.getObject());
