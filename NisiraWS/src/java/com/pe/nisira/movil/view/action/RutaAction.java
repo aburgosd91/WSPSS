@@ -125,7 +125,7 @@ public class RutaAction extends AbstactListAction<Rutas> implements Serializable
                 if (getLadd() == 1) {
                     mensaje = rutaDao.grabar(1, getDatoEdicion());
                     if (mensaje != null) {
-                        if (mensaje.trim().length() == 15) {
+                        if (mensaje.trim().length() == 6) {
                             getDatoEdicion().setIdruta(mensaje.trim());
                         }
                     }

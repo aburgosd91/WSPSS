@@ -41,6 +41,7 @@ public class Ambito_pagoDao extends BaseDao<Ambito_pago> {
                 am.setNombre_corto(rs.getString("nombre_corto"));
                 am.setCosto_por_hora(rs.getFloat("costo_por_hora"));
                 am.setCosto_adicional(rs.getFloat("costo_adicional"));
+                am.setVisible(rs.getFloat("visible"));
                 lista.add(am);
             }
         } catch (Exception ex) {
@@ -48,7 +49,27 @@ public class Ambito_pagoDao extends BaseDao<Ambito_pago> {
         }
         return lista;
     }
-
+    public List<Ambito_pago> lstAmbitoEmpresa_visibles(String idempresa) throws NisiraORMException {
+        ArrayList<Ambito_pago> lista = new ArrayList<Ambito_pago>();
+        try {
+            ResultSet rs = null;
+            rs = execProcedure("GETAMBITO_PAGO_VISIBLE", idempresa);
+            while (rs.next()) {
+                Ambito_pago am = new Ambito_pago();
+                am.setIdempresa(rs.getString("idempresa").trim());
+                am.setCodigo(rs.getString("codigo").trim());
+                am.setDescripcion(rs.getString("descripcion").trim());
+                am.setNombre_corto(rs.getString("nombre_corto"));
+                am.setCosto_por_hora(rs.getFloat("costo_por_hora"));
+                am.setCosto_adicional(rs.getFloat("costo_adicional"));
+                am.setVisible(rs.getFloat("visible"));
+                lista.add(am);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return lista;
+    }
     public List<Ambito_pago_rutas> detAmbitoPagos(String idempresa, String codigo) throws NisiraORMException {
         ArrayList<Ambito_pago_rutas> lista = new ArrayList<Ambito_pago_rutas>();
         try {

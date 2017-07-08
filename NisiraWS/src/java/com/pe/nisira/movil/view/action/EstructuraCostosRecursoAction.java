@@ -82,6 +82,8 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
     /*CONTROLES*/
     private Float costo_mano_obra;
     private String mensaje;
+    private boolean vestado;
+    private boolean vexcluir;
     private boolean botonEditarEstructura_costos_clieprov;
     private boolean botonEliminarEstructura_costos_clieprov;
     private boolean botonEditarEstructura_costos_producto;
@@ -261,6 +263,7 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
     public void nuevo() {
         setDatoEdicion(new Estructura_costos());
         getDatoEdicion().setIdempresa(user.getIDEMPRESA());
+        getDatoEdicion().setEstado(1.0f);
         /*RESET*/
         setSelectEstructura_costos_clieprov(new Estructura_costos_clieprov());
         setSelectEstructura_costos_producto(new Estructura_costos_producto());
@@ -281,6 +284,8 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
     @Override
     public void grabar() {
         try {
+            getDatoEdicion().setEstado(vestado?1.0f:0.0f);
+            getDatoEdicion().setExcluir(vexcluir?1.0f:0.0f);
             if(getLadd()==1){
                 mensaje=getEstructura_costosDao().grabar(1, 
                         getDatoEdicion().getIdempresa(),
@@ -451,6 +456,8 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
             total_ecosto = 0.0f;
             ajuste_ecosto = 0.0f;
             if(getLadd()==2){/*EDITAR*/
+                vestado = getDatoEdicion().getEstado() == 1.0?true:false;
+                vexcluir = getDatoEdicion().getExcluir()== 1.0?true:false;
                 setListEstructura_costos_clieprov(estructura_costos_clieprovDao.listarPorEmpresaWebXcodigo(user.getIDEMPRESA(), getDatoEdicion().getCodigo()));
                 setListEstructura_costos_producto(estructura_costos_productoDao.listarPorEmpresaWebXcodigo(user.getIDEMPRESA(), getDatoEdicion().getCodigo()));
                 if(!getListEstructura_costos_clieprov().isEmpty()){
@@ -501,6 +508,8 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
                     calculosTotales_estructuracostos_local();
                 }
             }else if(getLadd()==1){/*NUEVO*/
+                vestado = true;
+                vexcluir = false;
                 listEstructura_costos_clieprov = new ArrayList<>();
                 listEstructura_costos_producto = new ArrayList<>();
                 listDestructura_costos_recursos = new ArrayList<>();
@@ -926,10 +935,53 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
     }
     public void eliminarEstructuraCostosProducto() {
         try {
+            eliminarEstructuraCostosProducto_Recursos_mano_obra_detalle();
             listEstructura_costos_producto.remove(selectEstructura_costos_producto);
+            listDestructura_costos_recursos = new ArrayList<>();
+            listEstructura_costos_mano_obra = new ArrayList<>();
+            setSelectEstructura_costos_producto(new Estructura_costos_producto());
             RequestContext.getCurrentInstance().update("datos:listEstructura_costos_producto");
+            RequestContext.getCurrentInstance().update("datos:tabs");
         } catch (Exception ex) {
             Logger.getLogger(EstructuraCostosRecursoAction.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public void eliminarEstructuraCostosProducto_Recursos_mano_obra_detalle(){
+        if(selectEstructura_costos_producto!=null){
+            List<Destructura_costos_recursos> lst_Destructura_costos_recursos_delete = new ArrayList<>();
+            for(Destructura_costos_recursos decr : listTotalDestructura_costos_recursos){
+                if(selectEstructura_costos_producto.getIdempresa().trim().equals(decr.getIdempresa()) &&
+                        selectEstructura_costos_producto.getItem().trim().equals(decr.getItemrango()) &&
+                        selectEstructura_costos_producto.getIdproducto().trim().equals(decr.getIdproducto_ec())){
+                    lst_Destructura_costos_recursos_delete.add(decr);
+                }
+            }
+            if(!lst_Destructura_costos_recursos_delete.isEmpty())
+                listTotalDestructura_costos_recursos.removeAll(lst_Destructura_costos_recursos_delete);
+            List<Estructura_costos_mano_obra> lst_Estructura_costos_mano_obra_delete = new ArrayList<>();
+            for(Estructura_costos_mano_obra ecmo :listTotalEstructura_costos_mano_obra){
+                if(selectEstructura_costos_producto.getIdempresa().trim().equals(ecmo.getIdempresa()) &&
+                        selectEstructura_costos_producto.getItem().trim().equals(ecmo.getItemrango()) &&
+                        selectEstructura_costos_producto.getIdproducto().trim().equals(ecmo.getIdproducto())){
+                    lst_Estructura_costos_mano_obra_delete.add(ecmo);
+                }
+            }
+            if(!lst_Estructura_costos_mano_obra_delete.isEmpty()){
+                listTotalEstructura_costos_mano_obra.removeAll(lst_Estructura_costos_mano_obra_delete);
+            }
+            List<Estructura_costos_mano_obra_detallado> lst_Estructura_costos_mano_obra_detallado_delete = new ArrayList();
+            for(Estructura_costos_mano_obra_detallado ecmod:listTotalEstructura_costos_mano_obra_detallado){
+                if(selectEstructura_costos_producto.getIdempresa().trim().equals(ecmod.getIdempresa()) &&
+                        selectEstructura_costos_producto.getItem().trim().equals(ecmod.getItemrango()) &&
+                        selectEstructura_costos_producto.getCodoperativo().trim().equals(ecmod.getCodoperativo()) &&
+                        selectEstructura_costos_producto.getNhoras().floatValue() == ecmod.getNhoras().floatValue() && 
+                        selectEstructura_costos_producto.getIdruta().trim().equals(ecmod.getIdruta().trim())
+                  ){
+                    lst_Estructura_costos_mano_obra_detallado_delete.add(ecmod);
+                }
+            }
+            if(!lst_Estructura_costos_mano_obra_detallado_delete.isEmpty())
+                listTotalEstructura_costos_mano_obra_detallado.removeAll(lst_Estructura_costos_mano_obra_detallado_delete);
         }
     }
     public void grabarEstructuraCostosProducto(){
@@ -1056,12 +1108,31 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
     }
     public void eliminarEstructuraCostosManoObra() {
         try {
+            eliminarEstructuraCostos_mano_obra_detalle();
             listTotalEstructura_costos_mano_obra.remove(selecteEstructura_costos_mano_obra);
             listEstructura_costos_mano_obra = listarPorEmpresaWebXProducto_Estructura_costos_mano_obra_action();
             RequestContext.getCurrentInstance().update("datos:tabs:listEstructura_costos_mano_obra");
 //            tabView.setActiveIndex(indexTab);
         } catch (Exception ex) {
             Logger.getLogger(EstructuraCostosRecursoAction.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public void eliminarEstructuraCostos_mano_obra_detalle(){
+        if(selecteEstructura_costos_mano_obra !=null && selectEstructura_costos_producto!=null){
+            List<Estructura_costos_mano_obra_detallado> lst_Estructura_costos_mano_obra_detallado_delete = new ArrayList();
+            for(Estructura_costos_mano_obra_detallado ecmod:listTotalEstructura_costos_mano_obra_detallado){
+                if(selecteEstructura_costos_mano_obra.getIdempresa().trim().equals(ecmod.getIdempresa()) &&
+                        selecteEstructura_costos_mano_obra.getItemrango().trim().equals(ecmod.getItemrango()) &&
+                        selecteEstructura_costos_mano_obra.getItem().equals(ecmod.getItem())&&
+                        selectEstructura_costos_producto.getCodoperativo().trim().equals(ecmod.getCodoperativo()) &&
+                        selectEstructura_costos_producto.getNhoras().floatValue() == ecmod.getNhoras().floatValue() && 
+                        selectEstructura_costos_producto.getIdruta().trim().equals(ecmod.getIdruta().trim())
+                  ){
+                    lst_Estructura_costos_mano_obra_detallado_delete.add(ecmod);
+                }
+            }
+            if(!lst_Estructura_costos_mano_obra_detallado_delete.isEmpty())
+                listTotalEstructura_costos_mano_obra_detallado.removeAll(lst_Estructura_costos_mano_obra_detallado_delete);
         }
     }
     public void grabarEstructuraCostosManoObra(){
@@ -2095,6 +2166,34 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
      */
     public void setBotonEliminarEstructura_costos_mano_obra_detalle(boolean botonEliminarEstructura_costos_mano_obra_detalle) {
         this.botonEliminarEstructura_costos_mano_obra_detalle = botonEliminarEstructura_costos_mano_obra_detalle;
+    }
+
+    /**
+     * @return the vestado
+     */
+    public boolean isVestado() {
+        return vestado;
+    }
+
+    /**
+     * @param vestado the vestado to set
+     */
+    public void setVestado(boolean vestado) {
+        this.vestado = vestado;
+    }
+
+    /**
+     * @return the vexcluir
+     */
+    public boolean isVexcluir() {
+        return vexcluir;
+    }
+
+    /**
+     * @param vexcluir the vexcluir to set
+     */
+    public void setVexcluir(boolean vexcluir) {
+        this.vexcluir = vexcluir;
     }
     
     public class Es_PorcentajeCombo{

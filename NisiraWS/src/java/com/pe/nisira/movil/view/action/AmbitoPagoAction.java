@@ -40,7 +40,7 @@ public class AmbitoPagoAction extends AbstactListAction<Ambito_pago> implements 
     private Rutas slcRutas;
     private UsuarioBean user;
     private boolean estado;
-
+    private boolean vvisible;
     public AmbitoPagoAction() {
         mensaje = "";
         ambitopagoDao = new Ambito_pagoDao();
@@ -85,8 +85,11 @@ public class AmbitoPagoAction extends AbstactListAction<Ambito_pago> implements 
     public void findDetalle() {
         try {
             lstRutas = (new RutasDao()).listarPorEmpresaWeb(user.getIDEMPRESA());
-            if (getDatoEdicion().getCodigo() != null) {
+            if (getDatoEdicion().getCodigo() != null) {/*EDIT*/
                 lstambpagRuta = ambitopagoDao.detAmbitoPagos(getDatoEdicion().getIdempresa(), getDatoEdicion().getCodigo());
+                vvisible=getDatoEdicion().getVisible()==1.0f?true:false;
+            }else{/*NEW*/
+                vvisible = true;
             }
         } catch (NisiraORMException ex) {
             this.setMensaje(ex.toString());
@@ -141,6 +144,7 @@ public class AmbitoPagoAction extends AbstactListAction<Ambito_pago> implements 
     @Override
     public void nuevo() {
         lstambpagRuta = new ArrayList<Ambito_pago_rutas>();
+        vvisible = true;
         setDatoEdicion(new Ambito_pago());
         getDatoEdicion().setIdempresa(user.getIDEMPRESA());
         getDatoEdicion().setCosto_adicional(0.00f);
@@ -166,15 +170,22 @@ public class AmbitoPagoAction extends AbstactListAction<Ambito_pago> implements 
     @Override
     public void grabar() {
         try {
+            getDatoEdicion().setVisible(vvisible?1.0f:0.0f);
             if (validar()) {
                 setMensaje(ambitopagoDao.grabar(getDatoEdicion(), lstambpagRuta));
-                WebUtil.info(getMensaje());
+                if (mensaje != null) {
+                    if (mensaje.trim().length() == 6) {
+                        getDatoEdicion().setCodigo(mensaje.trim());
+                    }
+                }
+                WebUtil.info("Se registro Ámbito: "+getMensaje());
                 setLvalidate(true);
             }
-             WebUtil.MensajeAdvertencia(getMensaje());
             RequestContext.getCurrentInstance().update("datos:growl");
         } catch (Exception ex) {
             this.setMensaje(ex.toString());
+            WebUtil.error(mensaje);
+            RequestContext.getCurrentInstance().update("datos:growl");
         }
     }
 
@@ -259,6 +270,20 @@ public class AmbitoPagoAction extends AbstactListAction<Ambito_pago> implements 
 
     public void setEstado(boolean estado) {
         this.estado = estado;
+    }
+
+    /**
+     * @return the vvisible
+     */
+    public boolean isVvisible() {
+        return vvisible;
+    }
+
+    /**
+     * @param vvisible the vvisible to set
+     */
+    public void setVvisible(boolean vvisible) {
+        this.vvisible = vvisible;
     }
 
 }

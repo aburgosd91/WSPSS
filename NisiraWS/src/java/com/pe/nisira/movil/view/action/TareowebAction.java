@@ -545,15 +545,18 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
                         */
                         if(newValue!=null){
                             if(entity.getFechafinregistro().compareTo(entity.getFecharegistro())<=0){
-                                entity.setFechafinregistro(entity.getFecharegistro());
+                                Date fecha = new Date(entity.getFecharegistro().getTime());
+                                entity.setFechafinregistro(fecha);
                                 /*validación 1*/
                                 if(WebUtil.compareToDate(entity.getFhora_inicio(),entity.getFhora_fin())>0 &&
                                     WebUtil.compareToDate(entity.getFhora_inicio(),entity.getFhora_fin())!=-2){
-                                    entity.setFhora_fin(entity.getFhora_inicio());
+                                    fecha = new Date(entity.getFhora_inicio().getTime());
+                                    entity.setFhora_fin(fecha);
                                     entity.setShora_fin(entity.getShora_inicio());
     //                                entity.setFhora_fin(WebUtil.convertStringTime(newValue.toString()));
                                     entity.setShora_liberacion(entity.getShora_fin());
-                                    entity.setFhora_liberacion(entity.getFhora_fin()); 
+                                    fecha = new Date(entity.getFhora_fin().getTime());
+                                    entity.setFhora_liberacion(fecha); 
                                 }else{
                                    entity.setFhora_fin(WebUtil.convertStringTime(newValue.toString()));
                                    entity.setShora_liberacion(newValue.toString());
@@ -566,7 +569,8 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
                         if(newValue!=null){
                             if(entity.getFechafinregistro()!=null && entity.getFecharegistro()!=null){
                                 if(entity.getFechafinregistro().compareTo(entity.getFecharegistro())<=0){
-                                    entity.setFechafinregistro(entity.getFecharegistro());
+                                    Date fecha = new Date(entity.getFecharegistro().getTime());
+                                    entity.setFechafinregistro(fecha);
                                     entity.setFhora_fin(entity.getFhora_inicio());
                                     entity.setShora_fin(entity.getShora_inicio());
     //                                entity.setFhora_fin(WebUtil.convertStringTime(newValue.toString()));

@@ -48,6 +48,7 @@ public class Estructura_costosDao extends BaseDao<Estructura_costos> {
                     estructura_costos_clieprov.setMoneda(rs.getString("MONEDA")!=null?rs.getString("MONEDA").trim():"");
                     estructura_costos_clieprov.setIdclieprov(rs.getString("IDCLIEPROV")!=null?rs.getString("IDCLIEPROV").trim():"");
                     estructura_costos_clieprov.setCliente(rs.getString("CLIENTE")!=null?rs.getString("CLIENTE").trim():"");
+                    estructura_costos_clieprov.setExcluir(rs.getFloat("EXCLUIR"));
                     lista.add(estructura_costos_clieprov);                             
                 }
             } catch(Exception ex) {
