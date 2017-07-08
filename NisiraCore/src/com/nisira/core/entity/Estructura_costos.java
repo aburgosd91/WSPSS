@@ -34,6 +34,9 @@ public class Estructura_costos implements Serializable{
         @XStreamAlias("FECHACREACION")
 	@Columna
 	private Date fechacreacion;
+        @XStreamAlias("EXCLUIR")
+	@Columna
+	private Float excluir;
         private String moneda;
         private String idclieprov;
         private String cliente;
@@ -151,6 +154,20 @@ public class Estructura_costos implements Serializable{
      */
     public void setCliente(String cliente) {
         this.cliente = cliente;
+    }
+
+    /**
+     * @return the excluir
+     */
+    public Float getExcluir() {
+        return excluir;
+    }
+
+    /**
+     * @param excluir the excluir to set
+     */
+    public void setExcluir(Float excluir) {
+        this.excluir = excluir;
     }
 
 }

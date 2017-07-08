@@ -29,6 +29,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -516,8 +518,11 @@ public class WebUtil {
     }
     public static Date convertDecimalTime(float timeF){
         Date obj= new Date();
-        int hora = (int)timeF;
-        int minutos = (int)((timeF-(float)hora)*60);
+        BigDecimal number = new BigDecimal(timeF);
+        int hora = number.intValue();
+        BigDecimal fraccion = number.remainder(BigDecimal.ONE).multiply(new BigDecimal(60));
+        fraccion=fraccion.setScale(0, RoundingMode.HALF_UP);
+        int minutos = fraccion.intValue();
         obj.setHours(hora);
         obj.setMinutes(minutos);
         return obj;

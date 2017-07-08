@@ -30,6 +30,10 @@
                                 <p:selectOneMenu id="idmoneda" value="#{estructuracostosrecursoAction.datoEdicion.idmoneda}" style="width:70px" disabled="#{!estructuracostosrecursoAction.edicion}">
                                     <f:selectItems value="#{estructuracostosrecursoAction.listMoneda}" var="moneda" itemLabel="#{moneda.descripcion}" itemValue="#{moneda.idmoneda}"/>
                                 </p:selectOneMenu>
+                                <p:outputLabel value="Excluir Cálculo Adicional: " />
+                                <p:selectBooleanCheckbox value="#{estructuracostosrecursoAction.vexcluir}" disabled="#{!estructuracostosrecursoAction.edicion}"/>
+                                <p:outputLabel value="Estado: " />
+                                <p:selectBooleanCheckbox value="#{estructuracostosrecursoAction.vestado}" disabled="#{!estructuracostosrecursoAction.edicion}"/>
                             </p:panelGrid>
                         </p:fieldset> 
                     </div>

@@ -96,7 +96,7 @@ public class Rpt_tareowebAction extends AbstactListAction<Ordenserviciocliente> 
         ordenservicioclienteDao = new OrdenservicioclienteDao();
         /**********************************CONTROLADOR********************************/
         /********************************** CONFIGURACIÓN - SERVIDOR ********************************/
-        actualiza_ventana("wMnt_Ordenserviciocliente");
+        actualiza_ventana("wMnt_Rpt_tareoweb");
     }
     @Override
     public void buscarTodo() {
@@ -114,7 +114,7 @@ public class Rpt_tareowebAction extends AbstactListAction<Ordenserviciocliente> 
         setMensaje("");
         /**********************************CONTROLADOR********************************/
         /**********************************CONFIGURACIÓN - SERVIDOR********************************/
-        actualiza_ventana("wMnt_Ordenserviciocliente");
+        actualiza_ventana("wMnt_Rpt_tareoweb");
         return "";
     }
 

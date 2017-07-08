@@ -96,7 +96,7 @@ public class Rpt_personal_ocupadoAction extends AbstactListAction<Ordenservicioc
         ordenservicioclienteDao = new OrdenservicioclienteDao();
         /**********************************CONTROLADOR********************************/
         /********************************** CONFIGURACIÓN - SERVIDOR ********************************/
-        actualiza_ventana("wMnt_Ordenserviciocliente");
+        actualiza_ventana("wMnt_Rpt_personal_ocupado");
     }
     @Override
     public void buscarTodo() {
@@ -114,7 +114,7 @@ public class Rpt_personal_ocupadoAction extends AbstactListAction<Ordenservicioc
         setMensaje("");
         /**********************************CONTROLADOR********************************/
         /**********************************CONFIGURACIÓN - SERVIDOR********************************/
-        actualiza_ventana("wMnt_Ordenserviciocliente");
+        actualiza_ventana("wMnt_Rpt_personal_ocupado");
         return "";
     }
 

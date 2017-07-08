@@ -35,6 +35,8 @@
                 <p:inputNumber decimalPlaces="2" id="costohora" disabled="#{!ambitoPagoAction.edicion}" value="#{ambitoPagoAction.datoEdicion.costo_por_hora}"/>
                 <p:outputLabel for="costoadd" value="Costo Adicional: " />
                 <p:inputNumber decimalPlaces="2"  id="costoadd" disabled="#{!ambitoPagoAction.edicion}" value="#{ambitoPagoAction.datoEdicion.costo_adicional}"/>
+                <p:outputLabel value="Visible?: " />
+                <p:selectBooleanCheckbox value="#{ambitoPagoAction.vvisible}" disabled="#{!ambitoPagoAction.edicion}"/>
             </p:panelGrid>
             <p:dataTable id="lstAmbPagoRuta" 
                          value="#{ambitoPagoAction.lstambpagRuta}" 

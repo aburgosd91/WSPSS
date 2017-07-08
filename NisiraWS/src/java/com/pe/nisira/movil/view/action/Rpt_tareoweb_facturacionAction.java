@@ -109,7 +109,7 @@ public class Rpt_tareoweb_facturacionAction extends AbstactListAction<Ordenservi
         }catch (Exception ex) {
             Logger.getLogger(Rpt_tareoweb_facturacionAction.class.getName()).log(Level.SEVERE, null, ex);
         }
-        actualiza_ventana("wMnt_Ordenserviciocliente");
+        actualiza_ventana("wMnt_Rpt_tareoweb_facturacion");
     }
     @Override
     public void buscarTodo() {
@@ -127,7 +127,7 @@ public class Rpt_tareoweb_facturacionAction extends AbstactListAction<Ordenservi
         setMensaje("");
         /**********************************CONTROLADOR********************************/
         /**********************************CONFIGURACIÓN - SERVIDOR********************************/
-        actualiza_ventana("wMnt_Ordenserviciocliente");
+        actualiza_ventana("wMnt_Rpt_tareoweb_facturacion");
         return "";
     }
 

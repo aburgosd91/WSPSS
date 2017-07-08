@@ -29,7 +29,9 @@ public class Ambito_pago implements Serializable{
 	@Columna
         @XStreamAlias("costo_adicional")
 	private Float costo_adicional;
-
+        @Columna
+        @XStreamAlias("visible")
+	private Float visible;
 
 
 	/* Sets & Gets */
@@ -84,5 +86,19 @@ public class Ambito_pago implements Serializable{
 
 
 	/* Sets & Gets FK*/
+
+    /**
+     * @return the visible
+     */
+    public Float getVisible() {
+        return visible;
+    }
+
+    /**
+     * @param visible the visible to set
+     */
+    public void setVisible(Float visible) {
+        this.visible = visible;
+    }
 
 }
