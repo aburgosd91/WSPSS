@@ -563,7 +563,7 @@ public class Det_tareowebDao extends BaseDao<Det_tareoweb> {
         }
         /**** validaciones ****/
         public String verificacionPersonalServicio_det_tareoweb(String idempresa,String idordenservicio,String item,String item2,String idcago) throws NisiraORMException, SQLException {
-            String datos=null;
+            String datos="";
             ResultSet rs = null;
             rs = execProcedure("SP_VERIFICACION_DETALLE_TAREO_TMPSS",idempresa,idordenservicio,item,item2,idcago);
             while (rs.next()) {

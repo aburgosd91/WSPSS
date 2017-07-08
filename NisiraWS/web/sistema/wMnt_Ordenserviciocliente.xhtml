@@ -693,6 +693,14 @@
                 </div>
             </p:panelGrid>
             <p:growl id="growl" life="4000" showDetail="false"  />
+            <p:dialog id="dlg_text" header="..:: Documento N° #{ordenservicioclienteAction.datoEdicion.serie} -
+                      #{ordenservicioclienteAction.datoEdicion.numero} ::.." 
+                      widgetVar="dlg_text" modal="true" showEffect="popup" maximizable="true" closable="true" height="410px" width="600px">
+                <textarea style="width:99%;height:95%;" readonly="true">
+                    #{ordenservicioclienteAction.log_consola}
+                </textarea>    
+                <br/>                        
+            </p:dialog>
             <cmp:mDialogElimina_lst id="cmpDialog" bean="#{ordenservicioclienteAction}" ventana="MNT" />
         </h:form>
     </ui:define>

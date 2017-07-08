@@ -202,6 +202,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
     private Codoperaciones_pss selectCodoperaciones_pss;
     private List<Float> lstHoras;
     private List<Rutas> lstComboRutas;
+    private String log_consola;
     /************************************* DATOS *****************************************/
     private int num_repetir;
     private int num_repetir_detalle;
@@ -1329,10 +1330,11 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                 msj =(new Det_tareowebDao()).verificacionPersonalServicio_det_tareoweb(ps.getIdempresa(),ps.getIdordenservicio(),
                         ps.getItem(),ps.getItem2(), ps.getIdcargo());
                 if(!msj.trim().equals("")){
-                    msj2+=(ps.getIdcargo())+"-"+ps.getCargo()+":"+msj+"\n";
+                    msj2+=msj+"\n";
                 }
             }
             if(!msj2.trim().equals("")){
+                log_consola = msj2.trim();
                 WebUtil.MensajeError("Operación no Valida\n "+msj2);
                 RequestContext.getCurrentInstance().update("datos:growl");
                 t=false;
@@ -3386,6 +3388,20 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
      */
     public void setAmbito_pagodao(Ambito_pagoDao ambito_pagodao) {
         this.ambito_pagodao = ambito_pagodao;
+    }
+
+    /**
+     * @return the log_consola
+     */
+    public String getLog_consola() {
+        return log_consola;
+    }
+
+    /**
+     * @param log_consola the log_consola to set
+     */
+    public void setLog_consola(String log_consola) {
+        this.log_consola = log_consola;
     }
 
 }
