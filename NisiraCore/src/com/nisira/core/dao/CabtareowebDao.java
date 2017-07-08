@@ -98,7 +98,7 @@ public class CabtareowebDao extends BaseDao<Cabtareoweb> {
         ArrayList<Cabtareoweb> lista = new ArrayList<Cabtareoweb>();
 
         ResultSet rs = null;
-        rs = execProcedure("GETCABTAREOWEB_TMPSS",idempresa,fechainicio,fechafin,idusuario);
+        rs = execProcedure("GETCABTAREOWEB_PROVINCIAL_TMPSS",idempresa,fechainicio,fechafin,idusuario);
         while (rs.next()) {
             Cabtareoweb cabtareoweb = new Cabtareoweb();
             cabtareoweb.setIdbasedatos(rs.getString("IDBASEDATOS").trim());

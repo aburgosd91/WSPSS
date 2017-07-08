@@ -132,7 +132,7 @@
                          value="#{tareowebAction.listDet_tareoweb}" 
                 widgetVar="listDet_tareoweb" scrollable="true" scrollWidth="510px;"
                 style="margin-bottom:20px;font-size: 12px;width:100%;" 
-                resizableColumns="true" 
+                resizableColumns="true"
                 selection="#{tareowebAction.selectDet_tareoweb}" selectionMode="single" 
                 frozenColumns="10" 
                 rowKey="#{listDet_tareoweb.item}" editable="#{tareowebAction.edicion}" editMode="cell">
@@ -293,6 +293,18 @@
                            </f:facet>
                        </p:cellEditor>
                     </p:column>
+                    <p:column id="fecharegistro" headerText="Fecha Registro" filterBy="#{tareowebAction.fechaDMY(listDet_tareoweb.fecharegistro)}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.fecharegistro}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: center">
+                        <p:cellEditor >
+                           <f:facet name="output">
+                                <h:outputText value="#{listDet_tareoweb.fecharegistro}">
+                                   <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                                </h:outputText>
+                           </f:facet>
+                           <f:facet name="input">
+                               <p:calendar style="font-size:10px;" value="#{listDet_tareoweb.fecharegistro}" pattern="dd-MM-yyyy" mask="true" />
+                           </f:facet>
+                       </p:cellEditor>
+                    </p:column>
                     <p:column id="hora_req" headerText="Hora Req." filterBy="#{listDet_tareoweb.fhora_req}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.fhora_req}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: center">
                         <f:facet name="header">
                             <h:outputText value="Hora Req."/>
@@ -349,6 +361,7 @@
                            </f:facet>
                        </p:cellEditor>
                     </p:column>
+                    
                     <p:column id="fechafinregistro" headerText="Fecha Fin" filterBy="#{tareowebAction.fechaDMY(listDet_tareoweb.fechafinregistro)}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.fechafinregistro}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: center">
                         <p:cellEditor >
                            <f:facet name="output">

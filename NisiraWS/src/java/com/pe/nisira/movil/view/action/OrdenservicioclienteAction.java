@@ -6,6 +6,7 @@
 package com.pe.nisira.movil.view.action;
 
 import com.nisira.core.NisiraORMException;
+import com.nisira.core.dao.Ambito_pagoDao;
 import com.nisira.core.dao.Cargos_personalDao;
 import com.nisira.core.dao.ClieprovDao;
 import com.nisira.core.dao.CotizacionventasDao;
@@ -28,6 +29,7 @@ import com.nisira.core.dao.Personal_servicioDao;
 import com.nisira.core.dao.Ruta_serviciosDao;
 import com.nisira.core.dao.RutasDao;
 import com.nisira.core.dao.UsuarioDao;
+import com.nisira.core.entity.Ambito_pago;
 import com.nisira.core.entity.Cargos_personal;
 import com.nisira.core.entity.Clieprov;
 import com.nisira.core.entity.Codoperaciones_pss;
@@ -136,6 +138,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
     private List<Estructura_costos_mano_obra_cotizacionventas> listEstructura_costos_mano_obra_cotizacionventas;
     private List<Motivosproduccion> listMotivoproduccion;
     private List<Cargos_personal> listCargo_personal;
+    private List<Ambito_pago> listAmbito_pago;
     /********************************** TABLAS TOTALES *******************************************/
     private List<Personal_servicio> listPersonalservicio_total;
     private List<Dpersonal_servicio> listDpersonalservicio_total;
@@ -163,6 +166,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
     private Estructura_costos_productoDao estructura_costos_productoDao;
     private RutasDao rutasDao;
     private UsuarioDao usuariodao;
+    private Ambito_pagoDao ambito_pagodao;
     /*************************************ENTITY***************************************/
     private UsuarioBean user;
     private String numero;
@@ -234,6 +238,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
             
             lstHoras = new ArrayList<>();
             lstComboRutas = new ArrayList<>();
+            listAmbito_pago = new ArrayList<>();
             /*********************************DAO*******************************************/
             cotizacionventasDao = new CotizacionventasDao();
             ordenservicioclienteDao = new OrdenservicioclienteDao();
@@ -256,6 +261,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
             rutasDao = new RutasDao();
             estructura_costos_mano_obraDao = new Estructura_costos_mano_obraDao();
             usuariodao = new UsuarioDao();
+            ambito_pagodao = new Ambito_pagoDao();
             /**********************************CONTROLADOR********************************/
             /*DETALLE ORDEN SERVICIO*/
             botonNuevoDOrdenservicio=true;
@@ -281,6 +287,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
             numero=listNumemisor.get(0).getNumero();
             listEstado = estadosDao.listarPorEmpresaWeb(user.getIDEMPRESA(),null);
             listMotivoproduccion = motivosproduccionDao.listarPorEmpresaWeb(user.getIDEMPRESA());
+            listAmbito_pago = ambito_pagodao.lstAmbitoEmpresa(user.getIDEMPRESA());
             num_repetir = 1;
             type_personalservicio = 1;
             actualiza_ventana("wMnt_Ordenserviciocliente");
@@ -351,6 +358,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
             numero=listNumemisor.get(0).getNumero();
             listEstado = estadosDao.listarPorEmpresaWeb(user.getIDEMPRESA(),null);
             listMotivoproduccion=motivosproduccionDao.listarPorEmpresaWeb(user.getIDEMPRESA());
+            listAmbito_pago = ambito_pagodao.lstAmbitoEmpresa(user.getIDEMPRESA());
             actualiza_ventana("wMnt_Ordenserviciocliente");
         } catch (NisiraORMException ex) {
             Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, null, ex);
@@ -411,7 +419,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                 if(getLadd()==1){
                     mensaje=getOrdenservicioclienteDao().grabar(1, getDatoEdicion(), 
                             getLstdordenserviciocliente(),getListPersonalservicio_total(),
-                            getListDocreferencia(),getListRutasTotales(),getListDpersonalservicio_total(),idestadoCot);
+                            getListDocreferencia(),getListRutasTotales(),getListDpersonalservicio_total(),idestadoCot,user.getIDUSUARIO());
                     if(mensaje!=null)
                         if(mensaje.trim().length()==15)
                             getDatoEdicion().setIdordenservicio(mensaje.trim());
@@ -419,7 +427,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                 else
                     mensaje=getOrdenservicioclienteDao().grabar(2, getDatoEdicion(), 
                             getLstdordenserviciocliente(),getListPersonalservicio_total(),
-                            getListDocreferencia(),getListRutasTotales(),getListDpersonalservicio_total(),idestadoCot);
+                            getListDocreferencia(),getListRutasTotales(),getListDpersonalservicio_total(),idestadoCot,user.getIDUSUARIO());
                 setMensaje(WebUtil.exitoRegistrar("Orden Servicio ", mensaje));
                 WebUtil.info(getMensaje());
                 setLvalidate(true);
@@ -3291,6 +3299,34 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
      */
     public void setNum_repetir_detalle(int num_repetir_detalle) {
         this.num_repetir_detalle = num_repetir_detalle;
+    }
+
+    /**
+     * @return the listAmbito_pago
+     */
+    public List<Ambito_pago> getListAmbito_pago() {
+        return listAmbito_pago;
+    }
+
+    /**
+     * @param listAmbito_pago the listAmbito_pago to set
+     */
+    public void setListAmbito_pago(List<Ambito_pago> listAmbito_pago) {
+        this.listAmbito_pago = listAmbito_pago;
+    }
+
+    /**
+     * @return the ambito_pagodao
+     */
+    public Ambito_pagoDao getAmbito_pagodao() {
+        return ambito_pagodao;
+    }
+
+    /**
+     * @param ambito_pagodao the ambito_pagodao to set
+     */
+    public void setAmbito_pagodao(Ambito_pagoDao ambito_pagodao) {
+        this.ambito_pagodao = ambito_pagodao;
     }
 
 }

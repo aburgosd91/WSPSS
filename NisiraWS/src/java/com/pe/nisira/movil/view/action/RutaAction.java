@@ -81,17 +81,19 @@ public class RutaAction extends AbstactListAction<Rutas> implements Serializable
 
     public boolean validarEdicion() {
         if (getDatoEdicion().getDescripcion() == null) {
+            WebUtil.MensajeAdvertencia("Ingrese Descripción");
+            RequestContext.getCurrentInstance().update("datos:growl");
             return false;
         }
-        if(getDatoEdicion().getOrigen() == null){
-            return false;
-        }
-        if(getDatoEdicion().getDestino() == null){
-            return false;
-        }
-        if(getDatoEdicion().getDestino().equalsIgnoreCase(getDatoEdicion().getOrigen())){
-            return false;
-        }
+//        if(getDatoEdicion().getOrigen() == null){
+//            return false;
+//        }
+//        if(getDatoEdicion().getDestino() == null){
+//            return false;
+//        }
+//        if(getDatoEdicion().getDestino().equalsIgnoreCase(getDatoEdicion().getOrigen())){
+//            return false;
+//        }
         return true;
     }
 
@@ -155,7 +157,7 @@ public class RutaAction extends AbstactListAction<Rutas> implements Serializable
                 getDatoEdicion().setEstado(2);
                 rutaDao.grabar(4, getDatoEdicion());
             }
-            RequestContext.getCurrentInstance().update("datos");
+            lista_accion_filtro("wLst_Ruta");
         } catch (Exception ex) {
             Logger.getLogger(RutaAction.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -45,6 +45,8 @@
                                             <f:selectItem itemLabel="Fijo" itemValue="F"/>
                                         </p:selectOneMenu>
                                     </h:panelGrid>
+                                    <p:outputLabel value="Contacto" escape="false"/>
+                                    <p:inputTextarea rows="1" cols="67" value="#{ordenservicioclienteAction.datoEdicion.contacto}" disabled="#{!ordenservicioclienteAction.edicion}"/>
                                     <p:outputLabel for="nromanual"  value="Nro Manual:" />
                                     <p:inputText id="nromanual" style="width: 200px !important;" value="#{ordenservicioclienteAction.datoEdicion.nromanual}" disabled="#{!ordenservicioclienteAction.edicion}"/>
                                     <p:outputLabel for="nrocontenedor"  value="Nro Contenedor:" />
@@ -84,9 +86,8 @@
                                                     disabled="#{ordenservicioclienteAction.fdocreferencia or !ordenservicioclienteAction.edicion}"  icon="ui-icon-search">
                                         </p:commandButton>
                                         <p:outputLabel for="ambito_servicio"  value="Ámbito:" />
-                                        <p:selectOneMenu id="ambito_servicio" value="#{ordenservicioclienteAction.datoEdicion.ambito_servicio}"  disabled="#{!ordenservicioclienteAction.edicion}">
-                                            <f:selectItem itemLabel="Local" itemValue="L"/>
-                                            <f:selectItem itemLabel="Provincial" itemValue="P"/>
+                                        <p:selectOneMenu id="ambito_servicio" value="#{ordenservicioclienteAction.datoEdicion.ambito_servicio}"  disabled="#{!ordenservicioclienteAction.edicion}" >    
+                                            <f:selectItems value="#{ordenservicioclienteAction.listAmbito_pago}" var="ambito" itemLabel="#{ambito.descripcion}" itemValue="#{ambito.codigo}" />
                                         </p:selectOneMenu>
                                     </p:panelGrid>
                                     <p:outputLabel value="" />

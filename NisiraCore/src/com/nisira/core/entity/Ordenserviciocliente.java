@@ -71,6 +71,9 @@ public class Ordenserviciocliente implements Serializable{
         @Columna
         @XStreamAlias("IDOPERARIO2")
 	private String idoperario2;
+        @Columna
+        @XStreamAlias("CONTACTO")
+	private String contacto;
         private String operario;
         private String operario2;
         private String idcotizacionv;
@@ -346,5 +349,19 @@ public class Ordenserviciocliente implements Serializable{
      */
     public void setOperario2(String operario2) {
         this.operario2 = operario2;
+    }
+
+    /**
+     * @return the contacto
+     */
+    public String getContacto() {
+        return contacto;
+    }
+
+    /**
+     * @param contacto the contacto to set
+     */
+    public void setContacto(String contacto) {
+        this.contacto = contacto;
     }
 }
