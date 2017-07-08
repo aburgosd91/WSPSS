@@ -448,13 +448,18 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
     public void eliminar() {
         try {
             if (getOpc_anular_eliminar().equalsIgnoreCase("ANULAR")) {
-                getDatoEdicion().setIdestado("AN");
-                mensaje=getOrdenservicioclienteDao().anular(getDatoEdicion(),user.getIDUSUARIO());
-                if(mensaje!=null){
-                    setMensaje(WebUtil.exitoEliminar("Orden servicio cliente", mensaje));
-                    WebUtil.info(getMensaje());
-                    setLvalidate(true);
-                    buscarFiltro(2);
+                String msj = (new Det_tareowebDao()).verificacionPersonalServicio_det_tareoweb_global(getDatoEdicion().getIdempresa(),getDatoEdicion().getIdordenservicio());
+                if(!msj.trim().equals("")){
+                    mostrarLog_txt("************* TAREO EXISTENE *************"+"\n"+msj.trim());
+                }else{
+                    getDatoEdicion().setIdestado("AN");
+                    mensaje=getOrdenservicioclienteDao().anular(getDatoEdicion(),user.getIDUSUARIO());
+                    if(mensaje!=null){
+                        setMensaje(WebUtil.exitoEliminar("Orden servicio cliente", mensaje));
+                        WebUtil.info(getMensaje());
+                        setLvalidate(true);
+                        buscarFiltro(2);
+                    }
                 }
             }
         } catch (Exception ex) {
@@ -543,7 +548,16 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
             WebUtil.MensajeError(ex.getMessage());
         }
     }
-
+    @Override
+    public void mostrarLog_txt(String contenido){
+        if(contenido!=null){
+            if(!contenido.trim().equals("")){
+                log_consola = contenido;
+                RequestContext.getCurrentInstance().update("datos:dlg_text");
+                RequestContext.getCurrentInstance().execute("PF('dlg_text').show()");
+            }
+        }
+    }
     /************** CONFIGURACIÓN *******************/
     public void onSPTabChange(TabChangeEvent event) 
     {   
@@ -1330,13 +1344,11 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                 msj =(new Det_tareowebDao()).verificacionPersonalServicio_det_tareoweb(ps.getIdempresa(),ps.getIdordenservicio(),
                         ps.getItem(),ps.getItem2(), ps.getIdcargo());
                 if(!msj.trim().equals("")){
-                    msj2+=msj+"\n";
+                    msj2+=msj.trim()+"\n";
                 }
             }
             if(!msj2.trim().equals("")){
-                log_consola = msj2.trim();
-                WebUtil.MensajeError("Operación no Valida\n "+msj2);
-                RequestContext.getCurrentInstance().update("datos:growl");
+                mostrarLog_txt("************* TAREO EXISTENE *************"+"\n"+msj2.trim());
                 t=false;
             }
         } catch (NisiraORMException ex) {
