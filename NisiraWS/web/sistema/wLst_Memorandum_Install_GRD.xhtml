@@ -18,6 +18,11 @@
                     <f:facet name="header">
                         <h:outputText value="#{memorandumInstaCRDAction.tituloHead}" />
                     </f:facet>
+                    <p:column style="white-space: nowrap; width: 38px;padding: 3px;">
+                        <h:commandButton value="PDF" action="#{memorandumInstaCRDAction.PDF_Downloadd()}" title="Pdf">
+                            <f:setPropertyActionListener value="#{lstMemo}" target="#{memorandumInstaCRDAction.slcpdfmemo}" />
+                        </h:commandButton>
+                    </p:column>
                     <p:column style="width:15%;" filterBy="#{lstMemo.razon_social}" filterMatchMode="contains" sortBy="#{lstMemo.razon_social}">
                         <f:facet name="header">
                             <h:outputText value="Duracion de Contrato" />

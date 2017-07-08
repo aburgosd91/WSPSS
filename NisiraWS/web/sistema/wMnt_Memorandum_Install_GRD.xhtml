@@ -10,7 +10,7 @@
     <ui:define name="metadata">        
     </ui:define>
     <ui:define name="body">
-        #{memorandumInstaCMTAction.findDetaller()}
+        #{memorandumInstaCRDAction.findDetaller()}
         <h:form id="datos" >
             <cmp:barra_mnt bean="#{memorandumInstaCRDAction}"/>
             <p:panelGrid id="cabecera" columns="2" columnClasses="no-border,no-border,no-border">
@@ -29,7 +29,7 @@
                                 <p:panelGrid id="cntUbiOr" columns="2" columnClasses="no-border,no-border">
                                     <p:inputText  value="#{memorandumInstaCRDAction.slcCoti.idclieprov}" disabled="true"/>
                                     <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{memorandumInstaCRDAction.verCntCotizacionVenta()}" disabled="#{!memorandumInstaCRDAction.edicion}"  icon="ui-icon-search">
-                                        <p:ajax event="dialogReturn" listener="#{memorandumInstaCRDAction.valorCotizacionVenta}" update="datos"/>
+                                        <p:ajax event="dialogReturn" listener="#{memorandumInstaCRDAction.valorCotizacionVenta}"/>
                                     </p:commandButton>
                                 </p:panelGrid>
 
@@ -150,7 +150,7 @@
                                     <f:facet name="header">
                                         <h:outputText value="Cantidad" />
                                     </f:facet>
-                                    <p:inputNumber decimalPlaces="0" value="#{detdemo.cantidad}" disabled="#{!memorandumInstaCRDAction.edicion}"/>
+                                    <p:inputText  value="#{detdemo.cantidad}" disabled="#{!memorandumInstaCRDAction.edicion}"/>
                                 </p:column>
                                 <p:column style="width:15%;" filterBy="#{detdemo.atendido}" filterMatchMode="contains" sortBy="#{detdemo.atendido}">
                                     <f:facet name="header">

@@ -22,15 +22,27 @@ import static com.pe.nisira.movil.view.action.AbstactListAction.modalOptions;
 import com.pe.nisira.movil.view.bean.UsuarioBean;
 import com.pe.nisira.movil.view.util.Constantes;
 import com.pe.nisira.movil.view.util.WebUtil;
+import java.io.File;
 import java.io.Serializable;
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletResponse;
 import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRParameter;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 
@@ -45,6 +57,7 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
     private String mensaje;
     private Cotizacionventas slcCoti;
     private List<Dcotizacionventas> lstDcot;
+    private Memorandum_instalacion_pss slcpdfmemo;
     private Memorandum_instalacion_pssDao memoDao;
     private CotizacionventasDao cotDao;
     private DcotizacionventasDao dcotDao;
@@ -58,6 +71,7 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
         mensaje = "";
         slcCoti = new Cotizacionventas();
         user = (UsuarioBean) WebUtil.getObjetoSesion(Constantes.SESION_USUARIO);
+        slcpdfmemo = new Memorandum_instalacion_pss();
         lstDcot = new ArrayList<Dcotizacionventas>();
         memoDao = new Memorandum_instalacion_pssDao();
         cotDao = new CotizacionventasDao();
@@ -87,7 +101,7 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
     }
 
     public void findDetaller() throws NisiraORMException {
-        if (getDatoEdicion().getIdcotizacionv() !=null) {
+        if (getDatoEdicion().getIdcotizacionv() != null) {
             Gson gson = new Gson();
             Type collectionType = new TypeToken<List<Atendido>>() {
             }.getType();
@@ -95,7 +109,7 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
             Type collectionType2 = new TypeToken<List<DetalleMemorandum>>() {
             }.getType();
             lstdetMemo = gson.fromJson(getDatoEdicion().getTabla_requerimiento(), collectionType2);
-            slcCoti = (new CotizacionventasDao()).findCotizacion(user.getIDEMPRESA(),getDatoEdicion().getIdcotizacionv());
+            slcCoti = (new CotizacionventasDao()).findCotizacion(user.getIDEMPRESA(), getDatoEdicion().getIdcotizacionv());
             lstDcot = dcotDao.getListDCotizacionWeb(user.getIDEMPRESA(), slcCoti.getIdcotizacionv());
         }
     }
@@ -105,6 +119,7 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
         mensaje = "";
         slcCoti = new Cotizacionventas();
         user = (UsuarioBean) WebUtil.getObjetoSesion(Constantes.SESION_USUARIO);
+        slcpdfmemo = new Memorandum_instalacion_pss();
         lstDcot = new ArrayList<Dcotizacionventas>();
         memoDao = new Memorandum_instalacion_pssDao();
         cotDao = new CotizacionventasDao();
@@ -145,6 +160,69 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
         RequestContext.getCurrentInstance().update("datos:growl");
     }
 
+    public void PDF_Downloadd() {
+        try {
+            Gson gson = new Gson();
+            Type collectionType = new TypeToken<List<Atendido>>() {
+            }.getType();
+            lstAtencion = gson.fromJson(slcpdfmemo.getTabla_atendido(), collectionType);
+            Type collectionType2 = new TypeToken<List<DetalleMemorandum>>() {
+            }.getType();
+            lstdetMemo = gson.fromJson(slcpdfmemo.getTabla_requerimiento(), collectionType2);
+            slcCoti = (new CotizacionventasDao()).findCotizacion(user.getIDEMPRESA(), slcpdfmemo.getIdcotizacionv());
+            lstDcot = dcotDao.getListDCotizacionWeb(user.getIDEMPRESA(), slcCoti.getIdcotizacionv());
+            PDF_Memorandum_Instalacion();
+        } catch (NisiraORMException ex) {
+            Logger.getLogger(MemorandumInstaCMTAction.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void PDF_Memorandum_Instalacion() {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("memo", getDatoEdicion());
+        params.put("cotventa", slcCoti);
+        JRDataSource atendido = new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource(lstAtencion);
+        JRDataSource detcot = new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource(lstDcot);
+        params.put("atendido", atendido);
+        params.put("detcot", detcot);
+        JRDataSource datasource = new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource(lstdetMemo);
+        String reporte = Constantes.FORMATO_REPORTE + File.separator + "RPT_MEMORANDU_INSTALACION_003" + ".jrxml";
+        String reporte_compilado = Constantes.FORMATO_REPORTE + File.separator + "RPT_MEMORANDU_INSTALACION_003" + ".jasper";
+        File f = new File(reporte_compilado);
+        try {
+            FacesContext context = FacesContext.getCurrentInstance();
+            ExternalContext ext = context.getExternalContext();
+            if (!f.isFile()) {
+                JasperCompileManager.compileReportToFile(reporte, reporte_compilado);
+            }
+            getParamsReport().put(JRParameter.IS_IGNORE_PAGINATION, true);
+            JasperPrint jasperPrint = JasperFillManager.fillReport(reporte_compilado, params, datasource);
+            jasperPrint.setName(getNombreArchivo());
+
+            HttpServletResponse resp = (HttpServletResponse) ext.getResponse();
+            resp.setContentType("application/pdf");
+
+            SimpleDateFormat sm = new SimpleDateFormat("mm-dd-yyyy");
+            String filename = "MEMO_" + getDatoEdicion().getIdordenservicio() + "_" + sm.format(slcCoti.getFecha()) + "_"
+                    + getDatoEdicion().getRazon_social().trim()
+                    + ".pdf";
+            /*RUTA*/
+            String rutapdf = Constantes.ARCHIVO_REPORTE + File.separator + filename;
+            JasperExportManager.exportReportToPdfFile(jasperPrint, rutapdf);
+            context.getApplication().getStateManager().saveView(context);
+            context.responseComplete();
+//                    resp.addHeader("Content-Disposition", "inline; filename=" + Constantes.ARCHIVO_REPORTE + File.separator+filename); // En la misma pantalla
+//                    //resp.addHeader("Content-Disposition", "attachmed; filename=" + Constantes.ARCHIVO_REPORTE + File.separator+filename); // Para que lo guardes
+            JasperExportManager.exportReportToPdfStream(jasperPrint, resp.getOutputStream());
+        } catch (Exception e) {
+            System.out.println(e.toString());
+//            this.estiloMensaje = Constantes.ESTILO_MENSAJE_ERROR;
+            mensaje = WebUtil.mensajeError();
+            WebUtil.MensajeError(mensaje);
+        }
+        RequestContext.getCurrentInstance().update("datos");
+    }
+
     public void addReqRow() {
         DetalleMemorandum ne = new DetalleMemorandum();
         ne.setItem(lstdetMemo.size() + 1);
@@ -182,9 +260,17 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
     public void valorCotizacionVenta(SelectEvent event) {
         try {
             slcCoti = (Cotizacionventas) event.getObject();
-            lstDcot = dcotDao.getListDCotizacionWeb(user.getIDEMPRESA(), slcCoti.getIdcotizacionv());
-            getDatoEdicion().setIdcotizacionv(slcCoti.getIdcotizacionv());
-            getDatoEdicion().setFecha_inst(slcCoti.getFecha());
+            if (memoDao.validaMemo(slcCoti.getIdcotizacionv())) {
+                lstDcot = dcotDao.getListDCotizacionWeb(user.getIDEMPRESA(), slcCoti.getIdcotizacionv());
+                getDatoEdicion().setIdcotizacionv(slcCoti.getIdcotizacionv());
+                getDatoEdicion().setFecha_inst(slcCoti.getFecha());
+                RequestContext.getCurrentInstance().update("datos");
+            } else {
+                setMensaje("Esta Cotizacion ya ha sido Utilizda.");
+                WebUtil.MensajeAdvertencia(getMensaje());
+                RequestContext.getCurrentInstance().update("datos:growl");
+            }
+
         } catch (NisiraORMException ex) {
             Logger.getLogger(MemorandumInstaCMTAction.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -202,7 +288,6 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
         slcMemo = new DetalleMemorandum();
         getDatoEdicion().setIdemrpesa(user.getIDEMPRESA());
         getDatoEdicion().setIdusuario(user.getIDUSUARIO());
-        getDatoEdicion().setSalario(mensaje);
     }
 
     public boolean validarGrabar() {
@@ -352,6 +437,14 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
 
     public void setSlcMemo(DetalleMemorandum slcMemo) {
         this.slcMemo = slcMemo;
+    }
+
+    public Memorandum_instalacion_pss getSlcpdfmemo() {
+        return slcpdfmemo;
+    }
+
+    public void setSlcpdfmemo(Memorandum_instalacion_pss slcpdfmemo) {
+        this.slcpdfmemo = slcpdfmemo;
     }
 
 }
