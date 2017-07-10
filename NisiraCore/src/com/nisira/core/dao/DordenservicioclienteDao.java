@@ -109,8 +109,8 @@ public class DordenservicioclienteDao extends BaseDao<Dordenserviciocliente> {
                 dordenserviciocliente.setIdvehiculo(rs.getString("IDVEHICULO")!=null?rs.getString("IDVEHICULO").trim():"");
                 dordenserviciocliente.setPlaca_cliente(rs.getString("PLACA_CLIENTE")!=null?rs.getString("PLACA_CLIENTE").trim():"");
                 dordenserviciocliente.setHora_req(rs.getFloat("HORA_REQ"));
-                if(dordenserviciocliente.getHora_req()!=0.0f)
-                    dordenserviciocliente.setHora_reqConvert(CoreUtil.convertDecimalTime(dordenserviciocliente.getHora_req()));
+//                if(dordenserviciocliente.getHora_req()!=0.0f)
+                dordenserviciocliente.setHora_reqConvert(CoreUtil.convertDecimalTime(dordenserviciocliente.getHora_req()));
                 dordenserviciocliente.setFecha_fin_servicio(rs.getDate("FECHA_FIN_SERVICIO"));
                 dordenserviciocliente.setFechacreacion(rs.getDate("FECHACREACION"));
                 dordenserviciocliente.setVehiculo(rs.getString("VEHICULO")!=null?rs.getString("VEHICULO").trim():"");

@@ -475,17 +475,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
     @Override
     public boolean verificar_edicion(){
         boolean verification = false;
-        if(getDatoEdicion() != null){
-            if(getDatoEdicion().getIdestado()!=null){
-                if(getDatoEdicion().getIdestado().trim().equals("AN")){
-                    this.mensaje = "El documento "+getDatoEdicion().getIddocumento()+"-"+getDatoEdicion().getSerie()+"-"+getDatoEdicion().getNumero()+
-                            " se encuentra Anulado";
-                    WebUtil.error(getMensaje());
-                    verification = true;
-                }
-            }
-            //buscarFiltro(2);
-        }else if(getDatoSeleccionado() != null){
+        if(getDatoSeleccionado() != null){
             if(getDatoSeleccionado().getIdestado()!=null){
                 if(getDatoSeleccionado().getIdestado().trim().equals("AN")){
                     this.mensaje = "El documento "+getDatoSeleccionado().getIddocumento()+"-"+getDatoSeleccionado().getSerie()+"-"+getDatoSeleccionado().getNumero()+
@@ -493,8 +483,13 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                     WebUtil.error(getMensaje());
                     verification = true;
                 }
+                if(getDatoSeleccionado().getIdestado().trim().equals("CR")){
+                    this.mensaje = "El documento "+getDatoSeleccionado().getIddocumento()+"-"+getDatoSeleccionado().getSerie()+"-"+getDatoSeleccionado().getNumero()+
+                            " se encuentra Cerrado";
+                    WebUtil.error(getMensaje());
+                    verification = true;
+                }
             }
-            //buscarFiltro(2);
         }
         RequestContext.getCurrentInstance().update("datos:growl");
         return verification;
