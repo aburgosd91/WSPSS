@@ -20,6 +20,7 @@
                 <div class="ui-grid">
                     <div class="ui-grid-row">
                         <p:fieldset legend="Datos del Cliente" style="width: 100%" >
+                            <p:commandButton value="PDF" actionListener="#{memorandumInstaCMTAction.PDF_Memorandum_Instalacion()}"/>
                             <p:panelGrid  columns="2" columnClasses="no-border,no-border">
                                 <p:outputLabel value="Fecha"/>
                                 <p:calendar value="#{memorandumInstaCMTAction.slcCoti.fecha}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="#{!memorandumInstaCMTAction.edicion}"/>
@@ -29,16 +30,18 @@
                                 <p:panelGrid id="cntUbiOr" columns="2" columnClasses="no-border,no-border">
                                     <p:inputText  value="#{memorandumInstaCMTAction.slcCoti.idclieprov}" disabled="true"/>
                                     <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{memorandumInstaCMTAction.verCntCotizacionVenta()}" disabled="#{!memorandumInstaCMTAction.edicion}"  icon="ui-icon-search">
-                                        <p:ajax event="dialogReturn" listener="#{memorandumInstaCMTAction.valorCotizacionVenta}" update="datos"/>
+                                        <p:ajax event="dialogReturn" listener="#{memorandumInstaCMTAction.valorCotizacionVenta}"/>
                                     </p:commandButton>
                                 </p:panelGrid>
                                 
                                 <p:outputLabel value="Direccion de Servicio"/>
                                 <p:inputText  value="#{memorandumInstaCMTAction.slcCoti.lugar_entrega}" disabled="true"/>
                                 <p:outputLabel value="Contacto"/>
-                                <p:inputText value="#{memorandumInstaCMTAction.slcCoti.razon_social}" disabled="true"/>
+                                <p:inputText value="#{memorandumInstaCMTAction.slcCoti.contacto}" disabled="true"/>
                                 <p:outputLabel  value="Email"/>
                                 <p:inputText value="#{memorandumInstaCMTAction.slcCoti.contacto_email}" disabled="true"/>
+                                <p:outputLabel  value="Telefono"/>
+                                <p:inputText value="#{memorandumInstaCMTAction.slcCoti.numero}" disabled="true"/>
                                 <p:outputLabel value="Tipo de Servicio"/>
                                 <p:inputText  value="#{memorandumInstaCMTAction.slcCoti.tipo_servicio}" disabled="true"/>
                                 <p:outputLabel  value="Fecha de Instalacion"/>
@@ -107,7 +110,7 @@
                                     <f:facet name="header">
                                         <h:outputText value="Cantidad"/>
                                     </f:facet>
-                                    <p:inputNumber decimalPlaces="0" value="#{lstdcotizacionventas.cantidad}"/>
+                                    <h:outputText  value="#{lstdcotizacionventas.cantidad}"/>
                                 </p:column>
                                 <p:column style="width:10%;" filterBy="#{lstdcotizacionventas.descripcion}" filterMatchMode="contains" sortBy="#{lstdcotizacionventas.descripcion}">
                                     <f:facet name="header">

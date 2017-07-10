@@ -11,7 +11,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Memorandum_instalacion_pssDao extends BaseDao<Memorandum_instalacion_pss>{
+public class Memorandum_instalacion_pssDao extends BaseDao<Memorandum_instalacion_pss> {
 
     public Memorandum_instalacion_pssDao() {
         super(Memorandum_instalacion_pss.class);
@@ -31,11 +31,11 @@ public class Memorandum_instalacion_pssDao extends BaseDao<Memorandum_instalacio
         }
     }
 
-    public List<Memorandum_instalacion_pss> lstMemorandum(String idempresa,String idtipo)  throws NisiraORMException{
+    public List<Memorandum_instalacion_pss> lstMemorandum(String idempresa, String idtipo) throws NisiraORMException {
         List<Memorandum_instalacion_pss> memo = new ArrayList<Memorandum_instalacion_pss>();
         try {
             ResultSet rs = null;
-            rs = execProcedure("GETMEMORANDUM_INSTALACION_PSS", idempresa,idtipo);
+            rs = execProcedure("GETMEMORANDUM_INSTALACION_PSS", idempresa, idtipo);
             while (rs.next()) {
                 Memorandum_instalacion_pss me = new Memorandum_instalacion_pss();
                 me.setIdemrpesa(rs.getString("IDEMRPESA"));
@@ -50,13 +50,27 @@ public class Memorandum_instalacion_pssDao extends BaseDao<Memorandum_instalacio
                 me.setCondiciones_comerciales(rs.getString("CONDICIONES_COMERCIALES"));
                 me.setObservaciones(rs.getString("OBSERVACIONES"));
                 me.setIdusuario(rs.getString("IDUSUARIO"));
-                me.setRazon_social(rs.getString("RAZON_SOCIAL")!=null?rs.getString("RAZON_SOCIAL").trim():"");
+                me.setRazon_social(rs.getString("RAZON_SOCIAL") != null ? rs.getString("RAZON_SOCIAL").trim() : "");
                 memo.add(me);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         return memo;
+    }
+
+    public boolean validaMemo(String idcoti) throws NisiraORMException {
+        boolean val = true;
+        try {
+            ResultSet rs = null;
+            rs = execProcedure("VALIDAMEMORANDUM", idcoti);
+            while (rs.next()) {
+                val = false;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return val;
     }
 
     public String grabarMemo(String idempresa, String idords, Memorandum_instalacion_pss memo) throws NisiraORMException {
