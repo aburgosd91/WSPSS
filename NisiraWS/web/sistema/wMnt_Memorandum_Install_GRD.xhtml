@@ -185,6 +185,10 @@
                                 <p:inputText  value="#{memorandumInstaCRDAction.datoEdicion.condiciones_comerciales}" disabled="true"/>
                                 <p:outputLabel value="Observaciones"/>
                                 <p:inputTextarea cols="15" rows="10"  value="#{memorandumInstaCRDAction.datoEdicion.observaciones}" disabled="#{!memorandumInstaCRDAction.edicion}"/>
+                                <p:panelGrid columns="2" columnClasses="no-border,no-border">
+                                    <p:commandButton id="btnEnvio" value="Envio" ajax="true" image="ui-icon-envio" actionListener="#{memorandumInstaCRDAction.envioCorreo()}" />
+                                    <p:commandButton id="btnPdf" value="Pdf" ajax="false" image="ui-icon-pdf" actionListener="#{memorandumInstaCRDAction.PDF_cotizacion()}" onclick="this.form.target = '_blank'"/>
+                                </p:panelGrid>
                             </p:panelGrid>
                         </p:fieldset>
                     </div>

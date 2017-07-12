@@ -93,4 +93,13 @@ public class Memorandum_instalacion_pssDao extends BaseDao<Memorandum_instalacio
         }
         return mensaje;
     }
+
+    public void delMemo(String idemprea, String idcot) {
+        try {
+            ResultSet rs = null;
+            rs = execProcedure("DELMEMORANDUM",idcot ,idemprea );
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
 }

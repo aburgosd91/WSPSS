@@ -20,7 +20,6 @@
                 <div class="ui-grid">
                     <div class="ui-grid-row">
                         <p:fieldset legend="Datos del Cliente" style="width: 100%" >
-                            <p:commandButton value="PDF" actionListener="#{memorandumInstaCMTAction.PDF_Memorandum_Instalacion()}"/>
                             <p:panelGrid  columns="2" columnClasses="no-border,no-border">
                                 <p:outputLabel value="Fecha"/>
                                 <p:calendar value="#{memorandumInstaCMTAction.slcCoti.fecha}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="#{!memorandumInstaCMTAction.edicion}"/>
@@ -33,7 +32,7 @@
                                         <p:ajax event="dialogReturn" listener="#{memorandumInstaCMTAction.valorCotizacionVenta}"/>
                                     </p:commandButton>
                                 </p:panelGrid>
-                                
+
                                 <p:outputLabel value="Direccion de Servicio"/>
                                 <p:inputText  value="#{memorandumInstaCMTAction.slcCoti.lugar_entrega}" disabled="true"/>
                                 <p:outputLabel value="Contacto"/>
@@ -188,6 +187,10 @@
                                 <p:inputText  value="#{memorandumInstaCMTAction.datoEdicion.condiciones_comerciales}" disabled="true"/>
                                 <p:outputLabel value="Observaciones"/>
                                 <p:inputTextarea cols="15" rows="10"   value="#{memorandumInstaCMTAction.datoEdicion.observaciones}" disabled="#{!memorandumInstaCMTAction.edicion}"/>
+                                <p:panelGrid columns="2" columnClasses="no-border,no-border">
+                                    <p:commandButton id="btnEnvio" value="Envio" ajax="true" image="ui-icon-envio" actionListener="#{memorandumInstaCMTAction.envioCorreo()}" />
+                                    <p:commandButton id="btnPdf" value="Pdf" ajax="false" image="ui-icon-pdf" actionListener="#{memorandumInstaCMTAction.PDF_cotizacion()}" onclick="this.form.target = '_blank'"/>
+                                </p:panelGrid>
                             </p:panelGrid>
                         </p:fieldset>
                     </div>

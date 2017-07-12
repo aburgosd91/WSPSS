@@ -70,6 +70,7 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
     private DetalleMemorandum slcMemo;
     public UsuarioBean user;
     private String rutapdf;
+    private String filename;
 
     public MemorandumInstaCRDAction() {
         mensaje = "";
@@ -85,7 +86,8 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
         lstdetMemo = new ArrayList<DetalleMemorandum>();
         slcMemo = new DetalleMemorandum();
         rutapdf = "";
-        actualiza_ventana("wMnt_Memorandum_Install_CRD");
+        filename = "";
+        actualiza_ventana("wMnt_Memorandum_Install_GRD");
     }
 
     @Override
@@ -135,7 +137,8 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
         lstdetMemo = new ArrayList<DetalleMemorandum>();
         slcMemo = new DetalleMemorandum();
         rutapdf = "";
-        actualiza_ventana("wMnt_Memorandum_Install_CRD");
+        filename = "";
+        actualiza_ventana("wMnt_Memorandum_Install_GRD");
         return "";
     }
 
@@ -167,6 +170,73 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
         RequestContext.getCurrentInstance().update("datos:growl");
     }
 
+    public void envioCorreo() {
+        try {
+            if (getDatoEdicion().getIdcotizacionv() != null) {
+                List<Configsmtp> lstConfigsmtp = (new ConfigsmtpDao()).listarPorEmpresaWeb();
+                if (!lstConfigsmtp.isEmpty()) {
+                    /**
+                     * ****************** CREAR REPORTE ***********************
+                     */
+                    FacesContext context = FacesContext.getCurrentInstance();
+                    ExternalContext ext = context.getExternalContext();
+                    Map<String, Object> params = new HashMap<String, Object>();
+                    params.put("memo", slcpdfmemo);
+                    params.put("cotventa", slcCoti);
+                    JRDataSource atendido = new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource(lstAtencion);
+                    JRDataSource detcot = new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource(lstDcot);
+                    params.put("atendido", atendido);
+                    params.put("detcot", detcot);
+                    JRDataSource datasource = new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource(lstdetMemo);
+                    String reporte = Constantes.FORMATO_REPORTE + File.separator + "RPT_MEMORANDU_INSTALACION_003" + ".jrxml";
+                    String reporte_compilado = Constantes.FORMATO_REPORTE + File.separator + "RPT_MEMORANDU_INSTALACION_003" + ".jasper";
+                    File f = new File(reporte_compilado);
+                    if (!f.isFile()) {
+                        JasperCompileManager.compileReportToFile(reporte, reporte_compilado);
+                    }
+                    getParamsReport().put(JRParameter.IS_IGNORE_PAGINATION, true);
+                    JasperPrint jasperPrint = JasperFillManager.fillReport(reporte_compilado, params, datasource);
+                    jasperPrint.setName(getNombreArchivo());
+
+                    HttpServletResponse resp = (HttpServletResponse) ext.getResponse();
+                    resp.setContentType("application/pdf");
+
+                    SimpleDateFormat sm = new SimpleDateFormat("mm-dd-yyyy");
+                    filename = "MEMO_" + slcpdfmemo.getIdordenservicio() + "_" + sm.format(slcCoti.getFecha()) + "_"
+                            + slcpdfmemo.getRazon_social().trim()
+                            + ".pdf";
+                    /*RUTA*/
+                    JasperExportManager.exportReportToPdfFile(jasperPrint, rutapdf);
+
+                    Constantes.configsmtp = lstConfigsmtp.get(0);
+                    /* *********    ENVIAR CORREO  ********* */
+                    File file = new File(rutapdf);
+
+                    EnviarDocumentos enviarDocumentos = new EnviarDocumentos();
+                    enviarDocumentos.enviarcorreoMemo(slcCoti.getContacto_email(), file,
+                            slcCoti.getIddocumento() + slcCoti.getSerie() + "-" + slcCoti.getNumero(),
+                            slcCoti.getRazon_social(), filename);
+
+                    mensaje = "Envio de mensaje exitoso";
+                    WebUtil.info(mensaje);
+
+                } else {
+                    mensaje = "Envio de mensaje no configurado";
+                    WebUtil.error(mensaje);
+                }
+            } else {
+                mensaje = "Documento no creado";
+                WebUtil.MensajeAdvertencia(mensaje);
+            }
+
+        } catch (Exception ex) {
+            setMensaje(ex.getMessage() + "\n" + ex.getLocalizedMessage());
+            Logger.getLogger(CotizacionesAction.class.getName()).log(Level.SEVERE, null, ex);
+            WebUtil.fatal(mensaje);
+        }
+        RequestContext.getCurrentInstance().update("datos");
+    }
+
     public void envioCorreo_listado() {
         try {
             if (slcpdfmemo != null) {
@@ -177,9 +247,6 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
                         /* *********    ENVIAR CORREO  ********* */
                         File file = new File(rutapdf);
                         SimpleDateFormat sm = new SimpleDateFormat("mm-dd-yyyy");
-                        String filename = "MEMO_" + slcpdfmemo.getIdordenservicio() + "_" + sm.format(slcCoti.getFecha()) + "_"
-                                + slcpdfmemo.getRazon_social().trim()
-                                + ".pdf";
                         EnviarDocumentos enviarDocumentos = new EnviarDocumentos();
                         enviarDocumentos.enviarcorreoMemo(slcCoti.getContacto_email(), file,
                                 slcCoti.getIddocumento() + slcCoti.getSerie() + "-" + slcCoti.getNumero(),
@@ -241,7 +308,7 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
                     jasperPrint.setName(getNombreArchivo());
 
                     SimpleDateFormat sm = new SimpleDateFormat("mm-dd-yyyy");
-                    String filename = "MEMO_" + slcpdfmemo.getIdordenservicio() + "_" + sm.format(slcCoti.getFecha()) + "_"
+                    filename = "MEMO_" + slcpdfmemo.getIdordenservicio() + "_" + sm.format(slcCoti.getFecha()) + "_"
                             + slcpdfmemo.getRazon_social().trim()
                             + ".pdf";
                     /*RUTA*/
@@ -292,17 +359,12 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
         String reporte_compilado = Constantes.FORMATO_REPORTE + File.separator + "RPT_MEMORANDU_INSTALACION_003" + ".jasper";
         File f = new File(reporte_compilado);
         try {
-            FacesContext context = FacesContext.getCurrentInstance();
-            ExternalContext ext = context.getExternalContext();
             if (!f.isFile()) {
                 JasperCompileManager.compileReportToFile(reporte, reporte_compilado);
             }
             getParamsReport().put(JRParameter.IS_IGNORE_PAGINATION, true);
             JasperPrint jasperPrint = JasperFillManager.fillReport(reporte_compilado, params, datasource);
             jasperPrint.setName(getNombreArchivo());
-
-            HttpServletResponse resp = (HttpServletResponse) ext.getResponse();
-            resp.setContentType("application/pdf");
 
             SimpleDateFormat sm = new SimpleDateFormat("mm-dd-yyyy");
             String filename = "MEMO_" + slcpdfmemo.getIdordenservicio() + "_" + sm.format(slcCoti.getFecha()) + "_"
@@ -311,14 +373,61 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
             /*RUTA*/
             rutapdf = Constantes.ARCHIVO_REPORTE + File.separator + filename;
             JasperExportManager.exportReportToPdfFile(jasperPrint, rutapdf);
-            context.getApplication().getStateManager().saveView(context);
-            context.responseComplete();
 //                    resp.addHeader("Content-Disposition", "inline; filename=" + Constantes.ARCHIVO_REPORTE + File.separator+filename); // En la misma pantalla
 //                    //resp.addHeader("Content-Disposition", "attachmed; filename=" + Constantes.ARCHIVO_REPORTE + File.separator+filename); // Para que lo guardes
-            JasperExportManager.exportReportToPdfStream(jasperPrint, resp.getOutputStream());
             RequestContext.getCurrentInstance().execute("PF('dlg_pdf').show()");
         } catch (Exception e) {
             System.out.println(e.toString());
+//            this.estiloMensaje = Constantes.ESTILO_MENSAJE_ERROR;
+            mensaje = WebUtil.mensajeError();
+            WebUtil.MensajeError(mensaje);
+        }
+    }
+
+    public void PDF_cotizacion() {
+        try {
+            if (getDatoEdicion().getIdcotizacionv() != null) {
+                FacesContext context = FacesContext.getCurrentInstance();
+                ExternalContext ext = context.getExternalContext();
+                Map<String, Object> params = new HashMap<String, Object>();
+                params.put("memo", getDatoEdicion());
+                params.put("cotventa", slcCoti);
+                JRDataSource atendido = new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource(lstAtencion);
+                JRDataSource detcot = new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource(lstDcot);
+                params.put("atendido", atendido);
+                params.put("detcot", detcot);
+                JRDataSource datasource = new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource(lstdetMemo);
+                String reporte = Constantes.FORMATO_REPORTE + File.separator + "RPT_MEMORANDU_INSTALACION_003" + ".jrxml";
+                String reporte_compilado = Constantes.FORMATO_REPORTE + File.separator + "RPT_MEMORANDU_INSTALACION_003" + ".jasper";
+                File f = new File(reporte_compilado);
+
+                if (!f.isFile()) {
+                    JasperCompileManager.compileReportToFile(reporte, reporte_compilado);
+                }
+                getParamsReport().put(JRParameter.IS_IGNORE_PAGINATION, true);
+                JasperPrint jasperPrint = JasperFillManager.fillReport(reporte_compilado, params, datasource);
+                jasperPrint.setName(getNombreArchivo());
+                HttpServletResponse resp = (HttpServletResponse) ext.getResponse();
+                resp.setContentType("application/pdf");
+                SimpleDateFormat sm = new SimpleDateFormat("mm-dd-yyyy");
+                filename = "MEMO_" + getDatoEdicion().getIdordenservicio() + "_" + sm.format(slcCoti.getFecha()) + "_"
+                        + getDatoEdicion().getRazon_social().trim()
+                        + ".pdf";
+                /*RUTA*/
+                rutapdf = Constantes.ARCHIVO_REPORTE + File.separator + filename;
+                JasperExportManager.exportReportToPdfFile(jasperPrint, rutapdf);
+                context.getApplication().getStateManager().saveView(context);
+                context.responseComplete();
+//                    resp.addHeader("Content-Disposition", "inline; filename=" + Constantes.ARCHIVO_REPORTE + File.separator+filename); // En la misma pantalla
+//                    //resp.addHeader("Content-Disposition", "attachmed; filename=" + Constantes.ARCHIVO_REPORTE + File.separator+filename); // Para que lo guardes
+                JasperExportManager.exportReportToPdfStream(jasperPrint, resp.getOutputStream());
+
+            } else {
+                mensaje = "Documento no creado";
+                WebUtil.MensajeAdvertencia(mensaje);
+            }
+        } catch (Exception ex) {
+            System.out.println(ex.toString());
 //            this.estiloMensaje = Constantes.ESTILO_MENSAJE_ERROR;
             mensaje = WebUtil.mensajeError();
             WebUtil.MensajeError(mensaje);
@@ -440,7 +549,17 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
 
     @Override
     public void eliminar() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            if (getOpc_anular_eliminar().equalsIgnoreCase("ANULAR")) {
+
+            }
+            if (getOpc_anular_eliminar().equalsIgnoreCase("ELIMINAR")) {
+                memoDao.delMemo(getDatoEdicion().getIdcotizacionv(), getDatoEdicion().getIdemrpesa());
+            }
+            lista_accion_filtro("wLst_Memorandum_Install_CMT");
+        } catch (Exception ex) {
+            Logger.getLogger(RutaAction.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
@@ -557,6 +676,14 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
 
     public void setRutapdf(String rutapdf) {
         this.rutapdf = rutapdf;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
 
 }

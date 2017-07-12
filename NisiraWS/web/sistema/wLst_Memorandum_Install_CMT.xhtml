@@ -63,8 +63,8 @@
             <p:dialog id="dlg_pdf" header="..:: Cotización N° #{memorandumInstaCMTAction.slcCoti.serie} -
                       #{memorandumInstaCMTAction.slcCoti.numero}::.." 
                       widgetVar="dlg_pdf" modal="true" showEffect="popup" maximizable="true" closable="true" height="410px" width="600px">
-                <object type="application/pdf" data="#{memorandumInstaCMTAction.rutapdf}?pfdrid_c=true" height="99%" width="99%">
-                    Navegador no puede mostrar, favor descargue <a href="#{memorandumInstaCMTAction.rutapdf}">click</a> to download pdf instead.
+                <object type="application/pdf" data="../ARCHIVO_NISIRA_WEB/#{memorandumInstaCMTAction.filename}?pfdrid_c=true" height="99%" width="99%">
+                    Navegador no puede mostrar, favor descargue <a href="../ARCHIVO_NISIRA_WEB/#{memorandumInstaCMTAction.filename}">click</a> to download pdf instead.
                 </object>
                 <br/>                        
             </p:dialog>
@@ -76,8 +76,8 @@
                     <p:inputTextarea id="contacto_email" cols="50" rows="2" value="#{memorandumInstaCMTAction.slcCoti.contacto_email}"/>
                     <p:commandButton id="btnEnvio" value="Envio" ajax="true" image="ui-icon-envio" actionListener="#{memorandumInstaCMTAction.envioCorreo_listado()}" />
                 </p:panelGrid>
-                <object type="application/pdf" data="#{memorandumInstaCMTAction.rutapdf}?pfdrid_c=true" height="99%" width="99%">
-                    Navegador no puede mostrar, favor descargue <a href="#{memorandumInstaCMTAction.rutapdf}">click</a> to download pdf instead.
+                <object type="application/pdf" data="../ARCHIVO_NISIRA_WEB/#{memorandumInstaCMTAction.filename}?pfdrid_c=true" height="99%" width="99%">
+                    Navegador no puede mostrar, favor descargue <a href="../ARCHIVO_NISIRA_WEB/#{memorandumInstaCMTAction.filename}">click</a> to download pdf instead.
                 </object>
                 <br/> 
                 <br/>                        

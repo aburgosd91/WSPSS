@@ -23,6 +23,11 @@
                             <f:setPropertyActionListener value="#{lstMemo}" target="#{memorandumInstaCRDAction.slcpdfmemo}" />
                         </h:commandButton>
                     </p:column>
+                    <p:column style="white-space: nowrap; width: 53px;padding: 3px;">
+                        <h:commandButton value="ENVIO" action="#{memorandumInstaCRDAction.envioCorreo_open()}" title="Envio Correo">
+                            <f:setPropertyActionListener value="#{lstMemo}" target="#{memorandumInstaCRDAction.slcpdfmemo}" />
+                        </h:commandButton>
+                    </p:column>
                     <p:column style="width:15%;" filterBy="#{lstMemo.razon_social}" filterMatchMode="contains" sortBy="#{lstMemo.razon_social}">
                         <f:facet name="header">
                             <h:outputText value="Duracion de Contrato" />
@@ -58,8 +63,8 @@
             <p:dialog id="dlg_pdf" header="..:: Cotización N° #{memorandumInstaCRDAction.slcCoti.serie} -
                       #{memorandumInstaCRDAction.slcCoti.numero}::.." 
                       widgetVar="dlg_pdf" modal="true" showEffect="popup" maximizable="true" closable="true" height="410px" width="600px">
-                <object type="application/pdf" data="#{memorandumInstaCRDAction.rutapdf}?pfdrid_c=true" height="99%" width="99%">
-                    Navegador no puede mostrar, favor descargue <a href="#{memorandumInstaCRDAction.rutapdf}">click</a> to download pdf instead.
+                <object type="application/pdf" data="../ARCHIVO_NISIRA_WEB/#{memorandumInstaCRDAction.filename}?pfdrid_c=true" height="99%" width="99%">
+                    Navegador no puede mostrar, favor descargue <a href="../ARCHIVO_NISIRA_WEB/#{memorandumInstaCRDAction.filename}">click</a> to download pdf instead.
                 </object>
                 <br/>                        
             </p:dialog>
@@ -71,8 +76,8 @@
                     <p:inputTextarea id="contacto_email" cols="50" rows="2" value="#{memorandumInstaCRDAction.slcCoti.contacto_email}"/>
                     <p:commandButton id="btnEnvio" value="Envio" ajax="true" image="ui-icon-envio" actionListener="#{memorandumInstaCRDAction.envioCorreo_listado()}" />
                 </p:panelGrid>
-                <object type="application/pdf" data="#{memorandumInstaCRDAction.rutapdf}?pfdrid_c=true" height="99%" width="99%">
-                    Navegador no puede mostrar, favor descargue <a href="#{memorandumInstaCRDAction.rutapdf}">click</a> to download pdf instead.
+                <object type="application/pdf" data="../ARCHIVO_NISIRA_WEB/#{memorandumInstaCRDAction.filename}?pfdrid_c=true" height="99%" width="99%">
+                    Navegador no puede mostrar, favor descargue <a href="../ARCHIVO_NISIRA_WEB/#{memorandumInstaCRDAction.filename}">click</a> to download pdf instead.
                 </object>
                 <br/> 
                 <br/>                        
