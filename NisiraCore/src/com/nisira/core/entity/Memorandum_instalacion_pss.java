@@ -55,7 +55,8 @@ public class Memorandum_instalacion_pss implements Serializable{
         
         @XStreamOmitField
         private String razon_social;
-
+        @XStreamOmitField
+        private Date horaInsta;
 
 	/* Sets & Gets */
 	public void setIdemrpesa(String idemrpesa) {
@@ -161,6 +162,14 @@ public class Memorandum_instalacion_pss implements Serializable{
 	public String getIdusuario() {
 		return this.idusuario;
 	}
+
+    public Date getHoraInsta() {
+        return horaInsta;
+    }
+
+    public void setHoraInsta(Date horaInsta) {
+        this.horaInsta = horaInsta;
+    }
 
 
 

@@ -264,6 +264,7 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
                 lstDcot = dcotDao.getListDCotizacionWeb(user.getIDEMPRESA(), slcCoti.getIdcotizacionv());
                 getDatoEdicion().setIdcotizacionv(slcCoti.getIdcotizacionv());
                 getDatoEdicion().setFecha_inst(slcCoti.getFecha());
+                getDatoEdicion().setCondiciones_comerciales(slcCoti.getFormapago());
                 RequestContext.getCurrentInstance().update("datos");
             } else {
                 setMensaje("Esta Cotizacion ya ha sido Utilizda.");
@@ -321,7 +322,7 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
 
                 JsonArray myCustomArray = gson.toJsonTree(lstdetMemo).getAsJsonArray();
                 getDatoEdicion().setTabla_requerimiento(myCustomArray.toString());
-
+                getDatoEdicion().setHora_inst(WebUtil.convertTimeDecimal(getDatoEdicion().getHoraInsta()));
                 mensaje = memoDao.grabarMemo(getDatoEdicion().getIdemrpesa(), getDatoEdicion().getIdordenservicio(), getDatoEdicion());
                 WebUtil.info(getMensaje());
                 setLvalidate(true);

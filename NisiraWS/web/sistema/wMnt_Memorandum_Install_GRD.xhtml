@@ -44,7 +44,7 @@
                                 <p:outputLabel  value="Fecha de Instalacion"/>
                                 <p:calendar  value="#{memorandumInstaCRDAction.datoEdicion.fecha_inst}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="#{!memorandumInstaCRDAction.edicion}"/>
                                 <p:outputLabel value="Hora de Instalacion"/>
-                                <p:inputNumber decimalPlaces="2"  value="#{memorandumInstaCRDAction.datoEdicion.hora_inst}" disabled="#{!memorandumInstaCRDAction.edicion}"/>
+                                <p:calendar  value="#{memorandumInstaCRDAction.datoEdicion.horaInsta}" mask="99:99" pattern="HH:mm" timeOnly="true"  />
                                 <p:outputLabel  value="Duracion de Contrato"/>
                                 <p:inputText  value="#{memorandumInstaCRDAction.datoEdicion.duracion_contrato}" disabled="#{!memorandumInstaCRDAction.edicion}"/>                    
                             </p:panelGrid>
@@ -182,9 +182,9 @@
                                 <p:outputLabel value="Salario"/>
                                 <p:inputNumber decimalPlaces="2"   value="#{memorandumInstaCRDAction.datoEdicion.salario}" disabled="#{!memorandumInstaCRDAction.edicion}"/>
                                 <p:outputLabel value="Condiciones adicionales"/>
-                                <p:inputText  value="#{memorandumInstaCRDAction.datoEdicion.condiciones_comerciales}" disabled="#{!memorandumInstaCRDAction.edicion}"/>
+                                <p:inputText  value="#{memorandumInstaCRDAction.datoEdicion.condiciones_comerciales}" disabled="true"/>
                                 <p:outputLabel value="Observaciones"/>
-                                <p:inputText  value="#{memorandumInstaCRDAction.datoEdicion.observaciones}" disabled="#{!memorandumInstaCRDAction.edicion}"/>
+                                <p:inputTextarea cols="15" rows="10"  value="#{memorandumInstaCRDAction.datoEdicion.observaciones}" disabled="#{!memorandumInstaCRDAction.edicion}"/>
                             </p:panelGrid>
                         </p:fieldset>
                     </div>

@@ -186,6 +186,7 @@ public class MemorandumInstaCMTAction extends AbstactListAction<Memorandum_insta
                 lstDcot = dcotDao.getListDCotizacionWeb(user.getIDEMPRESA(), slcCoti.getIdcotizacionv());
                 getDatoEdicion().setIdcotizacionv(slcCoti.getIdcotizacionv());
                 getDatoEdicion().setFecha_inst(slcCoti.getFecha());
+                getDatoEdicion().setCondiciones_comerciales(slcCoti.getFormapago());
                 RequestContext.getCurrentInstance().update("datos");
             } else {
                 setMensaje("Esta Cotizacion ya ha sido Utilizda.");
