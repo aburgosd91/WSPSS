@@ -168,6 +168,7 @@ public class CotizacionventasDao extends BaseDao<Cotizacionventas> {
                     cotizacionventas.setIdproyecto(rs.getString("IDPROYECTO")!=null?rs.getString("IDPROYECTO").trim():"");
                     cotizacionventas.setMultivendedores(rs.getFloat("MULTIVENDEDORES"));
                     cotizacionventas.setIdfpago(rs.getString("IDFPAGO")!=null?rs.getString("IDFPAGO").trim():"");
+                    cotizacionventas.setFormapago(rs.getString("FORMAPAGO")!=null?rs.getString("FORMAPAGO").trim():"");
                     cotizacionventas.setIdembalaje(rs.getString("IDEMBALAJE")!=null?rs.getString("IDEMBALAJE").trim():"");
                     cotizacionventas.setComision(rs.getFloat("COMISION"));
                     cotizacionventas.setPlazoentrega(rs.getString("PLAZOENTREGA")!=null?rs.getString("PLAZOENTREGA").trim():"");

@@ -66,7 +66,7 @@ public class MemorandumInstaCMTAction extends AbstactListAction<Memorandum_insta
     private List<DetalleMemorandum> lstdetMemo;
     private DetalleMemorandum slcMemo;
     public UsuarioBean user;
-
+    private  String rutapdf;
     public MemorandumInstaCMTAction() {
         mensaje = "";
         slcCoti = new Cotizacionventas();
@@ -80,6 +80,7 @@ public class MemorandumInstaCMTAction extends AbstactListAction<Memorandum_insta
         slcAtencion = new Atendido();
         lstdetMemo = new ArrayList<DetalleMemorandum>();
         slcMemo = new DetalleMemorandum();
+        rutapdf ="";
         actualiza_ventana("wMnt_Memorandum_Install_CMT");
     }
 
@@ -91,7 +92,7 @@ public class MemorandumInstaCMTAction extends AbstactListAction<Memorandum_insta
     @Override
     public void buscarTodo() {
         try {
-            setListaDatos(memoDao.lstMemorandum(user.getIDEMPRESA(), "002"));
+            setListaDatos(memoDao.lstMemorandum(user.getIDEMPRESA(), "002"));            
             RequestContext.getCurrentInstance().update("datos");
             RequestContext.getCurrentInstance().update("datos:tbl");
         } catch (NisiraORMException ex) {
@@ -113,6 +114,7 @@ public class MemorandumInstaCMTAction extends AbstactListAction<Memorandum_insta
         slcAtencion = new Atendido();
         lstdetMemo = new ArrayList<DetalleMemorandum>();
         slcMemo = new DetalleMemorandum();
+        rutapdf = "";
         actualiza_ventana("wMnt_Memorandum_Install_CMT");
         return "";
     }
@@ -220,6 +222,7 @@ public class MemorandumInstaCMTAction extends AbstactListAction<Memorandum_insta
             lstAtencion = gson.fromJson(getDatoEdicion().getTabla_atendido(), collectionType);
             Type collectionType2 = new TypeToken<List<DetalleMemorandum>>() {
             }.getType();
+            getDatoEdicion().setHoraInsta(WebUtil.convertDecimalTime(getDatoEdicion().getHora_inst()));
             lstdetMemo = gson.fromJson(getDatoEdicion().getTabla_requerimiento(), collectionType2);
             slcCoti = (new CotizacionventasDao()).findCotizacion(user.getIDEMPRESA(), getDatoEdicion().getIdcotizacionv());
             lstDcot = dcotDao.getListDCotizacionWeb(user.getIDEMPRESA(), slcCoti.getIdcotizacionv());
@@ -273,13 +276,14 @@ public class MemorandumInstaCMTAction extends AbstactListAction<Memorandum_insta
                     + getDatoEdicion().getRazon_social().trim()
                     + ".pdf";
             /*RUTA*/
-            String rutapdf = Constantes.ARCHIVO_REPORTE + File.separator + filename;
+            rutapdf = Constantes.ARCHIVO_REPORTE + File.separator + filename;
             JasperExportManager.exportReportToPdfFile(jasperPrint, rutapdf);
             context.getApplication().getStateManager().saveView(context);
             context.responseComplete();
 //                    resp.addHeader("Content-Disposition", "inline; filename=" + Constantes.ARCHIVO_REPORTE + File.separator+filename); // En la misma pantalla
 //                    //resp.addHeader("Content-Disposition", "attachmed; filename=" + Constantes.ARCHIVO_REPORTE + File.separator+filename); // Para que lo guardes
             JasperExportManager.exportReportToPdfStream(jasperPrint, resp.getOutputStream());
+            RequestContext.getCurrentInstance().execute("PF('dlg_pdf').show()");
         } catch (Exception e) {
             System.out.println(e.toString());
 //            this.estiloMensaje = Constantes.ESTILO_MENSAJE_ERROR;
@@ -320,7 +324,7 @@ public class MemorandumInstaCMTAction extends AbstactListAction<Memorandum_insta
 
                 JsonArray myCustomArray = gson.toJsonTree(lstdetMemo).getAsJsonArray();
                 getDatoEdicion().setTabla_requerimiento(myCustomArray.toString());
-
+                getDatoEdicion().setHora_inst(WebUtil.convertTimeDecimal(getDatoEdicion().getHoraInsta()));
                 mensaje = memoDao.grabarMemo(getDatoEdicion().getIdemrpesa(), getDatoEdicion().getIdordenservicio(), getDatoEdicion());
                 WebUtil.info(getMensaje());
                 setLvalidate(true);
@@ -444,6 +448,14 @@ public class MemorandumInstaCMTAction extends AbstactListAction<Memorandum_insta
 
     public void setSlcpdfmemo(Memorandum_instalacion_pss slcpdfmemo) {
         this.slcpdfmemo = slcpdfmemo;
+    }
+
+    public String getRutapdf() {
+        return rutapdf;
+    }
+
+    public void setRutapdf(String rutapdf) {
+        this.rutapdf = rutapdf;
     }
 
 }

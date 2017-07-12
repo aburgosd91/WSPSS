@@ -320,7 +320,7 @@ public class Rpt_tareoweb_fijoAction extends AbstactListAction<Ordenservicioclie
                         case 10:celdaN.setCellValue(tlist.get(0).getHORA_REQ());break;
                         case 11:celdaN.setCellValue(tlist.get(0).getHORA_FIN());break;
                         case 12: celdaN.setCellValue(tlist.get(0).getHORAS());break;
-                        case 13:celdaN.setCellValue(tlist.get(0).getFINICIO() + "-" + list.get(0).getFFIN());break;
+                        case 13:celdaN.setCellValue(tlist.get(0).getFINICIO() + "-" + tlist.get(0).getFFIN());break;
                         case 14:celdaN.setCellValue(tlist.get(0).getDNI());break;
                         case 15:celdaN.setCellValue(tlist.get(0).getPERSONAL());break;
                         case 16:celdaN.setCellValue(tlist.get(0).getCARGO());break;

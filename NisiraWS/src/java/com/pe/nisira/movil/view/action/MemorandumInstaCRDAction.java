@@ -108,6 +108,7 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
             lstAtencion = gson.fromJson(getDatoEdicion().getTabla_atendido(), collectionType);
             Type collectionType2 = new TypeToken<List<DetalleMemorandum>>() {
             }.getType();
+            getDatoEdicion().setHoraInsta(WebUtil.convertDecimalTime(getDatoEdicion().getHora_inst()));
             lstdetMemo = gson.fromJson(getDatoEdicion().getTabla_requerimiento(), collectionType2);
             slcCoti = (new CotizacionventasDao()).findCotizacion(user.getIDEMPRESA(), getDatoEdicion().getIdcotizacionv());
             lstDcot = dcotDao.getListDCotizacionWeb(user.getIDEMPRESA(), slcCoti.getIdcotizacionv());
