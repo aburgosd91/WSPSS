@@ -186,7 +186,7 @@
                                 <p:outputLabel value="Condiciones Comerciales"/>
                                 <p:inputText  value="#{memorandumInstaCMTAction.datoEdicion.condiciones_comerciales}" disabled="true"/>
                                 <p:outputLabel value="Observaciones"/>
-                                <p:inputTextarea cols="15" rows="10"   value="#{memorandumInstaCMTAction.datoEdicion.observaciones}" disabled="#{!memorandumInstaCMTAction.edicion}"/>
+                                <p:inputTextarea cols="40" rows="5"   value="#{memorandumInstaCMTAction.datoEdicion.observaciones}" disabled="#{!memorandumInstaCMTAction.edicion}"/>
                                 <p:panelGrid columns="2" columnClasses="no-border,no-border">
                                     <p:commandButton id="btnEnvio" value="Envio" ajax="true" image="ui-icon-envio" actionListener="#{memorandumInstaCMTAction.envioCorreo()}" />
                                     <p:commandButton id="btnPdf" value="Pdf" ajax="false" image="ui-icon-pdf" actionListener="#{memorandumInstaCMTAction.PDF_cotizacion()}" onclick="this.form.target = '_blank'"/>

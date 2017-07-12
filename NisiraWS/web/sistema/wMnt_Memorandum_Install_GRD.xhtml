@@ -150,7 +150,7 @@
                                     <f:facet name="header">
                                         <h:outputText value="Cantidad" />
                                     </f:facet>
-                                    <p:inputText  value="#{detdemo.cantidad}" disabled="#{!memorandumInstaCRDAction.edicion}"/>
+                                   <p:inputNumber decimalPlaces="0"  value="#{detdemo.cantidad}" disabled="#{!memorandumInstaCRDAction.edicion}"/>
                                 </p:column>
                                 <p:column style="width:15%;" filterBy="#{detdemo.atendido}" filterMatchMode="contains" sortBy="#{detdemo.atendido}">
                                     <f:facet name="header">
@@ -184,7 +184,7 @@
                                 <p:outputLabel value="Condiciones adicionales"/>
                                 <p:inputText  value="#{memorandumInstaCRDAction.datoEdicion.condiciones_comerciales}" disabled="true"/>
                                 <p:outputLabel value="Observaciones"/>
-                                <p:inputTextarea cols="15" rows="10"  value="#{memorandumInstaCRDAction.datoEdicion.observaciones}" disabled="#{!memorandumInstaCRDAction.edicion}"/>
+                                <p:inputTextarea cols="40" rows="5"   value="#{memorandumInstaCRDAction.datoEdicion.observaciones}" disabled="#{!memorandumInstaCRDAction.edicion}"/>
                                 <p:panelGrid columns="2" columnClasses="no-border,no-border">
                                     <p:commandButton id="btnEnvio" value="Envio" ajax="true" image="ui-icon-envio" actionListener="#{memorandumInstaCRDAction.envioCorreo()}" />
                                     <p:commandButton id="btnPdf" value="Pdf" ajax="false" image="ui-icon-pdf" actionListener="#{memorandumInstaCRDAction.PDF_cotizacion()}" onclick="this.form.target = '_blank'"/>

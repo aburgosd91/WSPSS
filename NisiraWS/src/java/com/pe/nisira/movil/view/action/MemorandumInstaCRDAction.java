@@ -10,6 +10,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.reflect.TypeToken;
 import com.nisira.core.NisiraORMException;
+import com.nisira.core.dao.Config_report_pssDao;
 import com.nisira.core.dao.ConfigsmtpDao;
 import com.nisira.core.dao.CotizacionventasDao;
 import com.nisira.core.dao.DcotizacionventasDao;
@@ -476,7 +477,6 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
                 lstDcot = dcotDao.getListDCotizacionWeb(user.getIDEMPRESA(), slcCoti.getIdcotizacionv());
                 getDatoEdicion().setIdcotizacionv(slcCoti.getIdcotizacionv());
                 getDatoEdicion().setFecha_inst(slcCoti.getFecha());
-                getDatoEdicion().setCondiciones_comerciales(slcCoti.getFormapago());
                 RequestContext.getCurrentInstance().update("datos");
             } else {
                 setMensaje("Esta Cotizacion ya ha sido Utilizda.");
@@ -531,7 +531,9 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
                 Gson gson = new GsonBuilder().create();
                 JsonArray AtencionArray = gson.toJsonTree(lstAtencion).getAsJsonArray();
                 getDatoEdicion().setTabla_atendido(AtencionArray.toString());
-
+                String condicionTemp = (new Config_report_pssDao()).getPorClavePrimaria(getDatoEdicion().getIdemrpesa(),"003","003").getDato1();
+                String condicion = condicionTemp.replace("<br/>", "");
+                getDatoEdicion().setCondiciones_comerciales(condicion);
                 JsonArray myCustomArray = gson.toJsonTree(lstdetMemo).getAsJsonArray();
                 getDatoEdicion().setTabla_requerimiento(myCustomArray.toString());
                 getDatoEdicion().setHora_inst(WebUtil.convertTimeDecimal(getDatoEdicion().getHoraInsta()));
