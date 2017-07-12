@@ -283,6 +283,7 @@ public class MemorandumInstaCMTAction extends AbstactListAction<Memorandum_insta
                     lstAtencion = gson.fromJson(slcpdfmemo.getTabla_atendido(), collectionType);
                     Type collectionType2 = new TypeToken<List<DetalleMemorandum>>() {
                     }.getType();
+                    slcpdfmemo.setHoraInsta(WebUtil.convertDecimalTime(slcpdfmemo.getHora_inst()));
                     lstdetMemo = gson.fromJson(slcpdfmemo.getTabla_requerimiento(), collectionType2);
                     slcCoti = (new CotizacionventasDao()).findCotizacion(user.getIDEMPRESA(), slcpdfmemo.getIdcotizacionv());
                     lstDcot = dcotDao.getListDCotizacionWeb(user.getIDEMPRESA(), slcCoti.getIdcotizacionv());
@@ -337,6 +338,7 @@ public class MemorandumInstaCMTAction extends AbstactListAction<Memorandum_insta
             lstdetMemo = gson.fromJson(slcpdfmemo.getTabla_requerimiento(), collectionType2);
             slcCoti = (new CotizacionventasDao()).findCotizacion(user.getIDEMPRESA(), slcpdfmemo.getIdcotizacionv());
             lstDcot = dcotDao.getListDCotizacionWeb(user.getIDEMPRESA(), slcCoti.getIdcotizacionv());
+            slcpdfmemo.setHoraInsta(WebUtil.convertDecimalTime(slcpdfmemo.getHora_inst()));
             PDF_Memorandum_Instalacion();
         } catch (NisiraORMException ex) {
             Logger.getLogger(MemorandumInstaCMTAction.class.getName()).log(Level.SEVERE, null, ex);

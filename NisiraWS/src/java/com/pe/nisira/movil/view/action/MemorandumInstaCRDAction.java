@@ -217,6 +217,7 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
                     lstAtencion = gson.fromJson(slcpdfmemo.getTabla_atendido(), collectionType);
                     Type collectionType2 = new TypeToken<List<DetalleMemorandum>>() {
                     }.getType();
+                    slcpdfmemo.setHoraInsta(WebUtil.convertDecimalTime(slcpdfmemo.getHora_inst()));
                     lstdetMemo = gson.fromJson(slcpdfmemo.getTabla_requerimiento(), collectionType2);
                     slcCoti = (new CotizacionventasDao()).findCotizacion(user.getIDEMPRESA(), slcpdfmemo.getIdcotizacionv());
                     lstDcot = dcotDao.getListDCotizacionWeb(user.getIDEMPRESA(), slcCoti.getIdcotizacionv());
@@ -268,6 +269,7 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
             lstAtencion = gson.fromJson(slcpdfmemo.getTabla_atendido(), collectionType);
             Type collectionType2 = new TypeToken<List<DetalleMemorandum>>() {
             }.getType();
+            slcpdfmemo.setHoraInsta(WebUtil.convertDecimalTime(slcpdfmemo.getHora_inst()));
             lstdetMemo = gson.fromJson(slcpdfmemo.getTabla_requerimiento(), collectionType2);
             slcCoti = (new CotizacionventasDao()).findCotizacion(user.getIDEMPRESA(), slcpdfmemo.getIdcotizacionv());
             lstDcot = dcotDao.getListDCotizacionWeb(user.getIDEMPRESA(), slcCoti.getIdcotizacionv());
