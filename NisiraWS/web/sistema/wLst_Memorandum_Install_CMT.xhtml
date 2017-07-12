@@ -23,6 +23,11 @@
                             <f:setPropertyActionListener value="#{lstMemo}" target="#{memorandumInstaCMTAction.slcpdfmemo}" />
                         </h:commandButton>
                     </p:column>
+                    <p:column style="white-space: nowrap; width: 53px;padding: 3px;">
+                        <h:commandButton value="ENVIO" action="#{memorandumInstaCMTAction.envioCorreo_open()}" title="Envio Correo">
+                            <f:setPropertyActionListener value="#{lstMemo}" target="#{memorandumInstaCMTAction.slcpdfmemo}" />
+                        </h:commandButton>
+                    </p:column>
                     <p:column style="width:15%;" filterBy="#{lstMemo.razon_social}" filterMatchMode="contains" sortBy="#{lstMemo.razon_social}">
                         <f:facet name="header">
                             <h:outputText value="Duracion de Contrato" />
@@ -55,13 +60,29 @@
                     </p:column>
                 </p:dataTable>
             </p:panelGrid>
-            <p:dialog id="dlg_pdf" header="..:: Cotización N° #{memorandumInstaCMTAction.slcpdfmemo.idcotizacionv}::.." 
+            <p:dialog id="dlg_pdf" header="..:: Cotización N° #{memorandumInstaCMTAction.slcCoti.serie} -
+                      #{memorandumInstaCMTAction.slcCoti.numero}::.." 
                       widgetVar="dlg_pdf" modal="true" showEffect="popup" maximizable="true" closable="true" height="410px" width="600px">
                 <object type="application/pdf" data="#{memorandumInstaCMTAction.rutapdf}?pfdrid_c=true" height="99%" width="99%">
                     Navegador no puede mostrar, favor descargue <a href="#{memorandumInstaCMTAction.rutapdf}">click</a> to download pdf instead.
                 </object>
                 <br/>                        
             </p:dialog>
+            <p:dialog id="dlg_envio" header="..:: Cotización N° #{memorandumInstaCMTAction.slcCoti.serie} -
+                      #{memorandumInstaCMTAction.slcCoti.numero} ::.." 
+                      widgetVar="dlg_envio" modal="true" showEffect="popup" maximizable="true" closable="true" height="410px" width="600px">
+                <p:panelGrid columns="3" columnClasses="no-border, no-border, no-border">
+                    <p:outputLabel value="Email:"/>
+                    <p:inputTextarea id="contacto_email" cols="50" rows="2" value="#{memorandumInstaCMTAction.slcCoti.contacto_email}"/>
+                    <p:commandButton id="btnEnvio" value="Envio" ajax="true" image="ui-icon-envio" actionListener="#{memorandumInstaCMTAction.envioCorreo_listado()}" />
+                </p:panelGrid>
+                <object type="application/pdf" data="#{memorandumInstaCMTAction.rutapdf}?pfdrid_c=true" height="99%" width="99%">
+                    Navegador no puede mostrar, favor descargue <a href="#{memorandumInstaCMTAction.rutapdf}">click</a> to download pdf instead.
+                </object>
+                <br/> 
+                <br/>                        
+            </p:dialog>
+
             <p:growl id="growl" life="4000" showDetail="false"  />
             <cmp:mDialogElimina_lst id="cmpDialog" bean="#{memorandumInstaCMTAction}" ventana="LST" />
         </h:form>
