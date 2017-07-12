@@ -492,15 +492,22 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
 
     @Override
     public void nuevo() {
-        setDatoEdicion(new Memorandum_instalacion_pss());
-        slcCoti = new Cotizacionventas();
-        lstDcot = new ArrayList<Dcotizacionventas>();
-        lstAtencion = new ArrayList<Atendido>();
-        slcAtencion = new Atendido();
-        lstdetMemo = new ArrayList<DetalleMemorandum>();
-        slcMemo = new DetalleMemorandum();
-        getDatoEdicion().setIdemrpesa(user.getIDEMPRESA());
-        getDatoEdicion().setIdusuario(user.getIDUSUARIO());
+        try {
+            setDatoEdicion(new Memorandum_instalacion_pss());
+            slcCoti = new Cotizacionventas();
+            lstDcot = new ArrayList<Dcotizacionventas>();
+            lstAtencion = new ArrayList<Atendido>();
+            slcAtencion = new Atendido();
+            lstdetMemo = new ArrayList<DetalleMemorandum>();
+            slcMemo = new DetalleMemorandum();
+            getDatoEdicion().setIdemrpesa(user.getIDEMPRESA());
+            getDatoEdicion().setIdusuario(user.getIDUSUARIO());
+            String condicionTemp = (new Config_report_pssDao()).getPorClavePrimaria(getDatoEdicion().getIdemrpesa(), "003", "003").getDato1();
+            String condicion = condicionTemp.replace("<br/>", "");
+            getDatoEdicion().setCondiciones_comerciales(condicion);
+        } catch (NisiraORMException ex) {
+            Logger.getLogger(MemorandumInstaCRDAction.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public boolean validarGrabar() {
@@ -531,9 +538,6 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
                 Gson gson = new GsonBuilder().create();
                 JsonArray AtencionArray = gson.toJsonTree(lstAtencion).getAsJsonArray();
                 getDatoEdicion().setTabla_atendido(AtencionArray.toString());
-                String condicionTemp = (new Config_report_pssDao()).getPorClavePrimaria(getDatoEdicion().getIdemrpesa(),"003","003").getDato1();
-                String condicion = condicionTemp.replace("<br/>", "");
-                getDatoEdicion().setCondiciones_comerciales(condicion);
                 JsonArray myCustomArray = gson.toJsonTree(lstdetMemo).getAsJsonArray();
                 getDatoEdicion().setTabla_requerimiento(myCustomArray.toString());
                 getDatoEdicion().setHora_inst(WebUtil.convertTimeDecimal(getDatoEdicion().getHoraInsta()));

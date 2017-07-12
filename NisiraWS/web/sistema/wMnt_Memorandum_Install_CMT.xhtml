@@ -22,17 +22,28 @@
                         <p:fieldset legend="Datos del Cliente" style="width: 100%" >
                             <p:panelGrid  columns="2" columnClasses="no-border,no-border">
                                 <p:outputLabel value="Fecha"/>
-                                <p:calendar value="#{memorandumInstaCMTAction.slcCoti.fecha}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="#{!memorandumInstaCMTAction.edicion}"/>
-                                <p:outputLabel value="Nombre del Cliente"/>
-                                <p:inputText  value="#{memorandumInstaCMTAction.slcCoti.razon_social}" disabled="true"/>
-                                <p:outputLabel value="RUC"/>
-                                <p:panelGrid id="cntUbiOr" columns="2" columnClasses="no-border,no-border">
+                                <p:panelGrid columns="3" columnClasses="no-border,no-border,no-border">
+                                    <p:calendar value="#{memorandumInstaCMTAction.slcCoti.fecha}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="#{!memorandumInstaCMTAction.edicion}"/>
+                                    <p:commandButton id="btnEnvio" value="Envio" ajax="true" image="ui-icon-envio" actionListener="#{memorandumInstaCMTAction.envioCorreo()}" />
+                                    <p:commandButton id="btnPdf" value="Pdf" ajax="false" image="ui-icon-pdf" actionListener="#{memorandumInstaCMTAction.PDF_cotizacion()}" onclick="this.form.target = '_blank'"/>
+                                </p:panelGrid> 
+
+                                <p:outputLabel value="Empresa"/>
+                                <p:panelGrid id="cntUbiOr" columns="3" columnClasses="no-border,no-border,no-border">
                                     <p:inputText  value="#{memorandumInstaCMTAction.slcCoti.idclieprov}" disabled="true"/>
-                                    <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{memorandumInstaCMTAction.verCntCotizacionVenta()}" disabled="#{!memorandumInstaCMTAction.edicion}"  icon="ui-icon-search">
-                                        <p:ajax event="dialogReturn" listener="#{memorandumInstaCMTAction.valorCotizacionVenta}"/>
+                                    <p:inputText  value="#{memorandumInstaCMTAction.slcCoti.razon_social}" disabled="true"/>
+                                    <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{memorandumInstaCMTAction.verCntCotizacionVenta()}" disabled="#{!memorandumInstaCRDAction.edicion}"  icon="ui-icon-search">
+                                        <p:ajax  event="dialogReturn" listener="#{memorandumInstaCMTAction.valorCotizacionVenta}"/>
                                     </p:commandButton>
                                 </p:panelGrid>
-
+                                <p:outputLabel value="Codigo"/>
+                                <p:panelGrid  columns="5" columnClasses="no-border,no-border,no-border,no-border,no-border,no-border">
+                                    <p:inputText  value="#{memorandumInstaCMTAction.slcCoti.iddocumento}" disabled="true"/>
+                                    <p:outputLabel value="Serie"/>
+                                    <p:inputText  value="#{memorandumInstaCMTAction.slcCoti.serie}" disabled="true"/>
+                                    <p:outputLabel value="Numero"/>
+                                    <p:inputText  value="#{memorandumInstaCMTAction.slcCoti.numero}" disabled="true"/>
+                                </p:panelGrid>
                                 <p:outputLabel value="Direccion de Servicio"/>
                                 <p:inputText  value="#{memorandumInstaCMTAction.slcCoti.lugar_entrega}" disabled="true"/>
                                 <p:outputLabel value="Contacto"/>
@@ -40,7 +51,7 @@
                                 <p:outputLabel  value="Email"/>
                                 <p:inputText value="#{memorandumInstaCMTAction.slcCoti.contacto_email}" disabled="true"/>
                                 <p:outputLabel  value="Telefono"/>
-                                <p:inputText value="#{memorandumInstaCMTAction.slcCoti.numero}" disabled="true"/>
+                                <p:inputText value="#{memorandumInstaCMTAction.slcCoti.telefono}" disabled="true"/>
                                 <p:outputLabel value="Tipo de Servicio"/>
                                 <p:inputText  value="#{memorandumInstaCMTAction.slcCoti.tipo_servicio}" disabled="true"/>
                                 <p:outputLabel  value="Fecha de Instalacion"/>
@@ -187,10 +198,7 @@
                                 <p:inputText  value="#{memorandumInstaCMTAction.datoEdicion.condiciones_comerciales}" disabled="true"/>
                                 <p:outputLabel value="Observaciones"/>
                                 <p:inputTextarea cols="40" rows="5"   value="#{memorandumInstaCMTAction.datoEdicion.observaciones}" disabled="#{!memorandumInstaCMTAction.edicion}"/>
-                                <p:panelGrid columns="2" columnClasses="no-border,no-border">
-                                    <p:commandButton id="btnEnvio" value="Envio" ajax="true" image="ui-icon-envio" actionListener="#{memorandumInstaCMTAction.envioCorreo()}" />
-                                    <p:commandButton id="btnPdf" value="Pdf" ajax="false" image="ui-icon-pdf" actionListener="#{memorandumInstaCMTAction.PDF_cotizacion()}" onclick="this.form.target = '_blank'"/>
-                                </p:panelGrid>
+
                             </p:panelGrid>
                         </p:fieldset>
                     </div>

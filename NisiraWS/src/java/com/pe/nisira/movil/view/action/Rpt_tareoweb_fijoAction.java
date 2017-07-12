@@ -336,7 +336,9 @@ public class Rpt_tareoweb_fijoAction extends AbstactListAction<Ordenservicioclie
                     }
                     row++;
                 }
-                
+                for (int as = 0; as < colm; as++) {
+                    sheetN.autoSizeColumn((short) as);
+                }
                 
             }
         } catch (Exception ex) {

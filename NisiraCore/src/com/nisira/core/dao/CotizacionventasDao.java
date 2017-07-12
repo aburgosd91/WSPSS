@@ -114,6 +114,7 @@ public class CotizacionventasDao extends BaseDao<Cotizacionventas> {
                     cotizacionventas.setIdproyecto(rs.getString("IDPROYECTO")!=null?rs.getString("IDPROYECTO").trim():"");
                     cotizacionventas.setMultivendedores(rs.getFloat("MULTIVENDEDORES"));
                     cotizacionventas.setIdfpago(rs.getString("IDFPAGO")!=null?rs.getString("IDFPAGO").trim():"");
+                    cotizacionventas.setIdfpago(rs.getString("IDFPAGO")!=null?rs.getString("IDFPAGO").trim():"");
                     cotizacionventas.setIdembalaje(rs.getString("IDEMBALAJE")!=null?rs.getString("IDEMBALAJE").trim():"");
                     cotizacionventas.setComision(rs.getFloat("COMISION"));
                     cotizacionventas.setPlazoentrega(rs.getString("PLAZOENTREGA")!=null?rs.getString("PLAZOENTREGA").trim():"");
@@ -133,7 +134,7 @@ public class CotizacionventasDao extends BaseDao<Cotizacionventas> {
                     cotizacionventas.setEstado(rs.getString("ESTADO")!=null?rs.getString("ESTADO").trim():"");
                     cotizacionventas.setColor_estado(rs.getString("COLOR_ESTADO")!=null?rs.getString("COLOR_ESTADO").trim():"");
                     cotizacionventas.setTipo_servicio(rs.getString("TIPO_SERVICIO")!=null?rs.getString("TIPO_SERVICIO").trim():"");
- 
+                    cotizacionventas.setTelefono(rs.getString("TELEFONO_1")!=null?rs.getString("TELEFONO_1").trim():"");
                 }
             } catch(Exception ex) {
                 ex.printStackTrace();
@@ -188,6 +189,7 @@ public class CotizacionventasDao extends BaseDao<Cotizacionventas> {
                     cotizacionventas.setEstado(rs.getString("ESTADO")!=null?rs.getString("ESTADO").trim():"");
                     cotizacionventas.setColor_estado(rs.getString("COLOR_ESTADO")!=null?rs.getString("COLOR_ESTADO").trim():"");
                     cotizacionventas.setTipo_servicio(rs.getString("TIPO_SERVICIO")!=null?rs.getString("TIPO_SERVICIO").trim():"");
+                    cotizacionventas.setTelefono(rs.getString("TELEFONO_1")!=null?rs.getString("TELEFONO_1").trim():"");
                     lista.add(cotizacionventas); 
                 }
             } catch(Exception ex) {

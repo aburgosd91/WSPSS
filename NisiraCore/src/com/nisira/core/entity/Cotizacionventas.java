@@ -4,6 +4,7 @@ import com.nisira.annotation.ClavePrimaria;
 import com.nisira.annotation.Columna;
 import com.nisira.annotation.Tabla;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -302,7 +303,8 @@ public class Cotizacionventas  implements Serializable {
         @XStreamAlias("ITEM_CONTACTO")
         @Columna
         private String item_contacto;
-        
+        @XStreamOmitField
+        private String telefono;
         private String razon_social;
         private String estadosunat;
         private String moneda;
@@ -1420,6 +1422,14 @@ public class Cotizacionventas  implements Serializable {
      */
     public String getTipo_servicio() {
         return tipo_servicio;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
     }
 
     /**
