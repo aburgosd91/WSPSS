@@ -505,23 +505,32 @@ public class MemorandumInstaCMTAction extends AbstactListAction<Memorandum_insta
     }
 
     public boolean validarGrabar() {
-        if (slcCoti == null) {
+        if (slcCoti.getIdcotizacionv() == null) {
             mensaje = "Tiene que seleccionae una Cotizacion";
+            WebUtil.MensajeAdvertencia(mensaje);
             return false;
         }
         if (getDatoEdicion().getDuracion_contrato().equalsIgnoreCase("")) {
             mensaje = "Tiene que definir la duracion del contrato";
+            WebUtil.MensajeAdvertencia(mensaje);
             return false;
         }
-        if (lstAtencion == null) {
+        if(getDatoEdicion().getHoraInsta() == null){
+            mensaje = "Tiene que definir la Hora de Instalacion";
+            WebUtil.MensajeAdvertencia(mensaje);
+            return false;
+        }
+        if (lstAtencion.isEmpty()) {
             mensaje = "Tiene que ingresar Atenciones";
+            WebUtil.MensajeAdvertencia(mensaje);
             return false;
         }
-        if (lstdetMemo == null) {
+        if (lstdetMemo.isEmpty()) {
             mensaje = "Tiene que ingresar requerimientos de equipo";
+            WebUtil.MensajeAdvertencia(mensaje);
             return false;
         }
-
+        
         return true;
     }
 

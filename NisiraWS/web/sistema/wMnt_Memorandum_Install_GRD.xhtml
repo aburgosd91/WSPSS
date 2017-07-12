@@ -29,30 +29,30 @@
                                 </p:panelGrid> 
                                 <p:outputLabel value="Empresa"/>
                                 <p:panelGrid id="cntUbiOr" columns="3" columnClasses="no-border,no-border,no-border">
-                                    <p:inputText  value="#{memorandumInstaCRDAction.slcCoti.idclieprov}" disabled="true"/>
-                                    <p:inputText  value="#{memorandumInstaCRDAction.slcCoti.razon_social}" disabled="true"/>
+                                    <p:inputText  value="#{memorandumInstaCRDAction.slcCoti.idclieprov}" readonly="true"/>
+                                    <p:inputText  value="#{memorandumInstaCRDAction.slcCoti.razon_social}" readonly="true"/>
                                     <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{memorandumInstaCRDAction.verCntCotizacionVenta()}" disabled="#{!memorandumInstaCRDAction.edicion}"  icon="ui-icon-search">
                                         <p:ajax  event="dialogReturn" listener="#{memorandumInstaCRDAction.valorCotizacionVenta}"/>
                                     </p:commandButton>
                                 </p:panelGrid>
                                 <p:outputLabel value="Codigo"/>
                                 <p:panelGrid  columns="5" columnClasses="no-border,no-border,no-border,no-border,no-border,no-border">
-                                    <p:inputText  value="#{memorandumInstaCRDAction.slcCoti.iddocumento}" disabled="true"/>
+                                    <p:inputText  value="#{memorandumInstaCRDAction.slcCoti.iddocumento}" readonly="true"/>
                                     <p:outputLabel value="Serie"/>
-                                    <p:inputText  value="#{memorandumInstaCRDAction.slcCoti.serie}" disabled="true"/>
+                                    <p:inputText  value="#{memorandumInstaCRDAction.slcCoti.serie}" readonly="true"/>
                                     <p:outputLabel value="Numero"/>
-                                    <p:inputText  value="#{memorandumInstaCRDAction.slcCoti.numero}" disabled="true"/>
+                                    <p:inputText  value="#{memorandumInstaCRDAction.slcCoti.numero}" readonly="true"/>
                                 </p:panelGrid>
                                 <p:outputLabel value="Direccion de Servicio"/>
-                                <p:inputText  value="#{memorandumInstaCRDAction.slcCoti.lugar_entrega}" disabled="true"/>
+                                <p:inputText  value="#{memorandumInstaCRDAction.slcCoti.lugar_entrega}" readonly="true"/>
                                 <p:outputLabel value="Contacto"/>
-                                <p:inputText value="#{memorandumInstaCRDAction.slcCoti.razon_social}" disabled="true"/>
+                                <p:inputText value="#{memorandumInstaCRDAction.slcCoti.razon_social}" readonly="true"/>
                                 <p:outputLabel  value="Email"/>
-                                <p:inputText value="#{memorandumInstaCRDAction.slcCoti.contacto_email}" disabled="true"/>
+                                <p:inputText value="#{memorandumInstaCRDAction.slcCoti.contacto_email}" readonly="true"/>
                                 <p:outputLabel  value="Telefono"/>
-                                <p:inputText value="#{memorandumInstaCRDAction.slcCoti.telefono}" disabled="true"/>
+                                <p:inputText value="#{memorandumInstaCRDAction.slcCoti.telefono}" readonly="true"/>
                                 <p:outputLabel value="Tipo de Servicio"/>
-                                <p:inputText  value="#{memorandumInstaCRDAction.slcCoti.tipo_servicio}" disabled="true"/>
+                                <p:inputText  value="#{memorandumInstaCRDAction.slcCoti.tipo_servicio}" readonly="true"/>
                                 <p:outputLabel  value="Fecha de Instalacion"/>
                                 <p:calendar  value="#{memorandumInstaCRDAction.datoEdicion.fecha_inst}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="#{!memorandumInstaCRDAction.edicion}"/>
                                 <p:outputLabel value="Hora de Instalacion"/>
@@ -194,7 +194,7 @@
                                 <p:outputLabel value="Salario"/>
                                 <p:inputNumber decimalPlaces="2"   value="#{memorandumInstaCRDAction.datoEdicion.salario}" disabled="#{!memorandumInstaCRDAction.edicion}"/>
                                 <p:outputLabel value="Condiciones adicionales"/>
-                                <p:inputText  value="#{memorandumInstaCRDAction.datoEdicion.condiciones_comerciales}" disabled="true"/>
+                                <p:inputTextarea autoResize="true"  value="#{memorandumInstaCRDAction.datoEdicion.condiciones_comerciales}" readonly="true"/>
                                 <p:outputLabel value="Observaciones"/>
                                 <p:inputTextarea cols="40" rows="5"   value="#{memorandumInstaCRDAction.datoEdicion.observaciones}" disabled="#{!memorandumInstaCRDAction.edicion}"/>
 
