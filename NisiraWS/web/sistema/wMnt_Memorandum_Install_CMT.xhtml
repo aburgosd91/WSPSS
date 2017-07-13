@@ -20,14 +20,14 @@
                 <div class="ui-grid">
                     <div class="ui-grid-row">
                         <p:fieldset legend="Datos del Cliente" style="width: 100%" >
-                            <div class="ui-grid-col-4">
+                            <div class="ui-grid-col-6">
                                 <p:panelGrid columns="2" columnClasses="no-border,no-border">
                                     <p:outputLabel value="Fecha"/>
                                     <p:calendar value="#{memorandumInstaCMTAction.slcCoti.fecha}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="true"/>
                                     <p:outputLabel  value="Fecha de Instalacion"/>
                                     <p:calendar  value="#{memorandumInstaCMTAction.datoEdicion.fecha_inst}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="#{!memorandumInstaCMTAction.edicion}"/>
                                     <p:outputLabel value="Direccion de Servicio"/>
-                                    <p:inputText  value="#{memorandumInstaCMTAction.slcCoti.lugar_entrega}" readonly="true"/>
+                                    <p:inputText size="60" value="#{memorandumInstaCMTAction.slcCoti.lugar_entrega}" readonly="true"/>
                                     <p:outputLabel value="Contacto"/>
                                     <p:inputText value="#{memorandumInstaCMTAction.slcCoti.contacto}" readonly="true"/>
                                     <p:outputLabel  value="Email"/>
