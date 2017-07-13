@@ -110,7 +110,7 @@ public class CotizacionventasDao extends BaseDao<Cotizacionventas> {
                     cotizacionventas.setIdmoneda(rs.getString("IDMONEDA")!=null?rs.getString("IDMONEDA").trim():"");
                     cotizacionventas.setIdvendedor(rs.getString("IDVENDEDOR")!=null?rs.getString("IDVENDEDOR").trim():"");
                     cotizacionventas.setContacto(rs.getString("CONTACTO")!=null?rs.getString("CONTACTO").trim():"");
-                    cotizacionventas.setLugar_entrega(rs.getString("LUGAR_ENTREGA")!=null?rs.getString("LUGAR_ENTREGA").trim():"");
+                    cotizacionventas.setLugar_entrega(rs.getString("DIRECCION")!=null?rs.getString("DIRECCION").trim():"");
                     cotizacionventas.setIdproyecto(rs.getString("IDPROYECTO")!=null?rs.getString("IDPROYECTO").trim():"");
                     cotizacionventas.setMultivendedores(rs.getFloat("MULTIVENDEDORES"));
                     cotizacionventas.setIdfpago(rs.getString("IDFPAGO")!=null?rs.getString("IDFPAGO").trim():"");
@@ -165,7 +165,7 @@ public class CotizacionventasDao extends BaseDao<Cotizacionventas> {
                     cotizacionventas.setIdmoneda(rs.getString("IDMONEDA")!=null?rs.getString("IDMONEDA").trim():"");
                     cotizacionventas.setIdvendedor(rs.getString("IDVENDEDOR")!=null?rs.getString("IDVENDEDOR").trim():"");
                     cotizacionventas.setContacto(rs.getString("CONTACTO")!=null?rs.getString("CONTACTO").trim():"");
-                    cotizacionventas.setLugar_entrega(rs.getString("LUGAR_ENTREGA")!=null?rs.getString("LUGAR_ENTREGA").trim():"");
+                    cotizacionventas.setLugar_entrega(rs.getString("DIRECCION")!=null?rs.getString("DIRECCION").trim():"");
                     cotizacionventas.setIdproyecto(rs.getString("IDPROYECTO")!=null?rs.getString("IDPROYECTO").trim():"");
                     cotizacionventas.setMultivendedores(rs.getFloat("MULTIVENDEDORES"));
                     cotizacionventas.setIdfpago(rs.getString("IDFPAGO")!=null?rs.getString("IDFPAGO").trim():"");
