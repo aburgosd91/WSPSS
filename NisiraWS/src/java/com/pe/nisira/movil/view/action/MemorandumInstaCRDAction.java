@@ -182,7 +182,7 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
                     FacesContext context = FacesContext.getCurrentInstance();
                     ExternalContext ext = context.getExternalContext();
                     Map<String, Object> params = new HashMap<String, Object>();
-                    params.put("memo", slcpdfmemo);
+                    params.put("memo", getDatoEdicion());
                     params.put("cotventa", slcCoti);
                     JRDataSource atendido = new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource(lstAtencion);
                     JRDataSource detcot = new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource(lstDcot);
@@ -196,15 +196,16 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
                         JasperCompileManager.compileReportToFile(reporte, reporte_compilado);
                     }
                     getParamsReport().put(JRParameter.IS_IGNORE_PAGINATION, true);
+                    SimpleDateFormat sm = new SimpleDateFormat("mm-dd-yyyy");
                     JasperPrint jasperPrint = JasperFillManager.fillReport(reporte_compilado, params, datasource);
-                    jasperPrint.setName(getNombreArchivo());
+                    jasperPrint.setName("MEMO_" + getDatoEdicion().getIdordenservicio() + "_" + sm.format(slcCoti.getFecha()) + "_"
+                            + slcCoti.getRazon_social().trim());
 
                     HttpServletResponse resp = (HttpServletResponse) ext.getResponse();
                     resp.setContentType("application/pdf");
 
-                    SimpleDateFormat sm = new SimpleDateFormat("mm-dd-yyyy");
-                    filename = "MEMO_" + slcpdfmemo.getIdordenservicio() + "_" + sm.format(slcCoti.getFecha()) + "_"
-                            + slcpdfmemo.getRazon_social().trim()
+                    filename = "MEMO_" + getDatoEdicion().getIdordenservicio() + "_" + sm.format(slcCoti.getFecha()) + "_"
+                            + slcCoti.getRazon_social().trim()
                             + ".pdf";
                     /*RUTA*/
                     JasperExportManager.exportReportToPdfFile(jasperPrint, rutapdf);
@@ -291,7 +292,7 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
                     lstDcot = dcotDao.getListDCotizacionWeb(user.getIDEMPRESA(), slcCoti.getIdcotizacionv());
 
                     Map<String, Object> params = new HashMap<String, Object>();
-                    params.put("memo", slcpdfmemo);
+                    params.put("memo", getDatoEdicion());
                     params.put("cotventa", slcCoti);
                     JRDataSource atendido = new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource(lstAtencion);
                     JRDataSource detcot = new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource(lstDcot);
@@ -305,10 +306,11 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
                         JasperCompileManager.compileReportToFile(reporte, reporte_compilado);
                     }
                     getParamsReport().put(JRParameter.IS_IGNORE_PAGINATION, true);
-                    JasperPrint jasperPrint = JasperFillManager.fillReport(reporte_compilado, params, datasource);
-                    jasperPrint.setName(getNombreArchivo());
-
                     SimpleDateFormat sm = new SimpleDateFormat("mm-dd-yyyy");
+                    JasperPrint jasperPrint = JasperFillManager.fillReport(reporte_compilado, params, datasource);
+                    jasperPrint.setName("MEMO_" + getDatoEdicion().getIdordenservicio() + "_" + sm.format(slcCoti.getFecha()) + "_"
+                            + getDatoEdicion().getRazon_social().trim());
+
                     filename = "MEMO_" + slcpdfmemo.getIdordenservicio() + "_" + sm.format(slcCoti.getFecha()) + "_"
                             + slcpdfmemo.getRazon_social().trim()
                             + ".pdf";
@@ -364,10 +366,10 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
                 JasperCompileManager.compileReportToFile(reporte, reporte_compilado);
             }
             getParamsReport().put(JRParameter.IS_IGNORE_PAGINATION, true);
-            JasperPrint jasperPrint = JasperFillManager.fillReport(reporte_compilado, params, datasource);
-            jasperPrint.setName(getNombreArchivo());
-
             SimpleDateFormat sm = new SimpleDateFormat("mm-dd-yyyy");
+            JasperPrint jasperPrint = JasperFillManager.fillReport(reporte_compilado, params, datasource);
+            jasperPrint.setName("MEMO_" + slcpdfmemo.getIdordenservicio() + "_" + sm.format(slcCoti.getFecha()) + "_"
+                    + slcpdfmemo.getRazon_social().trim());
             String filename = "MEMO_" + slcpdfmemo.getIdordenservicio() + "_" + sm.format(slcCoti.getFecha()) + "_"
                     + slcpdfmemo.getRazon_social().trim()
                     + ".pdf";
@@ -406,13 +408,14 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
                     JasperCompileManager.compileReportToFile(reporte, reporte_compilado);
                 }
                 getParamsReport().put(JRParameter.IS_IGNORE_PAGINATION, true);
-                JasperPrint jasperPrint = JasperFillManager.fillReport(reporte_compilado, params, datasource);
-                jasperPrint.setName(getNombreArchivo());
+                SimpleDateFormat sm = new SimpleDateFormat("mm-dd-yyyy");
+                    JasperPrint jasperPrint = JasperFillManager.fillReport(reporte_compilado, params, datasource);
+                    jasperPrint.setName("MEMO_" + getDatoEdicion().getIdordenservicio() + "_" + sm.format(slcCoti.getFecha()) + "_"
+                            + slcCoti.getRazon_social().trim());
                 HttpServletResponse resp = (HttpServletResponse) ext.getResponse();
                 resp.setContentType("application/pdf");
-                SimpleDateFormat sm = new SimpleDateFormat("mm-dd-yyyy");
                 filename = "MEMO_" + getDatoEdicion().getIdordenservicio() + "_" + sm.format(slcCoti.getFecha()) + "_"
-                        + getDatoEdicion().getRazon_social().trim()
+                        + slcCoti.getRazon_social().trim()
                         + ".pdf";
                 /*RUTA*/
                 rutapdf = Constantes.ARCHIVO_REPORTE + File.separator + filename;
