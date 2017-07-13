@@ -135,6 +135,7 @@ public class CotizacionventasDao extends BaseDao<Cotizacionventas> {
                     cotizacionventas.setColor_estado(rs.getString("COLOR_ESTADO")!=null?rs.getString("COLOR_ESTADO").trim():"");
                     cotizacionventas.setTipo_servicio(rs.getString("TIPO_SERVICIO")!=null?rs.getString("TIPO_SERVICIO").trim():"");
                     cotizacionventas.setTelefono(rs.getString("TELEFONO_1")!=null?rs.getString("TELEFONO_1").trim():"");
+                    cotizacionventas.setContacto_email(rs.getString("CONTACTO_EMAIL")!=null?rs.getString("CONTACTO_EMAIL").trim():"");
                 }
             } catch(Exception ex) {
                 ex.printStackTrace();
@@ -190,6 +191,7 @@ public class CotizacionventasDao extends BaseDao<Cotizacionventas> {
                     cotizacionventas.setColor_estado(rs.getString("COLOR_ESTADO")!=null?rs.getString("COLOR_ESTADO").trim():"");
                     cotizacionventas.setTipo_servicio(rs.getString("TIPO_SERVICIO")!=null?rs.getString("TIPO_SERVICIO").trim():"");
                     cotizacionventas.setTelefono(rs.getString("TELEFONO_1")!=null?rs.getString("TELEFONO_1").trim():"");
+                    cotizacionventas.setContacto_email(rs.getString("CONTACTO_EMAIL")!=null?rs.getString("CONTACTO_EMAIL").trim():"");
                     lista.add(cotizacionventas); 
                 }
             } catch(Exception ex) {
