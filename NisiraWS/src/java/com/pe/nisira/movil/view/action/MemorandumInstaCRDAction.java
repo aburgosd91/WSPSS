@@ -551,8 +551,11 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
                 getDatoEdicion().setTabla_requerimiento(myCustomArray.toString());
                 getDatoEdicion().setHora_inst(WebUtil.convertTimeDecimal(getDatoEdicion().getHoraInsta()));
                 mensaje = memoDao.grabarMemo(getDatoEdicion().getIdemrpesa(), getDatoEdicion().getIdordenservicio(), getDatoEdicion());
+                getDatoEdicion().setIdordenservicio(mensaje);
+                setMensaje(WebUtil.exitoRegistrar("Ambito de Pago ", mensaje));
                 WebUtil.info(getMensaje());
                 setLvalidate(true);
+                
             }
             
             RequestContext.getCurrentInstance().update("datos:growl");

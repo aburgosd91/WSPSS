@@ -546,6 +546,7 @@ public class MemorandumInstaCMTAction extends AbstactListAction<Memorandum_insta
                 getDatoEdicion().setTabla_requerimiento(myCustomArray.toString());
                 getDatoEdicion().setHora_inst(WebUtil.convertTimeDecimal(getDatoEdicion().getHoraInsta()));
                 mensaje = memoDao.grabarMemo(getDatoEdicion().getIdemrpesa(), getDatoEdicion().getIdordenservicio(), getDatoEdicion());
+                setMensaje(WebUtil.exitoRegistrar("Memorandum Instalacion", mensaje));
                 WebUtil.info(getMensaje());
                 setLvalidate(true);
             }

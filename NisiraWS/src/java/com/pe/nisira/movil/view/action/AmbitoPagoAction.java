@@ -178,7 +178,8 @@ public class AmbitoPagoAction extends AbstactListAction<Ambito_pago> implements 
                         getDatoEdicion().setCodigo(mensaje.trim());
                     }
                 }
-                WebUtil.info("Se registro Ámbito: "+getMensaje());
+                setMensaje(WebUtil.exitoRegistrar("Ambito de Pago ", mensaje));
+                WebUtil.info(getMensaje());
                 setLvalidate(true);
             }
             RequestContext.getCurrentInstance().update("datos:growl");
