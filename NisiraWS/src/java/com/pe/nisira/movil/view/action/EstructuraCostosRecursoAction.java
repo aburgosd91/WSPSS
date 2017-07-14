@@ -361,38 +361,41 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
             List<List<Object>> lst = estructura_costosDao.export_xls(user.getIDEMPRESA());
             if(!lst.isEmpty()){
                 HSSFWorkbook objWB = (HSSFWorkbook) document;
-//                HSSFWorkbook objWB = new HSSFWorkbook();
-                HSSFSheet sheet1 = objWB.createSheet("DETALLADO_ESTRUCTURA_COSTOS");
-                HSSFRow fila_cabecera = sheet1.createRow((short)0);
-                
-                // Aunque no es necesario podemos establecer estilos a las celdas.
-                // Primero, establecemos el tipo de fuente
+                HSSFRow fila_cabecera_ = objWB.getSheetAt(0).getRow(0);
+
                 HSSFFont fuente = objWB.createFont();
-                fuente.setFontHeightInPoints((short)10);
-                fuente.setFontName(fuente.FONT_ARIAL);
+                fuente.setFontHeightInPoints((short) 8);
+                fuente.setFontName("Calibre LIght");
                 fuente.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
-                    
-                // Luego creamos el objeto que se encargará de aplicar el estilo a la celda
-                
+
                 HSSFCellStyle estiloCelda = objWB.createCellStyle();
                 estiloCelda.setWrapText(true);
                 estiloCelda.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-                estiloCelda.setVerticalAlignment(HSSFCellStyle.VERTICAL_TOP);
+                estiloCelda.setBorderBottom(HSSFCellStyle.BORDER_MEDIUM);
+                estiloCelda.setBorderTop(HSSFCellStyle.BORDER_MEDIUM);
+                estiloCelda.setBorderRight(HSSFCellStyle.BORDER_MEDIUM);
+                estiloCelda.setBorderLeft(HSSFCellStyle.BORDER_MEDIUM);
                 estiloCelda.setFont(fuente);
                 estiloCelda.setWrapText(true);
-                // También, podemos establecer bordes...
-//                estiloCelda.setBorderBottom(HSSFCellStyle.BORDER_MEDIUM);
-//                estiloCelda.setBottomBorderColor((short)8);
-//                estiloCelda.setBorderLeft(HSSFCellStyle.BORDER_MEDIUM);
-//                estiloCelda.setLeftBorderColor((short)8);
-//                estiloCelda.setBorderRight(HSSFCellStyle.BORDER_MEDIUM);
-//                estiloCelda.setRightBorderColor((short)8);
-//                estiloCelda.setBorderTop(HSSFCellStyle.BORDER_MEDIUM);
-//                estiloCelda.setTopBorderColor((short)8);
-
-                // Establecemos el tipo de sombreado de nuestra celda
-                estiloCelda.setFillForegroundColor((short)22);
+                estiloCelda.setFillForegroundColor((short) 22);
                 estiloCelda.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+        //Filas           
+                HSSFFont fuenteFilas = objWB.createFont();
+                fuenteFilas.setFontHeightInPoints((short) 8);
+                fuenteFilas.setFontName("Calibre LIght");
+
+                HSSFCellStyle estiloFila = objWB.createCellStyle();
+                estiloFila.setWrapText(true);
+                estiloFila.setAlignment(HSSFCellStyle.ALIGN_JUSTIFY);
+                estiloFila.setBorderBottom(HSSFCellStyle.BORDER_MEDIUM);
+                estiloFila.setBorderTop(HSSFCellStyle.BORDER_MEDIUM);
+                estiloFila.setBorderRight(HSSFCellStyle.BORDER_MEDIUM);
+                estiloFila.setBorderLeft(HSSFCellStyle.BORDER_MEDIUM);
+                estiloFila.setFont(fuente);
+
+//                HSSFWorkbook objWB = new HSSFWorkbook();
+                HSSFSheet sheet1 = objWB.createSheet("DETALLADO_ESTRUCTURA_COSTOS");
+                HSSFRow fila_cabecera = sheet1.createRow((short)0);
                 
                 // Creamos la celda, aplicamos el estilo y definimos
                 // el tipo de dato que contendrá la celda
@@ -401,7 +404,6 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
                 for(int i=0 ;i<tcol;i++){
                     celda = fila_cabecera.createCell((short)i);
                     celda.setCellStyle(estiloCelda);
-                    celda.setCellType(HSSFCell.CELL_TYPE_STRING);
                     switch(i){
                         case 0:celda.setCellValue("CÓDIGO");break;
                         case 1:celda.setCellValue("RUC");break;
@@ -420,8 +422,12 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
                     fila_cabecera = sheet1.createRow((short)row+1);
                     for(int col=0 ; col<tcol;col++){
                         celda = fila_cabecera.createCell((short)col);
+                        celda.setCellStyle(estiloFila);
                         celda.setCellValue(lst_col.get(col).toString());
                     }
+                }
+                for (int as = 0; as < tcol; as++) {
+                    sheet1.autoSizeColumn((short) as);
                 }
 //                wb = objWB;
             }else{
@@ -831,20 +837,67 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
                 WebUtil.error(mensaje);
                 RequestContext.getCurrentInstance().update("datos:growl");
             }else{
-                listEstructura_costos_producto = selectlistEstructura_costos_producto_copy;
-                selectEstructura_costos_producto = listEstructura_costos_producto.get(0);
-                listTotalDestructura_costos_recursos = new ArrayList<>();
-                listTotalEstructura_costos_mano_obra = new ArrayList<>();
-                for(int i=0;i<selectlistEstructura_costos_producto_copy.size();i++){
-                    Estructura_costos_producto obj = selectlistEstructura_costos_producto_copy.get(i);
-                    List<Destructura_costos_recursos> lstDestructura_costos_recursos = destructura_costos_recursosDao.listarPorEmpresaWebXProducto(obj.getIdempresa(), obj.getCodigo(),
-                            obj.getIdproducto(), obj.getItem());
-                    if(!lstDestructura_costos_recursos.isEmpty())
-                        listTotalDestructura_costos_recursos.addAll(lstDestructura_costos_recursos);
-                    List<Estructura_costos_mano_obra> lstEstructura_costos_mano_obra = estructura_costos_mano_obraDao.listarPorEmpresaWebXproducto(obj.getIdempresa(), obj.getCodigo(), 
-                            obj.getIdproducto(), obj.getItem());
-                    if(!lstEstructura_costos_mano_obra.isEmpty())
-                        listTotalEstructura_costos_mano_obra.addAll(lstEstructura_costos_mano_obra);
+                /*AGREGAR CAMPOS ADICIONALES , CUANDO EXISTA ESTRUCTURA*/
+                List<Estructura_costos_producto> tempEstructura_costos_producto = new ArrayList<>();
+                if(!listEstructura_costos_producto.isEmpty()){
+                    for(int i=0;i<selectlistEstructura_costos_producto_copy.size();i++){
+                        Estructura_costos_producto ecp = new Estructura_costos_producto();
+                        ecp.setIdempresa(selectlistEstructura_costos_producto_copy.get(i).getIdempresa());
+                        ecp.setCodigo(getDatoEdicion().getCodigo());
+                        ecp.setDescripcion(selectlistEstructura_costos_producto_copy.get(i).getDescripcion());
+                        ecp.setCodoperativo(selectlistEstructura_costos_producto_copy.get(i).getCodoperativo());
+                        ecp.setNhoras(selectlistEstructura_costos_producto_copy.get(i).getNhoras());
+                        //ecp.setIdruta(selectlistEstructura_costos_producto_copy.get(i).getIdruta());
+                        ecp.setIdproducto(selectlistEstructura_costos_producto_copy.get(i).getIdproducto());
+                        ecp.setProducto(selectlistEstructura_costos_producto_copy.get(i).getProducto());
+                        ecp.setItem(agregarItemEstructuraCostosProducto(ecp));
+                        tempEstructura_costos_producto.add(ecp); 
+                    }
+                    listEstructura_costos_producto.addAll(tempEstructura_costos_producto);
+                    recalcularNumeroProducto();
+                    selectEstructura_costos_producto = tempEstructura_costos_producto.get(0);
+                    for(int i=0;i<selectlistEstructura_costos_producto_copy.size();i++){
+                        Estructura_costos_producto obj = selectlistEstructura_costos_producto_copy.get(i);
+                        Estructura_costos_producto obj_original = tempEstructura_costos_producto.get(i);
+                        List<Destructura_costos_recursos> lstDestructura_costos_recursos = destructura_costos_recursosDao.listarPorEmpresaWebXProducto(obj.getIdempresa(), obj.getCodigo(),
+                                obj.getIdproducto(), obj.getItem());
+                        if(!lstDestructura_costos_recursos.isEmpty()){
+                            for(int x1=0;x1<lstDestructura_costos_recursos.size();x1++){
+                                Destructura_costos_recursos decr = lstDestructura_costos_recursos.get(x1);
+                                decr.setCodigo(getDatoEdicion().getCodigo());
+                                decr.setItemrango(obj_original.getItem());
+                                listTotalDestructura_costos_recursos.add(decr);
+                            }
+                            //listTotalDestructura_costos_recursos.addAll(lstDestructura_costos_recursos);
+                        }
+                        List<Estructura_costos_mano_obra> lstEstructura_costos_mano_obra = estructura_costos_mano_obraDao.listarPorEmpresaWebXproducto(obj.getIdempresa(), obj.getCodigo(), 
+                                obj.getIdproducto(), obj.getItem());
+                        if(!lstEstructura_costos_mano_obra.isEmpty()){
+                            for(int x1=0;x1<lstEstructura_costos_mano_obra.size();x1++){
+                                Estructura_costos_mano_obra decmo = lstEstructura_costos_mano_obra.get(x1);
+                                decmo.setCodigo(getDatoEdicion().getCodigo());
+                                decmo.setItemrango(obj_original.getItem());
+                                listTotalEstructura_costos_mano_obra.add(decmo);
+                            }
+                            //listTotalEstructura_costos_mano_obra.addAll(lstEstructura_costos_mano_obra);
+                        }
+                    }
+                }else{
+                    listEstructura_costos_producto = selectlistEstructura_costos_producto_copy;
+                    selectEstructura_costos_producto = listEstructura_costos_producto.get(0);
+                    listTotalDestructura_costos_recursos = new ArrayList<>();
+                    listTotalEstructura_costos_mano_obra = new ArrayList<>();
+                    for(int i=0;i<selectlistEstructura_costos_producto_copy.size();i++){
+                        Estructura_costos_producto obj = selectlistEstructura_costos_producto_copy.get(i);
+                        List<Destructura_costos_recursos> lstDestructura_costos_recursos = destructura_costos_recursosDao.listarPorEmpresaWebXProducto(obj.getIdempresa(), obj.getCodigo(),
+                                obj.getIdproducto(), obj.getItem());
+                        if(!lstDestructura_costos_recursos.isEmpty())
+                            listTotalDestructura_costos_recursos.addAll(lstDestructura_costos_recursos);
+                        List<Estructura_costos_mano_obra> lstEstructura_costos_mano_obra = estructura_costos_mano_obraDao.listarPorEmpresaWebXproducto(obj.getIdempresa(), obj.getCodigo(), 
+                                obj.getIdproducto(), obj.getItem());
+                        if(!lstEstructura_costos_mano_obra.isEmpty())
+                            listTotalEstructura_costos_mano_obra.addAll(lstEstructura_costos_mano_obra);
+                    }
                 }
                 if(getSelectEstructura_costos_producto()!=null){
                     listDestructura_costos_recursos = listarPorEmpresaWebXProducto_Destructura_costos_recursos_action();

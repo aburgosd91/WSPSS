@@ -252,9 +252,9 @@ public class OrdenservicioclienteDao extends BaseDao<Ordenserviciocliente> {
             }
         return mensaje;
     }
-        public NSRResultSet getConsultaRepote(String idempresa,String fechainicio,String fechafin) throws NisiraORMException{
+        public NSRResultSet getConsultaRepote(String idempresa,String fechainicio,String fechafin,String cliente,String supervisor) throws NisiraORMException{
             ResultSet rs = null;
-            rs = execProcedure("RPT_ORDENSERVICIOCLIENTE_TMPSS",idempresa,fechainicio,fechafin);
+            rs = execProcedure("RPT_ORDENSERVICIOCLIENTE_TMPSS",idempresa,fechainicio,fechafin,cliente,supervisor);
             return ReportConfig.getNSRResultSet(rs);
         }
         public NSRResultSet getConsultaRepote_fijo(String idempresa,String fechainicio,String fechafin) throws NisiraORMException{

@@ -63,6 +63,12 @@ import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import net.sf.jasperreports.engine.JRDataSource;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.primefaces.component.tabview.TabView;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.RowEditEvent;
@@ -84,12 +90,17 @@ public class Rpt_tareowebAction extends AbstactListAction<Ordenserviciocliente> 
     private UsuarioBean user;
     private String mensaje;
     private Object[] selectRpt;
+    private Clieprov selectClieprov_cliente;
+    private Clieprov selectClieprov_supervisor;
+    private Clieprov selectClieprov_operador;
     /************************************* CONTROLES *****************************************/
     private NSRResultSet rpt_result;
     public Rpt_tareowebAction() {
         /*********************************ENTITY*******************************************/
         user = (UsuarioBean) WebUtil.getObjetoSesion(Constantes.SESION_USUARIO);
         mensaje = "";
+        selectClieprov_cliente = new Clieprov();
+        selectClieprov_supervisor = new Clieprov();
         /*********************************LISTAS*******************************************/
         dataTableColumns = new ArrayList<>();
         /*********************************DAO*******************************************/
@@ -141,7 +152,7 @@ public class Rpt_tareowebAction extends AbstactListAction<Ordenserviciocliente> 
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         
     }
- 
+    
     public void buscar_filtrofecha() {
         try {
             this.setMensaje("");
@@ -150,7 +161,8 @@ public class Rpt_tareowebAction extends AbstactListAction<Ordenserviciocliente> 
             String f_fin = f.format(getHasta());
             f_ini = f_ini.replace("-", "");
             f_fin = f_fin.replace("-", "");
-            setRpt_result(getOrdenservicioclienteDao().getConsultaRepote(user.getIDEMPRESA(),f_ini,f_fin));
+            setRpt_result(getOrdenservicioclienteDao().getConsultaRepote(user.getIDEMPRESA(),f_ini,f_fin,
+                    selectClieprov_cliente.getIdclieprov(),selectClieprov_supervisor.getIdclieprov()));
             RequestContext.getCurrentInstance().update("datos");
         } catch (Exception e) {
             setMensaje(WebUtil.mensajeError());
@@ -158,6 +170,26 @@ public class Rpt_tareowebAction extends AbstactListAction<Ordenserviciocliente> 
         }
         RequestContext.getCurrentInstance().update("datos:tbl");
         return;
+    }
+    public void verCntClieprov() {
+        RequestContext.getCurrentInstance().openDialog("cntClieprov", modalOptions, null);
+    }
+    
+    public void valorClieprov(SelectEvent event) {
+        this.selectClieprov_cliente = (Clieprov) event.getObject();
+    }
+    public void verCntclearClieprov(){
+        this.selectClieprov_cliente = new Clieprov();
+    }
+    public void verCntClieprovPersonalSupervisor() {
+        RequestContext.getCurrentInstance().openDialog("cntClieprovPersonalSupervisor", modalOptions, null);
+    }
+    
+    public void valorOperario(SelectEvent event) {
+        this.setSelectClieprov_supervisor((Clieprov) event.getObject());
+    }
+    public void verCntclearClieprov_PersonalSupervisor(){
+        this.selectClieprov_supervisor = new Clieprov();
     }
     public UsuarioBean getUser() {
         return user;
@@ -177,7 +209,8 @@ public class Rpt_tareowebAction extends AbstactListAction<Ordenserviciocliente> 
             String f_fin = f.format(getHasta());
             f_ini = f_ini.replace("-", "");
             f_fin = f_fin.replace("-", "");
-            setRpt_result(getOrdenservicioclienteDao().getConsultaRepote(user.getIDEMPRESA(),f_ini,f_fin));
+            setRpt_result(getOrdenservicioclienteDao().getConsultaRepote(user.getIDEMPRESA(),f_ini,f_fin,selectClieprov_cliente.getIdclieprov(),
+                    selectClieprov_supervisor.getIdclieprov()));
             //setListaDatos(getOrdenservicioclienteDao().listarPorEmpresaWebFiltroFecha(user.getIDEMPRESA(),f_ini,f_fin));
         } catch (Exception e) {
             setMensaje(WebUtil.mensajeError());
@@ -202,6 +235,64 @@ public class Rpt_tareowebAction extends AbstactListAction<Ordenserviciocliente> 
     @Override
     public JRDataSource getDataSourceReport_lst() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    @Override
+    public void downFormatExcelEspecial(Object document) {
+        HSSFWorkbook objWB = (HSSFWorkbook) document;
+        objWB.setSheetName(0,"REPORTE_ESPECIAL_ "+WebUtil.fechaDMY(new Date(),1));
+
+        HSSFRow fila_cabecera = objWB.getSheetAt(0).getRow(0);
+
+        HSSFFont fuente = objWB.createFont();
+        fuente.setFontHeightInPoints((short) 8);
+        fuente.setFontName("Calibre LIght");
+        fuente.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+
+        HSSFCellStyle estiloCelda = objWB.createCellStyle();
+        estiloCelda.setWrapText(true);
+        estiloCelda.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+        estiloCelda.setBorderBottom(HSSFCellStyle.BORDER_MEDIUM);
+        estiloCelda.setBorderTop(HSSFCellStyle.BORDER_MEDIUM);
+        estiloCelda.setBorderRight(HSSFCellStyle.BORDER_MEDIUM);
+        estiloCelda.setBorderLeft(HSSFCellStyle.BORDER_MEDIUM);
+        estiloCelda.setFont(fuente);
+        estiloCelda.setWrapText(true);
+        estiloCelda.setFillForegroundColor((short) 22);
+        estiloCelda.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+//Filas           
+        HSSFFont fuenteFilas = objWB.createFont();
+        fuenteFilas.setFontHeightInPoints((short) 8);
+        fuenteFilas.setFontName("Calibre LIght");
+
+        HSSFCellStyle estiloFila = objWB.createCellStyle();
+        estiloFila.setWrapText(true);
+        estiloFila.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+        estiloFila.setBorderBottom(HSSFCellStyle.BORDER_MEDIUM);
+        estiloFila.setBorderTop(HSSFCellStyle.BORDER_MEDIUM);
+        estiloFila.setBorderRight(HSSFCellStyle.BORDER_MEDIUM);
+        estiloFila.setBorderLeft(HSSFCellStyle.BORDER_MEDIUM);
+        estiloFila.setFont(fuente);
+
+        int col = rpt_result.columnCount();
+        int row = rpt_result.getData().size();
+        HSSFCell celda;
+        for(int i=0 ;i<col;i++){
+            celda = fila_cabecera.createCell((short)i);
+            celda.setCellStyle(estiloCelda);
+            celda.setCellValue(rpt_result.getName()[i]);
+        }
+        HSSFRow fila;
+        for(int i=0;i<row;i++){
+            fila = objWB.getSheetAt(0).getRow(i+1);
+            for(int j=0;j<col;j++){
+                celda = fila.createCell((short)j);
+                celda.setCellStyle(estiloFila);
+                celda.setCellValue( rpt_result.getData().get(i)[j]==null?"":rpt_result.getData().get(i)[j].toString());
+            }
+        }
+//        for (int as = 0; as < col; as++) {
+//            objWB.getSheetAt(0).autoSizeColumn((short) as);
+//        }
     }
     
     public String fechaDMY(Date fecha){
@@ -278,5 +369,47 @@ public class Rpt_tareowebAction extends AbstactListAction<Ordenserviciocliente> 
      */
     public void setDataTableColumns(List<DataTableColumn> dataTableColumns) {
         this.dataTableColumns = dataTableColumns;
+    }
+
+    /**
+     * @return the selectClieprov_cliente
+     */
+    public Clieprov getSelectClieprov_cliente() {
+        return selectClieprov_cliente;
+    }
+
+    /**
+     * @param selectClieprov_cliente the selectClieprov_cliente to set
+     */
+    public void setSelectClieprov_cliente(Clieprov selectClieprov_cliente) {
+        this.selectClieprov_cliente = selectClieprov_cliente;
+    }
+
+    /**
+     * @return the selectClieprov_supervisor
+     */
+    public Clieprov getSelectClieprov_supervisor() {
+        return selectClieprov_supervisor;
+    }
+
+    /**
+     * @param selectClieprov_supervisor the selectClieprov_supervisor to set
+     */
+    public void setSelectClieprov_supervisor(Clieprov selectClieprov_supervisor) {
+        this.selectClieprov_supervisor = selectClieprov_supervisor;
+    }
+
+    /**
+     * @return the selectClieprov_operador
+     */
+    public Clieprov getSelectClieprov_operador() {
+        return selectClieprov_operador;
+    }
+
+    /**
+     * @param selectClieprov_operador the selectClieprov_operador to set
+     */
+    public void setSelectClieprov_operador(Clieprov selectClieprov_operador) {
+        this.selectClieprov_operador = selectClieprov_operador;
     }
 }
