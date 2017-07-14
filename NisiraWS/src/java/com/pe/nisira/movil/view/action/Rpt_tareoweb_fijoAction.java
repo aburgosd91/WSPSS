@@ -14,8 +14,11 @@ import com.pe.nisira.movil.view.util.Constantes;
 import com.pe.nisira.movil.view.util.DataTableColumn;
 import com.pe.nisira.movil.view.util.WebUtil;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -261,6 +264,13 @@ public class Rpt_tareoweb_fijoAction extends AbstactListAction<Ordenservicioclie
                 HSSFRow fila_cabeceraN = sheetN.createRow((short) 0);
                 HSSFCell celdaN;
                 ArrayList<RptFijos> list = (ArrayList) pair.getValue();
+                DateFormat df = new SimpleDateFormat("mm/dd/yyyy");
+                list.sort((d1,d2)->d1.getFiniD().compareTo(d2.getFiniD()));
+                int l = 1;
+                for(RptFijos t:list){
+                    t.setFila(l);
+                    l++;
+                }
                 Map<String, List<RptFijos>> nlist = list.stream().collect(Collectors.groupingBy(RptFijos::getDNI));
                 for (int in = 0; in < 17; in++) {
                     celdaN = fila_cabeceraN.createCell(in);
@@ -320,20 +330,25 @@ public class Rpt_tareoweb_fijoAction extends AbstactListAction<Ordenservicioclie
                         case 10:celdaN.setCellValue(tlist.get(0).getHORA_REQ());break;
                         case 11:celdaN.setCellValue(tlist.get(0).getHORA_FIN());break;
                         case 12: celdaN.setCellValue(tlist.get(0).getHORAS());break;
-                        case 13:celdaN.setCellValue(tlist.get(0).getFINICIO() + "-" + tlist.get(0).getFFIN());break;
+                        case 13:celdaN.setCellValue(tlist.get(0).getFINICIO() + "-" + tlist.get(tlist.size()-1).getFFIN());break;
                         case 14:celdaN.setCellValue(tlist.get(0).getDNI());break;
                         case 15:celdaN.setCellValue(tlist.get(0).getPERSONAL());break;
                         case 16:celdaN.setCellValue(tlist.get(0).getCARGO());break;
                         }                    
-                    }
-                    
-                    int colw = 16;
-                    for (RptFijos rp : tlist) {
+                    }                    
+                    int k = 1;
+                    for(int colw = 16;colw<colm;colw++){
                         celdaN = fila_cabeceraN.createCell(colw);
                         celdaN.setCellStyle(estiloFila);
-                        celdaN.setCellValue(rp.getASISTENCIA());
-                        colw++;
+                        for (RptFijos rp : tlist) {
+                            if(rp.getFila() == k){
+                                celdaN.setCellValue(rp.getASISTENCIA());
+                                break;
+                            }
+                        }
+                        k++;
                     }
+                    
                     row++;
                 }
                 for (int as = 0; as < colm; as++) {
@@ -345,34 +360,41 @@ public class Rpt_tareoweb_fijoAction extends AbstactListAction<Ordenservicioclie
             Logger.getLogger(EstructuraCostosRecursoAction.class.getName()).log(Level.SEVERE, null, ex);
             this.mensaje = ex.getMessage();
             RequestContext.getCurrentInstance().update("datos:growl");
-        }
+        } 
     }
 
     public void intoObject(NSRResultSet rs) {
+        DateFormat df = new SimpleDateFormat("mm/dd/yyyy");
         for (Object[] o : rs.getData()) {
-            RptFijos rp = new RptFijos();
-            rp.setAMBITO(String.valueOf(o[0]));
-            rp.setSEDE(String.valueOf(o[1]));
-            rp.setIDDOCUMENTO(String.valueOf(o[2]));
-            rp.setSERIE(String.valueOf(o[3]));
-            rp.setNUMERO(String.valueOf(o[4]));
-            rp.setEMPRESA(String.valueOf(o[5]));
-            rp.setRUC(String.valueOf(o[6]));
-            rp.setPUESTO(String.valueOf(o[7]));
-            rp.setFECHA_SERVICIO(String.valueOf(o[8]));
-            rp.setSERVICIO(String.valueOf(o[9]));
-            rp.setHORA_REQ(String.valueOf(o[10]));
-            rp.setHORA_FIN(String.valueOf(o[11]));
-            rp.setHORAS(String.valueOf(o[12]));
-            rp.setFINICIO(String.valueOf(o[13]));
-            rp.setFFIN(String.valueOf(o[14]));
-            rp.setDNI(String.valueOf(o[15]));
-            rp.setPERSONAL(String.valueOf(o[16]));
-            rp.setCARGO(String.valueOf(o[17]));
-            rp.setASISTENCIA(String.valueOf(o[18]));
-            rp.setOBSERVACION(String.valueOf(o[19]));
-            rp.setCodigoOP(rp.getIDDOCUMENTO() + "-" + rp.getSERIE() + "-" + rp.getNUMERO());
-            lrtp.add(rp);
+            try {
+                RptFijos rp = new RptFijos();
+                rp.setAMBITO(String.valueOf(o[0]));
+                rp.setSEDE(String.valueOf(o[1]));
+                rp.setIDDOCUMENTO(String.valueOf(o[2]));
+                rp.setSERIE(String.valueOf(o[3]));
+                rp.setNUMERO(String.valueOf(o[4]));
+                rp.setEMPRESA(String.valueOf(o[5]));
+                rp.setRUC(String.valueOf(o[6]));
+                rp.setPUESTO(String.valueOf(o[7]));
+                rp.setFECHA_SERVICIO(String.valueOf(o[8]));
+                rp.setSERVICIO(String.valueOf(o[9]));
+                rp.setHORA_REQ(String.valueOf(o[10]));
+                rp.setHORA_FIN(String.valueOf(o[11]));
+                rp.setHORAS(String.valueOf(o[12]));
+                rp.setFINICIO(String.valueOf(o[13]));
+                rp.setFFIN(String.valueOf(o[14]));
+                rp.setDNI(String.valueOf(o[15]));
+                rp.setPERSONAL(String.valueOf(o[16]));
+                rp.setCARGO(String.valueOf(o[17]));
+                rp.setASISTENCIA(String.valueOf(o[18]));
+                rp.setOBSERVACION(String.valueOf(o[19]));
+                rp.setFiniD(df.parse(rp.getFINICIO()));
+                rp.setFfinD(df.parse(rp.getFFIN()));
+                rp.setCodigoOP(rp.getIDDOCUMENTO() + "-" + rp.getSERIE() + "-" + rp.getNUMERO());
+                lrtp.add(rp);
+            } catch (ParseException ex) {
+                Logger.getLogger(Rpt_tareoweb_fijoAction.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 

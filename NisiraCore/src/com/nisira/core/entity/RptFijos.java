@@ -6,6 +6,7 @@
 package com.nisira.core.entity;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  *
@@ -34,7 +35,9 @@ public class RptFijos {
     private String ASISTENCIA;
     private String OBSERVACION;
     private String codigoOP;
-    private ArrayList<Object[]> lstasist;
+    private Date finiD;
+    private Date ffinD;
+    private int fila;
     public RptFijos() {
     }
 
@@ -206,12 +209,29 @@ public class RptFijos {
         this.codigoOP = codigoOP;
     }
 
-    public ArrayList<Object[]> getLstasist() {
-        return lstasist;
+    public int getFila() {
+        return fila;
     }
 
-    public void setLstasist(ArrayList<Object[]> lstasist) {
-        this.lstasist = lstasist;
+    public void setFila(int fila) {
+        this.fila = fila;
+    }
+
+    
+    public Date getFiniD() {
+        return finiD;
+    }
+
+    public void setFiniD(Date finiD) {
+        this.finiD = finiD;
+    }
+
+    public Date getFfinD() {
+        return ffinD;
+    }
+
+    public void setFfinD(Date ffinD) {
+        this.ffinD = ffinD;
     }
 
 }
