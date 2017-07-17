@@ -21,9 +21,9 @@ public class Destructura_tareo_clieprov {
 	private Float hora;
 	@Columna
 	private String idruta;
-
-
-
+        
+        private String cliente;
+        private String ruta;
 	/* Sets & Gets */
 	public void setIdempresa(String idempresa) {
 		this.idempresa = idempresa;
@@ -76,5 +76,33 @@ public class Destructura_tareo_clieprov {
 
 
 	/* Sets & Gets FK*/
+
+    /**
+     * @return the cliente
+     */
+    public String getCliente() {
+        return cliente;
+    }
+
+    /**
+     * @param cliente the cliente to set
+     */
+    public void setCliente(String cliente) {
+        this.cliente = cliente;
+    }
+
+    /**
+     * @return the ruta
+     */
+    public String getRuta() {
+        return ruta;
+    }
+
+    /**
+     * @param ruta the ruta to set
+     */
+    public void setRuta(String ruta) {
+        this.ruta = ruta;
+    }
 
 }

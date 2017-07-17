@@ -3,6 +3,8 @@ package com.nisira.core.dao;
 import com.nisira.core.BaseDao;
 import com.nisira.core.entity.Destructura_tareo_clieprov;
 import com.nisira.core.NisiraORMException;
+import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Destructura_tareo_clieprovDao extends BaseDao<Destructura_tareo_clieprov> {
@@ -21,4 +23,28 @@ public class Destructura_tareo_clieprovDao extends BaseDao<Destructura_tareo_cli
 			return l.get(0);
 		}
 	}
+        /*APP WEB*/
+        public ArrayList<Destructura_tareo_clieprov> listarPorEmpresaWebXCotizacion(String idempresa,String idclieprov) throws NisiraORMException {
+            ArrayList<Destructura_tareo_clieprov> lista = new ArrayList<Destructura_tareo_clieprov>();
+            try
+            {
+                ResultSet rs = null;
+                rs = execProcedure("GETDESTRUCTURA_TAREO_CLIEPROV_TMPSS",idempresa,idclieprov);
+                while (rs.next()) {
+                    Destructura_tareo_clieprov estructura_costos_clieprov = new Destructura_tareo_clieprov();
+                    estructura_costos_clieprov.setIdempresa(rs.getString("IDEMPRESA").trim());
+                    estructura_costos_clieprov.setIdclieprov(rs.getString("IDCLIEPROV")!=null?rs.getString("IDCLIEPROV").trim():"");
+                    estructura_costos_clieprov.setItem(rs.getString("ITEM")!=null?rs.getString("ITEM").trim():"");
+                    estructura_costos_clieprov.setDescripcion(rs.getString("DESCRIPCION")!=null?rs.getString("DESCRIPCION").trim():"");
+                    estructura_costos_clieprov.setHora(rs.getFloat("HORA"));
+                    estructura_costos_clieprov.setIdruta(rs.getString("IDRUTA")!=null?rs.getString("IDRUTA").trim():"");
+                    estructura_costos_clieprov.setCliente(rs.getString("CLIENTE")!=null?rs.getString("CLIENTE").trim():"");
+                    estructura_costos_clieprov.setRuta(rs.getString("RUTA")!=null?rs.getString("RUTA").trim():"");
+                    lista.add(estructura_costos_clieprov);                             
+                }
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
+            return lista;
+        }
 }
