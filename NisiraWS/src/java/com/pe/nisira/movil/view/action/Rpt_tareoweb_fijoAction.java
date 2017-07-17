@@ -249,7 +249,7 @@ public class Rpt_tareoweb_fijoAction extends AbstactListAction<Ordenservicioclie
                 for (int col = 0; col < tcol; col++) {
                     celda = fila_cabecera.createCell(col);
                     celda.setCellStyle(estiloFila);
-                    celda.setCellValue(lst_col[col].toString());
+                    celda.setCellValue(lst_col[col]==null?"":lst_col[col].toString());
                 }
             }
             for (int as = 0; as < tcol; as++) {
