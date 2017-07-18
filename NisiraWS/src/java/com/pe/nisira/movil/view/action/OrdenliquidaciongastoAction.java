@@ -15,6 +15,7 @@ import com.nisira.core.dao.DocumentosDao;
 import com.nisira.core.dao.DordenliquidaciongastoDao;
 import com.nisira.core.dao.EmisorDao;
 import com.nisira.core.dao.EstadosDao;
+import com.nisira.core.dao.ImpuestoDao;
 import com.nisira.core.dao.MonedasDao;
 import com.nisira.core.dao.NumemisorDao;
 import com.nisira.core.dao.Personal_servicioDao;
@@ -400,6 +401,7 @@ public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidac
         Documentos doc = (Documentos) event.getObject();
         getDordenliquidaciongasto().setIddocumento(doc.getIddocumento());
         getDordenliquidaciongasto().setDocumento(doc.getDescripcion());
+        dordenliquidaciongasto.setPimpuesto((new ImpuestoDao()).getImpuesto(getDatoEdicion().getIdempresa(),"001"));
     }
     public void valorClieprov(SelectEvent event) {
         this.selectClieprov = (Clieprov) event.getObject();
@@ -500,7 +502,13 @@ public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidac
             Logger.getLogger(OrdenliquidaciongastoAction.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    public void afectoCalc(){
+        dordenliquidaciongasto.setImpuesto(dordenliquidaciongasto.getAfecto() * (dordenliquidaciongasto.getPimpuesto()*0.01f));
+        dordenliquidaciongasto.setImporte(dordenliquidaciongasto.getAfecto()+dordenliquidaciongasto.getImpuesto());
+    }
+    public void inafectoCalc(){
+        dordenliquidaciongasto.setImporte(dordenliquidaciongasto.getInafecto());
+    }
     public String agregarItemDordenservicio(){
         int dato = 1;
         int may=-999999999;

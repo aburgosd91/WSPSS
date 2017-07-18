@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
@@ -80,8 +81,14 @@ public class RutaAction extends AbstactListAction<Rutas> implements Serializable
     }
 
     public boolean validarEdicion() {
-        if (getDatoEdicion().getDescripcion() == null) {
+        if (getDatoEdicion().getDescripcion() == null || getDatoEdicion().getDescripcion().equalsIgnoreCase("")) {
             WebUtil.MensajeAdvertencia("Ingrese Descripción");
+            RequestContext.getCurrentInstance().update("datos:growl");
+            return false;
+        }
+        Optional<Rutas> desct = getListaDatos().stream().filter(x -> x.getDescripcion().equalsIgnoreCase(getDatoEdicion().getDescripcion())).findFirst();
+        if(desct.isPresent() && getDatoEdicion().getIdruta() == null){
+            WebUtil.MensajeAdvertencia("La Ruta Ya existe");
             RequestContext.getCurrentInstance().update("datos:growl");
             return false;
         }
@@ -136,14 +143,16 @@ public class RutaAction extends AbstactListAction<Rutas> implements Serializable
                 setMensaje(WebUtil.exitoRegistrar("Ruta ", mensaje));
                 WebUtil.info(getMensaje());
                 setLvalidate(true);
+                RequestContext.getCurrentInstance().update("datos");
 //                buscarTodo();
             }
         } catch (Exception ex) {
             setMensaje(ex.getMessage() + "\n" + ex.getLocalizedMessage());
             Logger.getLogger(OrdenliquidaciongastoAction.class.getName()).log(Level.SEVERE, null, ex);
             WebUtil.fatal(mensaje);
+            RequestContext.getCurrentInstance().update("datos:growl");
         }
-        RequestContext.getCurrentInstance().update("datos");
+        ;
     }
 
     @Override

@@ -34,7 +34,7 @@
                             </p:panelGrid>
                             <div class="ui-grid-col-6">
                                 <p:panelGrid  columns="2" columnClasses="no-border, no-border" style="width: 100%">
-                                    
+
                                     <p:outputLabel value="Documentos"/>
                                     <p:panelGrid  columns="3" columnClasses="no-border, no-border,no-border" style="margin-left: -10px;">
                                         <p:selectOneMenu id="cboiddoc" value="#{ordenliquidaciongastoAction.datoEdicion.iddocumento}" style="width:200px" disabled="#{!ordenliquidaciongastoAction.edicion}">
@@ -81,8 +81,8 @@
                     <div class="ui-grid-row">
                         <p:fieldset legend="Detalle de Orden Servicio"  style="width: 100%">
                             <p:dataTable id="lstdordenliquidaciongasto" var="lstdordenliquidaciongasto" value="#{ordenliquidaciongastoAction.lstdordenliquidaciongasto}" widgetVar="lstdordenliquidaciongasto"
-                             paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
-                             paginator="true" paginatorPosition="top" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{ordenliquidaciongastoAction.selectDordenliquidaciongasto}" rowKey="#{lstdordenliquidaciongasto.item}">
+                                         paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                         paginator="true" paginatorPosition="top" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{ordenliquidaciongastoAction.selectDordenliquidaciongasto}" rowKey="#{lstdordenliquidaciongasto.item}">
                                 <p:ajax event="rowSelect" listener="#{ordenliquidaciongastoAction.onRowSelectDordenservicio}" />
                                 <f:facet name="{Comandos}">
                                     <p:commandButton value="Nuevo" ajax="true" image="ui-icon-nuevo" actionListener="#{ordenliquidaciongastoAction.nuevoDordenliquidaciongasto()}" />
@@ -177,47 +177,47 @@
                                     <p:selectOneMenu id="idconcepto" value="#{ordenliquidaciongastoAction.dordenliquidaciongasto.idconcepto}" style="width: 350px;">    
                                         <f:selectItems value="#{ordenliquidaciongastoAction.listTipoGasto}" var="tipogasto" itemLabel="#{tipogasto.descripcion}" itemValue="#{tipogasto.idtipogasto}" />
                                     </p:selectOneMenu>
-                                    
+
                                     <p:outputLabel value="Documento: " />
                                     <h:panelGrid id="cntDocumento" cellpadding="0" cellspacing="0" columns="3">
                                         <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{ordenliquidaciongastoAction.verCntDocumentoscodigosunat()}" 
                                                          disabled="#{!ordenliquidaciongastoAction.edicion}"  icon="ui-icon-search">
-                                            <p:ajax event="dialogReturn" listener="#{ordenliquidaciongastoAction.valorDocumentoscodigosunat}" update="cntDocumento"/>
+                                            <p:ajax event="dialogReturn" listener="#{ordenliquidaciongastoAction.valorDocumentoscodigosunat}" update="cntDocumento,impto,base"/>
                                         </p:commandButton>
                                         <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{ordenliquidaciongastoAction.dordenliquidaciongasto.iddocumento}" disabled="#{!ordenliquidaciongastoAction.edicion}"/>
                                         <p:inputText size="50" readonly="true" value="#{ordenliquidaciongastoAction.dordenliquidaciongasto.documento}" disabled="#{!ordenliquidaciongastoAction.edicion}"/>
                                     </h:panelGrid>
 
                                     <p:outputLabel value="Serie: " />
-                                    <p:inputText id="dserie" maxlength="4" size="4" 
-                                             value="#{ordenliquidaciongastoAction.dordenliquidaciongasto.serie}" 
-                                             onblur="javascript:this.value = ('0000' + this.value).slice( - 4);" 
-                                             onkeypress="if (event.which lt; 48 || event.which gt; 57) return false;">
-                                        <p:ajax event="valueChange" immediate="true" process="@this"/>
-                                    </p:inputText>
+                                    <p:inputMask id="dserie" value="#{ordenliquidaciongastoAction.dordenliquidaciongasto.serie}"  maxlength="4" size="4" mask="*999"/>
+
                                     <p:outputLabel for="dnumero" value="Número: " />
                                     <p:inputText id="dnumero" maxlength="7" size="7"
-                                        value="#{tareowebAction.numero_local}" 
-                                        onblur="javascript:this.value = ('0000000' + this.value).slice( - 7);" 
-                                        onkeypress="if (event.which  lt; 48 || event.which  gt; 57) return false;">
-                                       <p:ajax event="valueChange" immediate="true" process="@this"/>
+                                                 value="#{tareowebAction.numero_local}" 
+                                                 onblur="javascript:this.value = ('0000000' + this.value).slice(-7);" 
+                                                 onkeypress="if (event.which  lt; 48 || event.which  gt; 57) return false;">
+                                        <p:ajax event="valueChange" immediate="true" process="@this"/>
                                     </p:inputText>
-                                    
+
                                     <p:outputLabel for="base" value="Afecto:" />
-                                    <p:inputNumber id="base" value="#{ordenliquidaciongastoAction.dordenliquidaciongasto.afecto}" />
-                                    
+                                    <p:inputNumber id="base" value="#{ordenliquidaciongastoAction.dordenliquidaciongasto.afecto}" disabled="#{ordenliquidaciongastoAction.dordenliquidaciongasto.iddocumento==null?true:false}">
+                                        <p:ajax event="blur" listener="#{ordenliquidaciongastoAction.afectoCalc()}" update="impuesto,importe"/>
+                                    </p:inputNumber>
+
                                     <p:outputLabel for="inafecto" value="Inafecto:" />
-                                    <p:inputNumber id="inafecto" value="#{ordenliquidaciongastoAction.dordenliquidaciongasto.inafecto}" />
-                                    
+                                    <p:inputNumber id="inafecto" value="#{ordenliquidaciongastoAction.dordenliquidaciongasto.inafecto}">
+                                        <p:ajax event="blur" listener="#{ordenliquidaciongastoAction.inafectoCalc()}" update="importe"/>
+                                    </p:inputNumber>
+
                                     <p:outputLabel for="impto" value="%Impto:" />
-                                    <p:inputNumber id="impto" value="#{ordenliquidaciongastoAction.dordenliquidaciongasto.pimpuesto}" />
-                                    
+                                    <p:inputNumber id="impto" value="#{ordenliquidaciongastoAction.dordenliquidaciongasto.pimpuesto}" readonly="true"/>
+
                                     <p:outputLabel for="impuesto" value="Impuesto:" />
-                                    <p:inputNumber id="impuesto" value="#{ordenliquidaciongastoAction.dordenliquidaciongasto.impuesto}" />
-                                    
+                                    <p:inputNumber id="impuesto" value="#{ordenliquidaciongastoAction.dordenliquidaciongasto.impuesto}"/>
+
                                     <p:outputLabel for="importe" value="Total:" />
-                                    <p:inputNumber id="importe" value="#{ordenliquidaciongastoAction.dordenliquidaciongasto.importe}" />
-                                    
+                                    <p:inputNumber id="importe" value="#{ordenliquidaciongastoAction.dordenliquidaciongasto.importe}" readonly="true"/>
+
                                     <p:outputLabel for="dglosa" value="Glosa:" />
                                     <p:inputTextarea id="dglosa" rows="2" cols="40" value="#{ordenliquidaciongastoAction.dordenliquidaciongasto.glosa}" />
                                 </p:panelGrid>
