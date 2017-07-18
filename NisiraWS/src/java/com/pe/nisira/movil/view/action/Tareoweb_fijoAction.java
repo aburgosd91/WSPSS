@@ -496,48 +496,6 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
         }
     }
 
-    public String return_encrypt_programacion(Det_tareoweb obj) throws ClassNotFoundException, ParseException{
-        String encrypt = null;
-        List<Object[]> lstTareo = obj.getTareo();
-        listProgramacion = new ArrayList<>();
-        int par = 0;
-        String hinicio = null;
-        String hfin = null;
-        Float hinicio_n = 0.0f;
-        Float hfin_n = 0.0f;
-        Date hinicio_d = null;
-        Date hfin_d = null;
-        for(int k =0; k<dataTableColumns.size();k++){
-            Object[] rowtareo = lstTareo.get(k);
-            if(rowtareo[1]=="i"){
-                hinicio = (String)(rowtareo[0]);
-                hinicio_n = 0.0f;
-                hinicio_d = WebUtil.convertStringTime(hinicio);
-                par++;
-            }else if(rowtareo[1]=="f"){
-                hfin = (String)(rowtareo[0]);
-                hfin_n = 0.0f;
-                hfin_d = WebUtil.convertStringTime(hfin);
-                par++;
-            }
-            if(par==2){
-                par=0;
-                Float valor = Float.parseFloat(String.valueOf((rowtareo[6])));
-                Date fecha = (Date)(rowtareo[5]);
-                if(hinicio_d!=null){
-                   hinicio_n = WebUtil.convertTimeDecimal(hinicio_d);
-                }
-                if(hfin_d!=null){
-                   hfin_n = WebUtil.convertTimeDecimal(hfin_d);
-                }
-                listProgramacion.add(new Programacion(fecha, valor,hinicio,hfin,hinicio_n,hfin_n));
-            }
-        }
-        if(!listProgramacion.isEmpty()){
-            encrypt = WebUtil.objectXml("com.nisira.core.entity.Programacion", listProgramacion);
-        }
-        return encrypt;
-    }
     public void getFillTareoweb(){
         try{
             if(getLadd()==1){/*NUEVO*/

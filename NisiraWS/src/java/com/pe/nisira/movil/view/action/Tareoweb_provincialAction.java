@@ -11,6 +11,7 @@ import com.nisira.core.dao.CabtareowebDao;
 import com.nisira.core.dao.ClieprovDao;
 import com.nisira.core.dao.Concepto_tareoDao;
 import com.nisira.core.dao.ConsumidorDao;
+import com.nisira.core.dao.Destructura_tareo_clieprovDao;
 import com.nisira.core.dao.Det_tareowebDao;
 import com.nisira.core.dao.DocumentosDao;
 import com.nisira.core.dao.EmisorDao;
@@ -29,6 +30,7 @@ import com.nisira.core.entity.Cargos_personal;
 import com.nisira.core.entity.Clieprov;
 import com.nisira.core.entity.Concepto_tareo;
 import com.nisira.core.entity.Consumidor;
+import com.nisira.core.entity.Destructura_tareo_clieprov;
 import com.nisira.core.entity.Det_tareoweb;
 import com.nisira.core.entity.Documentos;
 import com.nisira.core.entity.Estados;
@@ -135,6 +137,7 @@ public class Tareoweb_provincialAction extends AbstactListAction<Cabtareoweb> {
     private List<ComboEspecial> listComboEspecial;
     private List<ComboEspecial> listComboEspecialDetalle;
     private List<Concepto_tareo> listConcepto_tareo;
+    private List<Destructura_tareo_clieprov> listDestructura_tareo_clieprov;
     /* DAO */
     private ConsumidorDao consumidorDao;
     private Det_tareowebDao tareoWebDao;
@@ -151,6 +154,7 @@ public class Tareoweb_provincialAction extends AbstactListAction<Cabtareoweb> {
     private Tipo_asistenciaDao tipo_asistenciaDao;
     private UsuarioDao usuariodao;
     private Concepto_tareoDao concepto_tareoDao; 
+    private Destructura_tareo_clieprovDao destructura_tareo_clieprovDao;
     /* ENTITY */
     private Det_tareoweb tareoWeb;
     private Det_tareoweb selectDet_tareoweb;
@@ -160,6 +164,7 @@ public class Tareoweb_provincialAction extends AbstactListAction<Cabtareoweb> {
     private Consumidor selectConsumidor;
     private ComboEspecial selectComboEspecial;
     private Cargos_personal selectCargo_personal;
+    private Clieprov selectClieprov; 
     /******************************************************/
     private boolean activarBotones;
     private String mensaje;
@@ -194,6 +199,7 @@ public class Tareoweb_provincialAction extends AbstactListAction<Cabtareoweb> {
             listTipo_asistencia  = new ArrayList<>();
             listComboEspecial  = new ArrayList<>();
             listConcepto_tareo  = new ArrayList<>();
+            listDestructura_tareo_clieprov   = new ArrayList<>();
             /* DAO */
             tareoWebDao = new Det_tareowebDao();
             clieprovDao = new ClieprovDao();
@@ -210,6 +216,7 @@ public class Tareoweb_provincialAction extends AbstactListAction<Cabtareoweb> {
             tipo_asistenciaDao = new Tipo_asistenciaDao();
             usuariodao = new UsuarioDao();
             concepto_tareoDao = new Concepto_tareoDao();
+            destructura_tareo_clieprovDao = new  Destructura_tareo_clieprovDao();
             /* ENTITY */
             tareoWeb = new Det_tareoweb();
             selectPersonal = new Clieprov();
@@ -226,7 +233,7 @@ public class Tareoweb_provincialAction extends AbstactListAction<Cabtareoweb> {
             listTurno_trabajo = turno_trabajoDao.getPorTurno_trabajo();
             listTipo_asistencia = tipo_asistenciaDao.getPorTipo_asistencia(user.getIDEMPRESA());
             listConcepto_tareo = concepto_tareoDao.listarPorEmpresaWeb(user.getIDEMPRESA());
-            /********************  ******************/
+            /**********************************  **************************************/
             actualiza_ventana("wMnt_Tareoweb_provincial");
         } catch (NisiraORMException ex) {
             Logger.getLogger(Tareoweb_provincialAction.class.getName()).log(Level.SEVERE, null, ex);
@@ -315,38 +322,14 @@ public class Tareoweb_provincialAction extends AbstactListAction<Cabtareoweb> {
         String encrypt = null;
         List<Object[]> lstTareo = obj.getTareo();
         listProgramacion = new ArrayList<>();
-        int par = 0;
-        String hinicio = null;
-        String hfin = null;
-        Float hinicio_n = 0.0f;
-        Float hfin_n = 0.0f;
-        Date hinicio_d = null;
-        Date hfin_d = null;
-        for(int k =0; k<dataTableColumns.size();k++){
-            Object[] rowtareo = lstTareo.get(k);
-            if(rowtareo[1]=="i"){
-                hinicio = (String)(rowtareo[0]);
-                hinicio_n = 0.0f;
-                hinicio_d = WebUtil.convertStringTime(hinicio);
-                par++;
-            }else if(rowtareo[1]=="f"){
-                hfin = (String)(rowtareo[0]);
-                hfin_n = 0.0f;
-                hfin_d = WebUtil.convertStringTime(hfin);
-                par++;
-            }
-            if(par==2){
-                par=0;
-                Float valor = Float.parseFloat(String.valueOf((rowtareo[6])));
-                Date fecha = (Date)(rowtareo[5]);
-                if(hinicio_d!=null){
-                   hinicio_n = WebUtil.convertTimeDecimal(hinicio_d);
-                }
-                if(hfin_d!=null){
-                   hfin_n = WebUtil.convertTimeDecimal(hfin_d);
-                }
-                listProgramacion.add(new Programacion(fecha, valor,hinicio,hfin,hinicio_n,hfin_n));
-            }
+        Programacion op ;
+        for(Object[] objs : lstTareo){
+            op = new Programacion();
+            op.setHeader(objs[0]==null?"":objs[0].toString());
+            op.setValor(objs[1]==null?"":objs[1].toString());
+            op.setItem(objs[4]==null?"":objs[4].toString());
+            op.setEsfecha(Boolean.valueOf(objs[3].toString())?1.0f:0.0f);
+            listProgramacion.add(op);
         }
         if(!listProgramacion.isEmpty()){
             encrypt = WebUtil.objectXml("com.nisira.core.entity.Programacion", listProgramacion);
@@ -357,14 +340,14 @@ public class Tareoweb_provincialAction extends AbstactListAction<Cabtareoweb> {
         try{
             if(getLadd()==1){/*NUEVO*/
                 getDatoEdicion().setIdtipoasistencia("ASN");
-                listDet_tareoweb = tareoWebDao.listarPorEmpresaWeb_new_provincial(user.getIDEMPRESA(), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5),getDatoEdicion().getIdresponsable(),user.getIDUSUARIO());
-                listDet_tareoweb_original = new ArrayList<>();
-                listDet_tareoweb_original.addAll(listDet_tareoweb);
+//                listDet_tareoweb = tareoWebDao.listarPorEmpresaWeb_new_provincial(user.getIDEMPRESA(), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5),getDatoEdicion().getIdresponsable(),user.getIDUSUARIO());
+//                listDet_tareoweb_original = new ArrayList<>();
+//                listDet_tareoweb_original.addAll(listDet_tareoweb);
 //                generarCalendario();
             }else if(getLadd()==2){/*EDITAR*/
                 listDet_tareoweb = tareoWebDao.listarPorEmpresaWeb_update_provincial(getDatoEdicion().getIdempresa(),getDatoEdicion().getIdcabtareoweb(),WebUtil.fechaDMY(getDatoEdicion().getFecha(),5), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5),getDatoEdicion().getIdresponsable(),user.getIDUSUARIO());
                 cargarPersonalVehiculo();
-//                generarEstructuraBase();
+                generarEstructuraBase();
             }
         }catch(Exception ex){
             this.mensaje=ex.getMessage();
@@ -621,10 +604,18 @@ public class Tareoweb_provincialAction extends AbstactListAction<Cabtareoweb> {
     }
     public void onRefresh(){
         try {
-            if(getDatoEdicion().getIdcabtareoweb()==null)
-                listDet_tareoweb = tareoWebDao.listarPorEmpresaWeb_new_provincial(user.getIDEMPRESA(), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5),getDatoEdicion().getIdresponsable(),user.getIDUSUARIO());
+            if(getDatoEdicion().getIdcabtareoweb()==null){
+                if(selectClieprov == null){
+                    WebUtil.MensajeAdvertencia("Seleccione Cliente");
+                    RequestContext.getCurrentInstance().update("datos:growl");
+                }else{
+                    listDet_tareoweb = tareoWebDao.listarPorEmpresaWeb_new_provincial(user.getIDEMPRESA(), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5),getDatoEdicion().getIdresponsable(),user.getIDUSUARIO(),selectClieprov.getIdclieprov());
+                    listDestructura_tareo_clieprov = destructura_tareo_clieprovDao.listarPorEmpresaWebXCotizacion(user.getIDEMPRESA(), selectClieprov.getIdclieprov());
+                    generarEstructuraBase();
+                }
+            }
             RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
-        } catch (NisiraORMException | SQLException ex) {
+        } catch (ClassNotFoundException | NisiraORMException | SQLException ex) {
             this.mensaje = ex.getMessage();
             WebUtil.error(mensaje);
             RequestContext.getCurrentInstance().update("datos:growl");
@@ -962,6 +953,13 @@ public class Tareoweb_provincialAction extends AbstactListAction<Cabtareoweb> {
             RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
         }
     }
+    /************POP UP************/
+    public void verCntClieprov() {
+        RequestContext.getCurrentInstance().openDialog("cntClieprov", modalOptions, null);
+    }
+    public void valorClieprov(SelectEvent event) {
+        this.selectClieprov = (Clieprov) event.getObject();
+    }
     @Override
     public String buscarFiltro(int tipo) {
         try {
@@ -1066,7 +1064,7 @@ public class Tareoweb_provincialAction extends AbstactListAction<Cabtareoweb> {
         try {
             if (esVistaValida()) {
                 /*DATOS INICIALES*/
-//                groupProgramation();
+                groupProgramation();
                 if(getDatoEdicion().getIdcabtareoweb()==null){
                     mensaje=getCabtareowebDao().grabar_provincial(1, getDatoEdicion(), 
                             getListDet_tareoweb());
@@ -1092,7 +1090,7 @@ public class Tareoweb_provincialAction extends AbstactListAction<Cabtareoweb> {
         try {
             if (esVistaValida()) {
                 /*DATOS INICIALES*/
-//                groupProgramation();
+                groupProgramation();
                 if(getDatoEdicion().getIdcabtareoweb()==null){
                     mensaje=getCabtareowebDao().grabar_provincial(1, getDatoEdicion(), 
                             getListDet_tareoweb());
@@ -1236,7 +1234,102 @@ public class Tareoweb_provincialAction extends AbstactListAction<Cabtareoweb> {
         else
             return "";
     }
-    
+    public void generarCampos(){
+        if(listDestructura_tareo_clieprov.isEmpty()){
+            WebUtil.MensajeError("No existe estructura de tareo");
+            RequestContext.getCurrentInstance().update("datos:growl");
+        }else{
+            Object [] pack;
+            for(int i=0;i<listDet_tareoweb.size();i++){
+                listDet_tareoweb.get(i).setTareo(new ArrayList<>());
+                for(Destructura_tareo_clieprov dtc : listDestructura_tareo_clieprov){
+                    pack = new Object[4];
+                    pack[0] = dtc.getDescripcion();/*Header*/
+                    pack[1] = "";/*datos*/
+                    pack[2] = dtc.getHora();
+                    pack[3] = dtc.getEsfecha()==1.0?false:true;
+                    pack[4] = dtc.getItem();
+                    listDet_tareoweb.get(i).getTareo().add(pack);
+                }
+            }
+        }
+    }
+    public void groupProgramation(){
+        try {
+            if(!getListDet_tareoweb().isEmpty()){
+                /*ACTUALIZAR HORAS*/
+                int pos =0;
+                for(Det_tareoweb obj :getListDet_tareoweb()){
+                    obj.setEncrypt_programacion(return_encrypt_programacion(obj));
+                    getListDet_tareoweb().set(pos, obj);
+                    pos++;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Tareoweb_fijoAction.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParseException ex) {
+            Logger.getLogger(Tareoweb_fijoAction.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public void generarEstructuraBase() throws ClassNotFoundException{
+        if(getDatoEdicion().getIdclieprov()==null){
+            this.mensaje = "Ingresar Cliente";
+            WebUtil.MensajeAdvertencia(this.mensaje );
+            RequestContext.getCurrentInstance().update("datos:growl");
+        }else if(listDestructura_tareo_clieprov.isEmpty()){
+            this.mensaje = "No existe estructura de tareo";
+            WebUtil.MensajeAdvertencia(this.mensaje );
+            RequestContext.getCurrentInstance().update("datos:growl");
+        }else{
+            /*******************************************************************************************************/
+            /*REEGENERAR DE BASE DE DATOS*/
+            List<Programacion> temp = null;
+            Object[] obj1=null;
+            for(int x = 0;x<listDet_tareoweb.size();x++){
+                Det_tareoweb xc = listDet_tareoweb.get(x);
+                xc.setTareo(new ArrayList<>());
+                if(xc.getEncrypt_programacion()!=null){
+                    if(!xc.getEncrypt_programacion().isEmpty()){
+                        temp = (List<Programacion>)WebUtil.stringObject("com.nisira.core.entity.Programacion", xc.getEncrypt_programacion());
+                        if(!temp.isEmpty()){
+                            for(Programacion pr : temp){
+                                obj1 = new Object[4];
+                                obj1[0] = pr.getHeader();/*Header*/
+                                obj1[1] = pr.getValor();/*datos*/
+                                obj1[2] = 0.0;
+                                obj1[3] = pr.getEsfecha()==1.0?false:true;
+                                obj1[4] = pr.getItem();
+                                xc.getTareo().add(obj1);
+                            }
+                        }else{
+                            for(Destructura_tareo_clieprov dtc : listDestructura_tareo_clieprov){
+                                obj1 = new Object[4];
+                                obj1[0] = dtc.getDescripcion();/*Header*/
+                                obj1[1] = "";/*datos*/
+                                obj1[2] = dtc.getHora();
+                                obj1[3] = dtc.getEsfecha()==1.0?false:true;
+                                obj1[4] = dtc.getItem();
+                                xc.getTareo().add(obj1);
+                            }
+                        }
+                    }   
+                }else{
+                    for(Destructura_tareo_clieprov dtc : listDestructura_tareo_clieprov){
+                        obj1 = new Object[4];
+                        obj1[0] = dtc.getDescripcion();/*Header*/
+                        obj1[1] = "";/*datos*/
+                        obj1[2] = dtc.getHora();
+                        obj1[3] = dtc.getEsfecha()==1.0?false:true;
+                        obj1[4] = dtc.getItem();
+                        xc.getTareo().add(obj1);
+                    }
+                }   
+                listDet_tareoweb.set(x, xc);
+            }
+//            RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
+            RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
+        }
+    }
     /**
      * @return the user
      */
@@ -2004,6 +2097,48 @@ public class Tareoweb_provincialAction extends AbstactListAction<Cabtareoweb> {
      */
     public void setLog_consola(String log_consola) {
         this.log_consola = log_consola;
+    }
+
+    /**
+     * @return the selectClieprov
+     */
+    public Clieprov getSelectClieprov() {
+        return selectClieprov;
+    }
+
+    /**
+     * @param selectClieprov the selectClieprov to set
+     */
+    public void setSelectClieprov(Clieprov selectClieprov) {
+        this.selectClieprov = selectClieprov;
+    }
+
+    /**
+     * @return the listDestructura_tareo_clieprov
+     */
+    public List<Destructura_tareo_clieprov> getListDestructura_tareo_clieprov() {
+        return listDestructura_tareo_clieprov;
+    }
+
+    /**
+     * @param listDestructura_tareo_clieprov the listDestructura_tareo_clieprov to set
+     */
+    public void setListDestructura_tareo_clieprov(List<Destructura_tareo_clieprov> listDestructura_tareo_clieprov) {
+        this.listDestructura_tareo_clieprov = listDestructura_tareo_clieprov;
+    }
+
+    /**
+     * @return the destructura_tareo_clieprovDao
+     */
+    public Destructura_tareo_clieprovDao getDestructura_tareo_clieprovDao() {
+        return destructura_tareo_clieprovDao;
+    }
+
+    /**
+     * @param destructura_tareo_clieprovDao the destructura_tareo_clieprovDao to set
+     */
+    public void setDestructura_tareo_clieprovDao(Destructura_tareo_clieprovDao destructura_tareo_clieprovDao) {
+        this.destructura_tareo_clieprovDao = destructura_tareo_clieprovDao;
     }
     
 }

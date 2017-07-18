@@ -368,10 +368,10 @@ public class Det_tareowebDao extends BaseDao<Det_tareoweb> {
 
         return lista;
         }
-        public ArrayList<Det_tareoweb> listarPorEmpresaWeb_new_provincial(String idempresa,String desde, String hasta,String idresponsable,String idusuario) throws NisiraORMException, SQLException {
+        public ArrayList<Det_tareoweb> listarPorEmpresaWeb_new_provincial(String idempresa,String desde, String hasta,String idresponsable,String idusuario,String idclieprov) throws NisiraORMException, SQLException {
             ArrayList<Det_tareoweb> lista = new ArrayList<Det_tareoweb>();
             ResultSet rs = null;
-            rs = execProcedure("SP_TAREO_WEB_ORDENSERVICIOCLIENTE_PROVINCIAL_TMPSS",idempresa,desde,hasta,idresponsable,idusuario);
+            rs = execProcedure("SP_TAREO_WEB_ORDENSERVICIOCLIENTE_PROVINCIAL_TMPSS",idempresa,desde,hasta,idresponsable,idusuario,idclieprov);
             while (rs.next()) {
                 Det_tareoweb tareoweb = new Det_tareoweb();
                 tareoweb.setItem(rs.getInt("ITEM"));

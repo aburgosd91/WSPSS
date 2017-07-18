@@ -21,6 +21,8 @@ public class Destructura_tareo_clieprov {
 	private Float hora;
 	@Columna
 	private String idruta;
+        @Columna
+	private Float esfecha;
         
         private String cliente;
         private String ruta;
@@ -103,6 +105,20 @@ public class Destructura_tareo_clieprov {
      */
     public void setRuta(String ruta) {
         this.ruta = ruta;
+    }
+
+    /**
+     * @return the esfecha
+     */
+    public Float getEsfecha() {
+        return esfecha;
+    }
+
+    /**
+     * @param esfecha the esfecha to set
+     */
+    public void setEsfecha(Float esfecha) {
+        this.esfecha = esfecha;
     }
 
 }
