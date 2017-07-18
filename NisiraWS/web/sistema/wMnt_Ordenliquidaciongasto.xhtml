@@ -182,7 +182,7 @@
                                     <h:panelGrid id="cntDocumento" cellpadding="0" cellspacing="0" columns="3">
                                         <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{ordenliquidaciongastoAction.verCntDocumentoscodigosunat()}" 
                                                          disabled="#{!ordenliquidaciongastoAction.edicion}"  icon="ui-icon-search">
-                                            <p:ajax event="dialogReturn" listener="#{ordenliquidaciongastoAction.valorDocumentoscodigosunat}" update="cntDocumento,impto,base"/>
+                                            <p:ajax event="dialogReturn" listener="#{ordenliquidaciongastoAction.valorDocumentoscodigosunat}" update="cntDocumento,impto,base,inafecto"/>
                                         </p:commandButton>
                                         <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{ordenliquidaciongastoAction.dordenliquidaciongasto.iddocumento}" disabled="#{!ordenliquidaciongastoAction.edicion}"/>
                                         <p:inputText size="50" readonly="true" value="#{ordenliquidaciongastoAction.dordenliquidaciongasto.documento}" disabled="#{!ordenliquidaciongastoAction.edicion}"/>
@@ -200,12 +200,12 @@
                                     </p:inputText>
 
                                     <p:outputLabel for="base" value="Afecto:" />
-                                    <p:inputNumber id="base" value="#{ordenliquidaciongastoAction.dordenliquidaciongasto.afecto}" disabled="#{ordenliquidaciongastoAction.dordenliquidaciongasto.iddocumento==null?true:false}">
+                                    <p:inputNumber id="base" value="#{ordenliquidaciongastoAction.dordenliquidaciongasto.afecto}" disabled="#{ordenliquidaciongastoAction.dordenliquidaciongasto.iddocumento=='FAC'?false:true}">
                                         <p:ajax event="blur" listener="#{ordenliquidaciongastoAction.afectoCalc()}" update="impuesto,importe"/>
                                     </p:inputNumber>
 
                                     <p:outputLabel for="inafecto" value="Inafecto:" />
-                                    <p:inputNumber id="inafecto" value="#{ordenliquidaciongastoAction.dordenliquidaciongasto.inafecto}">
+                                    <p:inputNumber id="inafecto" value="#{ordenliquidaciongastoAction.dordenliquidaciongasto.inafecto}" disabled="#{ordenliquidaciongastoAction.dordenliquidaciongasto.iddocumento=='BOL'?false:true}">
                                         <p:ajax event="blur" listener="#{ordenliquidaciongastoAction.inafectoCalc()}" update="importe"/>
                                     </p:inputNumber>
 

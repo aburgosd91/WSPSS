@@ -401,7 +401,12 @@ public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidac
         Documentos doc = (Documentos) event.getObject();
         getDordenliquidaciongasto().setIddocumento(doc.getIddocumento());
         getDordenliquidaciongasto().setDocumento(doc.getDescripcion());
-        dordenliquidaciongasto.setPimpuesto((new ImpuestoDao()).getImpuesto(getDatoEdicion().getIdempresa(),"001"));
+        if(doc.getIddocumento().equalsIgnoreCase("FAC")){
+            dordenliquidaciongasto.setPimpuesto((new ImpuestoDao()).getImpuesto(getDatoEdicion().getIdempresa(),"001"));
+        }else{
+            dordenliquidaciongasto.setPimpuesto(0f);
+        }
+        
     }
     public void valorClieprov(SelectEvent event) {
         this.selectClieprov = (Clieprov) event.getObject();
