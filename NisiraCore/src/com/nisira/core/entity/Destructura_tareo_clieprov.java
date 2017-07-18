@@ -3,29 +3,43 @@ package com.nisira.core.entity;
 import com.nisira.annotation.ClavePrimaria;
 import com.nisira.annotation.Columna;
 import com.nisira.annotation.Tabla;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
+import java.util.Date;
 
+@XStreamAlias("DESTRUCTURA_TAREO_CLIEPROV")
 @Tabla(nombre = "DESTRUCTURA_TAREO_CLIEPROV")
 public class Destructura_tareo_clieprov {
 	@ClavePrimaria
 	@Columna
+        @XStreamAlias("IDEMPRESA")
 	private String idempresa;
 	@ClavePrimaria
 	@Columna
+        @XStreamAlias("IDCLIEPROV")
 	private String idclieprov;
 	@ClavePrimaria
 	@Columna
+        @XStreamAlias("ITEM")
 	private String item;
 	@Columna
+        @XStreamAlias("DESCRIPCION")
 	private String descripcion;
 	@Columna
+        @XStreamAlias("HORA")
 	private Float hora;
 	@Columna
+        @XStreamAlias("IDRUTA")
 	private String idruta;
         @Columna
+        @XStreamAlias("ESFECHA")
 	private Float esfecha;
-        
+        @XStreamOmitField
         private String cliente;
+        @XStreamOmitField
         private String ruta;
+        @XStreamOmitField
+        private Date horaH;
 	/* Sets & Gets */
 	public void setIdempresa(String idempresa) {
 		this.idempresa = idempresa;
@@ -75,6 +89,14 @@ public class Destructura_tareo_clieprov {
 		return this.idruta;
 	}
 
+        public Float getEsfecha() {
+            return esfecha;
+        }
+
+        public void setEsfecha(Float esfecha) {
+            this.esfecha = esfecha;
+        }
+        
 
 
 	/* Sets & Gets FK*/
@@ -107,18 +129,18 @@ public class Destructura_tareo_clieprov {
         this.ruta = ruta;
     }
 
-    /**
-     * @return the esfecha
-     */
-    public Float getEsfecha() {
-        return esfecha;
+    public Date getHoraH() {
+        return horaH;
     }
 
-    /**
-     * @param esfecha the esfecha to set
-     */
-    public void setEsfecha(Float esfecha) {
-        this.esfecha = esfecha;
+    public void setHoraH(Date horaH) {
+        this.horaH = horaH;
+    }
+    public boolean isBEFecha() {
+        return this.getEsfecha()== 1;
     }
 
+    public void setBEFecha(boolean band) {
+        this.setEsfecha((band) ?  1f :  0f);
+    }
 }

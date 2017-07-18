@@ -1,0 +1,104 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    >
+    <ui:define name="metadata">        
+    </ui:define>
+    <ui:define name="body">
+        #{estructuraTareoClieprovAction.findDetaller()}
+        <h:form id="datos" >
+            <cmp:barra_mnt bean="#{estructuraTareoClieprovAction}"/>
+            <p:panelGrid columns="1" style="width:100%; text-align: left" id="pnl_reprogramar" columnClasses="no-border">
+                <f:facet name="header">
+                    #{estructuraTareoClieprovAction.tituloHead}
+                </f:facet>
+                <div class="ui-grid">
+                    <div class="ui-grid-row">
+                        <p:fieldset legend="Datos" style="width: 100%" >
+                            <p:panelGrid  columns="2" columnClasses="no-border, no-border" style="width: 40%">
+                                <p:outputLabel value="Cliente"/>
+                                <p:panelGrid id="cntCliep" columns="2" columnClasses="no-border,no-border">
+                                    <p:inputText size="50" value="#{estructuraTareoClieprovAction.datoEdicion.razon_social}"/>
+                                    <p:commandButton  styleClass="boton_buscar" ajax="true" actionListener="#{estructuraTareoClieprovAction.verCntClieprov()}" icon="ui-icon-search">
+                                        <p:ajax event="dialogReturn" listener="#{estructuraTareoClieprovAction.valorClieprov}" update="cntCliep"/>
+                                    </p:commandButton>
+                                </p:panelGrid>
+                                <p:outputLabel value="Descripcion"/>
+                                <p:inputText value="#{estructuraTareoClieprovAction.datoEdicion.descripcion}"/>
+                                <p:outputLabel value="Estado: " />
+                                <p:selectBooleanCheckbox value="#{estructuraTareoClieprovAction.datoEdicion.BEstado}" disabled="#{!estructuraTareoClieprovAction.edicion}"/>
+                            </p:panelGrid>
+                        </p:fieldset>
+                    </div>
+                    <div class="ui-grid-row">
+                        <p:dataTable id="lstDetEstruClie" 
+                                     value="#{estructuraTareoClieprovAction.lstDestTar}" 
+                                     selectionMode="single"
+                                     selection="#{estructuraTareoClieprovAction.slctDesTar}"
+                                     var="detEst" 
+                                     paginator="true" paginatorPosition="top"
+                                     paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                     widgetVar="lstDetEstruClie"
+                                     rowKey="#{detEst.item}">
+                            <f:facet name="{Comandos}">
+                                <p:commandButton id="btnDgen" value="Nuevo" ajax="true" image="ui-icon-nuevo"  actionListener="#{estructuraTareoClieprovAction.openDialog()}"   disabled="#{!estructuraTareoClieprovAction.edicion}"/>
+                                <p:commandButton id="btnDedit" value="Editar" ajax="true" image="ui-icon-nuevo"  actionListener="#{estructuraTareoClieprovAction.ediitDetEstruc()}"   disabled="#{!estructuraTareoClieprovAction.edicion}"/>
+                                <p:commandButton id="btDdel" value="Eliminar" ajax="true" image="ui-icon-eliminar"  actionListener="#{estructuraTareoClieprovAction.dellDetEstruc()}"  disabled="#{!estructuraTareoClieprovAction.edicion}"/>
+                            </f:facet>
+                            <p:column style="width:15%;" filterBy="#{detEst.item}" filterMatchMode="contains" sortBy="#{detEst.item}">
+                                <f:facet name="header">
+                                    <h:outputText value="Item" />
+                                </f:facet>
+                                <h:outputText value="#{detEst.item}"/>
+                            </p:column>
+                            <p:column style="width:15%;" filterBy="#{detEst.descripcion}" filterMatchMode="contains" sortBy="#{detEst.descripcion}">
+                                <f:facet name="header">
+                                    <h:outputText value="Descripcion" />
+                                </f:facet>
+                                <h:outputText value="#{detEst.descripcion}"/>
+                            </p:column>
+                            <p:column style="width:15%;" sortBy="#{detEst.hora}">
+                                <f:facet name="header">
+                                    <h:outputText value="Hora" />
+                                </f:facet>
+                                <p:calendar  value="#{detEst.horaH}" mask="99:99" pattern="HH:mm" timeOnly="true" disabled="true" readonly="true"/>
+                            </p:column>
+                            <p:column style="width:15%;"  filterBy="#{detEst.ruta}" filterMatchMode="contains" sortBy="#{detEst.ruta}">
+                                <f:facet name="header">
+                                    <h:outputText value="Ruta" />
+                                </f:facet>
+                                <h:outputText value="#{detEst.ruta}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </div>
+                </div>
+            </p:panelGrid>
+            <p:dialog id="detEstrDialog" widgetVar="detEstrDialog" header="Nuevo Detalle de Estructura" style="width: 300px; height: 300px" modal="true" closable="true">
+                <p:panelGrid  columns="2" columnClasses="no-border, no-border">
+                    <p:outputLabel value="Hora"/>
+                    <p:calendar  value="#{estructuraTareoClieprovAction.newtDesTar.horaH}" mask="99:99" pattern="HH:mm" timeOnly="true"/>
+                    <p:outputLabel value="Descripcion"/>
+                    <p:inputText value="#{estructuraTareoClieprovAction.newtDesTar.descripcion}"/>
+                    <p:outputLabel value="Ruta"/>
+                    <p:panelGrid columns="3" columnClasses="no-border, no-border, no-border, no-border">                        
+                        <p:commandButton  ajax="true" actionListener="#{estructuraTareoClieprovAction.verCntclearRuta}" icon="ui-icon-clear" update="cntRuta"/>
+                        <p:commandButton  styleClass="boton_buscar" ajax="true" actionListener="#{estructuraTareoClieprovAction.verCntRuta}" icon="ui-icon-search">
+                            <p:ajax event="dialogReturn" listener="#{estructuraTareoClieprovAction.valorRuta}" update="cntRuta"/>
+                        </p:commandButton>
+                        <p:inputText id="cntRuta" value="#{estructuraTareoClieprovAction.newtDesTar.ruta}" readonly="true"/>
+                    </p:panelGrid> 
+                    <p:outputLabel value="Es Fechaa: " />
+                    <p:selectBooleanCheckbox value="#{estructuraTareoClieprovAction.newtDesTar.BEFecha}"/>
+                    <p:commandButton value="GRABAR" actionListener="#{estructuraTareoClieprovAction.addDetEstruc()}"/>
+                </p:panelGrid>
+            </p:dialog>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{estructuraTareoClieprovAction}" ventana="MNT" />
+        </h:form>
+    </ui:define>
+</ui:composition>
