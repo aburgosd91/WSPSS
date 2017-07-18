@@ -346,7 +346,9 @@ public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidac
             numero=listNumemisor.get(0).getNumero();
             listEstado = estadosDao.listarPorEmpresaWeb(user.getIDEMPRESA(),null);
             lstdordenliquidaciongasto = dordenliquidaciongastoDao.listarPorOrdenliquidaciongastoWeb(user.getIDEMPRESA(),getDatoEdicion().getIdorden());
-            
+            lstdordenliquidaciongasto.forEach((ls) -> {
+                getDatoEdicion().setImporte(getDatoEdicion().getImporte()+ls.getImporte());
+            });
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy");
             periodoBase=dateFormat.format(new Date())+WebUtil.idGeneradoDos((new Date()).getMonth()+1);
             periodoDisenio=dateFormat.format(new Date());
@@ -435,6 +437,9 @@ public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidac
             lstdordenliquidaciongasto.add(dordenliquidaciongasto);
         else 
             lstdordenliquidaciongasto.set(pos, dordenliquidaciongasto);
+        lstdordenliquidaciongasto.forEach((ls) -> {
+            getDatoEdicion().setImporte(getDatoEdicion().getImporte()+ls.getImporte());
+        });
         RequestContext.getCurrentInstance().update("datos:lstdordenliquidaciongasto");
         RequestContext.getCurrentInstance().update("datos:dlgnew_dordenliquidaciongasto");
         RequestContext.getCurrentInstance().execute("PF('dlgnew_dordenliquidaciongasto').hide()");
