@@ -89,6 +89,14 @@ public class Cabtareoweb  implements Serializable {
 	@XStreamAlias("IDUSUARIO")
 	@Columna
 	private String idusuario;
+        @SerializedName("IDCLIEPROV") 
+	@XStreamAlias("IDCLIEPROV")
+	@Columna
+	private String idclieprov;
+        @SerializedName("IDRUTA") 
+	@XStreamAlias("IDRUTA")
+	@Columna
+	private String idruta;
         private String usuario;
         private String turnotrabajo;
         private String emisor;
@@ -406,5 +414,33 @@ public class Cabtareoweb  implements Serializable {
      */
     public void setUsuario(String usuario) {
         this.usuario = usuario;
+    }
+
+    /**
+     * @return the idclieprov
+     */
+    public String getIdclieprov() {
+        return idclieprov;
+    }
+
+    /**
+     * @param idclieprov the idclieprov to set
+     */
+    public void setIdclieprov(String idclieprov) {
+        this.idclieprov = idclieprov;
+    }
+
+    /**
+     * @return the idruta
+     */
+    public String getIdruta() {
+        return idruta;
+    }
+
+    /**
+     * @param idruta the idruta to set
+     */
+    public void setIdruta(String idruta) {
+        this.idruta = idruta;
     }
 }

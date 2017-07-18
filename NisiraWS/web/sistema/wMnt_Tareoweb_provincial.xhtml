@@ -45,6 +45,15 @@
                                         <p:inputText  style="text-align: left;margin-left: 0px;" size="15" readonly="true"  value="#{tareoweb_provincialAction.datoEdicion.idsucursal}" disabled="#{!tareoweb_provincialAction.edicion}"/>
                                         <p:inputText size="50" readonly="true" value="#{tareoweb_provincialAction.datoEdicion.sucursal}" disabled="#{!tareoweb_provincialAction.edicion}"/>
                                     </p:panelGrid>
+                                    <p:outputLabel value="Cliente:" escape="false" />
+                                    <h:panelGrid id="cntClie" cellpadding="0" cellspacing="0" columns="3">
+                                        <p:commandButton id="btnbuscarcliente" styleClass="boton_buscar" ajax="true" actionListener="#{tareoweb_provincialAction.verCntClieprov}" 
+                                                         icon="ui-icon-search">
+                                            <p:ajax event="dialogReturn" listener="#{tareoweb_provincialAction.valorClieprov}" update="cntClie"/>
+                                        </p:commandButton>
+                                        <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{tareoweb_provincialAction.selectClieprov.idclieprov}" disabled="#{!tareoweb_provincialAction.edicion}"/>
+                                        <p:inputText size="50" readonly="true" value="#{tareoweb_provincialAction.selectClieprov.razonsocial}" disabled="#{!tareoweb_provincialAction.edicion}"/>
+                                    </h:panelGrid>
                                     <p:outputLabel value="Responsable:" escape="false" />
                                     <h:panelGrid id="cntCliePersonalS" cellpadding="0" cellspacing="0" columns="3">
                                         <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{tareoweb_provincialAction.verCntClieprovPersonalSupervisorOperador}" 
@@ -54,11 +63,7 @@
                                         <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{tareoweb_provincialAction.datoEdicion.idresponsable}"/>
                                         <p:inputText size="50" readonly="true" value="#{tareoweb_provincialAction.datoEdicion.responsable}" />
                                     </h:panelGrid>
-                                    <p:outputLabel value="Creado Por:" escape="false" />
-                                    <h:panelGrid cellpadding="0" cellspacing="0" columns="2">
-                                        <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{tareoweb_provincialAction.datoEdicion.idusuario}"/>
-                                        <p:inputText size="50" readonly="true" value="#{tareoweb_provincialAction.datoEdicion.usuario}"/>
-                                    </h:panelGrid>
+                                    
                                 </p:panelGrid>
                             </div>
                             <div class="ui-grid-col-6">
@@ -89,6 +94,11 @@
                                             <f:selectItem itemLabel="Asistencia Regularización " itemValue="ASR"/>
                                         </p:selectOneMenu>
                                     </p:panelGrid>
+                                    <p:outputLabel value="Creado Por:" escape="false" />
+                                    <h:panelGrid cellpadding="0" cellspacing="0" columns="2">
+                                        <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{tareoweb_provincialAction.datoEdicion.idusuario}"/>
+                                        <p:inputText size="50" readonly="true" value="#{tareoweb_provincialAction.datoEdicion.usuario}"/>
+                                    </h:panelGrid>
                                 </p:panelGrid>
                             </div> 
                         </p:fieldset> 
@@ -183,64 +193,21 @@
                        </p:cellEditor>
                     </p:column>
                     
-                    <p:column headerText="H.Req." id="hora_req" filterBy="#{listDet_tareoweb.fhora_req}" 
-                              style="white-space: nowrap; width: 100px;padding: 3px;text-align: center" 
-                              filterMatchMode="contains" sortBy="#{listDet_tareoweb.fhora_req}">
-                        <h:outputText value="#{listDet_tareoweb.fhora_req}">
-                            <f:convertDateTime type="both" pattern="HH:mm" timeZone="America/Lima" />
-                        </h:outputText>
-                    </p:column>
-                   <p:column headerText="Hora Inicio" filterBy="#{listDet_tareoweb.shora_inicio}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.shora_inicio}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
-                        <p:cellEditor >
-                           <f:facet name="output">
-                               <h:outputText value="#{listDet_tareoweb.shora_inicio}">
+                    <!-- AUTOGENERADO -->                    
+                    <p:columns headerText="#{columna.descripcion}" value="#{tareoweb_provincialAction.listDestructura_tareo_clieprov}" 
+                               style="white-space: nowrap; width: 150px;padding: 3px;text-align: center" 
+                               var="columna"  resizable="true" columnIndexVar="ivar">
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{listDet_tareoweb.tareo[ivar][1]}">
                                </h:outputText>
                            </f:facet>
                             <f:facet name="input" >
-                               <p:inputMask style="font-size:10px;" id="hora_inicio" mask="99:99" value="#{listDet_tareoweb.shora_inicio}">
-                               </p:inputMask>
+                                <p:inputMask mask="#{listDet_tareoweb.tareo[ivar][3]?'99:99':'99/99/9999'}" value="#{listDet_tareoweb.tareo[ivar][1]}">
+                                </p:inputMask>
                            </f:facet>
-                       </p:cellEditor>
-                    </p:column>
-                    <p:column headerText="Hora Fin" filterBy="#{listDet_tareoweb.shora_fin}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.shora_fin}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
-                        <p:cellEditor >
-                           <f:facet name="output">
-                               <h:outputText value="#{listDet_tareoweb.shora_fin}">
-                               </h:outputText>
-                           </f:facet>
-                           <f:facet name="input" >
-                               <p:inputMask style="font-size:10px;"  id="hora_fin" mask="99:99" value="#{listDet_tareoweb.shora_fin}">
-                               </p:inputMask>
-                           </f:facet>
-                       </p:cellEditor>
-                    </p:column>
-                    <p:column id="fecharegistro" headerText="Fecha Inicio" filterBy="#{listDet_tareoweb.fecharegistro}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.fecharegistro}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
-                        <p:cellEditor >
-                           <f:facet name="output">
-                                <h:outputText value="#{listDet_tareoweb.fecharegistro}">
-                                   <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
-                                </h:outputText>
-                           </f:facet>
-                           <f:facet name="input">
-                               <p:calendar style="font-size:10px;" value="#{listDet_tareoweb.fecharegistro}" pattern="dd-MM-yyyy" mask="true" />
-                           </f:facet>
-                       </p:cellEditor>
-                    </p:column>
-                    <p:column id="fechafinregistro" headerText="Fecha Fin" filterBy="#{tareoweb_provincialAction.fechaDMY(listDet_tareoweb.fechafinregistro)}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.fechafinregistro}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
-                        <p:cellEditor >
-                           <f:facet name="output">
-                                <h:outputText value="#{listDet_tareoweb.fechafinregistro}">
-                                   <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
-                                </h:outputText>
-                           </f:facet>
-                           <f:facet name="input">
-                               <p:calendar style="font-size:10px;" value="#{listDet_tareoweb.fechafinregistro}" pattern="dd-MM-yyyy" mask="true" />
-                           </f:facet>
-                       </p:cellEditor>
-                    </p:column>
-                    <p:column headerText="Hora EC" filterBy="#{listDet_tareoweb.hora_rc}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.hora_rc}"  style="white-space: nowrap; width: 50px;padding: 3px;text-align: center">
-                       <h:outputText value="#{listDet_tareoweb.hora_rc}"/>
-                    </p:column>
+                        </p:cellEditor>
+                    </p:columns>
                     <!-- CHECK -->
                     <p:column style="white-space: nowrap; width: 130px;padding: 3px;text-align: center;background-color:##{listDet_tareoweb.color}" 
                               headerText="T.Asistencia" filterBy="#{listDet_tareoweb.asistencia}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.asistencia}">

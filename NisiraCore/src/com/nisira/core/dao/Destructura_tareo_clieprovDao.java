@@ -37,6 +37,7 @@ public class Destructura_tareo_clieprovDao extends BaseDao<Destructura_tareo_cli
                     estructura_costos_clieprov.setItem(rs.getString("ITEM")!=null?rs.getString("ITEM").trim():"");
                     estructura_costos_clieprov.setDescripcion(rs.getString("DESCRIPCION")!=null?rs.getString("DESCRIPCION").trim():"");
                     estructura_costos_clieprov.setHora(rs.getFloat("HORA"));
+                    estructura_costos_clieprov.setEsfecha(rs.getFloat("ESFECHA"));
                     estructura_costos_clieprov.setIdruta(rs.getString("IDRUTA")!=null?rs.getString("IDRUTA").trim():"");
                     estructura_costos_clieprov.setCliente(rs.getString("CLIENTE")!=null?rs.getString("CLIENTE").trim():"");
                     estructura_costos_clieprov.setRuta(rs.getString("RUTA")!=null?rs.getString("RUTA").trim():"");
