@@ -39,6 +39,7 @@ import com.nisira.core.entity.Ordenserviciocliente;
 import com.nisira.core.entity.Personal_servicio;
 import com.nisira.core.entity.Det_tareoweb;
 import com.nisira.core.entity.Programacion;
+import com.nisira.core.entity.Rutas;
 import com.nisira.core.entity.Tipo_asistencia;
 import com.nisira.core.entity.Turno_trabajo;
 import com.nisira.core.util.ConstantesBD;
@@ -165,6 +166,7 @@ public class Tareoweb_provincialAction extends AbstactListAction<Cabtareoweb> {
     private ComboEspecial selectComboEspecial;
     private Cargos_personal selectCargo_personal;
     private Clieprov selectClieprov; 
+    private Rutas selectRutas;
     /******************************************************/
     private boolean activarBotones;
     private String mensaje;
@@ -609,8 +611,8 @@ public class Tareoweb_provincialAction extends AbstactListAction<Cabtareoweb> {
                     WebUtil.MensajeAdvertencia("Seleccione Cliente");
                     RequestContext.getCurrentInstance().update("datos:growl");
                 }else{
-                    listDet_tareoweb = tareoWebDao.listarPorEmpresaWeb_new_provincial(user.getIDEMPRESA(), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5),getDatoEdicion().getIdresponsable(),user.getIDUSUARIO(),selectClieprov.getIdclieprov());
-                    listDestructura_tareo_clieprov = destructura_tareo_clieprovDao.listarPorEmpresaWebXCotizacion(user.getIDEMPRESA(), selectClieprov.getIdclieprov());
+                    listDet_tareoweb = tareoWebDao.listarPorEmpresaWeb_new_provincial(user.getIDEMPRESA(), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5),getDatoEdicion().getIdresponsable(),user.getIDUSUARIO(),getDatoEdicion().getIdclieprov());
+                    listDestructura_tareo_clieprov = destructura_tareo_clieprovDao.listarPorEmpresaWebXCotizacion(user.getIDEMPRESA(), getDatoEdicion().getIdclieprov(),getDatoEdicion().getIdruta());
                     generarEstructuraBase();
                 }
             }
@@ -959,6 +961,16 @@ public class Tareoweb_provincialAction extends AbstactListAction<Cabtareoweb> {
     }
     public void valorClieprov(SelectEvent event) {
         this.selectClieprov = (Clieprov) event.getObject();
+        this.getDatoEdicion().setIdclieprov(selectClieprov.getIdclieprov());
+        this.getDatoEdicion().setCliente(selectClieprov.getRazonsocial());
+    }
+    public void verCntRuta() {
+        RequestContext.getCurrentInstance().openDialog("cntRutas", modalOptions, null);
+    }
+    public void valorRuta(SelectEvent event) {
+        this.setSelectRutas((Rutas) event.getObject());
+        this.getDatoEdicion().setIdruta(this.getSelectRutas().getIdruta());
+        this.getDatoEdicion().setRuta(this.getSelectRutas().getDescripcion());
     }
     @Override
     public String buscarFiltro(int tipo) {
@@ -2139,6 +2151,20 @@ public class Tareoweb_provincialAction extends AbstactListAction<Cabtareoweb> {
      */
     public void setDestructura_tareo_clieprovDao(Destructura_tareo_clieprovDao destructura_tareo_clieprovDao) {
         this.destructura_tareo_clieprovDao = destructura_tareo_clieprovDao;
+    }
+
+    /**
+     * @return the selectRutas
+     */
+    public Rutas getSelectRutas() {
+        return selectRutas;
+    }
+
+    /**
+     * @param selectRutas the selectRutas to set
+     */
+    public void setSelectRutas(Rutas selectRutas) {
+        this.selectRutas = selectRutas;
     }
     
 }

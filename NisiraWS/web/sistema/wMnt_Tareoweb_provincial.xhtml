@@ -51,8 +51,8 @@
                                                          icon="ui-icon-search">
                                             <p:ajax event="dialogReturn" listener="#{tareoweb_provincialAction.valorClieprov}" update="cntClie"/>
                                         </p:commandButton>
-                                        <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{tareoweb_provincialAction.selectClieprov.idclieprov}" disabled="#{!tareoweb_provincialAction.edicion}"/>
-                                        <p:inputText size="50" readonly="true" value="#{tareoweb_provincialAction.selectClieprov.razonsocial}" disabled="#{!tareoweb_provincialAction.edicion}"/>
+                                        <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{tareoweb_provincialAction.datoEdicion.idclieprov}" disabled="#{!tareoweb_provincialAction.edicion}"/>
+                                        <p:inputText size="50" readonly="true" value="#{tareoweb_provincialAction.datoEdicion.cliente}" disabled="#{!tareoweb_provincialAction.edicion}"/>
                                     </h:panelGrid>
                                     <p:outputLabel value="Responsable:" escape="false" />
                                     <h:panelGrid id="cntCliePersonalS" cellpadding="0" cellspacing="0" columns="3">
@@ -63,7 +63,15 @@
                                         <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{tareoweb_provincialAction.datoEdicion.idresponsable}"/>
                                         <p:inputText size="50" readonly="true" value="#{tareoweb_provincialAction.datoEdicion.responsable}" />
                                     </h:panelGrid>
-                                    
+                                    <p:outputLabel value="Ruta:" escape="false" />
+                                    <h:panelGrid id="cntRutas" cellpadding="0" cellspacing="0" columns="2">
+                                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{tareoweb_provincialAction.verCntRuta}" 
+                                                        disabled="#{!tareoweb_provincialAction.edicion}"  icon="ui-icon-search">
+                                            <p:ajax event="dialogReturn" listener="#{tareoweb_provincialAction.valorRuta}" update="cntRutas"/>
+                                        </p:commandButton>
+                                        <p:inputText  style="text-align: left" size="6" readonly="true"  value="#{tareoweb_provincialAction.datoEdicion.idruta}"/>
+                                        <p:inputText  size="30" readonly="true"  value="#{tareoweb_provincialAction.datoEdicion.ruta}" />
+                                    </h:panelGrid>
                                 </p:panelGrid>
                             </div>
                             <div class="ui-grid-col-6">

@@ -24,12 +24,12 @@ public class Destructura_tareo_clieprovDao extends BaseDao<Destructura_tareo_cli
 		}
 	}
         /*APP WEB*/
-        public ArrayList<Destructura_tareo_clieprov> listarPorEmpresaWebXCotizacion(String idempresa,String idclieprov) throws NisiraORMException {
+        public ArrayList<Destructura_tareo_clieprov> listarPorEmpresaWebXCotizacion(String idempresa,String idclieprov,String idruta) throws NisiraORMException {
             ArrayList<Destructura_tareo_clieprov> lista = new ArrayList<Destructura_tareo_clieprov>();
             try
             {
                 ResultSet rs = null;
-                rs = execProcedure("GETDESTRUCTURA_TAREO_CLIEPROV_TMPSS",idempresa,idclieprov);
+                rs = execProcedure("GETDESTRUCTURA_TAREO_CLIEPROV_TMPSS",idempresa,idclieprov,idruta);
                 while (rs.next()) {
                     Destructura_tareo_clieprov estructura_costos_clieprov = new Destructura_tareo_clieprov();
                     estructura_costos_clieprov.setIdempresa(rs.getString("IDEMPRESA").trim());
