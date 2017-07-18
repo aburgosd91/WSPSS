@@ -125,6 +125,11 @@ public class CabtareowebDao extends BaseDao<Cabtareoweb> {
             cabtareoweb.setIdtipoasistencia(rs.getString("IDTIPOASISTENCIA")!=null?rs.getString("IDTIPOASISTENCIA").trim():"");
             cabtareoweb.setIdusuario(rs.getString("IDUSUARIO")!=null?rs.getString("IDUSUARIO").trim():"");
             cabtareoweb.setUsuario(rs.getString("USUARIO")!=null?rs.getString("USUARIO").trim():"");
+            cabtareoweb.setIdclieprov(rs.getString("IDCLIEPROV")!=null?rs.getString("IDCLIEPROV").trim():"");
+            cabtareoweb.setIdruta(rs.getString("IDRUTA")!=null?rs.getString("IDRUTA").trim():"");
+            
+            cabtareoweb.setCliente(rs.getString("CLIENTE")!=null?rs.getString("CLIENTE").trim():"");
+            cabtareoweb.setRuta(rs.getString("RUTA")!=null?rs.getString("RUTA").trim():"");
             lista.add(cabtareoweb); 
         }
         return lista;
@@ -236,6 +241,19 @@ public class CabtareowebDao extends BaseDao<Cabtareoweb> {
             String mensaje="";
             ResultSet rs = null;
             rs = execProcedure("SP_ORDENSERVICIOCLIENTE_TAREOWEB_FIJO",
+                    ob.getIdempresa(),ob.getIdcabtareoweb(),idusuario
+            );
+            while (rs.next()) {
+                mensaje = rs.getString("mensaje");
+                break;
+            }
+
+        return mensaje;
+    }
+    public String aprobarTareo_provincial(Cabtareoweb ob,String idusuario) throws Exception {
+            String mensaje="";
+            ResultSet rs = null;
+            rs = execProcedure("SP_ORDENSERVICIOCLIENTE_TAREOWEB_PROVINCIAL",
                     ob.getIdempresa(),ob.getIdcabtareoweb(),idusuario
             );
             while (rs.next()) {

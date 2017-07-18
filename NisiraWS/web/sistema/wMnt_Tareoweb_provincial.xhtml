@@ -54,6 +54,15 @@
                                         <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{tareoweb_provincialAction.datoEdicion.idclieprov}" disabled="#{!tareoweb_provincialAction.edicion}"/>
                                         <p:inputText size="50" readonly="true" value="#{tareoweb_provincialAction.datoEdicion.cliente}" disabled="#{!tareoweb_provincialAction.edicion}"/>
                                     </h:panelGrid>
+                                    <p:outputLabel value="Ruta:" escape="false" />
+                                    <h:panelGrid id="cntRutas" cellpadding="0" cellspacing="0" columns="3">
+                                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{tareoweb_provincialAction.verCntRuta}" 
+                                                        disabled="#{!tareoweb_provincialAction.edicion}"  icon="ui-icon-search">
+                                            <p:ajax event="dialogReturn" listener="#{tareoweb_provincialAction.valorRuta}" update="cntRutas"/>
+                                        </p:commandButton>
+                                        <p:inputText  style="text-align: left" size="6" readonly="true"  value="#{tareoweb_provincialAction.datoEdicion.idruta}"/>
+                                        <p:inputText  size="30" readonly="true"  value="#{tareoweb_provincialAction.datoEdicion.ruta}" />
+                                    </h:panelGrid>
                                     <p:outputLabel value="Responsable:" escape="false" />
                                     <h:panelGrid id="cntCliePersonalS" cellpadding="0" cellspacing="0" columns="3">
                                         <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{tareoweb_provincialAction.verCntClieprovPersonalSupervisorOperador}" 
@@ -63,15 +72,7 @@
                                         <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{tareoweb_provincialAction.datoEdicion.idresponsable}"/>
                                         <p:inputText size="50" readonly="true" value="#{tareoweb_provincialAction.datoEdicion.responsable}" />
                                     </h:panelGrid>
-                                    <p:outputLabel value="Ruta:" escape="false" />
-                                    <h:panelGrid id="cntRutas" cellpadding="0" cellspacing="0" columns="2">
-                                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{tareoweb_provincialAction.verCntRuta}" 
-                                                        disabled="#{!tareoweb_provincialAction.edicion}"  icon="ui-icon-search">
-                                            <p:ajax event="dialogReturn" listener="#{tareoweb_provincialAction.valorRuta}" update="cntRutas"/>
-                                        </p:commandButton>
-                                        <p:inputText  style="text-align: left" size="6" readonly="true"  value="#{tareoweb_provincialAction.datoEdicion.idruta}"/>
-                                        <p:inputText  size="30" readonly="true"  value="#{tareoweb_provincialAction.datoEdicion.ruta}" />
-                                    </h:panelGrid>
+                                    
                                 </p:panelGrid>
                             </div>
                             <div class="ui-grid-col-6">
@@ -184,7 +185,61 @@
                             </f:facet>
                         </p:cellEditor>
                     </p:column>
+                    <p:column headerText="Placa Cliente" filterBy="#{listDet_tareoweb.placa_cliente}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.placa_cliente}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: left">
+                        <p:cellEditor>
+                           <f:facet name="output">
+                               <h:outputText value="#{listDet_tareoweb.placa_cliente}">
+                               </h:outputText>
+                           </f:facet>
+                            <f:facet name="input">
+                                <p:inputText style="font-size:10px;" id="placa_cliente_det" value="#{listDet_tareoweb.placa_cliente}">
+                                </p:inputText>
+                           </f:facet>
+                       </p:cellEditor>
+                    </p:column>
                     
+                    <p:column headerText="Placa PSS" filterBy="#{listDet_tareoweb.idvehiculo}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.idvehiculo}" style="white-space: nowrap; width: 150px;padding: 3px;text-align: left">
+                        <p:cellEditor >
+                            <f:facet name="output">
+                                <h:outputText value="#{listDet_tareoweb.idvehiculo} - #{listDet_tareoweb.vehiculo}"/>
+                            </f:facet>
+                            <f:facet name="input" >
+                                <p:autoComplete size="80" id="vehiculo" value="#{listDet_tareoweb.selectConsumidor}" maxResults="10" completeMethod="#{tareowebAction.completeConsumidor}"
+                                            var="vehiculo" itemLabel="#{vehiculo.idconsumidor}" itemValue="#{vehiculo}" converter="consumidorConverter" forceSelection="true">
+                                    <p:column style="width:10%">
+                                         <h:outputText value="#{vehiculo.idconsumidor}" />
+                                     </p:column>
+                                     <p:column style="width:90%">
+                                         <h:outputText value="#{vehiculo.descripcion}" />
+                                     </p:column>
+                                </p:autoComplete>
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                    <p:column headerText="Conductor Cliente" filterBy="#{listDet_tareoweb.conductor_cliente}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.conductor_cliente}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: left">
+                        <p:cellEditor>
+                           <f:facet name="output">
+                               <h:outputText value="#{listDet_tareoweb.conductor_cliente}">
+                               </h:outputText>
+                           </f:facet>
+                            <f:facet name="input">
+                                <p:inputText style="font-size:10px;" id="conductor_cliente_det" value="#{listDet_tareoweb.conductor_cliente}">
+                                </p:inputText>
+                           </f:facet>
+                       </p:cellEditor>
+                    </p:column>
+                    <p:column headerText="Brevete Cliente" filterBy="#{listDet_tareoweb.brevete_cliente}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.brevete_cliente}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: left">
+                        <p:cellEditor>
+                           <f:facet name="output">
+                               <h:outputText value="#{listDet_tareoweb.brevete_cliente}">
+                               </h:outputText>
+                           </f:facet>
+                            <f:facet name="input">
+                                <p:inputText style="font-size:10px;" id="brevete_cliente_det" value="#{listDet_tareoweb.brevete_cliente}">
+                                </p:inputText>
+                           </f:facet>
+                       </p:cellEditor>
+                    </p:column>
                     <p:column headerText="Checklist" filterBy="#{listDet_tareoweb.checklist}" 
                               style="white-space: nowrap; width: 80px;padding: 3px;text-align: center" 
                               filterMatchMode="contains" sortBy="#{listDet_tareoweb.checklist}">
@@ -200,7 +255,38 @@
                            </f:facet>
                        </p:cellEditor>
                     </p:column>
-                    
+                    <p:column headerText="Nro Contenedor" filterBy="#{listDet_tareoweb.nrocontenedor}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.nrocontenedor}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: left">
+                        <p:cellEditor>
+                           <f:facet name="output">
+                               <h:outputText value="#{listDet_tareoweb.nrocontenedor}">
+                               </h:outputText>
+                           </f:facet>
+                            <f:facet name="input">
+                                <p:inputText style="font-size:10px;" id="nrocontenedor_det" value="#{listDet_tareoweb.nrocontenedor}">
+                                </p:inputText>
+                           </f:facet>
+                       </p:cellEditor>
+                    </p:column>
+                    <p:column id="fecharegistro" headerText="Fecha Registro" filterBy="#{tareowebAction.fechaDMY(listDet_tareoweb.fecharegistro)}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.fecharegistro}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: center">
+                        <p:cellEditor >
+                           <f:facet name="output">
+                                <h:outputText value="#{listDet_tareoweb.fecharegistro}">
+                                   <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                                </h:outputText>
+                           </f:facet>
+                           <f:facet name="input">
+                               <p:calendar style="font-size:10px;" value="#{listDet_tareoweb.fecharegistro}" pattern="dd-MM-yyyy" mask="true" />
+                           </f:facet>
+                       </p:cellEditor>
+                    </p:column>
+                    <p:column id="hora_req" headerText="Hora Req." filterBy="#{listDet_tareoweb.fhora_req}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.fhora_req}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: center">
+                        <f:facet name="header">
+                            <h:outputText value="Hora Req."/>
+                        </f:facet>
+                        <h:outputText value="#{listDet_tareoweb.fhora_req}">
+                            <f:convertDateTime type="both" pattern="HH:mm" timeZone="America/Lima" />
+                        </h:outputText>
+                    </p:column>
                     <!-- AUTOGENERADO -->                    
                     <p:columns headerText="#{columna.descripcion}" value="#{tareoweb_provincialAction.listDestructura_tareo_clieprov}" 
                                style="white-space: nowrap; width: 150px;padding: 3px;text-align: center" 
@@ -211,7 +297,7 @@
                                </h:outputText>
                            </f:facet>
                             <f:facet name="input" >
-                                <p:inputMask mask="#{listDet_tareoweb.tareo[ivar][3]?'99:99':'99/99/9999'}" value="#{listDet_tareoweb.tareo[ivar][1]}">
+                                <p:inputMask mask="#{listDet_tareoweb.tareo[ivar][3]?'99/99/9999':'99:99'}" value="#{listDet_tareoweb.tareo[ivar][1]}">
                                 </p:inputMask>
                            </f:facet>
                         </p:cellEditor>
@@ -231,7 +317,30 @@
                     <p:column headerText="Glosa" filterBy="#{listDet_tareoweb.glosa}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.glosa}"  style="white-space: nowrap; width: 200px;padding: 3px;text-align: center">
                        <h:outputText value="#{listDet_tareoweb.glosa}"/>
                     </p:column>
-                    
+                    <p:column headerText="Nro Precinto" filterBy="#{listDet_tareoweb.nroprecinto}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.nroprecinto}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: left">
+                        <p:cellEditor>
+                           <f:facet name="output">
+                               <h:outputText value="#{listDet_tareoweb.nroprecinto}">
+                               </h:outputText>
+                           </f:facet>
+                            <f:facet name="input">
+                                <p:inputText style="font-size:10px;" id="nroprecinto_det" value="#{listDet_tareoweb.nroprecinto}">
+                                </p:inputText>
+                           </f:facet>
+                       </p:cellEditor>
+                    </p:column>
+                    <p:column headerText="Nro Servicio" filterBy="#{listDet_tareoweb.nro_oservicio}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.nro_oservicio}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: left">
+                        <p:cellEditor>
+                           <f:facet name="output">
+                               <h:outputText value="#{listDet_tareoweb.nro_oservicio}">
+                               </h:outputText>
+                           </f:facet>
+                            <f:facet name="input">
+                                <p:inputText style="font-size:10px;" id="nro_oservicio_det" value="#{listDet_tareoweb.nro_oservicio}">
+                                </p:inputText>
+                           </f:facet>
+                       </p:cellEditor>
+                    </p:column>
                     <!-- FOR REPORT -->
                     <p:column visible="false">
                        <f:facet name="header">
@@ -263,10 +372,14 @@
                     
                </p:dataTable>
             <p:contextMenu for="listDet_tareoweb">
+                <p:menuitem value="Replicar" icon="ui-icon-copy" actionListener="#{tareoweb_provincialAction.replicarItem_tareo()}"/>
                 <p:menuitem value="Reg. Incidencia" icon="ui-icon-search" actionListener="#{tareoweb_provincialAction.openDialogAsistencia()}" />
                 <p:menuitem value="Mostrar" update="detalleDialog" icon="ui-icon-search" oncomplete="PF('detalleDialog').show()"/>
-                <p:menuitem value="Eliminar" update="listDet_tareoweb" icon="ui-icon-close" actionListener="#{tareoweb_provincialAction.deleteDettareo_web()}">
+                <p:menuitem value="Eliminar Fila" update="listDet_tareoweb" icon="ui-icon-close" actionListener="#{tareoweb_provincialAction.deleteDettareo_web()}">
                     <p:confirm header="Advertencia" message="Está seguro de eliminar registro?" icon="ui-icon-alert" />
+                </p:menuitem>
+                <p:menuitem value="Eliminar Doc.Servicio" update="listDet_tareoweb" icon="ui-icon-close" actionListener="#{tareoweb_provincialAction.deleteDettareo_web_servicio()}">
+                    <p:confirm header="Advertencia" message="Está seguro de eliminar registros?" icon="ui-icon-alert" />
                 </p:menuitem>
             </p:contextMenu>
             <p:dialog id="_id_dlgasignar_personal" header="..::Asignar - Personal::." widgetVar="dlgasignar_personal" modal="true" showEffect="popup" closable="false">

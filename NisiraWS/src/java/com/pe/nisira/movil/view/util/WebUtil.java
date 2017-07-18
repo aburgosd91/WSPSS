@@ -44,6 +44,7 @@ import java.util.Date;
 import java.util.Formatter;
 import java.util.Iterator;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -94,8 +95,14 @@ public class WebUtil {
     public static final String TIME24HOURS_PATTERN = "([01]?[0-9]|2[0-3]):[0-5][0-9]";
     public static final Pattern pattern = Pattern.compile(TIME24HOURS_PATTERN);
     public static boolean validateTime(final String time){
-        Matcher matcher = pattern.matcher(time);
-        return matcher.matches();
+        if(time == null){
+            return false;
+        }else if(time.trim().equals("")){
+            return false;
+        }else{
+            Matcher matcher = pattern.matcher(time);
+            return matcher.matches();
+        }
     }
     public static Date convertStringTime(String timer) throws ParseException{
         SimpleDateFormat format = new SimpleDateFormat("HH:mm"); // 12 hour format
@@ -594,6 +601,17 @@ public class WebUtil {
             return stringFecha;
         }else{
             return null;
+        }
+    }
+    public static boolean validarFecha_ddmmyyyy(String fecha){
+        try{
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            formatter.setLenient(false);
+            Date date = formatter.parse(fecha);
+            return true;
+        }catch(Exception ex){
+            System.err.println(ex.getMessage());
+            return false;
         }
     }
 }

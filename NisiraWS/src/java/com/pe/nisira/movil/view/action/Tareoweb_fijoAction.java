@@ -1103,6 +1103,20 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
             RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
         }
     }
+    public void deleteDettareo_web_servicio(){
+        Det_tareoweb sl = selectDet_tareoweb;
+        List<Det_tareoweb> lst_temp_delete = new ArrayList<>();
+        if(sl!=null){
+            for(Det_tareoweb o : listDet_tareoweb){
+                if(sl.getIdordenservicio().trim().equals(o.getIdordenservicio().trim())){
+                    lst_temp_delete.add(o);
+                }
+            }
+            listDet_tareoweb.removeAll(lst_temp_delete);
+//            RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
+            RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
+        }
+    }
     @Override
     public String buscarFiltro(int tipo) {
         try {
