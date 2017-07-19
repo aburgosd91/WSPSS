@@ -105,6 +105,8 @@ public class Cabtareoweb  implements Serializable {
         private String responsable;
         private String estado;
         private String mes;
+        private String cliente;
+        private String ruta;
 	/* Sets & Gets */
 	public void setIdempresa(String idempresa) {
 		this.idempresa = idempresa;
@@ -442,5 +444,33 @@ public class Cabtareoweb  implements Serializable {
      */
     public void setIdruta(String idruta) {
         this.idruta = idruta;
+    }
+
+    /**
+     * @return the cliente
+     */
+    public String getCliente() {
+        return cliente;
+    }
+
+    /**
+     * @param cliente the cliente to set
+     */
+    public void setCliente(String cliente) {
+        this.cliente = cliente;
+    }
+
+    /**
+     * @return the ruta
+     */
+    public String getRuta() {
+        return ruta;
+    }
+
+    /**
+     * @param ruta the ruta to set
+     */
+    public void setRuta(String ruta) {
+        this.ruta = ruta;
     }
 }

@@ -460,8 +460,11 @@
                 <p:menuitem value="Replicar" icon="ui-icon-copy" actionListener="#{tareowebAction.replicarItem_tareo()}"/>
                 <p:menuitem value="Reg. Incidencia" icon="ui-icon-search" actionListener="#{tareowebAction.openDialogAsistencia()}" />
                 <p:menuitem value="Mostrar" update="detalleDialog" icon="ui-icon-search" oncomplete="PF('detalleDialog').show()"/>
-                <p:menuitem value="Eliminar" update="listDet_tareoweb" icon="ui-icon-close" actionListener="#{tareowebAction.deleteDettareo_web()}">
+                <p:menuitem value="Eliminar Fila" update="listDet_tareoweb" icon="ui-icon-close" actionListener="#{tareowebAction.deleteDettareo_web()}">
                     <p:confirm header="Advertencia" message="Está seguro de eliminar registro?" icon="ui-icon-alert" />
+                </p:menuitem>
+                <p:menuitem value="Eliminar Doc.Servicio" update="listDet_tareoweb" icon="ui-icon-close" actionListener="#{tareowebAction.deleteDettareo_web_servicio()}">
+                    <p:confirm header="Advertencia" message="Está seguro de eliminar registros?" icon="ui-icon-alert" />
                 </p:menuitem>
             </p:contextMenu>
             <p:dialog id="dlgasignar_personal" header="..::Asignar - Personal::." widgetVar="dlgasignar_personal" modal="true" showEffect="popup" closable="false">

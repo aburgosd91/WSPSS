@@ -997,6 +997,20 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
             RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
         }
     }
+    public void deleteDettareo_web_servicio(){
+        Det_tareoweb sl = selectDet_tareoweb;
+        List<Det_tareoweb> lst_temp_delete = new ArrayList<>();
+        if(sl!=null){
+            for(Det_tareoweb o : listDet_tareoweb){
+                if(sl.getIdordenservicio().trim().equals(o.getIdordenservicio().trim())){
+                    lst_temp_delete.add(o);
+                }
+            }
+            listDet_tareoweb.removeAll(lst_temp_delete);
+//            RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
+            RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
+        }
+    }
     public void replicarItem_tareo(){
         if(selectDet_tareoweb!=null){
             for(int i=0;i<listDet_tareoweb.size();i++){
@@ -1064,6 +1078,7 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
                 validacion+="\n\tFecha Registro no asignado";
             if(obj.getFechafinregistro()==null)
                 validacion+="\n\tFecha Fin no asignado";
+            
             if(!validacion.equals("")){
                 flag = false;
                 this.mensaje="Servicio N°:"+obj.getItem()+" - "+obj.getIddocumento()+"-"+obj.getSerie()+"-"+obj.getNumero()+" ("+obj.getFecha_osc()+")"+" "+obj.getRazon()+"-"+obj.getRuc()+validacion;
