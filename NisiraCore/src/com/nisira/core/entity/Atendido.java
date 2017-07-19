@@ -11,7 +11,7 @@ import java.util.Date;
  *
  * @author alejndro zamora
  */
-public class Atendido {
+public class Atendido implements Cloneable{
     private int item;
     private int atendido;
     private Date fechaAten;
@@ -50,6 +50,9 @@ public class Atendido {
 
     public void setFechaRepo(Date fechaRepo) {
         this.fechaRepo = fechaRepo;
+    }
+    public Atendido clone() throws CloneNotSupportedException {
+        return (Atendido) super.clone();
     }
     
 }
