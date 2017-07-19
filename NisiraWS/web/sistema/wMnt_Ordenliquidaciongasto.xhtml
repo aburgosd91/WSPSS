@@ -125,17 +125,29 @@
                                     </f:facet>
                                     <h:outputText value="#{lstdordenliquidaciongasto.numero}" />
                                 </p:column>
-                                <p:column style="width:20%;" filterBy="#{lstdordenliquidaciongasto.conceptocuenta}" filterMatchMode="contains" sortBy="#{lstdordenliquidaciongasto.conceptocuenta}">
+                                <p:column style="width:20%;" filterBy="#{lstdordenliquidaciongasto.afecto}" filterMatchMode="contains" sortBy="#{lstdordenliquidaciongasto.afecto}">
                                     <f:facet name="header" >
-                                        <h:outputText value="Concepto" />
+                                        <h:outputText value="Afecto" />
                                     </f:facet>
-                                    <h:outputText value="#{lstdordenliquidaciongasto.conceptocuenta}" />
+                                    <h:outputText value="#{lstdordenliquidaciongasto.afecto}" />
                                 </p:column>
-                                <p:column style="width:20%;" filterBy="#{lstdordenliquidaciongasto.destinoadquisicion}" filterMatchMode="contains" sortBy="#{lstdordenliquidaciongasto.destinoadquisicion}">
+                                <p:column style="width:20%;" filterBy="#{lstdordenliquidaciongasto.inafecto}" filterMatchMode="contains" sortBy="#{lstdordenliquidaciongasto.inafecto}">
                                     <f:facet name="header" >
-                                        <h:outputText value="Destino" />
+                                        <h:outputText value="Inafecto" />
                                     </f:facet>
-                                    <h:outputText value="#{lstdordenliquidaciongasto.destinoadquisicion}" />
+                                    <h:outputText value="#{lstdordenliquidaciongasto.inafecto}" />
+                                </p:column>
+                                <p:column style="width:20%;" filterBy="#{lstdordenliquidaciongasto.pimpuesto}" filterMatchMode="contains" sortBy="#{lstdordenliquidaciongasto.pimpuesto}">
+                                    <f:facet name="header" >
+                                        <h:outputText value="Impuesto" />
+                                    </f:facet>
+                                    <h:outputText value="%#{lstdordenliquidaciongasto.pimpuesto}" />
+                                </p:column>
+                                <p:column style="width:20%;" filterBy="#{lstdordenliquidaciongasto.glosa}" filterMatchMode="contains" sortBy="#{lstdordenliquidaciongasto.glosa}">
+                                    <f:facet name="header" >
+                                        <h:outputText value="Glosa" />
+                                    </f:facet>
+                                    <h:outputText value="#{lstdordenliquidaciongasto.glosa}" />
                                 </p:column>
                                 <p:column style="width:20%;" filterBy="#{lstdordenliquidaciongasto.fecha}" filterMatchMode="contains" sortBy="#{lstdordenliquidaciongasto.fecha}">
                                     <f:facet name="header">
@@ -145,14 +157,18 @@
                                         <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
                                     </h:outputText>
                                 </p:column>
+                                <p:column style="width:20%;" filterBy="#{lstdordenliquidaciongasto.importe}" filterMatchMode="contains" sortBy="#{lstdordenliquidaciongasto.importe}">
+                                    <f:facet name="header" >
+                                        <h:outputText value="Total" />
+                                    </f:facet>
+                                    <h:outputText value="#{lstdordenliquidaciongasto.importe}" />
+                                </p:column>
                             </p:dataTable>  
                         </p:fieldset>
                         <p:toolbar>
                             <f:facet name="right">
                                 <p:outputLabel value="Total M.N.:" />
                                 <p:inputNumber id="timporte" value="#{ordenliquidaciongastoAction.datoEdicion.importe}" />
-                                <p:outputLabel value="Total M.E.:" />
-                                <p:inputNumber id="timpuesto" value="#{ordenliquidaciongastoAction.datoEdicion.impuesto}" />
                             </f:facet>
                         </p:toolbar> 
                         <p:dialog id="dlgnew_dordenliquidaciongasto" header="..::Detalle::." widgetVar="dlgnew_dordenliquidaciongasto" modal="true" showEffect="popup" closable="false">
@@ -182,7 +198,7 @@
                                     <h:panelGrid id="cntDocumento" cellpadding="0" cellspacing="0" columns="3">
                                         <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{ordenliquidaciongastoAction.verCntDocumentoscodigosunat()}" 
                                                          disabled="#{!ordenliquidaciongastoAction.edicion}"  icon="ui-icon-search">
-                                            <p:ajax event="dialogReturn" listener="#{ordenliquidaciongastoAction.valorDocumentoscodigosunat}" update="cntDocumento,impto,base"/>
+                                            <p:ajax event="dialogReturn" listener="#{ordenliquidaciongastoAction.valorDocumentoscodigosunat}" update="cntDocumento,impto,base,inafecto"/>
                                         </p:commandButton>
                                         <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{ordenliquidaciongastoAction.dordenliquidaciongasto.iddocumento}" disabled="#{!ordenliquidaciongastoAction.edicion}"/>
                                         <p:inputText size="50" readonly="true" value="#{ordenliquidaciongastoAction.dordenliquidaciongasto.documento}" disabled="#{!ordenliquidaciongastoAction.edicion}"/>
@@ -193,19 +209,19 @@
 
                                     <p:outputLabel for="dnumero" value="Número: " />
                                     <p:inputText id="dnumero" maxlength="7" size="7"
-                                                 value="#{tareowebAction.numero_local}" 
+                                                 value="#{ordenliquidaciongastoAction.dordenliquidaciongasto.numero}" 
                                                  onblur="javascript:this.value = ('0000000' + this.value).slice(-7);" 
                                                  onkeypress="if (event.which  lt; 48 || event.which  gt; 57) return false;">
                                         <p:ajax event="valueChange" immediate="true" process="@this"/>
                                     </p:inputText>
 
                                     <p:outputLabel for="base" value="Afecto:" />
-                                    <p:inputNumber id="base" value="#{ordenliquidaciongastoAction.dordenliquidaciongasto.afecto}" disabled="#{ordenliquidaciongastoAction.dordenliquidaciongasto.iddocumento==null?true:false}">
+                                    <p:inputNumber id="base" value="#{ordenliquidaciongastoAction.dordenliquidaciongasto.afecto}" disabled="#{ordenliquidaciongastoAction.dordenliquidaciongasto.iddocumento=='FAC'?false:true}">
                                         <p:ajax event="blur" listener="#{ordenliquidaciongastoAction.afectoCalc()}" update="impuesto,importe"/>
                                     </p:inputNumber>
 
                                     <p:outputLabel for="inafecto" value="Inafecto:" />
-                                    <p:inputNumber id="inafecto" value="#{ordenliquidaciongastoAction.dordenliquidaciongasto.inafecto}">
+                                    <p:inputNumber id="inafecto" value="#{ordenliquidaciongastoAction.dordenliquidaciongasto.inafecto}" disabled="#{ordenliquidaciongastoAction.dordenliquidaciongasto.iddocumento=='BOL'?false:true}">
                                         <p:ajax event="blur" listener="#{ordenliquidaciongastoAction.inafectoCalc()}" update="importe"/>
                                     </p:inputNumber>
 
