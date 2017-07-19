@@ -616,6 +616,7 @@ public class Tareoweb_provincialAction extends AbstactListAction<Cabtareoweb> {
                     listDet_tareoweb = tareoWebDao.listarPorEmpresaWeb_new_provincial(user.getIDEMPRESA(), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5),getDatoEdicion().getIdresponsable(),user.getIDUSUARIO(),getDatoEdicion().getIdclieprov());
                     listDestructura_tareo_clieprov = destructura_tareo_clieprovDao.listarPorEmpresaWebXCotizacion(user.getIDEMPRESA(), getDatoEdicion().getIdclieprov(),getDatoEdicion().getIdruta());
                     generarEstructuraBase();
+                    RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
                 }
             }
             RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
