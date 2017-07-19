@@ -71,9 +71,9 @@ public class Rutas implements Serializable{
 	@Columna
 	private Float exige_guia_confirmacion;
         @XStreamOmitField
-        private String Origendesc;
+        private String origendesc;
         @XStreamOmitField
-        private String Destinodesc;
+        private String destinodesc;
 
 
 	/* Sets & Gets */
@@ -234,19 +234,23 @@ public class Rutas implements Serializable{
 	/* Sets & Gets FK*/
 
     public String getOrigendesc() {
-        return Origendesc;
+        return origendesc;
     }
 
-    public void setOrigendesc(String Origendesc) {
-        this.Origendesc = Origendesc;
+    public void setOrigendesc(String origendesc) {
+        this.origendesc = origendesc;
     }
 
     public String getDestinodesc() {
-        return Destinodesc;
+        return destinodesc;
     }
 
-    public void setDestinodesc(String Destinodesc) {
-        this.Destinodesc = Destinodesc;
+    public void setDestinodesc(String destinodesc) {
+        this.destinodesc = destinodesc;
     }
+
+    
+
+    
 
 }

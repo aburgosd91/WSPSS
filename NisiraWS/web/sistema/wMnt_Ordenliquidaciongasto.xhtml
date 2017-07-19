@@ -198,7 +198,7 @@
                                     <h:panelGrid id="cntDocumento" cellpadding="0" cellspacing="0" columns="3">
                                         <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{ordenliquidaciongastoAction.verCntDocumentoscodigosunat()}" 
                                                          disabled="#{!ordenliquidaciongastoAction.edicion}"  icon="ui-icon-search">
-                                            <p:ajax event="dialogReturn" listener="#{ordenliquidaciongastoAction.valorDocumentoscodigosunat}" update="cntDocumento,impto,base,inafecto"/>
+                                            <p:ajax event="dialogReturn" listener="#{ordenliquidaciongastoAction.valorDocumentoscodigosunat}" update="cntDocumento,impto,base,inafecto,impuesto,importe"/>
                                         </p:commandButton>
                                         <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{ordenliquidaciongastoAction.dordenliquidaciongasto.iddocumento}" disabled="#{!ordenliquidaciongastoAction.edicion}"/>
                                         <p:inputText size="50" readonly="true" value="#{ordenliquidaciongastoAction.dordenliquidaciongasto.documento}" disabled="#{!ordenliquidaciongastoAction.edicion}"/>
@@ -226,7 +226,7 @@
                                     </p:inputNumber>
 
                                     <p:outputLabel for="impto" value="%Impto:" />
-                                    <p:inputNumber id="impto" value="#{ordenliquidaciongastoAction.dordenliquidaciongasto.pimpuesto}" readonly="true"/>
+                                    <p:inputNumber id="impto" value="#{ordenliquidaciongastoAction.dordenliquidaciongasto.pimpuesto}"/>
 
                                     <p:outputLabel for="impuesto" value="Impuesto:" />
                                     <p:inputNumber id="impuesto" value="#{ordenliquidaciongastoAction.dordenliquidaciongasto.impuesto}"/>

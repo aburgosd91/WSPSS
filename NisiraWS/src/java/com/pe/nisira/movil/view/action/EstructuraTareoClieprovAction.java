@@ -216,9 +216,9 @@ public class EstructuraTareoClieprovAction extends AbstactListAction<Estructura_
         }
     }
 
-    public void ediitDetEstruc() {
+    public void ediitDetEstruc() throws CloneNotSupportedException {
         if (slctDesTar != null) {
-            newtDesTar = slctDesTar;
+            newtDesTar =(Destructura_tareo_clieprov) slctDesTar.clone();
             editDet = true;
             RequestContext.getCurrentInstance().update("datos:detEstrDialog");
             RequestContext.getCurrentInstance().execute("PF('detEstrDialog').show()");
