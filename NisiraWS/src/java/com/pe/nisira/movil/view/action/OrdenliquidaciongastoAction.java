@@ -431,18 +431,47 @@ public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidac
         getDordenliquidaciongasto().setIddestino(selectDestinoadquisicion.getIddestino());
         getDordenliquidaciongasto().setDestinoadquisicion(selectDestinoadquisicion.getDescripcion());
     }
+    public boolean validarDetalle(){
+        if(dordenliquidaciongasto.getSerie() == null ||dordenliquidaciongasto.getSerie().equalsIgnoreCase("")){
+            WebUtil.MensajeAdvertencia("Ingrese Serie del Documento");
+            return false;
+        }
+        if(dordenliquidaciongasto.getNumero()== null ||dordenliquidaciongasto.getNumero().equalsIgnoreCase("")){
+            WebUtil.MensajeAdvertencia("Ingrese Numero del Documento");
+            return false;
+        }
+        if(dordenliquidaciongasto.getIddocumento().equalsIgnoreCase("FAC")){
+            if(dordenliquidaciongasto.getAfecto()== 0.0f){
+                WebUtil.MensajeAdvertencia("Ingrese Valor Afecto");
+                return false;
+            }
+        }else{
+            if(dordenliquidaciongasto.getInafecto()==  0.0f){
+                WebUtil.MensajeAdvertencia("Ingrese Valor Inafecto");
+                return false;
+            }
+        }
+        return true;
+    }
     public void grabarDordenliquidaciongasto(){
-        int pos=lstdordenliquidaciongasto.indexOf(dordenliquidaciongasto);
-        if(pos==-1)
-            lstdordenliquidaciongasto.add(dordenliquidaciongasto);
-        else 
-            lstdordenliquidaciongasto.set(pos, dordenliquidaciongasto);
-        lstdordenliquidaciongasto.forEach((ls) -> {
-            getDatoEdicion().setImporte(getDatoEdicion().getImporte()+ls.getImporte());
-        });
-        RequestContext.getCurrentInstance().update("datos:lstdordenliquidaciongasto");
-        RequestContext.getCurrentInstance().update("datos:dlgnew_dordenliquidaciongasto");
-        RequestContext.getCurrentInstance().execute("PF('dlgnew_dordenliquidaciongasto').hide()");
+        if(validarDetalle()){
+            int pos=lstdordenliquidaciongasto.indexOf(dordenliquidaciongasto);
+            if(pos==-1){
+                lstdordenliquidaciongasto.add(dordenliquidaciongasto);
+            }            
+            else {
+                lstdordenliquidaciongasto.set(pos, dordenliquidaciongasto);                
+            }
+            lstdordenliquidaciongasto.forEach((ls) -> {
+                getDatoEdicion().setImporte(getDatoEdicion().getImporte()+ls.getImporte());
+            });
+            RequestContext.getCurrentInstance().update("datos:lstdordenliquidaciongasto");
+            RequestContext.getCurrentInstance().update("datos:dlgnew_dordenliquidaciongasto");
+            RequestContext.getCurrentInstance().update("datos:timporte");
+            RequestContext.getCurrentInstance().execute("PF('dlgnew_dordenliquidaciongasto').hide()");
+        }else{
+            RequestContext.getCurrentInstance().update("datos:growl");
+        }        
     }
     public void nuevoDordenliquidaciongasto() {
         try {
