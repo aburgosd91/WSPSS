@@ -5,11 +5,12 @@ import com.nisira.annotation.Columna;
 import com.nisira.annotation.Tabla;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
+import java.io.Serializable;
 import java.util.Date;
 
 @XStreamAlias("DESTRUCTURA_TAREO_CLIEPROV")
 @Tabla(nombre = "DESTRUCTURA_TAREO_CLIEPROV")
-public class Destructura_tareo_clieprov {
+public class Destructura_tareo_clieprov implements Serializable,Cloneable{
 	@ClavePrimaria
 	@Columna
         @XStreamAlias("IDEMPRESA")
@@ -143,4 +144,10 @@ public class Destructura_tareo_clieprov {
     public void setBEFecha(boolean band) {
         this.setEsfecha((band) ?  1f :  0f);
     }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
+    
 }

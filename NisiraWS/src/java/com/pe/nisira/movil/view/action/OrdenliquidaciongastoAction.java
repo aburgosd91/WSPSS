@@ -346,9 +346,6 @@ public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidac
             numero=listNumemisor.get(0).getNumero();
             listEstado = estadosDao.listarPorEmpresaWeb(user.getIDEMPRESA(),null);
             lstdordenliquidaciongasto = dordenliquidaciongastoDao.listarPorOrdenliquidaciongastoWeb(user.getIDEMPRESA(),getDatoEdicion().getIdorden());
-            lstdordenliquidaciongasto.forEach((ls) -> {
-                getDatoEdicion().setImporte(getDatoEdicion().getImporte()+ls.getImporte());
-            });
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy");
             periodoBase=dateFormat.format(new Date())+WebUtil.idGeneradoDos((new Date()).getMonth()+1);
             periodoDisenio=dateFormat.format(new Date());
@@ -404,9 +401,14 @@ public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidac
         getDordenliquidaciongasto().setIddocumento(doc.getIddocumento());
         getDordenliquidaciongasto().setDocumento(doc.getDescripcion());
         if(doc.getIddocumento().equalsIgnoreCase("FAC")){
-            dordenliquidaciongasto.setPimpuesto((new ImpuestoDao()).getImpuesto(getDatoEdicion().getIdempresa(),"001"));
+            getDordenliquidaciongasto().setPimpuesto((new ImpuestoDao()).getImpuesto(getDatoEdicion().getIdempresa(),"001"));
+            getDordenliquidaciongasto().setInafecto(0f);
+            getDordenliquidaciongasto().setImporte(0f);
         }else{
-            dordenliquidaciongasto.setPimpuesto(0f);
+            getDordenliquidaciongasto().setAfecto(0f);
+            getDordenliquidaciongasto().setPimpuesto(0f);
+            getDordenliquidaciongasto().setImpuesto(0f);
+            getDordenliquidaciongasto().setImporte(0f);
         }
         
     }
@@ -432,6 +434,10 @@ public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidac
         getDordenliquidaciongasto().setDestinoadquisicion(selectDestinoadquisicion.getDescripcion());
     }
     public boolean validarDetalle(){
+        if(dordenliquidaciongasto.getIdclieprov() == null ||dordenliquidaciongasto.getIdclieprov().equalsIgnoreCase("")){
+            WebUtil.MensajeAdvertencia("Ingrese Proveedor");
+            return false;
+        }
         if(dordenliquidaciongasto.getSerie() == null ||dordenliquidaciongasto.getSerie().equalsIgnoreCase("")){
             WebUtil.MensajeAdvertencia("Ingrese Serie del Documento");
             return false;
@@ -498,7 +504,7 @@ public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidac
         }
     }
     public void editarDordenliquidaciongasto() {
-        try {
+        try {            
             if(selectDordenliquidaciongasto!=null){
                 if(selectDordenliquidaciongasto.getIdloteproduccion()!=null)
                    if(selectDordenliquidaciongasto.getIdloteproduccion().equals("1"))
@@ -508,7 +514,7 @@ public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidac
                 else
                     this.check_igv =  false;
                 listTipoGasto = tipogastoDao.listarPorEmpresa_Tipogasto(user.getIDEMPRESA());
-                setDordenliquidaciongasto(selectDordenliquidaciongasto);
+                setDordenliquidaciongasto((Dordenliquidaciongasto)selectDordenliquidaciongasto.clone());
                 RequestContext.getCurrentInstance().update("datos:dlgnew_dordenliquidaciongasto");
                 RequestContext.getCurrentInstance().execute("PF('dlgnew_dordenliquidaciongasto').show()");  
             }else{
@@ -516,7 +522,7 @@ public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidac
                 WebUtil.MensajeAdvertencia(this.mensaje);
                 RequestContext.getCurrentInstance().update("datos:growl");   
             }
-        } catch (NisiraORMException ex) {
+        } catch (NisiraORMException |CloneNotSupportedException ex) {
             this.mensaje = ex.getMessage();
             WebUtil.error(this.mensaje);
             RequestContext.getCurrentInstance().update("datos:growl");

@@ -31,6 +31,18 @@
                         </f:facet>
                         <h:outputText value="#{listRuta.descripcion}"/>
                     </p:column>
+                    <p:column style="width:45%;" filterBy="#{listRuta.origendesc}" filterMatchMode="contains" sortBy="#{listRuta.origendesc}">
+                        <f:facet name="header">
+                            <h:outputText value="Origen" />
+                        </f:facet>
+                        <h:outputText value="#{listRuta.origendesc}"/>
+                    </p:column>
+                    <p:column style="width:45%;" filterBy="#{listRuta.destinodesc}" filterMatchMode="contains" sortBy="#{listRuta.destinodesc}">
+                        <f:facet name="header">
+                            <h:outputText value="Destino" />
+                        </f:facet>
+                        <h:outputText value="#{listRuta.destinodesc}"/>
+                    </p:column>
                     <p:column style="width:15%;" filterBy="#{listRuta.estado}">
                         <f:facet name="header">
                             <h:outputText value="ESTADO"/>

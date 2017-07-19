@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.Date;
 @XStreamAlias("DORDENLIQUIDACIONGASTO")
 @Tabla(nombre = "DORDENLIQUIDACIONGASTO")
-public class Dordenliquidaciongasto implements Serializable{
+public class Dordenliquidaciongasto implements Serializable,Cloneable{
         @XStreamAlias("IDEMPRESA")
 	@ClavePrimaria
 	@Columna
@@ -473,4 +473,9 @@ public class Dordenliquidaciongasto implements Serializable{
         this.destinoadquisicion = destinoadquisicion;
     }
 
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
+    
 }
