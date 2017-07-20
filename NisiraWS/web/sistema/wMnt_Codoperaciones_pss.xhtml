@@ -39,6 +39,16 @@
                                  >
                     <p:ajax event="valueChange" immediate="true" process="@this"/>
                 </p:inputTextarea>
+                <p:outputLabel value="Tipo Servicio" escape="false" />
+                <h:panelGrid id="Wtiposervicio" cellpadding="0" cellspacing="0" columns="4">
+                    <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{codoperaciones_pssAction.verCntWtiposervicioAction()}" 
+                                     icon="ui-icon-search">
+                        <p:ajax event="dialogReturn" listener="#{codoperaciones_pssAction.valorCntWtiposervicio}" update="Wtiposervicio"/>
+                    </p:commandButton>
+                    <p:inputTextarea  style="text-align: left" rows="3" cols="5" readonly="true"  value="#{codoperaciones_pssAction.datoEdicion.idtiposervicio}" disabled="#{!codoperaciones_pssAction.edicion}"/>
+                    <p:inputTextarea  style="text-align: left" rows="3" cols="5" readonly="true"  value="#{codoperaciones_pssAction.datoEdicion.tiposervicio_corto}" disabled="#{!codoperaciones_pssAction.edicion}"/>
+                    <p:inputTextarea cols="40" rows="3" readonly="true" value="#{codoperaciones_pssAction.datoEdicion.tiposervicio}" disabled="#{!codoperaciones_pssAction.edicion}"/>
+                </h:panelGrid>
                 <p:outputLabel value="Estado: " />
                 <p:selectBooleanCheckbox value="#{codoperaciones_pssAction.estado}" disabled="#{!codoperaciones_pssAction.edicion}"/>
             </p:panelGrid>
