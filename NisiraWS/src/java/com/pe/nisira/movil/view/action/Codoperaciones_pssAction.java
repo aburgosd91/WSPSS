@@ -6,6 +6,7 @@
 package com.pe.nisira.movil.view.action;
 import com.nisira.core.dao.Codoperaciones_pssDao;
 import com.nisira.core.entity.Codoperaciones_pss;
+import com.nisira.core.entity.Wtiposervicio;
 import com.pe.nisira.movil.view.bean.UsuarioBean;
 import com.pe.nisira.movil.view.util.Constantes;
 import com.pe.nisira.movil.view.util.WebUtil;
@@ -16,6 +17,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import net.sf.jasperreports.engine.JRDataSource;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.SelectEvent;
 
 /**
  *
@@ -125,7 +127,15 @@ public class Codoperaciones_pssAction extends AbstactListAction<Codoperaciones_p
     public void aprobar() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+    public void verCntWtiposervicioAction(){
+        RequestContext.getCurrentInstance().openDialog("cntWtiposervicio", modalOptions, null);
+    }
+    public void valorCntWtiposervicio(SelectEvent event) {
+        Wtiposervicio obj = ((Wtiposervicio) event.getObject());
+        getDatoEdicion().setIdtiposervicio(obj.getIdtiposervicio());
+        getDatoEdicion().setTiposervicio(obj.getDescripcion());
+        getDatoEdicion().setTiposervicio_corto(obj.getDescripcion_corta());
+    }
     public void findDetalle(){
         if(getDatoEdicion()!=null){
             estado = getDatoEdicion().getEstado()==0.0?false:true;

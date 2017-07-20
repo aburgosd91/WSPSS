@@ -58,6 +58,9 @@ public class Codoperaciones_pssDao extends BaseDao<Codoperaciones_pss> {
                 codoperaciones_pss.setDescripcion_corta(rs.getString("DESCRIPCION_CORTA")!=null?rs.getString("DESCRIPCION_CORTA").trim():"");
                 codoperaciones_pss.setFechacreacion(rs.getDate("FECHACREACION"));
                 codoperaciones_pss.setEstado(rs.getFloat("ESTADO"));
+                codoperaciones_pss.setIdtiposervicio(rs.getString("IDTIPOSERVICIO")!=null?rs.getString("IDTIPOSERVICIO").trim():"");
+                codoperaciones_pss.setTiposervicio(rs.getString("TIPOSERVICIO")!=null?rs.getString("TIPOSERVICIO").trim():"");
+                codoperaciones_pss.setTiposervicio_corto(rs.getString("TIPOSERVICIO_CORTO")!=null?rs.getString("TIPOSERVICIO_CORTO").trim():"");
                 lista.add(codoperaciones_pss);  
             }
         } catch(Exception ex) {

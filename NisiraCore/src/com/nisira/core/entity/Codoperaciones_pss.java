@@ -25,9 +25,11 @@ public class Codoperaciones_pss implements Serializable{
         @XStreamAlias("ESTADO")
 	@Columna
 	private Float estado;
-
-
-
+        @XStreamAlias("IDTIPOSERVICIO")
+	@Columna
+	private String idtiposervicio;
+        private String tiposervicio;
+        private String tiposervicio_corto;
 	/* Sets & Gets */
 	public void setIdcodoperaciones(String idcodoperaciones) {
 		this.idcodoperaciones = idcodoperaciones;
@@ -72,5 +74,47 @@ public class Codoperaciones_pss implements Serializable{
 
 
 	/* Sets & Gets FK*/
+
+    /**
+     * @return the idtiposervicio
+     */
+    public String getIdtiposervicio() {
+        return idtiposervicio;
+    }
+
+    /**
+     * @param idtiposervicio the idtiposervicio to set
+     */
+    public void setIdtiposervicio(String idtiposervicio) {
+        this.idtiposervicio = idtiposervicio;
+    }
+
+    /**
+     * @return the tiposervicio
+     */
+    public String getTiposervicio() {
+        return tiposervicio;
+    }
+
+    /**
+     * @param tiposervicio the tiposervicio to set
+     */
+    public void setTiposervicio(String tiposervicio) {
+        this.tiposervicio = tiposervicio;
+    }
+
+    /**
+     * @return the tiposervicio_corto
+     */
+    public String getTiposervicio_corto() {
+        return tiposervicio_corto;
+    }
+
+    /**
+     * @param tiposervicio_corto the tiposervicio_corto to set
+     */
+    public void setTiposervicio_corto(String tiposervicio_corto) {
+        this.tiposervicio_corto = tiposervicio_corto;
+    }
 
 }
