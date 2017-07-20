@@ -532,7 +532,7 @@ public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidac
     public void eliminarDordenliquidaciongasto() {
         try {
             lstdordenliquidaciongasto.remove(selectDordenliquidaciongasto);
-            RequestContext.getCurrentInstance().update("datos:tbl");
+            RequestContext.getCurrentInstance().update("datos:lstdordenliquidaciongasto");
         } catch (Exception ex) {
             Logger.getLogger(OrdenliquidaciongastoAction.class.getName()).log(Level.SEVERE, null, ex);
         }
