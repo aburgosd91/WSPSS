@@ -13,114 +13,132 @@
         <h:form id="datos" >
             #{ambitoPagoAction.findDetalle()}
             <cmp:barra_mnt bean="#{ambitoPagoAction}"/>
-            <p:panelGrid id="cabecera" columns="2" columnClasses="no-border,no-border,no-border">
+            <p:panelGrid columns="1" style="width:98%; text-align: left" columnClasses="no-border">
                 <f:facet name="header">
                     #{ambitoPagoAction.tituloHead}
                 </f:facet>
-                <p:outputLabel value="Código: " />
-                <p:inputText id="idruta" size="3"
-                             disabled="true" value="#{ambitoPagoAction.datoEdicion.codigo}"/>
+                <div class="ui-grid">
+                    <div class="ui-grid-row">                    
+                        <p:panelGrid id="cabecera" columns="2" columnClasses="no-border,no-border,no-border">
 
-                <p:outputLabel for="descripcion"  value="Descripcion:" />
-                <p:inputTextarea id="descripcion" cols="60" rows="2" 
-                                 disabled="#{!ambitoPagoAction.edicion}"
-                                 value="#{ambitoPagoAction.datoEdicion.descripcion}" 
-                                 onkeyup="javascript:this.value = this.value.toUpperCase();"
-                                 >
-                    <p:ajax event="valueChange" immediate="true" process="@this"/>
-                </p:inputTextarea>
-                <p:outputLabel for="nom" value="Nombre Corto"/>
-                <p:inputText id="nom" value="#{ambitoPagoAction.datoEdicion.nombre_corto}" disabled="#{!ambitoPagoAction.edicion}"/>
-                <p:outputLabel for="costohora" value="Costo por Hora: " />
-                <p:inputNumber decimalPlaces="2" id="costohora" disabled="#{!ambitoPagoAction.edicion}" value="#{ambitoPagoAction.datoEdicion.costo_por_hora}"/>
-                <p:outputLabel for="costoadd" value="Costo Adicional: " />
-                <p:inputNumber decimalPlaces="2"  id="costoadd" disabled="#{!ambitoPagoAction.edicion}" value="#{ambitoPagoAction.datoEdicion.costo_adicional}"/>
-                <p:outputLabel value="Visible?: " />
-                <p:selectBooleanCheckbox value="#{ambitoPagoAction.vvisible}" disabled="#{!ambitoPagoAction.edicion}"/>
+                            <p:outputLabel value="Código: " />
+                            <p:inputText id="idruta" size="3"
+                                         disabled="true" value="#{ambitoPagoAction.datoEdicion.codigo}"/>
+
+                            <p:outputLabel for="descripcion"  value="Descripcion:" />
+                            <p:inputTextarea id="descripcion" cols="60" rows="2" 
+                                             disabled="#{!ambitoPagoAction.edicion}"
+                                             value="#{ambitoPagoAction.datoEdicion.descripcion}" 
+                                             onkeyup="javascript:this.value = this.value.toUpperCase();"
+                                             >
+                                <p:ajax event="valueChange" immediate="true" process="@this"/>
+                            </p:inputTextarea>
+                            <p:outputLabel for="nom" value="Nombre Corto"/>
+                            <p:inputText id="nom" value="#{ambitoPagoAction.datoEdicion.nombre_corto}" disabled="#{!ambitoPagoAction.edicion}"/>
+                            <p:outputLabel for="costohora" value="Costo por Hora: " />
+                            <p:inputNumber decimalPlaces="2" id="costohora" disabled="#{!ambitoPagoAction.edicion}" value="#{ambitoPagoAction.datoEdicion.costo_por_hora}"/>
+                            <p:outputLabel for="costoadd" value="Costo Adicional: " />
+                            <p:inputNumber decimalPlaces="2"  id="costoadd" disabled="#{!ambitoPagoAction.edicion}" value="#{ambitoPagoAction.datoEdicion.costo_adicional}"/>
+                            <p:outputLabel value="Visible?: " />
+                            <p:selectBooleanCheckbox value="#{ambitoPagoAction.vvisible}" disabled="#{!ambitoPagoAction.edicion}"/>
+                        </p:panelGrid>
+                    </div>
+                    <div class="ui-grid-row">
+                        <p:fieldset legend="Rutas" style="width: 100%" >
+                            <p:dataTable id="lstAmbPagoRuta" 
+                                         value="#{ambitoPagoAction.lstambpagRuta}" 
+                                         selectionMode="single"
+                                         selection="#{ambitoPagoAction.slcAmbPagRuta}"
+                                         var="pagRuta" 
+                                         paginator="true" paginatorPosition="top"
+                                         paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                         widgetVar="lstAmbPagoRuta"
+                                         rowKey="#{pagRuta.item}">
+                                <f:facet name="{Comandos}">
+                                    <p:commandButton id="btnDgen" value="Nuevo" ajax="true" image="ui-icon-nuevo"  onclick="PF('rutasdialog').show()" disabled="#{!ambitoPagoAction.edicion}"/>
+                                    <p:commandButton id="btDdel" value="Eliminar" ajax="true" image="ui-icon-eliminar"  actionListener="#{ambitoPagoAction.dellAmbitoPagoRuta()}"  disabled="#{!ambitoPagoAction.edicion}"/>
+                                </f:facet>
+                                <p:column style="width:15%;" filterBy="#{pagRuta.item}" filterMatchMode="contains" sortBy="#{pagRuta.item}">
+                                    <f:facet name="header">
+                                        <h:outputText value="Item" />
+                                    </f:facet>
+                                    <h:outputText value="#{pagRuta.item}"/>
+                                </p:column>
+                                <p:column style="width:15%;" filterBy="#{pagRuta.descripcion}" filterMatchMode="contains" sortBy="#{pagRuta.descripcion}">
+                                    <f:facet name="header">
+                                        <h:outputText value="Descripcion" />
+                                    </f:facet>
+                                    <h:outputText value="#{pagRuta.descripcion}"/>
+                                </p:column>
+                                <p:column style="width:15%;" filterBy="#{pagRuta.origen}" filterMatchMode="contains" sortBy="#{pagRuta.origen}">
+                                    <f:facet name="header">
+                                        <h:outputText value="Origen" />
+                                    </f:facet>
+                                    <h:outputText value="#{pagRuta.origen}"/>
+                                </p:column>
+                                <p:column style="width:15%;" filterBy="#{pagRuta.destino}" filterMatchMode="contains" sortBy="#{pagRuta.destino}">
+                                    <f:facet name="header">
+                                        <h:outputText value="Destino" />
+                                    </f:facet>
+                                    <h:outputText value="#{pagRuta.destino}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </p:fieldset>
+                    </div>
+                    <div class="ui-grid-row">
+                        <p:fieldset legend="Bono" style="width: 100%" >
+                            <p:dataTable id="lstAmbPagoCost" 
+                                         value="#{ambitoPagoAction.lstampagcost}" 
+                                         selectionMode="single"
+                                         selection="#{ambitoPagoAction.slcampagcost}"
+                                         var="pagCost" 
+                                         paginator="true" paginatorPosition="top"
+                                         paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                         widgetVar="lstAmbPagoRuta"
+                                         rowKey="#{pagCost.idruta}">
+                                <f:facet name="header">
+                                    <h:outputText value="Bono" />
+                                </f:facet>
+                                <f:facet name="{Comandos}">
+                                    <p:commandButton id="btnDgen" value="Nuevo" ajax="true" image="ui-icon-nuevo"  onclick="PF('costosdialog').show()" disabled="#{!ambitoPagoAction.edicion}"/>
+                                    <p:commandButton id="btDedit" value="Editar" ajax="true" image="ui-icon-editar"  actionListener="#{ambitoPagoAction.editAmbitoPagoCosto()}"  disabled="#{!ambitoPagoAction.edicion}"/>
+                                    <p:commandButton id="btDdel" value="Eliminar" ajax="true" image="ui-icon-eliminar"  actionListener="#{ambitoPagoAction.delAmbitoPagoCosto()}"  disabled="#{!ambitoPagoAction.edicion}"/>
+                                </f:facet>
+                                <p:column style="width:15%;" filterBy="#{pagCost.cargo}" filterMatchMode="contains" sortBy="#{pagCost.cargo}">
+                                    <f:facet name="header">
+                                        <h:outputText value="Cargo" />
+                                    </f:facet>
+                                    <h:outputText value="#{pagCost.cargo}"/>
+                                </p:column>
+                                <p:column style="width:15%;" filterBy="#{pagCost.ruta}" filterMatchMode="contains" sortBy="#{pagCost.ruta}">
+                                    <f:facet name="header">
+                                        <h:outputText value="Ruta" />
+                                    </f:facet>
+                                    <h:outputText value="#{pagCost.ruta}"/>
+                                </p:column>
+                                <p:column style="width:15%;" filterBy="#{pagCost.origen}" filterMatchMode="contains" sortBy="#{pagCost.origen}">
+                                    <f:facet name="header">
+                                        <h:outputText value="Origen" />
+                                    </f:facet>
+                                    <h:outputText value="#{pagCost.origen}"/>
+                                </p:column>
+                                <p:column style="width:15%;" filterBy="#{pagCost.destino}" filterMatchMode="contains" sortBy="#{pagCost.destino}">
+                                    <f:facet name="header">
+                                        <h:outputText value="Destino" />
+                                    </f:facet>
+                                    <h:outputText value="#{pagCost.destino}"/>
+                                </p:column>
+                                <p:column style="width:15%;" filterBy="#{pagCost.costo_bono}" filterMatchMode="contains" sortBy="#{pagCost.costo_bono}">
+                                    <f:facet name="header">
+                                        <h:outputText value="Viaticos" />
+                                    </f:facet>
+                                    <h:outputText value="#{pagCost.costo_bono}"/>
+                                </p:column>
+                            </p:dataTable> 
+                        </p:fieldset>
+                    </div>
+                </div>
             </p:panelGrid>
-            <p:dataTable id="lstAmbPagoRuta" 
-                         value="#{ambitoPagoAction.lstambpagRuta}" 
-                         selectionMode="single"
-                         selection="#{ambitoPagoAction.slcAmbPagRuta}"
-                         var="pagRuta" 
-                         paginator="true" paginatorPosition="top"
-                         paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
-                         widgetVar="lstAmbPagoRuta"
-                         rowKey="#{pagRuta.item}">
-                <f:facet name="{Comandos}">
-                    <p:commandButton id="btnDgen" value="Nuevo" ajax="true" image="ui-icon-nuevo"  onclick="PF('rutasdialog').show()" disabled="#{!ambitoPagoAction.edicion}"/>
-                    <p:commandButton id="btDdel" value="Eliminar" ajax="true" image="ui-icon-eliminar"  actionListener="#{ambitoPagoAction.dellAmbitoPagoRuta()}"  disabled="#{!ambitoPagoAction.edicion}"/>
-                </f:facet>
-                <p:column style="width:15%;" filterBy="#{pagRuta.item}" filterMatchMode="contains" sortBy="#{pagRuta.item}">
-                    <f:facet name="header">
-                        <h:outputText value="Item" />
-                    </f:facet>
-                    <h:outputText value="#{pagRuta.item}"/>
-                </p:column>
-                <p:column style="width:15%;" filterBy="#{pagRuta.descripcion}" filterMatchMode="contains" sortBy="#{pagRuta.descripcion}">
-                    <f:facet name="header">
-                        <h:outputText value="Descripcion" />
-                    </f:facet>
-                    <h:outputText value="#{pagRuta.descripcion}"/>
-                </p:column>
-                <p:column style="width:15%;" filterBy="#{pagRuta.origen}" filterMatchMode="contains" sortBy="#{pagRuta.origen}">
-                    <f:facet name="header">
-                        <h:outputText value="Origen" />
-                    </f:facet>
-                    <h:outputText value="#{pagRuta.origen}"/>
-                </p:column>
-                <p:column style="width:15%;" filterBy="#{pagRuta.destino}" filterMatchMode="contains" sortBy="#{pagRuta.destino}">
-                    <f:facet name="header">
-                        <h:outputText value="Destino" />
-                    </f:facet>
-                    <h:outputText value="#{pagRuta.destino}"/>
-                </p:column>
-            </p:dataTable>
-            <p:dataTable id="lstAmbPagoCost" 
-                         value="#{ambitoPagoAction.lstampagcost}" 
-                         selectionMode="single"
-                         selection="#{ambitoPagoAction.slcampagcost}"
-                         var="pagCost" 
-                         paginator="true" paginatorPosition="top"
-                         paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
-                         widgetVar="lstAmbPagoRuta"
-                         rowKey="#{pagCost.idruta}">
-                <f:facet name="{Comandos}">
-                    <p:commandButton id="btnDgen" value="Nuevo" ajax="true" image="ui-icon-nuevo"  onclick="PF('costosdialog').show()" disabled="#{!ambitoPagoAction.edicion}"/>
-                    <p:commandButton id="btDedit" value="Editar" ajax="true" image="ui-icon-editar"  actionListener="#{ambitoPagoAction.editAmbitoPagoCosto()}"  disabled="#{!ambitoPagoAction.edicion}"/>
-                    <p:commandButton id="btDdel" value="Eliminar" ajax="true" image="ui-icon-eliminar"  actionListener="#{ambitoPagoAction.delAmbitoPagoCosto()}"  disabled="#{!ambitoPagoAction.edicion}"/>
-                </f:facet>
-                <p:column style="width:15%;" filterBy="#{pagCost.cargo}" filterMatchMode="contains" sortBy="#{pagCost.cargo}">
-                    <f:facet name="header">
-                        <h:outputText value="Cargo" />
-                    </f:facet>
-                    <h:outputText value="#{pagCost.cargo}"/>
-                </p:column>
-                <p:column style="width:15%;" filterBy="#{pagCost.ruta}" filterMatchMode="contains" sortBy="#{pagCost.ruta}">
-                    <f:facet name="header">
-                        <h:outputText value="Ruta" />
-                    </f:facet>
-                    <h:outputText value="#{pagCost.ruta}"/>
-                </p:column>
-                <p:column style="width:15%;" filterBy="#{pagCost.origen}" filterMatchMode="contains" sortBy="#{pagCost.origen}">
-                    <f:facet name="header">
-                        <h:outputText value="Origen" />
-                    </f:facet>
-                    <h:outputText value="#{pagCost.origen}"/>
-                </p:column>
-                <p:column style="width:15%;" filterBy="#{pagCost.destino}" filterMatchMode="contains" sortBy="#{pagCost.destino}">
-                    <f:facet name="header">
-                        <h:outputText value="Destino" />
-                    </f:facet>
-                    <h:outputText value="#{pagCost.destino}"/>
-                </p:column>
-                <p:column style="width:15%;" filterBy="#{pagCost.costo_bono}" filterMatchMode="contains" sortBy="#{pagCost.costo_bono}">
-                    <f:facet name="header">
-                        <h:outputText value="Viaticos" />
-                    </f:facet>
-                    <h:outputText value="#{pagCost.costo_bono}"/>
-                </p:column>
-            </p:dataTable>            
             <cmp:mDialogElimina_lst id="cmpDialog" bean="#{ambitoPagoAction}" ventana="MNT" />
             <p:dialog id="costosdialog" widgetVar="costosdialog" modal="true" closable="true">
                 <p:panelGrid columns="1" columnClasses="no-border,no-border">
