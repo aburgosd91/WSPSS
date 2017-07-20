@@ -75,8 +75,80 @@
                     </f:facet>
                     <h:outputText value="#{pagRuta.destino}"/>
                 </p:column>
+            </p:dataTable>
+            <p:dataTable id="lstAmbPagoCost" 
+                         value="#{ambitoPagoAction.lstampagcost}" 
+                         selectionMode="single"
+                         selection="#{ambitoPagoAction.slcampagcost}"
+                         var="pagCost" 
+                         paginator="true" paginatorPosition="top"
+                         paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                         widgetVar="lstAmbPagoRuta"
+                         rowKey="#{pagCost.idruta}">
+                <f:facet name="{Comandos}">
+                    <p:commandButton id="btnDgen" value="Nuevo" ajax="true" image="ui-icon-nuevo"  onclick="PF('costosdialog').show()" disabled="#{!ambitoPagoAction.edicion}"/>
+                    <p:commandButton id="btDedit" value="Editar" ajax="true" image="ui-icon-editar"  actionListener="#{ambitoPagoAction.editAmbitoPagoCosto()}"  disabled="#{!ambitoPagoAction.edicion}"/>
+                    <p:commandButton id="btDdel" value="Eliminar" ajax="true" image="ui-icon-eliminar"  actionListener="#{ambitoPagoAction.delAmbitoPagoCosto()}"  disabled="#{!ambitoPagoAction.edicion}"/>
+                </f:facet>
+                <p:column style="width:15%;" filterBy="#{pagCost.cargo}" filterMatchMode="contains" sortBy="#{pagCost.cargo}">
+                    <f:facet name="header">
+                        <h:outputText value="Cargo" />
+                    </f:facet>
+                    <h:outputText value="#{pagCost.cargo}"/>
+                </p:column>
+                <p:column style="width:15%;" filterBy="#{pagCost.ruta}" filterMatchMode="contains" sortBy="#{pagCost.ruta}">
+                    <f:facet name="header">
+                        <h:outputText value="Ruta" />
+                    </f:facet>
+                    <h:outputText value="#{pagCost.ruta}"/>
+                </p:column>
+                <p:column style="width:15%;" filterBy="#{pagCost.origen}" filterMatchMode="contains" sortBy="#{pagCost.origen}">
+                    <f:facet name="header">
+                        <h:outputText value="Origen" />
+                    </f:facet>
+                    <h:outputText value="#{pagCost.origen}"/>
+                </p:column>
+                <p:column style="width:15%;" filterBy="#{pagCost.destino}" filterMatchMode="contains" sortBy="#{pagCost.destino}">
+                    <f:facet name="header">
+                        <h:outputText value="Destino" />
+                    </f:facet>
+                    <h:outputText value="#{pagCost.destino}"/>
+                </p:column>
+                <p:column style="width:15%;" filterBy="#{pagCost.costo_bono}" filterMatchMode="contains" sortBy="#{pagCost.costo_bono}">
+                    <f:facet name="header">
+                        <h:outputText value="Viaticos" />
+                    </f:facet>
+                    <h:outputText value="#{pagCost.costo_bono}"/>
+                </p:column>
             </p:dataTable>            
             <cmp:mDialogElimina_lst id="cmpDialog" bean="#{ambitoPagoAction}" ventana="MNT" />
+            <p:dialog id="costosdialog" widgetVar="costosdialog" modal="true" closable="true">
+                <p:panelGrid columns="1" columnClasses="no-border,no-border">
+                    <p:panelGrid columns="3" columnClasses="no-border,no-border,no-border">
+                        <p:outputLabel value="Cargo"/>
+                        <p:panelGrid id="cntCargo" columns="2" columnClasses="no-border,no-border">
+                            <p:inputText size="50" value="#{ambitoPagoAction.workampagcost.cargo}" readonly="true"/>
+                            <p:commandButton  styleClass="boton_buscar" ajax="true" actionListener="#{ambitoPagoAction.verCntCargosPersonal()}" icon="ui-icon-search">
+                                <p:ajax event="dialogReturn" listener="#{ambitoPagoAction.valorCargosPersonal}" update="cntCargo"/>
+                            </p:commandButton>
+                        </p:panelGrid>
+                    </p:panelGrid>
+                    <p:panelGrid columns="3" columnClasses="no-border,no-border,no-border">
+                        <p:outputLabel value="Ruta"/>
+                        <p:panelGrid id="cntRuta2" columns="2" columnClasses="no-border,no-border">
+                            <p:inputText size="50" value="#{ambitoPagoAction.workampagcost.ruta}" readonly="true"/>
+                            <p:commandButton  styleClass="boton_buscar" ajax="true" actionListener="#{ambitoPagoAction.verCntRutas()}" icon="ui-icon-search">
+                                <p:ajax event="dialogReturn" listener="#{ambitoPagoAction.valorRutas}" update="cntRuta2"/>
+                            </p:commandButton>
+                        </p:panelGrid>
+                    </p:panelGrid>
+                    <p:panelGrid columns="2" columnClasses="no-border,no-border">
+                        <p:outputLabel value="Viaticos"/>
+                        <p:inputNumber decimalPlaces="2" value="#{ambitoPagoAction.workampagcost.costo_bono}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="Grabar" actionListener="#{ambitoPagoAction.addAmbitoPagoCosto()}"/>
+                </p:panelGrid>
+            </p:dialog>
             <p:dialog id="rutasdialog" widgetVar="rutasdialog" style="width: 300px; height: 300px" modal="true" closable="true">
                 <p:dataTable id="tbl" var="listRuta" value="#{ambitoPagoAction.lstRutas}"  widgetVar="listRuta" 
                              paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"

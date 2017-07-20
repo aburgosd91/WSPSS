@@ -3,6 +3,7 @@ package com.nisira.core.dao;
 import com.nisira.core.BaseDao;
 import com.nisira.core.entity.Ambito_pago;
 import com.nisira.core.NisiraORMException;
+import com.nisira.core.entity.Ambito_pago_costomo;
 import com.nisira.core.entity.Ambito_pago_rutas;
 import com.thoughtworks.xstream.XStream;
 import java.sql.ResultSet;
@@ -49,6 +50,7 @@ public class Ambito_pagoDao extends BaseDao<Ambito_pago> {
         }
         return lista;
     }
+
     public List<Ambito_pago> lstAmbitoEmpresa_visibles(String idempresa) throws NisiraORMException {
         ArrayList<Ambito_pago> lista = new ArrayList<Ambito_pago>();
         try {
@@ -70,6 +72,7 @@ public class Ambito_pagoDao extends BaseDao<Ambito_pago> {
         }
         return lista;
     }
+
     public List<Ambito_pago_rutas> detAmbitoPagos(String idempresa, String codigo) throws NisiraORMException {
         ArrayList<Ambito_pago_rutas> lista = new ArrayList<Ambito_pago_rutas>();
         try {
@@ -92,10 +95,35 @@ public class Ambito_pagoDao extends BaseDao<Ambito_pago> {
         return lista;
     }
 
-    public String grabar(Ambito_pago obj, List<Ambito_pago_rutas> dobj) throws Exception {
+    public List<Ambito_pago_costomo> detAmbitoPagosCosto(String idempresa, String codigo) {
+        ArrayList<Ambito_pago_costomo> lista = new ArrayList<Ambito_pago_costomo>();
+        try {
+            ResultSet rs = null;
+            rs = execProcedure("GETAMBITO_PAGO_COSTOMO", idempresa, codigo);
+            while (rs.next()) {
+                Ambito_pago_costomo apc = new Ambito_pago_costomo();
+                apc.setIdempresa(rs.getString("idempresa"));
+                apc.setCodigo(rs.getString("codigo"));
+                apc.setIdcargo(rs.getString("idcargo"));
+                apc.setCosto_bono(rs.getFloat("costo_bono"));
+                apc.setIdruta(rs.getString("idruta"));
+                apc.setCargo(rs.getString("cargo"));
+                apc.setRuta(rs.getString("ruta"));
+                apc.setOrigen(rs.getString("origen"));
+                apc.setDestino(rs.getString("destino"));
+                lista.add(apc);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return lista;
+    }
+
+    public String grabar(Ambito_pago obj, List<Ambito_pago_rutas> dobj, List<Ambito_pago_costomo> dobj2) throws Exception {
         String mensaje = "";
         String xmlNot = "";
         String xmlDet = "";
+        String xmlDet2 = "";
         String xml = "<?xml version='1.0' encoding='ISO-8859-1' ?>";
         XStream xStream = new XStream();
         xStream.processAnnotations(Ambito_pago.class);
@@ -103,9 +131,12 @@ public class Ambito_pagoDao extends BaseDao<Ambito_pago> {
         xStream = new XStream();
         xStream.processAnnotations(Ambito_pago_rutas.class);
         xmlDet = xml + xStream.toXML(dobj);
+        xStream = new XStream();
+        xStream.processAnnotations(Ambito_pago_costomo.class);
+        xmlDet2 = xml + xStream.toXML(dobj2);
         try {
             ResultSet rs = null;
-            rs = execProcedure("SP_AMBITO_PAGO_GRABAR", obj.getIdempresa(), obj.getCodigo(), xmlNot, xmlDet);
+            rs = execProcedure("SP_AMBITO_PAGO_GRABAR", obj.getIdempresa(), obj.getCodigo(), xmlNot, xmlDet, xmlDet2);
             while (rs.next()) {
                 mensaje = rs.getString("mensaje");
                 break;

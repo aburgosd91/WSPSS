@@ -9,8 +9,11 @@ import com.nisira.core.NisiraORMException;
 import com.nisira.core.dao.Ambito_pagoDao;
 import com.nisira.core.dao.RutasDao;
 import com.nisira.core.entity.Ambito_pago;
+import com.nisira.core.entity.Ambito_pago_costomo;
 import com.nisira.core.entity.Ambito_pago_rutas;
+import com.nisira.core.entity.Cargos_personal;
 import com.nisira.core.entity.Rutas;
+import static com.pe.nisira.movil.view.action.AbstactListAction.modalOptions;
 import com.pe.nisira.movil.view.bean.UsuarioBean;
 import com.pe.nisira.movil.view.util.Constantes;
 import com.pe.nisira.movil.view.util.WebUtil;
@@ -23,6 +26,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import net.sf.jasperreports.engine.JRDataSource;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.SelectEvent;
 
 /**
  *
@@ -36,17 +40,25 @@ public class AmbitoPagoAction extends AbstactListAction<Ambito_pago> implements 
     private Ambito_pagoDao ambitopagoDao;
     private List<Rutas> lstRutas;
     private List<Ambito_pago_rutas> lstambpagRuta;
+    private List<Ambito_pago_costomo> lstampagcost;
+    private Ambito_pago_costomo slcampagcost;
+    private Ambito_pago_costomo workampagcost;
     private Ambito_pago_rutas slcAmbPagRuta;
+
     private Rutas slcRutas;
     private UsuarioBean user;
     private boolean estado;
     private boolean vvisible;
+
     public AmbitoPagoAction() {
         mensaje = "";
         ambitopagoDao = new Ambito_pagoDao();
         lstRutas = new ArrayList<Rutas>();
         lstambpagRuta = new ArrayList<Ambito_pago_rutas>();
         slcAmbPagRuta = new Ambito_pago_rutas();
+        lstampagcost = new ArrayList<Ambito_pago_costomo>();
+        slcampagcost = new Ambito_pago_costomo();
+        workampagcost = new Ambito_pago_costomo();
         slcRutas = new Rutas();
         user = (UsuarioBean) WebUtil.getObjetoSesion(Constantes.SESION_USUARIO);
         estado = false;
@@ -75,6 +87,9 @@ public class AmbitoPagoAction extends AbstactListAction<Ambito_pago> implements 
         ambitopagoDao = new Ambito_pagoDao();
         lstRutas = new ArrayList<Rutas>();
         lstambpagRuta = new ArrayList<Ambito_pago_rutas>();
+        lstampagcost = new ArrayList<Ambito_pago_costomo>();
+        slcampagcost = new Ambito_pago_costomo();
+        workampagcost = new Ambito_pago_costomo();
         slcRutas = new Rutas();
         user = (UsuarioBean) WebUtil.getObjetoSesion(Constantes.SESION_USUARIO);
         estado = false;
@@ -87,8 +102,9 @@ public class AmbitoPagoAction extends AbstactListAction<Ambito_pago> implements 
             lstRutas = (new RutasDao()).listarPorEmpresaWeb(user.getIDEMPRESA());
             if (getDatoEdicion().getCodigo() != null) {/*EDIT*/
                 lstambpagRuta = ambitopagoDao.detAmbitoPagos(getDatoEdicion().getIdempresa(), getDatoEdicion().getCodigo());
-                vvisible=getDatoEdicion().getVisible()==1.0f?true:false;
-            }else{/*NEW*/
+                lstampagcost = ambitopagoDao.detAmbitoPagosCosto(getDatoEdicion().getIdempresa(), getDatoEdicion().getCodigo());
+                vvisible = getDatoEdicion().getVisible() == 1.0f ? true : false;
+            } else {/*NEW*/
                 vvisible = true;
             }
         } catch (NisiraORMException ex) {
@@ -107,6 +123,73 @@ public class AmbitoPagoAction extends AbstactListAction<Ambito_pago> implements 
             }
         }
         return true;
+    }
+
+    public void verCntRutas() {
+        RequestContext.getCurrentInstance().openDialog("cntRutas", modalOptions, null);
+    }
+
+    public void valorRutas(SelectEvent event) {
+        Rutas ruta = (Rutas) event.getObject();
+        workampagcost.setIdruta(ruta.getIdruta());
+        workampagcost.setRuta(ruta.getDescripcion());
+        workampagcost.setOrigen(ruta.getOrigendesc());
+        workampagcost.setDestino(ruta.getDestinodesc());
+    }
+
+    public void verCntCargosPersonal() {
+        RequestContext.getCurrentInstance().openDialog("cntCargosPersonal", modalOptions, null);
+    }
+
+    public void valorCargosPersonal(SelectEvent event) {
+        Cargos_personal cargo = (Cargos_personal) event.getObject();
+        workampagcost.setIdcargo(cargo.getIdcargo());
+        workampagcost.setCargo(cargo.getDescripcion());
+    }
+
+    public void addAmbitoPagoCosto() {
+        if (workampagcost.getIdcargo() != null) {
+            if (workampagcost.getIdruta() != null) {
+                workampagcost.setIdempresa(getDatoEdicion().getIdempresa());
+                lstampagcost.add(workampagcost);
+                RequestContext.getCurrentInstance().update("datos:lstAmbPagoCost");
+                RequestContext.getCurrentInstance().execute("PF('costosdialog').hide()");
+            } else {
+                setMensaje("Seleccione La Ruta");
+                WebUtil.MensajeAdvertencia(getMensaje());
+                RequestContext.getCurrentInstance().update("datos:growl");
+            }
+        } else {
+            setMensaje("Seleccione el Cargo");
+            WebUtil.MensajeAdvertencia(getMensaje());
+            RequestContext.getCurrentInstance().update("datos:growl");
+        }
+        workampagcost = new Ambito_pago_costomo();
+    }
+
+    public void editAmbitoPagoCosto() throws CloneNotSupportedException {
+        if (slcampagcost != null) {
+            workampagcost = (Ambito_pago_costomo) slcampagcost.clone();
+            RequestContext.getCurrentInstance().execute("PF('costosdialog').show()");
+            RequestContext.getCurrentInstance().update("datos:costosdialog");
+        } else {
+            setMensaje("Seleccione un detalle");
+            WebUtil.MensajeAdvertencia(getMensaje());
+            RequestContext.getCurrentInstance().update("datos:growl");
+        }
+
+    }
+
+    public void delAmbitoPagoCosto() {
+        if (slcampagcost != null) {
+            lstampagcost.remove(slcampagcost);
+            RequestContext.getCurrentInstance().update("datos:lstAmbPagoCost");
+        } else {
+            setMensaje("Seleccione un detalle");
+            WebUtil.MensajeAdvertencia(getMensaje());            
+            RequestContext.getCurrentInstance().update("datos:growl");
+        }
+
     }
 
     public void addAmbitoPagoRuta() {
@@ -129,7 +212,7 @@ public class AmbitoPagoAction extends AbstactListAction<Ambito_pago> implements 
         if (slcAmbPagRuta != null) {
             lstambpagRuta.remove(slcAmbPagRuta);
             int i = 1;
-            for(Ambito_pago_rutas ap : lstambpagRuta){
+            for (Ambito_pago_rutas ap : lstambpagRuta) {
                 ap.setItem(WebUtil.cerosIzquierda(String.valueOf(i), 3));
                 i++;
             }
@@ -170,9 +253,9 @@ public class AmbitoPagoAction extends AbstactListAction<Ambito_pago> implements 
     @Override
     public void grabar() {
         try {
-            getDatoEdicion().setVisible(vvisible?1.0f:0.0f);
+            getDatoEdicion().setVisible(vvisible ? 1.0f : 0.0f);
             if (validar()) {
-                setMensaje(ambitopagoDao.grabar(getDatoEdicion(), lstambpagRuta));
+                setMensaje(ambitopagoDao.grabar(getDatoEdicion(), lstambpagRuta,lstampagcost));
                 if (mensaje != null) {
                     if (mensaje.trim().length() == 6) {
                         getDatoEdicion().setCodigo(mensaje.trim());
@@ -285,6 +368,30 @@ public class AmbitoPagoAction extends AbstactListAction<Ambito_pago> implements 
      */
     public void setVvisible(boolean vvisible) {
         this.vvisible = vvisible;
+    }
+
+    public List<Ambito_pago_costomo> getLstampagcost() {
+        return lstampagcost;
+    }
+
+    public void setLstampagcost(List<Ambito_pago_costomo> lstampagcost) {
+        this.lstampagcost = lstampagcost;
+    }
+
+    public Ambito_pago_costomo getSlcampagcost() {
+        return slcampagcost;
+    }
+
+    public void setSlcampagcost(Ambito_pago_costomo slcampagcost) {
+        this.slcampagcost = slcampagcost;
+    }
+
+    public Ambito_pago_costomo getWorkampagcost() {
+        return workampagcost;
+    }
+
+    public void setWorkampagcost(Ambito_pago_costomo workampagcost) {
+        this.workampagcost = workampagcost;
     }
 
 }
