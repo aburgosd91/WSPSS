@@ -129,19 +129,25 @@
                                     <f:facet name="header" >
                                         <h:outputText value="Afecto" />
                                     </f:facet>
-                                    <h:outputText value="#{lstdordenliquidaciongasto.afecto}" />
+                                    <h:outputText value="#{lstdordenliquidaciongasto.afecto}">
+                                        <f:convertNumber minFractionDigits="2"  locale="en-US"/>
+                                    </h:outputText>
                                 </p:column>
                                 <p:column style="width:20%;" filterBy="#{lstdordenliquidaciongasto.inafecto}" filterMatchMode="contains" sortBy="#{lstdordenliquidaciongasto.inafecto}">
                                     <f:facet name="header" >
                                         <h:outputText value="Inafecto" />
                                     </f:facet>
-                                    <h:outputText value="#{lstdordenliquidaciongasto.inafecto}" />
+                                    <h:outputText value="#{lstdordenliquidaciongasto.inafecto}" >
+                                        <f:convertNumber minFractionDigits="2"  locale="en-US"/>
+                                    </h:outputText>
                                 </p:column>
                                 <p:column style="width:20%;" filterBy="#{lstdordenliquidaciongasto.pimpuesto}" filterMatchMode="contains" sortBy="#{lstdordenliquidaciongasto.pimpuesto}">
                                     <f:facet name="header" >
                                         <h:outputText value="Impuesto" />
                                     </f:facet>
-                                    <h:outputText value="%#{lstdordenliquidaciongasto.pimpuesto}" />
+                                    <h:outputText value="#{lstdordenliquidaciongasto.pimpuesto}" >
+                                        <f:convertNumber minFractionDigits="2"  locale="en-US"/>
+                                    </h:outputText> 
                                 </p:column>
                                 <p:column style="width:20%;" filterBy="#{lstdordenliquidaciongasto.glosa}" filterMatchMode="contains" sortBy="#{lstdordenliquidaciongasto.glosa}">
                                     <f:facet name="header" >
@@ -161,14 +167,16 @@
                                     <f:facet name="header" >
                                         <h:outputText value="Total" />
                                     </f:facet>
-                                    <h:outputText value="#{lstdordenliquidaciongasto.importe}" />
+                                    <h:outputText value="#{lstdordenliquidaciongasto.importe}">
+                                        <f:convertNumber minFractionDigits="2"  locale="en-US"/>
+                                    </h:outputText>
                                 </p:column>
                             </p:dataTable>  
                         </p:fieldset>
                         <p:toolbar>
                             <f:facet name="right">
                                 <p:outputLabel value="Total M.N.:" />
-                                <p:inputNumber id="timporte" value="#{ordenliquidaciongastoAction.datoEdicion.importe}" />
+                                <p:inputNumber id="timporte" value="#{ordenliquidaciongastoAction.datoEdicion.importe}" readonly="true"/>
                             </f:facet>
                         </p:toolbar> 
                         <p:dialog id="dlgnew_dordenliquidaciongasto" header="..::Detalle::." widgetVar="dlgnew_dordenliquidaciongasto" modal="true" showEffect="popup" closable="false">
