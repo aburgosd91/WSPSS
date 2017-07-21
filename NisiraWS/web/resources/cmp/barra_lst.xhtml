@@ -45,7 +45,7 @@
                     <h:outputLabel value="Hasta:" />
                     <p:calendar id="fhasta" value="#{cc.attrs.bean.hasta}" pattern="dd/MM/yyyy" mask="true" />
                     <p:commandButton id="btn_filtro" ajax="true" value="Mostrar" actionListener="#{cc.attrs.bean.doVerFiltro(2)}" 
-                                     update="filtro,:datos:tbl"/>
+                                     update="filtro"/>
                 </h:panelGrid>
             </p:toolbarGroup>
             <p:toolbarGroup rendered="#{cc.attrs.mostrar_opciones}" align="right">                    

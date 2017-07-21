@@ -65,6 +65,13 @@ import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import net.sf.jasperreports.engine.JRDataSource;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.usermodel.helpers.HSSFRowShifter;
 import org.primefaces.component.tabview.TabView;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.RowEditEvent;
@@ -88,9 +95,11 @@ public class Rpt_tareoweb_facturacionAction extends AbstactListAction<Ordenservi
     private UsuarioBean user;
     private String mensaje;
     private Object[] selectRpt;
+    private Object[] selectRpt_;
     private String idtiposervicio;
     /************************************* CONTROLES *****************************************/
     private NSRResultSet rpt_result;
+    private NSRResultSet rpt_result_resumido;
     public Rpt_tareoweb_facturacionAction() {
         try {
             /*********************************ENTITY*******************************************/
@@ -163,13 +172,13 @@ public class Rpt_tareoweb_facturacionAction extends AbstactListAction<Ordenservi
             String f_fin = f.format(getHasta());
             f_ini = f_ini.replace("-", "");
             f_fin = f_fin.replace("-", "");
-            setRpt_result(getOrdenservicioclienteDao().getConsultaRepote_facturacion(user.getIDEMPRESA(),f_ini,f_fin,idtiposervicio));
+            setRpt_result(getOrdenservicioclienteDao().getConsultaRepote_facturacion_detallado(user.getIDEMPRESA(),f_ini,f_fin,idtiposervicio));
             RequestContext.getCurrentInstance().update("datos");
         } catch (Exception e) {
             setMensaje(WebUtil.mensajeError());
             WebUtil.error(getMensaje());
         }
-        RequestContext.getCurrentInstance().update("datos:tbl");
+        RequestContext.getCurrentInstance().update("datos:tab");
         return;
     }
     public void onTiposervicio(){
@@ -193,13 +202,14 @@ public class Rpt_tareoweb_facturacionAction extends AbstactListAction<Ordenservi
             String f_fin = f.format(getHasta());
             f_ini = f_ini.replace("-", "");
             f_fin = f_fin.replace("-", "");
-            setRpt_result(getOrdenservicioclienteDao().getConsultaRepote_facturacion(user.getIDEMPRESA(),f_ini,f_fin,idtiposervicio));
+            setRpt_result(getOrdenservicioclienteDao().getConsultaRepote_facturacion_detallado(user.getIDEMPRESA(),f_ini,f_fin,idtiposervicio));
+            setRpt_result_resumido(getOrdenservicioclienteDao().getConsultaRepote_facturacion(user.getIDEMPRESA(),f_ini,f_fin,idtiposervicio));
             //setListaDatos(getOrdenservicioclienteDao().listarPorEmpresaWebFiltroFecha(user.getIDEMPRESA(),f_ini,f_fin));
         } catch (Exception e) {
             setMensaje(WebUtil.mensajeError());
             WebUtil.error(getMensaje());
         }
-        RequestContext.getCurrentInstance().update("datos:tbl");
+        RequestContext.getCurrentInstance().update("datos:tab");
         if(tipo == 2)
             lista_accion_filtro("wLst_Rpt_tareoweb_facturacion");
         return "";
@@ -219,7 +229,85 @@ public class Rpt_tareoweb_facturacionAction extends AbstactListAction<Ordenservi
     public JRDataSource getDataSourceReport_lst() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+    @Override
+    public void downFormatExcelEspecial(Object document) {
+        HSSFWorkbook objWB = (HSSFWorkbook) document;
+        objWB.setSheetName(0,"DETALLADO_ "+WebUtil.fechaDMY(new Date(),1));
+
+        HSSFRow fila_cabecera = objWB.getSheetAt(0).getRow(0);
+
+        HSSFFont fuente = objWB.createFont();
+        fuente.setFontHeightInPoints((short) 8);
+        fuente.setFontName("Calibre LIght");
+        fuente.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+
+        HSSFCellStyle estiloCelda = objWB.createCellStyle();
+        estiloCelda.setWrapText(true);
+        estiloCelda.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+        estiloCelda.setBorderBottom(HSSFCellStyle.BORDER_MEDIUM);
+        estiloCelda.setBorderTop(HSSFCellStyle.BORDER_MEDIUM);
+        estiloCelda.setBorderRight(HSSFCellStyle.BORDER_MEDIUM);
+        estiloCelda.setBorderLeft(HSSFCellStyle.BORDER_MEDIUM);
+        estiloCelda.setFont(fuente);
+        estiloCelda.setWrapText(true);
+        estiloCelda.setFillForegroundColor((short) 22);
+        estiloCelda.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+//Filas           
+        HSSFFont fuenteFilas = objWB.createFont();
+        fuenteFilas.setFontHeightInPoints((short) 8);
+        fuenteFilas.setFontName("Calibre LIght");
+
+        HSSFCellStyle estiloFila = objWB.createCellStyle();
+        estiloFila.setWrapText(true);
+        estiloFila.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+        estiloFila.setBorderBottom(HSSFCellStyle.BORDER_MEDIUM);
+        estiloFila.setBorderTop(HSSFCellStyle.BORDER_MEDIUM);
+        estiloFila.setBorderRight(HSSFCellStyle.BORDER_MEDIUM);
+        estiloFila.setBorderLeft(HSSFCellStyle.BORDER_MEDIUM);
+        estiloFila.setFont(fuente);
+
+        int col = rpt_result.columnCount();
+        int row = rpt_result.getData().size();
+        HSSFCell celda;
+        for(int i=0 ;i<col;i++){
+            celda = fila_cabecera.createCell((short)i);
+            celda.setCellStyle(estiloCelda);
+            celda.setCellValue(rpt_result.getName()[i]);
+        }
+        HSSFRow fila;
+        for(int i=0;i<row;i++){
+            fila = objWB.getSheetAt(0).getRow(i+1);
+            for(int j=0;j<col;j++){
+                celda = fila.createCell((short)j);
+                celda.setCellStyle(estiloFila);
+                celda.setCellValue( rpt_result.getData().get(i)[j]==null?"":rpt_result.getData().get(i)[j].toString());
+            }
+        }
+        
+        /*CREAR OTRA HOJA RESUMIDO*/
+        HSSFSheet sheet1 = objWB.createSheet("RESUMIDO_ "+WebUtil.fechaDMY(new Date(),1));
+        fila_cabecera = sheet1.createRow((short)0);
+
+        col = rpt_result_resumido.columnCount();
+        row = rpt_result_resumido.getData().size();
+        for(int i=0 ;i<col;i++){
+            celda = fila_cabecera.createCell((short)i);
+            celda.setCellStyle(estiloCelda);
+            celda.setCellValue(rpt_result_resumido.getName()[i]);
+        }
+        for(int i=0;i<row;i++){
+            fila = sheet1.createRow(i+1);
+            for(int j=0;j<col;j++){
+                celda = fila.createCell((short)j);
+                celda.setCellStyle(estiloFila);
+                celda.setCellValue( rpt_result_resumido.getData().get(i)[j]==null?"":rpt_result_resumido.getData().get(i)[j].toString());
+            }
+        }
+        /*AUTOAJUSTE EN LA HOJA*/
+        for (int as = 0; as < col; as++) {
+            objWB.getSheetAt(1).autoSizeColumn((short) as);
+        }
+    }
     public String fechaDMY(Date fecha){
         if(fecha!=null)
             return WebUtil.fechaDMY(fecha, 2);
@@ -343,6 +431,34 @@ public class Rpt_tareoweb_facturacionAction extends AbstactListAction<Ordenservi
      */
     public void setIdtiposervicio(String idtiposervicio) {
         this.idtiposervicio = idtiposervicio;
+    }
+
+    /**
+     * @return the rpt_result_resumido
+     */
+    public NSRResultSet getRpt_result_resumido() {
+        return rpt_result_resumido;
+    }
+
+    /**
+     * @param rpt_result_resumido the rpt_result_resumido to set
+     */
+    public void setRpt_result_resumido(NSRResultSet rpt_result_resumido) {
+        this.rpt_result_resumido = rpt_result_resumido;
+    }
+
+    /**
+     * @return the selectRpt_
+     */
+    public Object[] getSelectRpt_() {
+        return selectRpt_;
+    }
+
+    /**
+     * @param selectRpt_ the selectRpt_ to set
+     */
+    public void setSelectRpt_(Object[] selectRpt_) {
+        this.selectRpt_ = selectRpt_;
     }
 
 }

@@ -272,6 +272,11 @@ public class OrdenservicioclienteDao extends BaseDao<Ordenserviciocliente> {
             rs = execProcedure("RPT_ORDENSERVICIOCLIENTE_FACTURACION_TMPSS",idempresa,fechainicio,fechafin,idtiposervicio);
             return ReportConfig.getNSRResultSet(rs);
         }
+        public NSRResultSet getConsultaRepote_facturacion_detallado(String idempresa,String fechainicio,String fechafin,String idtiposervicio) throws NisiraORMException{
+            ResultSet rs = null;
+            rs = execProcedure("RPT_ORDENSERVICIOCLIENTE_FACTURACION_DETALLADO_TMPSS",idempresa,fechainicio,fechafin,idtiposervicio);
+            return ReportConfig.getNSRResultSet(rs);
+        }
         public String anular(Ordenserviciocliente ob,String idusuario) throws Exception {
             String mensaje="";
             try {
