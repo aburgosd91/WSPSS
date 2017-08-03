@@ -120,6 +120,7 @@ public class Ordenserviciocliente_cierreAction extends AbstactListAction<Ordense
     public Ordenserviciocliente_cierreAction() {
         selectListOrdenserviciocliente = new ArrayList<Ordenserviciocliente>();
         ordenservicioclienteDao = new OrdenservicioclienteDao();
+        personal_servicioDao = new Personal_servicioDao();
         /*********************************ENTITY*******************************************/
         user = (UsuarioBean) WebUtil.getObjetoSesion(Constantes.SESION_USUARIO);
         numero = "";
@@ -861,11 +862,36 @@ public class Ordenserviciocliente_cierreAction extends AbstactListAction<Ordense
     public void cerrar() {
         try {
             if(!selectListOrdenserviciocliente.isEmpty()){
-                this.mensaje = getOrdenservicioclienteDao().cierreMasivo(1,getSelectListOrdenserviciocliente());
-                setMensaje(WebUtil.exitoRegistrar("Orden Servicio ", mensaje));
-                WebUtil.info(getMensaje());
-                setSelectListOrdenserviciocliente(new ArrayList<>());
-                buscarFiltro(2);
+                /*VERIFICAR*/
+                String msj_gnl ="";
+                List<Ordenserviciocliente> siCerrar = new ArrayList<>();
+                for(Ordenserviciocliente os : selectListOrdenserviciocliente){
+                    List<Personal_servicio> lisPers = personal_servicioDao.listarPorOrdenServicioClienteWeb_Total(os.getIdempresa(),
+                        os.getIdordenservicio());
+                    if(!lisPers.isEmpty()){
+                        String msj = verificacionOrdenservicioDetalle_cerrado(lisPers);
+                        if(!msj.trim().equals("")){
+                            msj_gnl+=os.getIddocumento()+" - "+os.getSerie()+" - "+os.getNumero()+ " "+
+                                    "Documento no se puede cerrar.\n";
+                        }else{
+                            siCerrar.add(os);
+                        }
+                    }else{
+                        msj_gnl+= os.getIddocumento()+" - "+os.getSerie()+" - "+os.getNumero()+ " "+
+                                "Documento no se puede cerrar."+"No existe detalle personal\n";
+                    }
+                }
+                if(!msj_gnl.trim().equals("")){
+                    this.mensaje = msj_gnl;
+                    WebUtil.MensajeError(this.mensaje);
+                }
+                if(!siCerrar.isEmpty()){
+                    this.mensaje = getOrdenservicioclienteDao().cierreMasivo(1,siCerrar);
+                    setMensaje(WebUtil.exitoRegistrar("Orden Servicio ", mensaje));
+                    WebUtil.info(getMensaje());
+                    setSelectListOrdenserviciocliente(new ArrayList<>());
+                    buscarFiltro(2);
+                }
             }else{
                 this.mensaje = "Seleccionar Documento";
                 WebUtil.MensajeError(this.mensaje);
@@ -874,6 +900,18 @@ public class Ordenserviciocliente_cierreAction extends AbstactListAction<Ordense
             Logger.getLogger(Ordenserviciocliente_cierreAction.class.getName()).log(Level.SEVERE, null, ex);
             WebUtil.MensajeError(ex.getMessage());
         }
+    }
+    public String verificacionOrdenservicioDetalle_cerrado(List<Personal_servicio> lstpersonal){
+        String msj = "";
+        for(Personal_servicio ps:lstpersonal){
+            if(ps.getIdpersonal()!=null){
+                if(ps.getIdpersonal().trim().equals(""))
+                    msj+=ps.getIdcargo()+" - "+ps.getCargo()+" / "+" no asignado.\n";
+            }else{
+                msj+=ps.getIdcargo()+" - "+ps.getCargo()+" / "+" no asignado.\n";
+            }   
+        }
+        return msj;
     }
     /**
      * @return the selectListOrdenserviciocliente

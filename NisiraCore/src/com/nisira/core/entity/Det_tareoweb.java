@@ -202,6 +202,16 @@ public class Det_tareoweb implements Serializable {
         private Clieprov selectPersonal;
         @XStreamOmitField
         private Consumidor selectConsumidor;
+        private String ciddocumento;
+        private String cserie;
+        private String cnumero;
+        private Date cfecha;
+        private String cidresponsable;
+        private String cresponsable;
+        private String cidusuario;
+        private String cusuario;
+        private String cidestado;
+        private String cestado;
         /* Sets & Gets */
 	public void setIdempresa(String idempresa) {
 		this.idempresa = idempresa;
@@ -1029,5 +1039,145 @@ public class Det_tareoweb implements Serializable {
      */
     public void setConceptotareo(String conceptotareo) {
         this.conceptotareo = conceptotareo;
+    }
+
+    /**
+     * @return the ciddocumento
+     */
+    public String getCiddocumento() {
+        return ciddocumento;
+    }
+
+    /**
+     * @param ciddocumento the ciddocumento to set
+     */
+    public void setCiddocumento(String ciddocumento) {
+        this.ciddocumento = ciddocumento;
+    }
+
+    /**
+     * @return the cserie
+     */
+    public String getCserie() {
+        return cserie;
+    }
+
+    /**
+     * @param cserie the cserie to set
+     */
+    public void setCserie(String cserie) {
+        this.cserie = cserie;
+    }
+
+    /**
+     * @return the cnumero
+     */
+    public String getCnumero() {
+        return cnumero;
+    }
+
+    /**
+     * @param cnumero the cnumero to set
+     */
+    public void setCnumero(String cnumero) {
+        this.cnumero = cnumero;
+    }
+
+    /**
+     * @return the cfecha
+     */
+    public Date getCfecha() {
+        return cfecha;
+    }
+
+    /**
+     * @param cfecha the cfecha to set
+     */
+    public void setCfecha(Date cfecha) {
+        this.cfecha = cfecha;
+    }
+
+    /**
+     * @return the cidresponsable
+     */
+    public String getCidresponsable() {
+        return cidresponsable;
+    }
+
+    /**
+     * @param cidresponsable the cidresponsable to set
+     */
+    public void setCidresponsable(String cidresponsable) {
+        this.cidresponsable = cidresponsable;
+    }
+
+    /**
+     * @return the cresponsable
+     */
+    public String getCresponsable() {
+        return cresponsable;
+    }
+
+    /**
+     * @param cresponsable the cresponsable to set
+     */
+    public void setCresponsable(String cresponsable) {
+        this.cresponsable = cresponsable;
+    }
+
+    /**
+     * @return the cidusuario
+     */
+    public String getCidusuario() {
+        return cidusuario;
+    }
+
+    /**
+     * @param cidusuario the cidusuario to set
+     */
+    public void setCidusuario(String cidusuario) {
+        this.cidusuario = cidusuario;
+    }
+
+    /**
+     * @return the cusuario
+     */
+    public String getCusuario() {
+        return cusuario;
+    }
+
+    /**
+     * @param cusuario the cusuario to set
+     */
+    public void setCusuario(String cusuario) {
+        this.cusuario = cusuario;
+    }
+
+    /**
+     * @return the cidestado
+     */
+    public String getCidestado() {
+        return cidestado;
+    }
+
+    /**
+     * @param cidestado the cidestado to set
+     */
+    public void setCidestado(String cidestado) {
+        this.cidestado = cidestado;
+    }
+
+    /**
+     * @return the cestado
+     */
+    public String getCestado() {
+        return cestado;
+    }
+
+    /**
+     * @param cestado the cestado to set
+     */
+    public void setCestado(String cestado) {
+        this.cestado = cestado;
     }
 }

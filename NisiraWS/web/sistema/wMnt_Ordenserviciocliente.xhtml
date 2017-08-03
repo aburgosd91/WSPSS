@@ -81,7 +81,7 @@
                                         <p:inputText size="50" readonly="true" value="#{ordenservicioclienteAction.datoEdicion.razonsocial}" disabled="#{!ordenservicioclienteAction.edicion}"/>
                                     </h:panelGrid>
                                     <p:outputLabel value="Doc. Referencia:" />
-                                    <p:panelGrid  columns="3" columnClasses="no-border, no-border,no-border" style="margin-left: -10px;">
+                                    <p:panelGrid  columns="4" columnClasses="no-border, no-border,no-border,no-border" style="margin-left: -10px;">
                                         <p:commandButton id="btnbuscardocreferencia" styleClass="boton_buscar" ajax="true" actionListener="#{ordenservicioclienteAction.verCntDocReferencia()}" 
                                                     disabled="#{ordenservicioclienteAction.fdocreferencia or !ordenservicioclienteAction.edicion}"  icon="ui-icon-search">
                                         </p:commandButton>
@@ -89,6 +89,7 @@
                                         <p:selectOneMenu id="ambito_servicio" value="#{ordenservicioclienteAction.datoEdicion.ambito_servicio}"  disabled="#{!ordenservicioclienteAction.edicion}" >    
                                             <f:selectItems value="#{ordenservicioclienteAction.listAmbito_pago}" var="ambito" itemLabel="#{ambito.descripcion}" itemValue="#{ambito.codigo}" />
                                         </p:selectOneMenu>
+                                        <p:commandButton id="btnTareo" value="Tareo" ajax="true" image="ui-icon-ver" actionListener="#{ordenservicioclienteAction.visualizar_tareo()}" />
                                     </p:panelGrid>
                                     <p:outputLabel value="" />
                                     <p:dataTable id="tabledocreferencia" widgetVar="docreferencia" 
@@ -700,6 +701,160 @@
                     #{ordenservicioclienteAction.log_consola}
                 </textarea>    
                 <br/>                        
+            </p:dialog>
+            <p:dialog header="#{ordenservicioclienteAction.cabercerDet_tareoweb.ciddocumento}-#{ordenservicioclienteAction.cabercerDet_tareoweb.cserie}-#{ordenservicioclienteAction.cabercerDet_tareoweb.cnumero}" id="detalleTareoDialog" widgetVar="detalleTareoDialog" modal="true"  maximizable="true" showEffect="fade" hideEffect="fade" closable="true" resizable="false">
+                <p:outputPanel style="text-align:center;">
+                    <p:panelGrid  columns="8" columnClasses="label,value">
+                        <h:outputText value="Estado:" />
+                        <h:outputText value="(#{ordenservicioclienteAction.cabercerDet_tareoweb.cestado})" /> 
+                        <h:outputText value="Fecha:" />
+                        <h:outputText value="#{ordenservicioclienteAction.fechaDMY(ordenservicioclienteAction.cabercerDet_tareoweb.cfecha)}" />
+                        <h:outputText value="Responsable:" />
+                        <h:outputText value="(#{ordenservicioclienteAction.cabercerDet_tareoweb.cidresponsable}) #{ordenservicioclienteAction.cabercerDet_tareoweb.cresponsable}" />
+                        <h:outputText value="Creado:" />
+                        <h:outputText value="(#{ordenservicioclienteAction.cabercerDet_tareoweb.cidusuario}) #{ordenservicioclienteAction.cabercerDet_tareoweb.cusuario}" />
+                    </p:panelGrid>
+                </p:outputPanel>
+                <p:dataTable id="listDet_tareo_verificacion" var="listDet_tareo_verificacion" 
+                             value="#{ordenservicioclienteAction.listDet_tareo_verificacion}" 
+                    widgetVar="listDet_tareo_verificacion" scrollable="true" scrollWidth="500px;"
+                    style="margin-bottom:20px;font-size: 12px;width:100%;" 
+                    resizableColumns="true" selectionMode="single" 
+                    frozenColumns="10" 
+                    rowKey="#{listDet_tareo_verificacion.item}" editable="#{ordenservicioclienteAction.edicion}">
+                    <f:facet name="header">
+                            ..:: Detalle Tareo ::..                 (Total:#{ordenservicioclienteAction.listDet_tareo_verificacion.size()})
+                        </f:facet>
+                        <p:column sortBy="#{listDet_tareo_verificacion.item}" exportable="false" style="white-space: nowrap; width: 10px;padding: 3px;text-align: center">
+                            <f:facet name="header">
+                                <h:outputText value="N°"/>
+                            </f:facet>
+                            <h:outputText value="#{listDet_tareo_verificacion.item}"/>
+                         </p:column>
+                        <p:column filterBy="#{listDet_tareo_verificacion.iddocumento}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.iddocumento}" style="white-space: nowrap; width: 20px;padding: 3px;text-align: center">
+                           <f:facet name="header">
+                               <h:outputText value="Doc."/>
+                           </f:facet>
+                           <h:outputText value="#{listDet_tareo_verificacion.iddocumento}"/>
+                        </p:column>
+                        <p:column filterBy="#{listDet_tareo_verificacion.serie}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.serie}" style="white-space: nowrap; width: 18px;padding: 3px;text-align: center">
+                           <f:facet name="header">
+                               <h:outputText value="Serie"/>
+                           </f:facet>
+                           <h:outputText value="#{listDet_tareo_verificacion.serie}"/>
+                        </p:column>
+                        <p:column filterBy="#{listDet_tareo_verificacion.numero}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.numero}" style="white-space: nowrap; width: 25px;padding: 3px;text-align: center">
+                           <f:facet name="header">
+                               <h:outputText value="Número"/>
+                           </f:facet>
+                           <h:outputText value="#{listDet_tareo_verificacion.numero}"/>
+                        </p:column>
+                        <p:column style="white-space: nowrap; width: 30px;padding: 3px;" filterBy="#{ordenservicioclienteAction.fechaDMY(listDet_tareo_verificacion.fecha_osc)}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.fecha_osc}">
+                            <f:facet name="header">
+                                <h:outputText value="Fecha" />
+                            </f:facet>
+                            <h:outputText value="#{listDet_tareo_verificacion.fecha_osc}">
+                                <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column filterBy="#{listDet_tareo_verificacion.ruc} #{listDet_tareo_verificacion.razon}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.ruc} #{listDet_tareo_verificacion.razon}" style="white-space: nowrap; width: 120px;padding: 3px;text-align: left">
+                           <f:facet name="header">
+                               <h:outputText value="Cliente"/>
+                           </f:facet>
+                           <h:outputText value="#{listDet_tareo_verificacion.ruc} - #{listDet_tareo_verificacion.razon}"/>
+                        </p:column>
+                        <p:column filterBy="#{listDet_tareo_verificacion.codoperaciones}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.codoperaciones}" style="white-space: nowrap; width: 20px;padding: 3px;text-align: left">
+                           <f:facet name="header">
+                               <h:outputText value="Cod.Ope."/>
+                           </f:facet>
+                           <h:outputText value="#{listDet_tareo_verificacion.codoperaciones}"/>
+                        </p:column>
+                        <p:column filterBy="#{listDet_tareo_verificacion.cargo}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.cargo}" style="white-space: nowrap; width: 50px;padding: 3px;text-align: left">
+                           <f:facet name="header">
+                               <h:outputText value="Cargo"/>
+                           </f:facet>
+                           <h:outputText value="#{listDet_tareo_verificacion.cargo}"/>
+                        </p:column>
+                        <p:column filterBy="#{listDet_tareo_verificacion.rutaservicios}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.rutaservicios}" style="white-space: nowrap; width: 50px;padding: 3px;text-align: left">
+                           <f:facet name="header">
+                               <h:outputText value="Ruta"/>
+                           </f:facet>
+                           <h:outputText value="#{listDet_tareo_verificacion.rutaservicios}"/>
+                        </p:column>
+                        <p:column headerText="Personal" filterBy="#{listDet_tareo_verificacion.dni} - #{listDet_tareo_verificacion.personal}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.personal}" style="white-space: nowrap; width: 150px;padding: 3px;text-align: left">
+                            <h:outputText value="#{listDet_tareo_verificacion.dni} - #{listDet_tareo_verificacion.personal}"/>    
+                        </p:column>
+                        <p:column headerText="Placa Cliente" filterBy="#{listDet_tareo_verificacion.placa_cliente}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.placa_cliente}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: left">
+                            <h:outputText value="#{listDet_tareo_verificacion.placa_cliente}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="Placa PSS" filterBy="#{listDet_tareo_verificacion.idvehiculo}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.idvehiculo}" style="white-space: nowrap; width: 150px;padding: 3px;text-align: left">
+                            <h:outputText value="#{listDet_tareo_verificacion.idvehiculo} - #{listDet_tareo_verificacion.vehiculo}"/>
+                        </p:column>
+                        <p:column headerText="Conductor Cliente" filterBy="#{listDet_tareo_verificacion.conductor_cliente}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.conductor_cliente}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: left">
+                            <h:outputText value="#{listDet_tareo_verificacion.conductor_cliente}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="Brevete Cliente" filterBy="#{listDet_tareo_verificacion.brevete_cliente}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.brevete_cliente}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: left">
+                            <h:outputText value="#{listDet_tareo_verificacion.brevete_cliente}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="Checklist" filterBy="#{listDet_tareo_verificacion.checklist}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.checklist}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: left">
+                            <h:outputText value="#{listDet_tareo_verificacion.checklist}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="Nro Contenedor" filterBy="#{listDet_tareo_verificacion.nrocontenedor}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.nrocontenedor}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: left">
+                            <h:outputText value="#{listDet_tareo_verificacion.nrocontenedor}"></h:outputText>
+                        </p:column>
+                        <p:column id="fecharegistro" headerText="Fecha Registro" filterBy="#{ordenservicioclienteAction.fechaDMY(listDet_tareo_verificacion.fecharegistro)}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.fecharegistro}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: center">
+                            <h:outputText value="#{listDet_tareo_verificacion.fecharegistro}">
+                                <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                             </h:outputText>
+                        </p:column>
+                        <p:column id="hora_req" headerText="Hora Req." filterBy="#{listDet_tareo_verificacion.fhora_req}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.fhora_req}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: center">
+                            <h:outputText value="#{listDet_tareo_verificacion.fhora_req}">
+                                <f:convertDateTime type="both" pattern="HH:mm" timeZone="America/Lima" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Hora Llegada" filterBy="#{listDet_tareo_verificacion.shora_llegada}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.shora_llegada}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: center">
+                            <h:outputText value="#{listDet_tareo_verificacion.shora_llegada}">
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Hora Inicio" filterBy="#{listDet_tareo_verificacion.shora_inicio}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.shora_inicio}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: center">
+                            <h:outputText value="#{listDet_tareo_verificacion.shora_inicio}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="Hora Fin" filterBy="#{listDet_tareo_verificacion.shora_fin}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.shora_fin}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: center">
+                            <h:outputText value="#{listDet_tareo_verificacion.shora_fin}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="Hora Liberación" filterBy="#{listDet_tareo_verificacion.shora_liberacion}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.shora_liberacion}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: center">
+                            <h:outputText value="#{listDet_tareo_verificacion.shora_liberacion}"></h:outputText>
+                        </p:column>
+                        <p:column id="fechafinregistro" headerText="Fecha Fin" filterBy="#{ordenservicioclienteAction.fechaDMY(listDet_tareo_verificacion.fechafinregistro)}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.fechafinregistro}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: center">
+                            <h:outputText value="#{listDet_tareo_verificacion.fechafinregistro}">
+                                <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                             </h:outputText>
+                        </p:column>
+                        <p:column style="white-space: nowrap; width: 130px;padding: 3px;text-align: center;" headerText="Concepto" filterBy="#{listDet_tareo_verificacion.conceptotareo}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.conceptotareo}">
+                            <h:outputText value="#{listDet_tareo_verificacion.conceptotareo}" />
+                        </p:column>
+                        <p:column style="white-space: nowrap; width: 130px;padding: 3px;text-align: center;background-color:##{listDet_tareo_verificacion.color}" headerText="T.Asistencia" filterBy="#{listDet_tareo_verificacion.asistencia}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.asistencia}">
+                            <h:outputText value="#{listDet_tareo_verificacion.asistencia}" />
+                        </p:column>
+                        <p:column filterBy="#{listDet_tareo_verificacion.glosa}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.glosa}" style="white-space: nowrap; width: 160px;padding: 3px;text-align: center">
+                           <f:facet name="header">
+                               <h:outputText value="Observación"/>
+                           </f:facet>
+                           <h:outputText value="#{listDet_tareo_verificacion.glosa}"/>
+                        </p:column>
+                        <p:column headerText="Nro Precinto" filterBy="#{listDet_tareo_verificacion.nroprecinto}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.nroprecinto}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: left">
+                            <h:outputText value="#{listDet_tareo_verificacion.nroprecinto}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="Nro Servicio" filterBy="#{listDet_tareo_verificacion.nro_oservicio}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.nro_oservicio}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: left">
+                            <h:outputText value="#{listDet_tareo_verificacion.nro_oservicio}"></h:outputText>
+                        </p:column>
+                        <p:column>
+                           <f:facet name="header">
+                               <h:outputText value="Glosa"/>
+                           </f:facet>
+                            <h:outputText value="#{listDet_tareo_verificacion.glosa}"/>
+                        </p:column>
+                   </p:dataTable>
             </p:dialog>
             <cmp:mDialogElimina_lst id="cmpDialog" bean="#{ordenservicioclienteAction}" ventana="MNT" />
         </h:form>

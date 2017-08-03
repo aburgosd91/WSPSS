@@ -160,6 +160,10 @@ public final class CoreUtil {
         xStream.toXML(objecto, new FileOutputStream(ruta));
     }
    /* AGREGADO 27-12-2016*/
+    public static String idGeneradoDos(int id){
+        if(id<10) return "0"+id;
+        else return String.valueOf(id);
+    }
     public static float convertTimeDecimal(Date time){
         float timeF=0.0f;
         int hora= time.getHours();
@@ -178,6 +182,44 @@ public final class CoreUtil {
         obj.setMinutes(minutos);
         return obj;
     }
+    public static float  convertStringTimeFloat(final String time ){
+        if(time == null){
+            return 0.0f;
+        }else if(time.trim().equals("")){
+            return 0.0f;
+        }else if(time.trim().equals("__:__")){
+            return 0.0f;
+        }else if(time.trim().equals("24:00"))
+            return 24.0f;
+        else if(time.trim().equals("00:00"))
+            return 0.0f;
+        else{
+            String[] horas_string = time.split(":");
+            if(horas_string.length==0){
+                return 0.0f;
+            }else{
+                BigDecimal hora_decimal = new BigDecimal(horas_string[0]);
+                BigDecimal minutos_decimal = new BigDecimal(horas_string[1]);
+                BigDecimal fraccion = minutos_decimal.divide(new BigDecimal(60),2, BigDecimal.ROUND_HALF_UP);
+//                fraccion=fraccion.setScale(0, RoundingMode.HALF_UP);
+                return fraccion.add(hora_decimal).floatValue();
+            }
+        }
+    }
+    public static String convertTimeFloatString(Float time){
+        if(time == null){
+            return "";
+        }else if(time.floatValue()==0.0f){
+            return "00:00";
+        }else{
+            BigDecimal number = new BigDecimal(time);
+            int hora = number.intValue();
+            BigDecimal fraccion = number.remainder(BigDecimal.ONE).multiply(new BigDecimal(60));
+            fraccion=fraccion.setScale(0, RoundingMode.HALF_UP);
+            int minutos = fraccion.intValue();
+            return idGeneradoDos(hora)+":"+idGeneradoDos(minutos);
+        }
+    }
     public static String convertTimeString(Date time){
         SimpleDateFormat format = new SimpleDateFormat("HH:mm"); // 12 hour format
         String rsp = format.format(time);
@@ -186,8 +228,10 @@ public final class CoreUtil {
     public static void main(String[] args) {
         float[] times ={
                 0.00f,
+                0.01f,
                 0.02f,
                 0.03f,
+                0.04f,
                 0.05f,
                 0.07f,
                 0.08f,
@@ -247,13 +291,7 @@ public final class CoreUtil {
                 0.98f
         };
         for(float timeF:times){
-            BigDecimal number = new BigDecimal(timeF);
-            int hora = number.intValue();
-            BigDecimal fraccion = number.remainder(BigDecimal.ONE).multiply(new BigDecimal(60));
-            fraccion=fraccion.setScale(0, RoundingMode.HALF_UP);
-            int minutos = fraccion.intValue();
-            //System.out.println("Hora: "+hora);
-            System.out.println("Minutos: "+minutos);
+            System.out.println("Hora: "+convertTimeFloatString(timeF));
         }
     }
 }

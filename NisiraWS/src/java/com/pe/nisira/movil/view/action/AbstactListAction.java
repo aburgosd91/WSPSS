@@ -70,6 +70,7 @@ public abstract class AbstactListAction<T> {
     /*FILTRO*/
     private Date desde;
     private Date hasta;
+    private Date restricted;
     /*ESTADOS*/
     /*
         (0)VISTA
@@ -158,7 +159,36 @@ public abstract class AbstactListAction<T> {
         } else {
             ctx.redirect(ctxPath + "/sistema/principal.xhtml");
         }
-
+    }
+    public void pag_visualizar(String form) throws IOException {
+        boolean access = false;
+        ExternalContext ctx = FacesContext.getCurrentInstance().getExternalContext();
+        String ctxPath = ((ServletContext) ctx.getContext()).getContextPath();
+        for (String[] a : ((UsuarioBean) WebUtil.getObjetoSesion(Constantes.SESION_USUARIO)).getAccess()) {
+            if(a[0]!=null){
+                String page = a[0].replace(".xhtml", "").trim().substring(5);
+                if (page.equalsIgnoreCase(form.substring(5))) {
+                    access = true;
+                    this.aedtiar=0;
+                    this.anuevo=1;
+                    this.agrabar=0;
+                    this.aanular=0;
+                    this.aeliminar=0;
+                    this.acerrar=0;
+                    this.aaprobar=0;
+                }
+            }
+        }
+        if (access == true) {
+            if((form.startsWith("wMnt_")|| form.startsWith("edt_"))){
+                ctx.redirect(ctxPath + "/sistema/" + form + ".xhtml");
+            }else{
+                 ctx.redirect(ctxPath + "/sistema/" + lst_name + ".xhtml");
+                 /************************************************/
+            }
+        } else {
+            ctx.redirect(ctxPath + "/sistema/principal.xhtml");
+        }
     }
     public boolean initacceso(String form) throws IOException {
         boolean access = false;
@@ -180,6 +210,7 @@ public abstract class AbstactListAction<T> {
         /********************* FECHA ********************/
         desde=new Date();
         hasta=new Date();
+        setRestricted(new Date());
         doVerFiltro(1);
         return access;
     }
@@ -214,6 +245,15 @@ public abstract class AbstactListAction<T> {
             this.datoEdicion = this.datoSeleccionado;
             pag_acceso(this.edt_name);
             this.ladd = 2;
+        }
+    }
+    public void doVisualizar() throws IOException {
+        if (this.datoSeleccionado == null) {
+            WebUtil.MensajeAdvertencia("Debe seleccionar registro a visualizar.");
+        }else {
+            this.datoEdicion = this.datoSeleccionado;
+            pag_visualizar(this.edt_name);
+            this.ladd = 0;
         }
     }
     public void opcionEliminarDocumento(String opcion, String pagina) {
@@ -740,5 +780,19 @@ public abstract class AbstactListAction<T> {
      */
     public void setAaprobar(int aaprobar) {
         this.aaprobar = aaprobar;
+    }
+
+    /**
+     * @return the restricted
+     */
+    public Date getRestricted() {
+        return restricted;
+    }
+
+    /**
+     * @param restricted the restricted to set
+     */
+    public void setRestricted(Date restricted) {
+        this.restricted = restricted;
     }
 }

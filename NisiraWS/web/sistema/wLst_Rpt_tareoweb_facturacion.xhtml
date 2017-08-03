@@ -11,66 +11,41 @@
     <ui:define name="body">
         <h:form id="datos">
             <cmp:barra_lst bean="#{rpt_tareoweb_facturacionAction}" mostrar_opciones="false" cfgfiltro="true"/>
-            <p:panelGrid columns="2" style="border: 0px solid ;font-size: 11px !important;padding: 0px !important" id="panelHeader">
+            <p:panelGrid columns="4" style="border: 0px solid ;font-size: 11px !important;padding: 0px !important" id="panelHeader">
                 <p:outputLabel for="tiposervicio"  value="Tipo Servicio:" />
                 <p:selectOneMenu id="tiposervicio" value="#{rpt_tareoweb_facturacionAction.idtiposervicio}">    
                     <p:ajax listener="#{rpt_tareoweb_facturacionAction.onTiposervicio()}"/>
                     <f:selectItems value="#{rpt_tareoweb_facturacionAction.listWtiposervicio}" var="tiposer" itemLabel="(#{tiposer.descripcion_corta}) #{tiposer.descripcion}" itemValue="#{tiposer.idtiposervicio}" />
                 </p:selectOneMenu>
+                <p:outputLabel value="Tipo:" />
+                <p:selectOneMenu id="tipo" value="#{rpt_tareoweb_facturacionAction.type_formato_rpt}">
+                    <f:selectItems value="#{rpt_tareoweb_facturacionAction.lst_type_rpt}" var="tip" itemLabel="#{tip}" itemValue="#{tip}" />
+                </p:selectOneMenu>
             </p:panelGrid>
             <br/>
-            <p:tabView id="tab">
-                <p:tab title="Resumen">
-                    <p:dataTable style="font-size: 11px;" id="tbl" var="lst_rpt_" value="#{rpt_tareoweb_facturacionAction.rpt_result_resumido.data}"
-                        widgetVar="lst_rpt_"
-                       scrollable="true" scrollWidth="96%"
-                       selection="#{rpt_tareoweb_facturacionAction.selectRpt_}" 
-                       resizableColumns="true" editable="true" editMode="cell"
-                       rowIndexVar="rownum">
-                     <f:facet name="header">
-                         Facturación - Tareo - (#{rpt_tareoweb_facturacionAction.rpt_result_resumido.size()}) - #{rpt_tareoweb_facturacionAction.fechaDMY(rpt_tareoweb_facturacionAction.desde)} - #{rpt_tareoweb_facturacionAction.fechaDMY(rpt_tareoweb_facturacionAction.hasta)}
-                     </f:facet>
-                     <p:columns headerText="#{rpt_tareoweb_facturacionAction.rpt_result_resumido.name[colIndex]}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: #{colIndex=='0'?'center':'center'}" value="#{rpt_tareoweb_facturacionAction.rpt_result_resumido.name}" var="column" columnIndexVar="colIndex"   
-                                resizable="true" sortBy="#{lst_rpt_[colIndex]}"> 
-                         <p:cellEditor>
-                             <f:facet name="output">
-                                 <h:outputText value="#{rpt_tareoweb_facturacionAction.rpt_result_resumido.data[rownum][colIndex]}"/>
-                             </f:facet>
-                             <f:facet name="input">
-                                 <p:inputMask style="font-size:10px;" value="#{rpt_tareoweb_facturacionAction.rpt_result_resumido.data[rownum][colIndex]}" 
-                                              mask="#{rpt_tareoweb_facturacionAction.formatObjectMask(colIndex)}" 
-                                              disabled="#{rpt_tareoweb_facturacionAction.formatObjectDissable(colIndex)}"/>
-                             </f:facet>
-                         </p:cellEditor>     
-                     </p:columns>
-                 </p:dataTable>
-                </p:tab>
-                <p:tab title="Detallado">
-                    <p:dataTable style="font-size: 11px;" var="lst_rpt" value="#{rpt_tareoweb_facturacionAction.rpt_result.data}"
-                        widgetVar="lst_rpt"
-                       scrollable="true" scrollWidth="96%"
-                       selection="#{rpt_tareoweb_facturacionAction.selectRpt}" 
-                       resizableColumns="true" editable="true" editMode="cell"
-                       rowIndexVar="rownum">
-                     <f:facet name="header">
-                         Facturación - Tareo - (#{rpt_tareoweb_facturacionAction.rpt_result.size()}) - #{rpt_tareoweb_facturacionAction.fechaDMY(rpt_tareoweb_facturacionAction.desde)} - #{rpt_tareoweb_facturacionAction.fechaDMY(rpt_tareoweb_facturacionAction.hasta)}
-                     </f:facet>
-                     <p:columns headerText="#{rpt_tareoweb_facturacionAction.rpt_result.name[colIndex]}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: #{colIndex=='0'?'center':'center'}" value="#{rpt_tareoweb_facturacionAction.rpt_result.name}" var="column" columnIndexVar="colIndex"   
-                                resizable="true" sortBy="#{lst_rpt[colIndex]}"> 
-                         <p:cellEditor>
-                             <f:facet name="output">
-                                 <h:outputText value="#{rpt_tareoweb_facturacionAction.rpt_result.data[rownum][colIndex]}"/>
-                             </f:facet>
-                             <f:facet name="input">
-                                 <p:inputMask style="font-size:10px;" value="#{rpt_tareoweb_facturacionAction.rpt_result.data[rownum][colIndex]}" 
-                                              mask="#{rpt_tareoweb_facturacionAction.formatObjectMask(colIndex)}" 
-                                              disabled="#{rpt_tareoweb_facturacionAction.formatObjectDissable(colIndex)}"/>
-                             </f:facet>
-                         </p:cellEditor>     
-                     </p:columns>
-                 </p:dataTable>   
-                </p:tab>
-            </p:tabView>
+            <p:dataTable style="font-size: 11px;" var="lst_rpt" value="#{rpt_tareoweb_facturacionAction.rpt_result.data}"
+                    widgetVar="lst_rpt"  id="tbl" 
+                   scrollable="true" scrollWidth="99%"
+                   selection="#{rpt_tareoweb_facturacionAction.selectRpt}" 
+                   resizableColumns="true" editable="true" editMode="cell"
+                   rowIndexVar="rownum">
+                 <f:facet name="header">
+                     Facturación - Tareo - (#{rpt_tareoweb_facturacionAction.rpt_result.size()}) - #{rpt_tareoweb_facturacionAction.fechaDMY(rpt_tareoweb_facturacionAction.desde)} - #{rpt_tareoweb_facturacionAction.fechaDMY(rpt_tareoweb_facturacionAction.hasta)}
+                 </f:facet>
+                 <p:columns headerText="#{rpt_tareoweb_facturacionAction.rpt_result.name[colIndex]}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: #{colIndex=='0'?'center':'center'}" value="#{rpt_tareoweb_facturacionAction.rpt_result.name}" var="column" columnIndexVar="colIndex"   
+                            resizable="true" sortBy="#{lst_rpt[colIndex]}"> 
+                     <p:cellEditor>
+                         <f:facet name="output">
+                             <h:outputText value="#{rpt_tareoweb_facturacionAction.rpt_result.data[rownum][colIndex]}"/>
+                         </f:facet>
+                         <f:facet name="input">
+                             <p:inputMask style="font-size:10px;" value="#{rpt_tareoweb_facturacionAction.rpt_result.data[rownum][colIndex]}" 
+                                          mask="#{rpt_tareoweb_facturacionAction.formatObjectMask(colIndex)}" 
+                                          disabled="#{rpt_tareoweb_facturacionAction.formatObjectDissable(colIndex)}"/>
+                         </f:facet>
+                     </p:cellEditor>     
+                 </p:columns>
+             </p:dataTable>  
             <br/>
             <p:growl id="growl" life="4000" showDetail="false"  />
             <cmp:mDialogElimina_lst id="cmpDialog" bean="#{rpt_tareoweb_facturacionAction}" ventana="LST" />

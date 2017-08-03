@@ -36,14 +36,15 @@
                     <p:commandButton value="Exportar" ajax="false" image="ui-icon-excel">
                         <p:dataExporter type="xls" target="datos:tbl" fileName="Reporte" postProcessor="#{cc.attrs.bean.downFormatExcelEspecial}"/>
                     </p:commandButton>
+                    <p:commandButton update="botones,:datos:growl" value="Visualizar" actionListener="#{cc.attrs.bean.doVisualizar()}" icon="ui-icon-ver" /> 
                 </h:panelGrid>  
             </p:toolbarGroup>
             <p:toolbarGroup align="right">
                 <h:panelGrid  id="filtro" rendered="#{cc.attrs.cfgfiltro}" cellpadding="0" cellspacing="0"  columns="5">
                     <h:outputLabel value="Desde:" />
-                    <p:calendar id="fdesde" value="#{cc.attrs.bean.desde}" pattern="dd/MM/yyyy" mask="true" /> 
+                    <p:calendar id="fdesde" value="#{cc.attrs.bean.desde}" pattern="dd/MM/yyyy" mask="true" maxdate="#{cc.attrs.bean.restricted}"/> 
                     <h:outputLabel value="Hasta:" />
-                    <p:calendar id="fhasta" value="#{cc.attrs.bean.hasta}" pattern="dd/MM/yyyy" mask="true" />
+                    <p:calendar id="fhasta" value="#{cc.attrs.bean.hasta}" pattern="dd/MM/yyyy" mask="true" maxdate="#{cc.attrs.bean.restricted}"/>
                     <p:commandButton id="btn_filtro" ajax="true" value="Mostrar" actionListener="#{cc.attrs.bean.doVerFiltro(2)}" 
                                      update="filtro"/>
                 </h:panelGrid>

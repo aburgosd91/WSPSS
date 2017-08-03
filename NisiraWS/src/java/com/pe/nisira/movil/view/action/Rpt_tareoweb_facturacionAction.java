@@ -97,9 +97,12 @@ public class Rpt_tareoweb_facturacionAction extends AbstactListAction<Ordenservi
     private Object[] selectRpt;
     private Object[] selectRpt_;
     private String idtiposervicio;
+    private String[] lst_type_rpt;
     /************************************* CONTROLES *****************************************/
     private NSRResultSet rpt_result;
     private NSRResultSet rpt_result_resumido;
+    private NSRResultSet rpt_result_detallado;
+    private String type_formato_rpt;
     public Rpt_tareoweb_facturacionAction() {
         try {
             /*********************************ENTITY*******************************************/
@@ -115,6 +118,10 @@ public class Rpt_tareoweb_facturacionAction extends AbstactListAction<Ordenservi
             listWtiposervicio = wtiposervicioDao.listarPorEmpresaWeb(user.getIDEMPRESA());
             /********************************** CONFIGURACIÓN - SERVIDOR ***********************/
             idtiposervicio = "002";
+            type_formato_rpt = "Formato";
+            lst_type_rpt= new String[2];
+            lst_type_rpt[0]="Formato";
+            lst_type_rpt[1]="Detallado";
         }catch (Exception ex) {
             Logger.getLogger(Rpt_tareoweb_facturacionAction.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -172,7 +179,13 @@ public class Rpt_tareoweb_facturacionAction extends AbstactListAction<Ordenservi
             String f_fin = f.format(getHasta());
             f_ini = f_ini.replace("-", "");
             f_fin = f_fin.replace("-", "");
-            setRpt_result(getOrdenservicioclienteDao().getConsultaRepote_facturacion_detallado(user.getIDEMPRESA(),f_ini,f_fin,idtiposervicio));
+            if(getType_formato_rpt().trim().equals("Formato")){
+                setRpt_result(getOrdenservicioclienteDao().getConsultaRepote_facturacion(user.getIDEMPRESA(),f_ini,f_fin,idtiposervicio));
+            }else if(getType_formato_rpt().trim().equals("Detallado")){
+                setRpt_result(getOrdenservicioclienteDao().getConsultaRepote_facturacion_detallado(user.getIDEMPRESA(),f_ini,f_fin,idtiposervicio));
+            }
+            setRpt_result_resumido(getOrdenservicioclienteDao().getConsultaRepote_facturacion(user.getIDEMPRESA(),f_ini,f_fin,idtiposervicio));
+            setRpt_result_detallado(getOrdenservicioclienteDao().getConsultaRepote_facturacion_detallado(user.getIDEMPRESA(),f_ini,f_fin,idtiposervicio));
             RequestContext.getCurrentInstance().update("datos");
         } catch (Exception e) {
             setMensaje(WebUtil.mensajeError());
@@ -202,8 +215,13 @@ public class Rpt_tareoweb_facturacionAction extends AbstactListAction<Ordenservi
             String f_fin = f.format(getHasta());
             f_ini = f_ini.replace("-", "");
             f_fin = f_fin.replace("-", "");
-            setRpt_result(getOrdenservicioclienteDao().getConsultaRepote_facturacion_detallado(user.getIDEMPRESA(),f_ini,f_fin,idtiposervicio));
+            if(getType_formato_rpt().trim().equals("Formato")){
+                setRpt_result(getOrdenservicioclienteDao().getConsultaRepote_facturacion(user.getIDEMPRESA(),f_ini,f_fin,idtiposervicio));
+            }else if(getType_formato_rpt().trim().equals("Detallado")){
+                setRpt_result(getOrdenservicioclienteDao().getConsultaRepote_facturacion_detallado(user.getIDEMPRESA(),f_ini,f_fin,idtiposervicio));
+            }
             setRpt_result_resumido(getOrdenservicioclienteDao().getConsultaRepote_facturacion(user.getIDEMPRESA(),f_ini,f_fin,idtiposervicio));
+            setRpt_result_detallado(getOrdenservicioclienteDao().getConsultaRepote_facturacion_detallado(user.getIDEMPRESA(),f_ini,f_fin,idtiposervicio));
             //setListaDatos(getOrdenservicioclienteDao().listarPorEmpresaWebFiltroFecha(user.getIDEMPRESA(),f_ini,f_fin));
         } catch (Exception e) {
             setMensaje(WebUtil.mensajeError());
@@ -232,8 +250,7 @@ public class Rpt_tareoweb_facturacionAction extends AbstactListAction<Ordenservi
     @Override
     public void downFormatExcelEspecial(Object document) {
         HSSFWorkbook objWB = (HSSFWorkbook) document;
-        objWB.setSheetName(0,"DETALLADO_ "+WebUtil.fechaDMY(new Date(),1));
-
+        objWB.setSheetName(0,"FORMATO_ "+WebUtil.fechaDMY(new Date(),1));
         HSSFRow fila_cabecera = objWB.getSheetAt(0).getRow(0);
 
         HSSFFont fuente = objWB.createFont();
@@ -266,13 +283,13 @@ public class Rpt_tareoweb_facturacionAction extends AbstactListAction<Ordenservi
         estiloFila.setBorderLeft(HSSFCellStyle.BORDER_MEDIUM);
         estiloFila.setFont(fuente);
 
-        int col = rpt_result.columnCount();
-        int row = rpt_result.getData().size();
+        int col = rpt_result_resumido.columnCount();
+        int row = rpt_result_resumido.getData().size();
         HSSFCell celda;
         for(int i=0 ;i<col;i++){
             celda = fila_cabecera.createCell((short)i);
             celda.setCellStyle(estiloCelda);
-            celda.setCellValue(rpt_result.getName()[i]);
+            celda.setCellValue(rpt_result_resumido.getName()[i]);
         }
         HSSFRow fila;
         for(int i=0;i<row;i++){
@@ -280,27 +297,27 @@ public class Rpt_tareoweb_facturacionAction extends AbstactListAction<Ordenservi
             for(int j=0;j<col;j++){
                 celda = fila.createCell((short)j);
                 celda.setCellStyle(estiloFila);
-                celda.setCellValue( rpt_result.getData().get(i)[j]==null?"":rpt_result.getData().get(i)[j].toString());
+                celda.setCellValue( rpt_result_resumido.getData().get(i)[j]==null?"":rpt_result_resumido.getData().get(i)[j].toString());
             }
         }
         
         /*CREAR OTRA HOJA RESUMIDO*/
-        HSSFSheet sheet1 = objWB.createSheet("RESUMIDO_ "+WebUtil.fechaDMY(new Date(),1));
+        HSSFSheet sheet1 = objWB.createSheet("DETALLADO_ "+WebUtil.fechaDMY(new Date(),1));
         fila_cabecera = sheet1.createRow((short)0);
 
-        col = rpt_result_resumido.columnCount();
-        row = rpt_result_resumido.getData().size();
+        col = rpt_result_detallado.columnCount();
+        row = rpt_result_detallado.getData().size();
         for(int i=0 ;i<col;i++){
             celda = fila_cabecera.createCell((short)i);
             celda.setCellStyle(estiloCelda);
-            celda.setCellValue(rpt_result_resumido.getName()[i]);
+            celda.setCellValue(rpt_result_detallado.getName()[i]);
         }
         for(int i=0;i<row;i++){
             fila = sheet1.createRow(i+1);
             for(int j=0;j<col;j++){
                 celda = fila.createCell((short)j);
                 celda.setCellStyle(estiloFila);
-                celda.setCellValue( rpt_result_resumido.getData().get(i)[j]==null?"":rpt_result_resumido.getData().get(i)[j].toString());
+                celda.setCellValue( rpt_result_detallado.getData().get(i)[j]==null?"":rpt_result_detallado.getData().get(i)[j].toString());
             }
         }
         /*AUTOAJUSTE EN LA HOJA*/
@@ -459,6 +476,48 @@ public class Rpt_tareoweb_facturacionAction extends AbstactListAction<Ordenservi
      */
     public void setSelectRpt_(Object[] selectRpt_) {
         this.selectRpt_ = selectRpt_;
+    }
+
+    /**
+     * @return the rpt_result_detallado
+     */
+    public NSRResultSet getRpt_result_detallado() {
+        return rpt_result_detallado;
+    }
+
+    /**
+     * @param rpt_result_detallado the rpt_result_detallado to set
+     */
+    public void setRpt_result_detallado(NSRResultSet rpt_result_detallado) {
+        this.rpt_result_detallado = rpt_result_detallado;
+    }
+
+    /**
+     * @return the type_formato_rpt
+     */
+    public String getType_formato_rpt() {
+        return type_formato_rpt;
+    }
+
+    /**
+     * @param type_formato_rpt the type_formato_rpt to set
+     */
+    public void setType_formato_rpt(String type_formato_rpt) {
+        this.type_formato_rpt = type_formato_rpt;
+    }
+
+    /**
+     * @return the lst_type_rpt
+     */
+    public String[] getLst_type_rpt() {
+        return lst_type_rpt;
+    }
+
+    /**
+     * @param lst_type_rpt the lst_type_rpt to set
+     */
+    public void setLst_type_rpt(String[] lst_type_rpt) {
+        this.lst_type_rpt = lst_type_rpt;
     }
 
 }

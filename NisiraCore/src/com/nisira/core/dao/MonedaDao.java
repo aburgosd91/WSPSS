@@ -16,6 +16,4 @@ public class MonedaDao extends BaseDao<Moneda> {
 	public MonedaDao(boolean usaCnBase) throws NisiraORMException {
 		super(Moneda.class, usaCnBase);
 	}
-        
-
 }

@@ -99,9 +99,37 @@ public class WebUtil {
             return false;
         }else if(time.trim().equals("")){
             return false;
-        }else{
+        }else if(time.trim().equals("__:__")){
+            return false;
+        }else if(time.trim().equals("24:00"))
+            return true;
+        else{
             Matcher matcher = pattern.matcher(time);
             return matcher.matches();
+        }
+    }
+    public static float  convertStringTimeFloat(final String time ){
+        if(time == null){
+            return 0.0f;
+        }else if(time.trim().equals("")){
+            return 0.0f;
+        }else if(time.trim().equals("__:__")){
+            return 0.0f;
+        }else if(time.trim().equals("24:00"))
+            return 24.0f;
+        else if(time.trim().equals("00:00"))
+            return 0.0f;
+        else{
+            String[] horas_string = time.split(":");
+            if(horas_string.length==0){
+                return 0.0f;
+            }else{
+                BigDecimal hora_decimal = new BigDecimal(horas_string[0]);
+                BigDecimal minutos_decimal = new BigDecimal(horas_string[1]);
+                BigDecimal fraccion = minutos_decimal.divide(new BigDecimal(60),2, BigDecimal.ROUND_HALF_UP);
+//                fraccion=fraccion.setScale(0, RoundingMode.HALF_UP);
+                return fraccion.add(hora_decimal).floatValue();
+            }
         }
     }
     public static Date convertStringTime(String timer) throws ParseException{
@@ -216,6 +244,18 @@ public class WebUtil {
         Formatter fmt = new Formatter();
         fmt.format("%0"+cantidad+"d",Integer.parseInt(e1.toString()));
         cadena=fmt.toString();
+        return cadena;
+    }
+    public static String cerosIzquierdaString(Object e1,int cantidad){
+        String cadena="";
+        String org = (e1.toString()==null?"":e1.toString()).trim();
+        if(cantidad>org.length()){
+            for(int i=0;i<cantidad-org.length();i++){
+                cadena+="0";
+            }
+            cadena+=(e1.toString()==null?"":e1.toString()).trim();
+        }else
+            cadena = (e1.toString()==null?"":e1.toString()).trim();
         return cadena;
     }
     /********************************MSJ DE OPERACION********************************************/
@@ -613,5 +653,12 @@ public class WebUtil {
             System.err.println(ex.getMessage());
             return false;
         }
+    }
+    public static void main(String[] args) {
+//        System.out.println("Hora :"+convertStringTimeFloat("24:00"));
+//        System.out.println("Hora :"+convertStringTimeFloat("__:__"));
+//        System.out.println("Hora :"+convertStringTimeFloat("00:00"));
+        System.out.println("Hora :"+convertStringTimeFloat("00:01"));
+        System.out.println("Hora :"+convertStringTimeFloat("23:59"));
     }
 }

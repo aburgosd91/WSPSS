@@ -35,6 +35,7 @@ public class MonedasDao extends BaseDao<Monedas> {
                 moneda.setIdbasedatos(rs.getString("IDBASEDATOS").trim());
                 moneda.setIdmoneda(rs.getString("IDMONEDA")!=null?rs.getString("IDMONEDA").trim():"");
                 moneda.setDescripcion(rs.getString("DESCRIPCION")!=null?rs.getString("DESCRIPCION").trim():"");
+                moneda.setNombre_corto(rs.getString("NOMBRE_CORTO")!=null?rs.getString("NOMBRE_CORTO").trim():"");
                 moneda.setEstado(rs.getFloat("ESTADO"));                         
                 moneda.setSincroniza(rs.getString("SINCRONIZA")!=null?rs.getString("SINCRONIZA").trim():"");
                 moneda.setFechacreacion(rs.getDate("FECHACREACION"));  

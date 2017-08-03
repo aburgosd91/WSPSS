@@ -1,0 +1,497 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">
+            <cmp:barra_lst bean="#{rpt_tareoweb_facturacion_formatoAction}" mostrar_opciones="false" cfgfiltro="true"/>
+            <p:panelGrid columns="4" style="border: 0px solid ;font-size: 11px !important;padding: 0px !important" id="panelHeader">
+                <p:outputLabel for="tiposervicio"  value="Tipo Servicio:" />
+                <p:selectOneMenu id="tiposervicio" value="#{rpt_tareoweb_facturacion_formatoAction.idtiposervicio}">    
+                    <p:ajax listener="#{rpt_tareoweb_facturacion_formatoAction.onTiposervicio()}"/>
+                    <f:selectItems value="#{rpt_tareoweb_facturacion_formatoAction.listWtiposervicio}" var="tiposer" itemLabel="(#{tiposer.descripcion_corta}) #{tiposer.descripcion}" itemValue="#{tiposer.idtiposervicio}" />
+                </p:selectOneMenu>
+            </p:panelGrid>
+            <br/>
+            <p:toolbar id="tb" style="font-size: 12px;">
+                <f:facet name="left">
+                    <h:panelGrid  id="comandos" cellpadding="0" cellspacing="0"  columns="4">
+                       <p:commandButton value="Refrescar" ajax="true" image="ui-icon-reload" actionListener="#{rpt_tareoweb_facturacion_formatoAction.onRefresh()}"/>
+                    </h:panelGrid>
+                </f:facet>
+            </p:toolbar>
+            <p:dataTable style="font-size: 11px;" var="lst_rpt" value="#{rpt_tareoweb_facturacion_formatoAction.listReporte_facturacion}"
+                    widgetVar="lst_rpt"  id="tbl" 
+                    scrollable="true" scrollWidth="99%"
+                   selection="#{rpt_tareoweb_facturacion_formatoAction.selectReporte_facturacion}" 
+                   selectionMode="single" rowKey="#{lst_rpt.item}"  
+                   resizableColumns="true" editable="true" editMode="cell" >
+                <p:ajax event="cellEdit" listener="#{rpt_tareoweb_facturacion_formatoAction.onCellEdit}" update="tbl"/>
+                 <f:facet name="header">
+                     Provisión Documentos x Pagar (#{rpt_tareoweb_facturacion_formatoAction.listReporte_facturacion.size()}) - #{rpt_tareoweb_facturacion_formatoAction.fechaDMY(rpt_tareoweb_facturacion_formatoAction.desde)} - #{rpt_tareoweb_facturacion_formatoAction.fechaDMY(rpt_tareoweb_facturacion_formatoAction.hasta)}
+                 </f:facet>
+                
+                <p:column headerText="N°" sortBy="#{lst_rpt.item}" style="white-space: nowrap; width: 20px;padding: 3px;text-align: center">
+                    <h:outputText value="#{lst_rpt.item}"/>
+                </p:column>
+                <p:column headerText="IdClieprov" filterBy="#{lst_rpt.idclieprov}" filterMatchMode="contains" sortBy="#{lst_rpt.idclieprov}" style="white-space: nowrap; width: 70px;padding: 3px;text-align: center">
+                    <h:outputText value="#{lst_rpt.idclieprov}"/>
+                </p:column>
+                <p:column headerText="Razon social" filterBy="#{lst_rpt.razon_social}" filterMatchMode="contains" sortBy="#{lst_rpt.razon_social}" style="white-space: nowrap; width: 200px;padding: 3px;text-align: left">
+                    <h:outputText value="#{lst_rpt.razon_social}"/>
+                </p:column>
+                 <p:column headerText="Doc." filterBy="#{lst_rpt.iddocumento}" filterMatchMode="contains" sortBy="#{lst_rpt.iddocumento}"  style="white-space: nowrap; width: 30px;padding: 3px;text-align: center">
+                    <p:cellEditor >
+                        <f:facet name="output">
+                            <h:outputText value="#{lst_rpt.iddocumento}"/>
+                        </f:facet>
+                        <f:facet name="input" >
+                            <p:autoComplete size="80" id="iddocumento" value="#{lst_rpt.selectDocumentos}" maxResults="10" completeMethod="#{rpt_tareoweb_facturacion_formatoAction.completeDocumentos}"
+                                            var="documento" itemLabel="#{documento.iddocumento} #{documento.descripcion}" itemValue="#{documento}" converter="documentoConverter" forceSelection="true">
+                                <p:column style="width:10%">
+                                    <h:outputText value="#{documento.iddocumento}" />
+                                 </p:column>
+                                 <p:column style="width:90%">
+                                     <h:outputText value="#{documento.descripcion}" />
+                                 </p:column>
+                            </p:autoComplete>
+                        </f:facet>
+                    </p:cellEditor>
+                 </p:column>
+                 <p:column headerText="Serie" filterBy="#{lst_rpt.serie}" filterMatchMode="contains" sortBy="#{lst_rpt.serie}" style="white-space: nowrap; width: 38px;padding: 3px;text-align: center">
+                    <p:cellEditor>
+                       <f:facet name="output"><h:outputText value="#{lst_rpt.serie}"/></f:facet>
+                       <f:facet name="input">
+                            <p:inputMask style="font-size:10px;" maxlength="4" id="dserie" mask="" value="#{lst_rpt.serie}"/>
+                       </f:facet>
+                   </p:cellEditor>
+                 </p:column>
+                 <p:column headerText="Número" filterBy="#{lst_rpt.numero}" filterMatchMode="contains" sortBy="#{lst_rpt.numero}" 
+                            style="white-space: nowrap; width: 48px;padding: 3px;text-align: center">
+                     <p:cellEditor>
+                        <f:facet name="output">
+                           <h:outputText value="#{lst_rpt.numero}"/> 
+                        </f:facet>
+                        <f:facet name="input">
+                           <p:inputMask style="font-size:10px;" maxlength="7" id="fnumero" mask="" value="#{lst_rpt.numero}"/>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column id="fecha" headerText="Fecha" filterBy="#{tareowebAction.fechaDMY(lst_rpt.fecha)}" filterMatchMode="contains" sortBy="#{lst_rpt.fecha}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
+                    <p:cellEditor >
+                       <f:facet name="output">
+                            <h:outputText value="#{lst_rpt.fecha}">
+                               <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                            </h:outputText>
+                       </f:facet>
+                       <f:facet name="input">
+                           <p:calendar style="font-size:10px;" value="#{lst_rpt.fecha}" pattern="dd-MM-yyyy" mask="true" />
+                       </f:facet>
+                   </p:cellEditor>
+                </p:column>
+                <p:column id="fecha_operacion" headerText="Fecha Operación" filterBy="#{rpt_tareoweb_facturacion_formatoAction.fechaDMY(lst_rpt.fecha_operacion)}" filterMatchMode="contains" sortBy="#{lst_rpt.fecha_operacion}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
+                    <p:cellEditor >
+                       <f:facet name="output">
+                            <h:outputText value="#{lst_rpt.fecha_operacion}">
+                               <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                            </h:outputText>
+                       </f:facet>
+                       <f:facet name="input">
+                           <p:calendar style="font-size:10px;" value="#{lst_rpt.fecha_operacion}" pattern="dd-MM-yyyy" mask="true" />
+                       </f:facet>
+                   </p:cellEditor>
+                </p:column>
+                <p:column id="vencimiento" headerText="Vencimiento" filterBy="#{rpt_tareoweb_facturacion_formatoAction.fechaDMY(lst_rpt.vencimiento)}" filterMatchMode="contains" sortBy="#{lst_rpt.vencimiento}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
+                    <p:cellEditor >
+                       <f:facet name="output">
+                            <h:outputText value="#{lst_rpt.vencimiento}">
+                               <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                            </h:outputText>
+                       </f:facet>
+                       <f:facet name="input">
+                           <p:calendar style="font-size:10px;" value="#{lst_rpt.vencimiento}" pattern="dd-MM-yyyy" mask="true" />
+                       </f:facet>
+                   </p:cellEditor>
+                </p:column>
+                <p:column headerText="Idmoneda" filterBy="#{lst_rpt.idmoneda}" filterMatchMode="contains" sortBy="#{lst_rpt.idmoneda}"  style="white-space: nowrap; width: 25px;padding: 3px;text-align: left">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{lst_rpt.idmoneda}" /></f:facet>
+                       <f:facet name="input">
+                           <h:selectOneMenu value="#{lst_rpt.idmoneda}" style="width:100%">
+                               <f:selectItems value="#{rpt_tareoweb_facturacion_formatoAction.listMoneda}" var="mon" itemLabel="#{mon.nombre_corto}" itemValue="#{mon.idmoneda}" />
+                           </h:selectOneMenu>
+                       </f:facet>
+                   </p:cellEditor>
+               </p:column>
+                <p:column headerText="Idcuenta" filterBy="#{lst_rpt.idcuenta}" filterMatchMode="contains" sortBy="#{lst_rpt.idcuenta}" style="white-space: nowrap; width: 60px;padding: 3px;text-align: left">
+                    <p:cellEditor >
+                        <f:facet name="output">
+                            <h:outputText value="#{lst_rpt.idcuenta}"/>
+                        </f:facet>
+                        <f:facet name="input" >
+                            <p:autoComplete size="80" id="planctas" value="#{lst_rpt.selectCuenta}" maxResults="10" completeMethod="#{rpt_tareoweb_facturacion_formatoAction.completePlanctas}"
+                                            var="planctas" itemLabel="#{planctas.idcuenta}" itemValue="#{planctas}" converter="planctasConverter" forceSelection="true">
+                                <p:column style="width:10%">
+                                    <h:outputText value="#{planctas.idcuenta}" />
+                                 </p:column>
+                                 <p:column style="width:90%">
+                                     <h:outputText value="#{planctas.descripcion}" />
+                                 </p:column>
+                            </p:autoComplete>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="Idccosto" filterBy="#{lst_rpt.idccosto}" filterMatchMode="contains" sortBy="#{lst_rpt.idccosto}" style="white-space: nowrap; width: 60px;padding: 3px;text-align: left">
+                    <p:cellEditor >
+                        <f:facet name="output">
+                            <h:outputText value="#{lst_rpt.idccosto}"/>
+                        </f:facet>
+                        <f:facet name="input" >
+                            <p:autoComplete size="80" id="ccosto" value="#{lst_rpt.selectConsumidor}" maxResults="10" completeMethod="#{rpt_tareoweb_facturacion_formatoAction.completeConsumidor}"
+                                            var="ccosto" itemLabel="#{ccosto.idccosto}" itemValue="#{ccosto}" converter="consumidorConverter" forceSelection="true">
+                                <p:column style="width:10%">
+                                    <h:outputText value="#{ccosto.idccosto}" />
+                                 </p:column>
+                                 <p:column style="width:90%">
+                                     <h:outputText value="#{ccosto.descripcion}" />
+                                 </p:column>
+                            </p:autoComplete>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="Concepto" filterBy="#{lst_rpt.concepto}" filterMatchMode="contains" sortBy="#{lst_rpt.concepto}" style="white-space: nowrap; width: 250px;padding: 3px;text-align: left">
+                    <h:outputText value="#{lst_rpt.concepto}"/>
+                </p:column>
+                <p:column headerText="Idregimen" filterBy="#{lst_rpt.idregimen}" filterMatchMode="contains" sortBy="#{lst_rpt.idregimen}"  style="white-space: nowrap; width: 60px;padding: 3px;text-align: left">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{lst_rpt.idregimen}" /></f:facet>
+                       <f:facet name="input">
+                           <h:selectOneMenu value="#{lst_rpt.idregimen}" style="width:100%">
+                               <f:selectItems value="#{rpt_tareoweb_facturacion_formatoAction.listTiporegimen}" var="tr" itemLabel="#{tr.idregimen}-#{tr.descripcion}" itemValue="#{tr.idregimen}" />
+                           </h:selectOneMenu>
+                       </f:facet>
+                   </p:cellEditor>
+               </p:column>
+                
+                <p:column headerText="Afecto" filterBy="#{lst_rpt.afecto}" filterMatchMode="contains" sortBy="#{lst_rpt.afecto}"  style="white-space: nowrap; width: 60px;padding: 3px;text-align: left">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{lst_rpt.afecto}">
+                                <f:convertNumber pattern="#0.00" />
+                            </h:outputText>
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:inputNumber value="#{lst_rpt.afecto}" decimalPlaces="2">
+                            </p:inputNumber>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="Inafecto" filterBy="#{lst_rpt.inafecto}" filterMatchMode="contains" sortBy="#{lst_rpt.inafecto}"  style="white-space: nowrap; width: 60px;padding: 3px;text-align: left">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{lst_rpt.inafecto}">
+                                <f:convertNumber pattern="#0.00" />
+                            </h:outputText>
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:inputNumber value="#{lst_rpt.inafecto}" decimalPlaces="2">
+                            </p:inputNumber>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="Idimpuesto" filterBy="#{lst_rpt.idimpuesto}" filterMatchMode="contains" sortBy="#{lst_rpt.idimpuesto}" style="white-space: nowrap; width: 60px;padding: 3px;text-align: left">
+                    <p:cellEditor>
+                       <f:facet name="output"><h:outputText value="#{lst_rpt.idimpuesto}" /></f:facet>
+                       <f:facet name="input">
+                           <h:selectOneMenu value="#{lst_rpt.idimpuesto}" style="width:100%">
+                               <f:selectItem itemLabel="-" itemValue="000" />
+                               <f:selectItems value="#{rpt_tareoweb_facturacion_formatoAction.listImpuesto}" var="imp" itemLabel="#{imp.idimpuesto} #{imp.desc_corta} - #{imp.descripcion}" itemValue="#{imp.idimpuesto}" />
+                           </h:selectOneMenu>
+                       </f:facet>
+                   </p:cellEditor>
+               </p:column>
+                <p:column headerText="Impuesto" filterBy="#{lst_rpt.impuesto}" filterMatchMode="contains" sortBy="#{lst_rpt.impuesto}"  style="white-space: nowrap; width: 60px;padding: 3px;text-align: left">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{lst_rpt.impuesto}">
+                                <f:convertNumber pattern="#0.00" />
+                            </h:outputText>
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:inputNumber value="#{lst_rpt.impuesto}" decimalPlaces="2">
+                            </p:inputNumber>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="Total" filterBy="#{lst_rpt.total}" filterMatchMode="contains" sortBy="#{lst_rpt.total}"  style="white-space: nowrap; width: 60px;padding: 3px;text-align: left">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{lst_rpt.total}">
+                                <f:convertNumber pattern="#0.00" />
+                            </h:outputText>
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:inputNumber value="#{lst_rpt.total}" decimalPlaces="2">
+                            </p:inputNumber>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="Orden registro" sortBy="#{lst_rpt.ordenregistro}" style="white-space: nowrap; width: 20px;padding: 3px;text-align: center">
+                    <h:outputText value="#{lst_rpt.ordenregistro}"/>
+                </p:column>
+                <p:column headerText="tiene detracción" filterBy="#{lst_rpt.esdetraccion}" filterMatchMode="contains" sortBy="#{lst_rpt.esdetraccion}"  style="white-space: nowrap; width: 60px;padding: 3px;text-align: left">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{lst_rpt.esdetraccion}" /></f:facet>
+                       <f:facet name="input">
+                           <h:selectOneMenu value="#{lst_rpt.esdetraccion}" style="width:100%">
+                               <f:selectItem itemLabel="Si" itemValue="1"/>
+                               <f:selectItem itemLabel="No" itemValue="0"/>
+                           </h:selectOneMenu>
+                       </f:facet>
+                   </p:cellEditor>
+               </p:column>
+                <p:column headerText="tipo de detracción" filterBy=" #{lst_rpt.tipodetraccion} #{lst_rpt.tipodetraccion_descripcion}" filterMatchMode="contains" sortBy="#{lst_rpt.tipodetraccion} #{lst_rpt.tipodetraccion_descripcion}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: left">
+                    <p:cellEditor >
+                        <f:facet name="output">
+                            <h:outputText value="(#{lst_rpt.tipodetraccion})#{lst_rpt.tipodetraccion_descripcion}"/>
+                        </f:facet>
+                        <f:facet name="input" >
+                            <p:autoComplete size="80" id="tipodetraccion" value="#{lst_rpt.selectTipodetraccion}" maxResults="10" completeMethod="#{rpt_tareoweb_facturacion_formatoAction.completeTipodetraccion}"
+                                            var="tipodetraccion" itemLabel="#{tipodetraccion.idtipodetra}" itemValue="#{tipodetraccion}" converter="tipodetraccionConverter" forceSelection="true">
+                                <p:column style="width:10%">
+                                    <h:outputText value="#{tipodetraccion.idtipodetra}" />
+                                 </p:column>
+                                 <p:column style="width:90%">
+                                     <h:outputText value="#{tipodetraccion.nombre_corto}" />
+                                 </p:column>
+                            </p:autoComplete>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="tasa de detracción" filterBy="#{lst_rpt.tasadetraccion}" filterMatchMode="contains" sortBy="#{lst_rpt.tasadetraccion}"  style="white-space: nowrap; width: 60px;padding: 3px;text-align: left">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{lst_rpt.tasadetraccion}">
+                                <f:convertNumber pattern="#0.00" />
+                            </h:outputText>
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:inputNumber value="#{lst_rpt.tasadetraccion}" decimalPlaces="2">
+                            </p:inputNumber>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+             </p:dataTable> 
+            <p:contextMenu for="tbl">
+                <p:menuitem value="Replicar" icon="ui-icon-copy" actionListener="#{rpt_tareoweb_facturacion_formatoAction.replicarItem()}"/>
+                <p:menuitem value="Ver Cálculo" update="detalleCalculoDialog" icon="ui-icon-search" oncomplete="PF('detalleCalculoDialog').show()"/>
+                <p:menuitem value="Ver Tareo" update="detalleTareoDialog" icon="ui-icon-ver" actionListener="#{rpt_tareoweb_facturacion_formatoAction.visualizar_tareo()}"/>
+            </p:contextMenu>
+            <p:dialog header="#{rpt_tareoweb_facturacion_formatoAction.cabercerDet_tareoweb.ciddocumento}-#{rpt_tareoweb_facturacion_formatoAction.cabercerDet_tareoweb.cserie}-#{rpt_tareoweb_facturacion_formatoAction.cabercerDet_tareoweb.cnumero}" id="detalleTareoDialog" widgetVar="detalleTareoDialog" modal="true"  maximizable="true" showEffect="fade" hideEffect="fade" closable="true" resizable="false">
+                <p:outputPanel style="text-align:center;">
+                    <p:panelGrid  columns="8" columnClasses="label,value">
+                        <h:outputText value="Estado:" />
+                        <h:outputText value="(#{rpt_tareoweb_facturacion_formatoAction.cabercerDet_tareoweb.cestado})" /> 
+                        <h:outputText value="Fecha:" />
+                        <h:outputText value="#{rpt_tareoweb_facturacion_formatoAction.fechaDMY(rpt_tareoweb_facturacion_formatoAction.cabercerDet_tareoweb.cfecha)}" />
+                        <h:outputText value="Responsable:" />
+                        <h:outputText value="(#{rpt_tareoweb_facturacion_formatoAction.cabercerDet_tareoweb.cidresponsable}) #{rpt_tareoweb_facturacion_formatoAction.cabercerDet_tareoweb.cresponsable}" />
+                        <h:outputText value="Creado:" />
+                        <h:outputText value="(#{rpt_tareoweb_facturacion_formatoAction.cabercerDet_tareoweb.cidusuario}) #{rpt_tareoweb_facturacion_formatoAction.cabercerDet_tareoweb.cusuario}" />
+                    </p:panelGrid>
+                </p:outputPanel>
+                <p:dataTable id="listDet_tareo_verificacion" var="listDet_tareo_verificacion" 
+                             value="#{rpt_tareoweb_facturacion_formatoAction.listDet_tareo_verificacion}" 
+                    widgetVar="listDet_tareo_verificacion" scrollable="true" scrollWidth="500px;"
+                    style="margin-bottom:20px;font-size: 12px;width:100%;" 
+                    resizableColumns="true" selectionMode="single" 
+                    frozenColumns="10" 
+                    rowKey="#{listDet_tareo_verificacion.item}" editable="#{rpt_tareoweb_facturacion_formatoAction.edicion}">
+                    <f:facet name="header">
+                            ..:: Detalle Tareo ::..                 (Total:#{rpt_tareoweb_facturacion_formatoAction.listDet_tareo_verificacion.size()})
+                        </f:facet>
+                        <p:column sortBy="#{listDet_tareo_verificacion.item}" exportable="false" style="white-space: nowrap; width: 10px;padding: 3px;text-align: center">
+                            <f:facet name="header">
+                                <h:outputText value="N°"/>
+                            </f:facet>
+                            <h:outputText value="#{listDet_tareo_verificacion.item}"/>
+                         </p:column>
+                        <p:column filterBy="#{listDet_tareo_verificacion.iddocumento}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.iddocumento}" style="white-space: nowrap; width: 20px;padding: 3px;text-align: center">
+                           <f:facet name="header">
+                               <h:outputText value="Doc."/>
+                           </f:facet>
+                           <h:outputText value="#{listDet_tareo_verificacion.iddocumento}"/>
+                        </p:column>
+                        <p:column filterBy="#{listDet_tareo_verificacion.serie}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.serie}" style="white-space: nowrap; width: 18px;padding: 3px;text-align: center">
+                           <f:facet name="header">
+                               <h:outputText value="Serie"/>
+                           </f:facet>
+                           <h:outputText value="#{listDet_tareo_verificacion.serie}"/>
+                        </p:column>
+                        <p:column filterBy="#{listDet_tareo_verificacion.numero}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.numero}" style="white-space: nowrap; width: 25px;padding: 3px;text-align: center">
+                           <f:facet name="header">
+                               <h:outputText value="Número"/>
+                           </f:facet>
+                           <h:outputText value="#{listDet_tareo_verificacion.numero}"/>
+                        </p:column>
+                        <p:column style="white-space: nowrap; width: 30px;padding: 3px;" filterBy="#{rpt_tareoweb_facturacion_formatoAction.fechaDMY(listDet_tareo_verificacion.fecha_osc)}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.fecha_osc}">
+                            <f:facet name="header">
+                                <h:outputText value="Fecha" />
+                            </f:facet>
+                            <h:outputText value="#{listDet_tareo_verificacion.fecha_osc}">
+                                <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column filterBy="#{listDet_tareo_verificacion.ruc} #{listDet_tareo_verificacion.razon}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.ruc} #{listDet_tareo_verificacion.razon}" style="white-space: nowrap; width: 120px;padding: 3px;text-align: left">
+                           <f:facet name="header">
+                               <h:outputText value="Cliente"/>
+                           </f:facet>
+                           <h:outputText value="#{listDet_tareo_verificacion.ruc} - #{listDet_tareo_verificacion.razon}"/>
+                        </p:column>
+                        <p:column filterBy="#{listDet_tareo_verificacion.codoperaciones}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.codoperaciones}" style="white-space: nowrap; width: 20px;padding: 3px;text-align: left">
+                           <f:facet name="header">
+                               <h:outputText value="Cod.Ope."/>
+                           </f:facet>
+                           <h:outputText value="#{listDet_tareo_verificacion.codoperaciones}"/>
+                        </p:column>
+                        <p:column filterBy="#{listDet_tareo_verificacion.cargo}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.cargo}" style="white-space: nowrap; width: 50px;padding: 3px;text-align: left">
+                           <f:facet name="header">
+                               <h:outputText value="Cargo"/>
+                           </f:facet>
+                           <h:outputText value="#{listDet_tareo_verificacion.cargo}"/>
+                        </p:column>
+                        <p:column filterBy="#{listDet_tareo_verificacion.rutaservicios}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.rutaservicios}" style="white-space: nowrap; width: 50px;padding: 3px;text-align: left">
+                           <f:facet name="header">
+                               <h:outputText value="Ruta"/>
+                           </f:facet>
+                           <h:outputText value="#{listDet_tareo_verificacion.rutaservicios}"/>
+                        </p:column>
+                        <p:column headerText="Personal" filterBy="#{listDet_tareo_verificacion.dni} - #{listDet_tareo_verificacion.personal}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.personal}" style="white-space: nowrap; width: 150px;padding: 3px;text-align: left">
+                            <h:outputText value="#{listDet_tareo_verificacion.dni} - #{listDet_tareo_verificacion.personal}"/>    
+                        </p:column>
+                        <p:column headerText="Placa Cliente" filterBy="#{listDet_tareo_verificacion.placa_cliente}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.placa_cliente}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: left">
+                            <h:outputText value="#{listDet_tareo_verificacion.placa_cliente}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="Placa PSS" filterBy="#{listDet_tareo_verificacion.idvehiculo}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.idvehiculo}" style="white-space: nowrap; width: 150px;padding: 3px;text-align: left">
+                            <h:outputText value="#{listDet_tareo_verificacion.idvehiculo} - #{listDet_tareo_verificacion.vehiculo}"/>
+                        </p:column>
+                        <p:column headerText="Conductor Cliente" filterBy="#{listDet_tareo_verificacion.conductor_cliente}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.conductor_cliente}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: left">
+                            <h:outputText value="#{listDet_tareo_verificacion.conductor_cliente}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="Brevete Cliente" filterBy="#{listDet_tareo_verificacion.brevete_cliente}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.brevete_cliente}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: left">
+                            <h:outputText value="#{listDet_tareo_verificacion.brevete_cliente}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="Checklist" filterBy="#{listDet_tareo_verificacion.checklist}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.checklist}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: left">
+                            <h:outputText value="#{listDet_tareo_verificacion.checklist}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="Nro Contenedor" filterBy="#{listDet_tareo_verificacion.nrocontenedor}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.nrocontenedor}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: left">
+                            <h:outputText value="#{listDet_tareo_verificacion.nrocontenedor}"></h:outputText>
+                        </p:column>
+                        <p:column id="fecharegistro" headerText="Fecha Registro" filterBy="#{rpt_tareoweb_facturacion_formatoAction.fechaDMY(listDet_tareo_verificacion.fecharegistro)}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.fecharegistro}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: center">
+                            <h:outputText value="#{listDet_tareo_verificacion.fecharegistro}">
+                                <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                             </h:outputText>
+                        </p:column>
+                        <p:column id="hora_req" headerText="Hora Req." filterBy="#{listDet_tareo_verificacion.fhora_req}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.fhora_req}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: center">
+                            <h:outputText value="#{listDet_tareo_verificacion.fhora_req}">
+                                <f:convertDateTime type="both" pattern="HH:mm" timeZone="America/Lima" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Hora Llegada" filterBy="#{listDet_tareo_verificacion.shora_llegada}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.shora_llegada}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: center">
+                            <h:outputText value="#{listDet_tareo_verificacion.shora_llegada}">
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Hora Inicio" filterBy="#{listDet_tareo_verificacion.shora_inicio}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.shora_inicio}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: center">
+                            <h:outputText value="#{listDet_tareo_verificacion.shora_inicio}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="Hora Fin" filterBy="#{listDet_tareo_verificacion.shora_fin}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.shora_fin}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: center">
+                            <h:outputText value="#{listDet_tareo_verificacion.shora_fin}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="Hora Liberación" filterBy="#{listDet_tareo_verificacion.shora_liberacion}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.shora_liberacion}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: center">
+                            <h:outputText value="#{listDet_tareo_verificacion.shora_liberacion}"></h:outputText>
+                        </p:column>
+                        <p:column id="fechafinregistro" headerText="Fecha Fin" filterBy="#{rpt_tareoweb_facturacion_formatoAction.fechaDMY(listDet_tareo_verificacion.fechafinregistro)}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.fechafinregistro}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: center">
+                            <h:outputText value="#{listDet_tareo_verificacion.fechafinregistro}">
+                                <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                             </h:outputText>
+                        </p:column>
+                        <p:column style="white-space: nowrap; width: 130px;padding: 3px;text-align: center;" headerText="Concepto" filterBy="#{listDet_tareo_verificacion.conceptotareo}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.conceptotareo}">
+                            <h:outputText value="#{listDet_tareo_verificacion.conceptotareo}" />
+                        </p:column>
+                        <p:column style="white-space: nowrap; width: 130px;padding: 3px;text-align: center;background-color:##{listDet_tareo_verificacion.color}" headerText="T.Asistencia" filterBy="#{listDet_tareo_verificacion.asistencia}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.asistencia}">
+                            <h:outputText value="#{listDet_tareo_verificacion.asistencia}" />
+                        </p:column>
+                        <p:column filterBy="#{listDet_tareo_verificacion.glosa}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.glosa}" style="white-space: nowrap; width: 160px;padding: 3px;text-align: center">
+                           <f:facet name="header">
+                               <h:outputText value="Observación"/>
+                           </f:facet>
+                           <h:outputText value="#{listDet_tareo_verificacion.glosa}"/>
+                        </p:column>
+                        <p:column headerText="Nro Precinto" filterBy="#{listDet_tareo_verificacion.nroprecinto}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.nroprecinto}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: left">
+                            <h:outputText value="#{listDet_tareo_verificacion.nroprecinto}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="Nro Servicio" filterBy="#{listDet_tareo_verificacion.nro_oservicio}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.nro_oservicio}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: left">
+                            <h:outputText value="#{listDet_tareo_verificacion.nro_oservicio}"></h:outputText>
+                        </p:column>
+                        <p:column>
+                           <f:facet name="header">
+                               <h:outputText value="Glosa"/>
+                           </f:facet>
+                            <h:outputText value="#{listDet_tareo_verificacion.glosa}"/>
+                        </p:column>
+                   </p:dataTable>
+            </p:dialog>
+            <p:dialog header="#{rpt_tareoweb_facturacion_formatoAction.selectReporte_facturacion.idclieprov} - #{rpt_tareoweb_facturacion_formatoAction.selectReporte_facturacion.razon_social}" id="detalleCalculoDialog" widgetVar="detalleCalculoDialog" modal="true"  maximizable="true" showEffect="fade" hideEffect="fade" closable="true" resizable="false">
+                <p:outputPanel>
+                    <p:panelGrid  columns="2" columnClasses="label,value">
+                        <h:outputText style="text-align: left;font-weight: bold" value="HORA INICIO SERVICIO (HI):" />
+                        <h:outputText value="#{rpt_tareoweb_facturacion_formatoAction.selectReporte_facturacion.dhi}">
+                            <f:convertNumber pattern="#0.00" />
+                        </h:outputText> 
+                        <h:outputText style="text-align: left;font-weight: bold" value="HORA FIN SERVICIO (HF):" />
+                        <h:outputText value="#{rpt_tareoweb_facturacion_formatoAction.selectReporte_facturacion.dhf}">
+                            <f:convertNumber pattern="#0.00" />
+                        </h:outputText> 
+                        <h:outputText style="text-align: left;font-weight: bold" value="CÁLCULO DE HORAS  DE SERVICIO (HS):" />
+                        <h:outputText value="#{rpt_tareoweb_facturacion_formatoAction.selectReporte_facturacion.dhs}">
+                            <f:convertNumber pattern="#0.00" />
+                        </h:outputText> 
+                        <h:outputText style="text-align: left;font-weight: bold" value="HORA BASE/FUNCIÓN (HBASE):" />
+                        <h:outputText value="#{rpt_tareoweb_facturacion_formatoAction.selectReporte_facturacion.dhbase}">
+                            <f:convertNumber pattern="#0.00" />
+                        </h:outputText> 
+                        <h:outputText style="text-align: left;font-weight: bold" value="HORAS ADICIONALES TRABAJADAS, [HS - HBASE](HADICIONAL):" />
+                        <h:outputText value="#{rpt_tareoweb_facturacion_formatoAction.selectReporte_facturacion.dhadicional}">
+                            <f:convertNumber pattern="#0.00" />
+                        </h:outputText> 
+                        <h:outputText style="text-align: left;font-weight: bold" value="COSTO POR RANGO DE HORA [00:00 - 06:00]/[06:01 - 06:00] (COSTO_RH):" />
+                        <h:outputText value="#{rpt_tareoweb_facturacion_formatoAction.selectReporte_facturacion.dcosto_rh}">
+                            <f:convertNumber pattern="#0.00" />
+                        </h:outputText> 
+                        <h:outputText style="text-align: left;font-weight: bold" value="COSTO POR HORAS ADICIONALES (HCOSTO_ADICIONAL):" />
+                        <h:outputText value="#{rpt_tareoweb_facturacion_formatoAction.selectReporte_facturacion.dhcosto_adicional}">
+                            <f:convertNumber pattern="#0.00" />
+                        </h:outputText>
+                        <h:outputText style="text-align: left;font-weight: bold" value="COSTO POR BONO , RUTAS CON DESTINO(Lurin, Punta Hermosa, 
+                                      Villa El Salvador, Santa Clara, Huachipa, Ate)(COSTO_BONO):" />
+                        <h:outputText value="#{rpt_tareoweb_facturacion_formatoAction.selectReporte_facturacion.dcosto_bono}">
+                            <f:convertNumber pattern="#0.00" />
+                        </h:outputText>
+                        <h:outputText style="text-align: left;font-weight: bold" value="Fecha - Orden Servicio:" />
+                        <h:outputText value="#{rpt_tareoweb_facturacion_formatoAction.fechaDMY(rpt_tareoweb_facturacion_formatoAction.selectReporte_facturacion.dfecha_osc)}" />
+                    </p:panelGrid>
+                </p:outputPanel>
+            </p:dialog>
+                
+            <br/>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{rpt_tareoweb_facturacion_formatoAction}" ventana="LST" />
+        </h:form>
+    </ui:define>    
+</ui:composition>
