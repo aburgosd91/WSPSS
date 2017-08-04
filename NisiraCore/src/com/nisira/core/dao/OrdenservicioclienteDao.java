@@ -9,8 +9,10 @@ import com.nisira.core.entity.Dpersonal_servicio;
 import com.nisira.core.entity.Personal_servicio;
 import com.nisira.core.entity.Reporte_facturacion;
 import com.nisira.core.entity.Ruta_servicios;
+import com.nisira.core.util.CoreUtil;
 import com.nisira.core.util.ReportConfig;
 import com.thoughtworks.xstream.XStream;
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
@@ -230,6 +232,8 @@ public class OrdenservicioclienteDao extends BaseDao<Ordenserviciocliente> {
                 ordenserviciocliente.setOperario(rs.getString("OPERARIO")!=null?rs.getString("OPERARIO").trim():"");
                 ordenserviciocliente.setOperario2(rs.getString("OPERARIO2")!=null?rs.getString("OPERARIO2").trim():"");
                 ordenserviciocliente.setContacto(rs.getString("CONTACTO")!=null?rs.getString("CONTACTO").trim():"");
+                ordenserviciocliente.setIdtareo(rs.getString("IDTAREO")!=null?rs.getString("IDTAREO").trim():"");
+                ordenserviciocliente.setSerietareo(rs.getString("SERIETAREO")!=null?rs.getString("SERIETAREO").trim():"");
                 lista.add(ordenserviciocliente); 
             }
             return lista;
@@ -297,22 +301,52 @@ public class OrdenservicioclienteDao extends BaseDao<Ordenserviciocliente> {
                 reporte_facturacion.setDfecharegistro(rs.getDate("DFECHAREGISTRO"));
                 reporte_facturacion.setDfechafinregistro(rs.getDate("DFECHAFINREGISTRO"));
                 /*HORAS*/
-                reporte_facturacion.setDhi(rs.getFloat("DHI"));
-                reporte_facturacion.setDhf(rs.getFloat("DHF"));
-                reporte_facturacion.setDhs(rs.getFloat("DHS"));
-                reporte_facturacion.setDhbase(rs.getFloat("DHBASE"));
-                reporte_facturacion.setDhadicional(rs.getFloat("DHADICIONAL"));
-                /*HORAS -> STRING*/
-                
+                if(rs.getObject("DHI")!=null){
+                    reporte_facturacion.setDhi(((BigDecimal)rs.getObject("DHI")).floatValue());
+                    reporte_facturacion.setDhi_s(CoreUtil.convertTimeFloatString(reporte_facturacion.getDhi()));
+                }else{
+                    reporte_facturacion.setDhi(null);
+                    reporte_facturacion.setDhi_s("");
+                }
+                if(rs.getObject("DHF")!=null){
+                    reporte_facturacion.setDhf(((BigDecimal)rs.getObject("DHF")).floatValue());
+                    reporte_facturacion.setDhf_s(CoreUtil.convertTimeFloatString(reporte_facturacion.getDhf()));
+                }else{
+                    reporte_facturacion.setDhf(null);
+                    reporte_facturacion.setDhf_s("");
+                }
+                if(rs.getObject("DHS")!=null){
+                    reporte_facturacion.setDhs(rs.getFloat("DHS"));
+                    reporte_facturacion.setDhs_s(CoreUtil.convertTimeFloatString(reporte_facturacion.getDhs()));
+                }else{
+                    reporte_facturacion.setDhs(null);
+                    reporte_facturacion.setDhs_s("");
+                }
+                if(rs.getObject("DHBASE")!=null){
+                    reporte_facturacion.setDhbase(rs.getFloat("DHBASE"));
+                    reporte_facturacion.setDhbase_s(CoreUtil.convertTimeFloatString(reporte_facturacion.getDhbase()));
+                }else{
+                    reporte_facturacion.setDhbase(null);
+                    reporte_facturacion.setDhbase_s("");
+                }
+                if(rs.getObject("DHADICIONAL")!=null){
+                    reporte_facturacion.setDhadicional(rs.getFloat("DHADICIONAL"));
+                    reporte_facturacion.setDhadicional_s(CoreUtil.convertTimeFloatString(reporte_facturacion.getDhadicional()));
+                }else{
+                    reporte_facturacion.setDhadicional(null);
+                    reporte_facturacion.setDhadicional_s("");
+                }
                 reporte_facturacion.setDcosto_rh(rs.getFloat("DCOSTO_RH"));
                 reporte_facturacion.setDhcosto_adicional(rs.getFloat("DHCOSTO_ADICIONAL"));
                 reporte_facturacion.setDcosto_bono(rs.getFloat("DCOSTO_BONO"));
                 reporte_facturacion.setDidcargo(rs.getString("DIDCARGO")!=null?rs.getString("DIDCARGO").trim():"");
                 reporte_facturacion.setDcodigo_ec(rs.getString("DCODIGO_EC")!=null?rs.getString("DCODIGO_EC").trim():"");
                 reporte_facturacion.setDitemrango_ec(rs.getString("DITEMRANGO_EC")!=null?rs.getString("DITEMRANGO_EC").trim():"");
+                reporte_facturacion.setDcodoperaciones_ec(rs.getString("DCODOPERACIONES_EC")!=null?rs.getString("DCODOPERACIONES_EC").trim():"");
                 reporte_facturacion.setDnhoras_ec(rs.getFloat("DNHORAS_EC"));
                 reporte_facturacion.setDidruta_ec(rs.getString("DIDRUTA_EC")!=null?rs.getString("DIDRUTA_EC").trim():"");
                 reporte_facturacion.setDidruta(rs.getString("DIDRUTA")!=null?rs.getString("DIDRUTA").trim():"");
+                reporte_facturacion.setCargo(rs.getString("DCARGO")!=null?rs.getString("DCARGO").trim():"");
                 lista.add(reporte_facturacion); 
             }
             return lista;

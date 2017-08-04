@@ -79,6 +79,8 @@ public class Ordenserviciocliente implements Serializable{
         private String idcotizacionv;
         private String razonsocial;
         private String estado;
+        private String idtareo;
+        private String serietareo;
 	/* Sets & Gets */
 	public void setIdempresa(String idempresa) {
 		this.idempresa = idempresa;
@@ -363,5 +365,33 @@ public class Ordenserviciocliente implements Serializable{
      */
     public void setContacto(String contacto) {
         this.contacto = contacto;
+    }
+
+    /**
+     * @return the idtareo
+     */
+    public String getIdtareo() {
+        return idtareo;
+    }
+
+    /**
+     * @param idtareo the idtareo to set
+     */
+    public void setIdtareo(String idtareo) {
+        this.idtareo = idtareo;
+    }
+
+    /**
+     * @return the serietareo
+     */
+    public String getSerietareo() {
+        return serietareo;
+    }
+
+    /**
+     * @param serietareo the serietareo to set
+     */
+    public void setSerietareo(String serietareo) {
+        this.serietareo = serietareo;
     }
 }

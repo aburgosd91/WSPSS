@@ -41,6 +41,9 @@
                             <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
                         </h:outputText>
                     </p:column>
+                    <p:column headerText="Tareo" style="width:30%;" filterBy="#{listOrdenServicioCliente.serietareo}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.serietareo}">
+                        <h:outputText value="#{listOrdenServicioCliente.serietareo}" />
+                    </p:column>
                     <p:column headerText="Contenedor" style="width:30%;" filterBy="#{listOrdenServicioCliente.nrocontenedor}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.nrocontenedor}">
                         <h:outputText value="#{listOrdenServicioCliente.nrocontenedor}" />
                     </p:column>

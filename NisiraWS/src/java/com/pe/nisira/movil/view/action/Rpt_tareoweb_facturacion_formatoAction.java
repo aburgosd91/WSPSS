@@ -70,6 +70,7 @@ import com.pe.nisira.movil.view.util.Constantes;
 import com.pe.nisira.movil.view.util.DataTableColumn;
 import com.pe.nisira.movil.view.util.WebUtil;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -124,6 +125,7 @@ public class Rpt_tareoweb_facturacion_formatoAction extends AbstactListAction<Or
     private List<Documentos> listDocumentos;
     private List<Det_tareoweb> listDet_tareo_verificacion;
     private List<Reporte_facturacion> listReporte_facturacionTotal;
+    private List<Reporte_facturacion> listReporte_facturacionPersonal;
     /*************************************DAO***************************************/
     private OrdenservicioclienteDao ordenservicioclienteDao;
     private MonedasDao monedaDao;
@@ -143,6 +145,7 @@ public class Rpt_tareoweb_facturacion_formatoAction extends AbstactListAction<Or
     private Det_tareoweb cabercerDet_tareoweb;
     /************************************* CONTROLES *****************************************/
     private String type_formato_rpt;
+    private Float scosto;
     public Rpt_tareoweb_facturacion_formatoAction() {
         try {
             /*********************************ENTITY*******************************************/
@@ -835,6 +838,30 @@ public class Rpt_tareoweb_facturacion_formatoAction extends AbstactListAction<Or
         }
         return t;
     }
+    public void visualizar_calculo() {
+        try {
+            if(selectReporte_facturacion==null){
+                this.mensaje="Seleccionar registro";
+                WebUtil.MensajeError(mensaje);
+                RequestContext.getCurrentInstance().update("datos:growl");
+            }else{
+                listReporte_facturacionPersonal = new ArrayList<>();
+                this.scosto = 0.0f;
+                for(Reporte_facturacion obj:listReporte_facturacionTotal){
+                    if(obj.getIdclieprov().trim().equals(selectReporte_facturacion.getIdclieprov())){
+                        this.scosto+=obj.getTcosto();
+                        listReporte_facturacionPersonal.add(obj);
+                    }
+                }
+                RequestContext.getCurrentInstance().update("datos:detalleTareoDialog");
+                RequestContext.getCurrentInstance().update("datos:detalleTareoDialog:tsubtotal");
+                RequestContext.getCurrentInstance().update("datos:detalleTareoDialog:listDet_tareo_verificacion"); 
+                RequestContext.getCurrentInstance().execute("PF('detalleTareoDialog').show()");
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     public void visualizar_tareo() {
         try {
             if(selectReporte_facturacion==null){
@@ -1152,6 +1179,34 @@ public class Rpt_tareoweb_facturacion_formatoAction extends AbstactListAction<Or
      */
     public void setListReporte_facturacionTotal(List<Reporte_facturacion> listReporte_facturacionTotal) {
         this.listReporte_facturacionTotal = listReporte_facturacionTotal;
+    }
+
+    /**
+     * @return the listReporte_facturacionPersonal
+     */
+    public List<Reporte_facturacion> getListReporte_facturacionPersonal() {
+        return listReporte_facturacionPersonal;
+    }
+
+    /**
+     * @param listReporte_facturacionPersonal the listReporte_facturacionPersonal to set
+     */
+    public void setListReporte_facturacionPersonal(List<Reporte_facturacion> listReporte_facturacionPersonal) {
+        this.listReporte_facturacionPersonal = listReporte_facturacionPersonal;
+    }
+
+    /**
+     * @return the scosto
+     */
+    public Float getScosto() {
+        return scosto;
+    }
+
+    /**
+     * @param scosto the scosto to set
+     */
+    public void setScosto(Float scosto) {
+        this.scosto = scosto;
     }
 
 }

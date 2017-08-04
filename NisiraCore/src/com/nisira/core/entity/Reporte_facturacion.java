@@ -11,166 +11,169 @@ import java.util.List;
 @XStreamAlias("REPORTE_FACTURACION")
 @Tabla(nombre = "REPORTE_FACTURACION")
 public class Reporte_facturacion  implements Serializable {
-        @XStreamAlias("IDCLIEPROV")
-        private String idclieprov;
-        @XStreamAlias("RAZON_SOCIAL")
-	@ClavePrimaria
-	@Columna
-	private String razon_social;
-        @XStreamAlias("IDDOCUMENTO")
-	@ClavePrimaria
-	@Columna
-	private String iddocumento;
-        @XStreamAlias("SERIE")
-	@Columna
-	private String serie;
-        @XStreamAlias("NUMERO")
-	@Columna
-	private String numero;
-        @XStreamAlias("FECHA")
-	@Columna
-	private Date fecha;
-        @XStreamAlias("FECHA_OPERACION")
-	@Columna
-	private Date fecha_operacion;
-        @XStreamAlias("VENCIMIENTO")
-	@Columna
-	private Date vencimiento;
-        @XStreamAlias("IDMONEDA")
-	@Columna
-	private String idmoneda;
-        @XStreamAlias("IDCUENTA")
-	@Columna
-	private String idcuenta;
-        @XStreamAlias("IDCCOSTO")
-	@Columna
-	private String idccosto;
-        @XStreamAlias("CONCEPTO")
-	@Columna
-	private String concepto;
-        @XStreamAlias("IDCLIENTE")
-	@Columna
-	private String idcliente;
-        @XStreamAlias("IDREGIMEN")
-	@Columna
-	private String idregimen;
-        @XStreamAlias("AFECTO")
-	@Columna
-	private Float afecto;
-        @XStreamAlias("INAFECTO")
-	@Columna
-	private Float inafecto;
-        @XStreamAlias("IDIMPUESTO")
-	@Columna
-	private String idimpuesto;
-        @XStreamAlias("IMPUESTO")
-	@Columna
-	private Float impuesto;
-        @XStreamAlias("TOTAL")
-	@Columna
-	private Float total;
-        @XStreamAlias("ORDENREGISTRO")
-	@Columna
-	private Integer ordenregistro;
-        @XStreamAlias("ESDETRACCION")
-	@Columna
-	private Float esdetraccion;
-        @XStreamAlias("TIPODETRACCION")
-	@Columna
-	private String tipodetraccion;
-        @XStreamAlias("TASADETRACCION")
-	@Columna
-	private Float tasadetraccion;
-        @XStreamAlias("TCOSTO")
-	@Columna
-	private Float tcosto;
-        
-        @XStreamAlias("DIDORDENSERVICIO")
-	@Columna
-	private String didordenservicio;
-        @XStreamAlias("DCLIENTE")
-	@Columna
-	private String dcliente;
-        @XStreamAlias("DIDDOCUMENTO")
-	@Columna
-	private String diddocumento;
-        @XStreamAlias("DSERIE")
-	@Columna
-	private String dserie;
-        @XStreamAlias("DNUMERO")
-	@Columna
-	private String dnumero;
-        @XStreamAlias("DAMBITO_SERVICIO")
-	@Columna
-	private String dambito_servicio;
-        @XStreamAlias("DFECHA_OSC")
-	@Columna
-	private Date dfecha_osc;
-        @XStreamAlias("DFECHAREGISTRO")
-	@Columna
-	private Date dfecharegistro;
-        @XStreamAlias("DFECHAFINREGISTRO")
-	@Columna
-	private Date dfechafinregistro;
-        @XStreamAlias("DHI")
-	@Columna
-	private Float dhi;
-        @XStreamAlias("DHF")
-	@Columna
-	private Float dhf;
-        @XStreamAlias("DHS")
-	@Columna
-	private Float dhs;
-        @XStreamAlias("DHBASE")
-	@Columna
-	private Float dhbase;
-        @XStreamAlias("DHADICIONAL")
-	@Columna
-	private Float dhadicional;
-        @XStreamAlias("DCOSTO_RH")
-	@Columna
-	private Float dcosto_rh;
-        @XStreamAlias("DHCOSTO_ADICIONAL")
-	@Columna
-	private Float dhcosto_adicional;
-        @XStreamAlias("DCOSTO_BONO")
-	@Columna
-	private Float dcosto_bono;
-        @XStreamAlias("DIDCARGO")
-	@Columna
-	private String didcargo;
-        @XStreamAlias("DCODIGO_EC")
-	@Columna
-	private String dcodigo_ec;
-        @XStreamAlias("DITEMRANGO_EC")
-	@Columna
-	private String ditemrango_ec;
-        @XStreamAlias("DCODOPERACIONES_EC")
-	@Columna
-	private String dcodoperaciones_ec;
-        @XStreamAlias("DNHORAS_EC")
-	@Columna
-	private Float dnhoras_ec;
-        @XStreamAlias("DIDRUTA_EC")
-	@Columna
-	private String didruta_ec;
-        @XStreamAlias("DIDRUTA")
-	@Columna
-	private String didruta;
-        
-        private Integer item;
-        private String cuenta;
-        private String tipodetraccion_descripcion;
-        private Planctas selectCuenta;
-        private Consumidor selectConsumidor;
-        private Tipodetraccion selectTipodetraccion;
-        private Documentos selectDocumentos;
-        private List<Numemisor> lstNumemisor;
-        /*DATOS ADICIONALES*/
-        private String dhi_s;
-        private String dhf_s;
-        private String dhbase_s;
-        private String dhadicional_s;
+    @XStreamAlias("IDCLIEPROV")
+    private String idclieprov;
+    @XStreamAlias("RAZON_SOCIAL")
+    @ClavePrimaria
+    @Columna
+    private String razon_social;
+    @XStreamAlias("IDDOCUMENTO")
+    @ClavePrimaria
+    @Columna
+    private String iddocumento;
+    @XStreamAlias("SERIE")
+    @Columna
+    private String serie;
+    @XStreamAlias("NUMERO")
+    @Columna
+    private String numero;
+    @XStreamAlias("FECHA")
+    @Columna
+    private Date fecha;
+    @XStreamAlias("FECHA_OPERACION")
+    @Columna
+    private Date fecha_operacion;
+    @XStreamAlias("VENCIMIENTO")
+    @Columna
+    private Date vencimiento;
+    @XStreamAlias("IDMONEDA")
+    @Columna
+    private String idmoneda;
+    @XStreamAlias("IDCUENTA")
+    @Columna
+    private String idcuenta;
+    @XStreamAlias("IDCCOSTO")
+    @Columna
+    private String idccosto;
+    @XStreamAlias("CONCEPTO")
+    @Columna
+    private String concepto;
+    @XStreamAlias("IDCLIENTE")
+    @Columna
+    private String idcliente;
+    @XStreamAlias("IDREGIMEN")
+    @Columna
+    private String idregimen;
+    @XStreamAlias("AFECTO")
+    @Columna
+    private Float afecto;
+    @XStreamAlias("INAFECTO")
+    @Columna
+    private Float inafecto;
+    @XStreamAlias("IDIMPUESTO")
+    @Columna
+    private String idimpuesto;
+    @XStreamAlias("IMPUESTO")
+    @Columna
+    private Float impuesto;
+    @XStreamAlias("TOTAL")
+    @Columna
+    private Float total;
+    @XStreamAlias("ORDENREGISTRO")
+    @Columna
+    private Integer ordenregistro;
+    @XStreamAlias("ESDETRACCION")
+    @Columna
+    private Float esdetraccion;
+    @XStreamAlias("TIPODETRACCION")
+    @Columna
+    private String tipodetraccion;
+    @XStreamAlias("TASADETRACCION")
+    @Columna
+    private Float tasadetraccion;
+    @XStreamAlias("TCOSTO")
+    @Columna
+    private Float tcosto;
+
+    @XStreamAlias("DIDORDENSERVICIO")
+    @Columna
+    private String didordenservicio;
+    @XStreamAlias("DCLIENTE")
+    @Columna
+    private String dcliente;
+    @XStreamAlias("DIDDOCUMENTO")
+    @Columna
+    private String diddocumento;
+    @XStreamAlias("DSERIE")
+    @Columna
+    private String dserie;
+    @XStreamAlias("DNUMERO")
+    @Columna
+    private String dnumero;
+    @XStreamAlias("DAMBITO_SERVICIO")
+    @Columna
+    private String dambito_servicio;
+    @XStreamAlias("DFECHA_OSC")
+    @Columna
+    private Date dfecha_osc;
+    @XStreamAlias("DFECHAREGISTRO")
+    @Columna
+    private Date dfecharegistro;
+    @XStreamAlias("DFECHAFINREGISTRO")
+    @Columna
+    private Date dfechafinregistro;
+    @XStreamAlias("DHI")
+    @Columna
+    private Float dhi;
+    @XStreamAlias("DHF")
+    @Columna
+    private Float dhf;
+    @XStreamAlias("DHS")
+    @Columna
+    private Float dhs;
+    @XStreamAlias("DHBASE")
+    @Columna
+    private Float dhbase;
+    @XStreamAlias("DHADICIONAL")
+    @Columna
+    private Float dhadicional;
+    @XStreamAlias("DCOSTO_RH")
+    @Columna
+    private Float dcosto_rh;
+    @XStreamAlias("DHCOSTO_ADICIONAL")
+    @Columna
+    private Float dhcosto_adicional;
+    @XStreamAlias("DCOSTO_BONO")
+    @Columna
+    private Float dcosto_bono;
+    @XStreamAlias("DIDCARGO")
+    @Columna
+    private String didcargo;
+    @XStreamAlias("DCODIGO_EC")
+    @Columna
+    private String dcodigo_ec;
+    @XStreamAlias("DITEMRANGO_EC")
+    @Columna
+    private String ditemrango_ec;
+    @XStreamAlias("DCODOPERACIONES_EC")
+    @Columna
+    private String dcodoperaciones_ec;
+    @XStreamAlias("DNHORAS_EC")
+    @Columna
+    private Float dnhoras_ec;
+    @XStreamAlias("DIDRUTA_EC")
+    @Columna
+    private String didruta_ec;
+    @XStreamAlias("DIDRUTA")
+    @Columna
+    private String didruta;
+
+    private Integer item;
+    private String cuenta;
+    private String tipodetraccion_descripcion;
+    private Planctas selectCuenta;
+    private Consumidor selectConsumidor;
+    private Tipodetraccion selectTipodetraccion;
+    private Documentos selectDocumentos;
+    private List<Numemisor> lstNumemisor;
+    /*DATOS ADICIONALES*/
+    private String dhi_s;
+    private String dhf_s;
+    private String dhs_s;
+    private String dhbase_s;
+    private String dhadicional_s;
+
+    private String cargo;
     /**
      * @return the idclieprov
      */
@@ -877,7 +880,10 @@ public class Reporte_facturacion  implements Serializable {
     public String getDcodoperaciones_ec() {
         return dcodoperaciones_ec;
     }
-
+    
+    public void setDcodoperaciones_ec(String dcodoperaciones_ec) {
+        this.dcodoperaciones_ec=dcodoperaciones_ec;
+    }
     /**
      * @return the dnhoras_ec
      */
@@ -1002,5 +1008,33 @@ public class Reporte_facturacion  implements Serializable {
      */
     public void setDhadicional_s(String dhadicional_s) {
         this.dhadicional_s = dhadicional_s;
+    }
+
+    /**
+     * @return the dhs_s
+     */
+    public String getDhs_s() {
+        return dhs_s;
+    }
+
+    /**
+     * @param dhs_s the dhs_s to set
+     */
+    public void setDhs_s(String dhs_s) {
+        this.dhs_s = dhs_s;
+    }
+
+    /**
+     * @return the cargo
+     */
+    public String getCargo() {
+        return cargo;
+    }
+
+    /**
+     * @param cargo the cargo to set
+     */
+    public void setCargo(String cargo) {
+        this.cargo = cargo;
     }
 }

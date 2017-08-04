@@ -290,162 +290,131 @@
              </p:dataTable> 
             <p:contextMenu for="tbl">
                 <p:menuitem value="Replicar" icon="ui-icon-copy" actionListener="#{rpt_tareoweb_facturacion_formatoAction.replicarItem()}"/>
-                <p:menuitem value="Ver Cálculo" update="detalleCalculoDialog" icon="ui-icon-search" oncomplete="PF('detalleCalculoDialog').show()"/>
-                <p:menuitem value="Ver Tareo" update="detalleTareoDialog" icon="ui-icon-ver" actionListener="#{rpt_tareoweb_facturacion_formatoAction.visualizar_tareo()}"/>
+                <p:menuitem value="Ver Detalle" update="detalleTareoDialog" icon="ui-icon-ver" actionListener="#{rpt_tareoweb_facturacion_formatoAction.visualizar_calculo()}"/>
+                <p:menuitem value="Ver Cálculo" update="detalleCalculoDialog" icon="ui-icon-search" oncomplete="PF('detalleCalculoDialog').show()" rendered="false"/>
             </p:contextMenu>
-            <p:dialog header="#{rpt_tareoweb_facturacion_formatoAction.cabercerDet_tareoweb.ciddocumento}-#{rpt_tareoweb_facturacion_formatoAction.cabercerDet_tareoweb.cserie}-#{rpt_tareoweb_facturacion_formatoAction.cabercerDet_tareoweb.cnumero}" id="detalleTareoDialog" widgetVar="detalleTareoDialog" modal="true"  maximizable="true" showEffect="fade" hideEffect="fade" closable="true" resizable="false">
-                <p:outputPanel style="text-align:center;">
-                    <p:panelGrid  columns="8" columnClasses="label,value">
-                        <h:outputText value="Estado:" />
-                        <h:outputText value="(#{rpt_tareoweb_facturacion_formatoAction.cabercerDet_tareoweb.cestado})" /> 
-                        <h:outputText value="Fecha:" />
-                        <h:outputText value="#{rpt_tareoweb_facturacion_formatoAction.fechaDMY(rpt_tareoweb_facturacion_formatoAction.cabercerDet_tareoweb.cfecha)}" />
-                        <h:outputText value="Responsable:" />
-                        <h:outputText value="(#{rpt_tareoweb_facturacion_formatoAction.cabercerDet_tareoweb.cidresponsable}) #{rpt_tareoweb_facturacion_formatoAction.cabercerDet_tareoweb.cresponsable}" />
-                        <h:outputText value="Creado:" />
-                        <h:outputText value="(#{rpt_tareoweb_facturacion_formatoAction.cabercerDet_tareoweb.cidusuario}) #{rpt_tareoweb_facturacion_formatoAction.cabercerDet_tareoweb.cusuario}" />
-                    </p:panelGrid>
-                </p:outputPanel>
-                <p:dataTable id="listDet_tareo_verificacion" var="listDet_tareo_verificacion" 
-                             value="#{rpt_tareoweb_facturacion_formatoAction.listDet_tareo_verificacion}" 
-                    widgetVar="listDet_tareo_verificacion" scrollable="true" scrollWidth="500px;"
-                    style="margin-bottom:20px;font-size: 12px;width:100%;" 
-                    resizableColumns="true" selectionMode="single" 
-                    frozenColumns="10" 
-                    rowKey="#{listDet_tareo_verificacion.item}" editable="#{rpt_tareoweb_facturacion_formatoAction.edicion}">
+            <p:dialog header="#{rpt_tareoweb_facturacion_formatoAction.selectReporte_facturacion.idclieprov} - #{rpt_tareoweb_facturacion_formatoAction.selectReporte_facturacion.razon_social}" id="detalleTareoDialog" widgetVar="detalleTareoDialog" modal="true"  maximizable="true" showEffect="fade" hideEffect="fade" closable="true" resizable="false">
+                <p:dataTable id="listReporte_facturacionPersonal" var="listReporte_facturacionPersonal" 
+                             value="#{rpt_tareoweb_facturacion_formatoAction.listReporte_facturacionPersonal}" 
+                    widgetVar="listReporte_facturacionPersonal" scrollable="true" scrollWidth="70%"
+                    style="margin-bottom:20px;font-size: 11px;width:100%;" 
+                    selectionMode="single" 
+                    frozenColumns="6" 
+                    rowKey="#{listReporte_facturacionPersonal.item}" editable="#{rpt_tareoweb_facturacion_formatoAction.edicion}"
+                    paginator="true" paginatorPosition="top" 
+                    paginatorTemplate="{Exporters}">
                     <f:facet name="header">
-                            ..:: Detalle Tareo ::..                 (Total:#{rpt_tareoweb_facturacion_formatoAction.listDet_tareo_verificacion.size()})
+                        ..:: Detalle Tareo ::..  (Total:#{rpt_tareoweb_facturacion_formatoAction.listReporte_facturacionPersonal.size()})
+                    </f:facet>
+                    <f:facet name="{Exporters}">
+                        <p:commandButton value="Excel" ajax="false" image="ui-icon-excel">
+                            <p:dataExporter type="xls" target="listReporte_facturacionPersonal" fileName="#{rpt_tareoweb_facturacion_formatoAction.selectReporte_facturacion.idclieprov} #{rpt_tareoweb_facturacion_formatoAction.selectReporte_facturacion.razon_social}" />
+                        </p:commandButton>
+                    </f:facet>
+                    <p:column filterBy="#{listReporte_facturacionPersonal.diddocumento}" filterMatchMode="contains" sortBy="#{listReporte_facturacionPersonal.diddocumento}" style="white-space: nowrap; width: 8px;padding: 3px;text-align: center">
+                       <f:facet name="header">
+                           <h:outputText value="Doc."/>
+                       </f:facet>
+                       <h:outputText value="#{listReporte_facturacionPersonal.diddocumento}"/>
+                    </p:column>
+                    <p:column filterBy="#{listReporte_facturacionPersonal.dserie}" filterMatchMode="contains" sortBy="#{listReporte_facturacionPersonal.dserie}" style="white-space: nowrap; width: 10px;padding: 3px;text-align: center">
+                       <f:facet name="header">
+                           <h:outputText value="Serie"/>
+                       </f:facet>
+                       <h:outputText value="#{listReporte_facturacionPersonal.dserie}"/>
+                    </p:column>
+                    <p:column filterBy="#{listReporte_facturacionPersonal.dnumero}" filterMatchMode="contains" sortBy="#{listReporte_facturacionPersonal.dnumero}" style="white-space: nowrap; width: 13px;padding: 3px;text-align: center">
+                       <f:facet name="header">
+                           <h:outputText value="Número"/>
+                       </f:facet>
+                       <h:outputText value="#{listReporte_facturacionPersonal.dnumero}"/>
+                    </p:column>
+                    <p:column style="white-space: nowrap; width: 10px;padding: 3px;" filterBy="#{rpt_tareoweb_facturacion_formatoAction.fechaDMY(listReporte_facturacionPersonal.dfecha_osc)}" filterMatchMode="contains" sortBy="#{listReporte_facturacionPersonal.dfecha_osc}">
+                        <f:facet name="header">
+                            <h:outputText value="Fecha" />
                         </f:facet>
-                        <p:column sortBy="#{listDet_tareo_verificacion.item}" exportable="false" style="white-space: nowrap; width: 10px;padding: 3px;text-align: center">
-                            <f:facet name="header">
-                                <h:outputText value="N°"/>
-                            </f:facet>
-                            <h:outputText value="#{listDet_tareo_verificacion.item}"/>
-                         </p:column>
-                        <p:column filterBy="#{listDet_tareo_verificacion.iddocumento}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.iddocumento}" style="white-space: nowrap; width: 20px;padding: 3px;text-align: center">
-                           <f:facet name="header">
-                               <h:outputText value="Doc."/>
-                           </f:facet>
-                           <h:outputText value="#{listDet_tareo_verificacion.iddocumento}"/>
-                        </p:column>
-                        <p:column filterBy="#{listDet_tareo_verificacion.serie}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.serie}" style="white-space: nowrap; width: 18px;padding: 3px;text-align: center">
-                           <f:facet name="header">
-                               <h:outputText value="Serie"/>
-                           </f:facet>
-                           <h:outputText value="#{listDet_tareo_verificacion.serie}"/>
-                        </p:column>
-                        <p:column filterBy="#{listDet_tareo_verificacion.numero}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.numero}" style="white-space: nowrap; width: 25px;padding: 3px;text-align: center">
-                           <f:facet name="header">
-                               <h:outputText value="Número"/>
-                           </f:facet>
-                           <h:outputText value="#{listDet_tareo_verificacion.numero}"/>
-                        </p:column>
-                        <p:column style="white-space: nowrap; width: 30px;padding: 3px;" filterBy="#{rpt_tareoweb_facturacion_formatoAction.fechaDMY(listDet_tareo_verificacion.fecha_osc)}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.fecha_osc}">
-                            <f:facet name="header">
-                                <h:outputText value="Fecha" />
-                            </f:facet>
-                            <h:outputText value="#{listDet_tareo_verificacion.fecha_osc}">
-                                <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
-                            </h:outputText>
-                        </p:column>
-                        <p:column filterBy="#{listDet_tareo_verificacion.ruc} #{listDet_tareo_verificacion.razon}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.ruc} #{listDet_tareo_verificacion.razon}" style="white-space: nowrap; width: 120px;padding: 3px;text-align: left">
-                           <f:facet name="header">
-                               <h:outputText value="Cliente"/>
-                           </f:facet>
-                           <h:outputText value="#{listDet_tareo_verificacion.ruc} - #{listDet_tareo_verificacion.razon}"/>
-                        </p:column>
-                        <p:column filterBy="#{listDet_tareo_verificacion.codoperaciones}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.codoperaciones}" style="white-space: nowrap; width: 20px;padding: 3px;text-align: left">
-                           <f:facet name="header">
-                               <h:outputText value="Cod.Ope."/>
-                           </f:facet>
-                           <h:outputText value="#{listDet_tareo_verificacion.codoperaciones}"/>
-                        </p:column>
-                        <p:column filterBy="#{listDet_tareo_verificacion.cargo}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.cargo}" style="white-space: nowrap; width: 50px;padding: 3px;text-align: left">
-                           <f:facet name="header">
-                               <h:outputText value="Cargo"/>
-                           </f:facet>
-                           <h:outputText value="#{listDet_tareo_verificacion.cargo}"/>
-                        </p:column>
-                        <p:column filterBy="#{listDet_tareo_verificacion.rutaservicios}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.rutaservicios}" style="white-space: nowrap; width: 50px;padding: 3px;text-align: left">
-                           <f:facet name="header">
-                               <h:outputText value="Ruta"/>
-                           </f:facet>
-                           <h:outputText value="#{listDet_tareo_verificacion.rutaservicios}"/>
-                        </p:column>
-                        <p:column headerText="Personal" filterBy="#{listDet_tareo_verificacion.dni} - #{listDet_tareo_verificacion.personal}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.personal}" style="white-space: nowrap; width: 150px;padding: 3px;text-align: left">
-                            <h:outputText value="#{listDet_tareo_verificacion.dni} - #{listDet_tareo_verificacion.personal}"/>    
-                        </p:column>
-                        <p:column headerText="Placa Cliente" filterBy="#{listDet_tareo_verificacion.placa_cliente}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.placa_cliente}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: left">
-                            <h:outputText value="#{listDet_tareo_verificacion.placa_cliente}"></h:outputText>
-                        </p:column>
-                        <p:column headerText="Placa PSS" filterBy="#{listDet_tareo_verificacion.idvehiculo}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.idvehiculo}" style="white-space: nowrap; width: 150px;padding: 3px;text-align: left">
-                            <h:outputText value="#{listDet_tareo_verificacion.idvehiculo} - #{listDet_tareo_verificacion.vehiculo}"/>
-                        </p:column>
-                        <p:column headerText="Conductor Cliente" filterBy="#{listDet_tareo_verificacion.conductor_cliente}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.conductor_cliente}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: left">
-                            <h:outputText value="#{listDet_tareo_verificacion.conductor_cliente}"></h:outputText>
-                        </p:column>
-                        <p:column headerText="Brevete Cliente" filterBy="#{listDet_tareo_verificacion.brevete_cliente}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.brevete_cliente}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: left">
-                            <h:outputText value="#{listDet_tareo_verificacion.brevete_cliente}"></h:outputText>
-                        </p:column>
-                        <p:column headerText="Checklist" filterBy="#{listDet_tareo_verificacion.checklist}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.checklist}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: left">
-                            <h:outputText value="#{listDet_tareo_verificacion.checklist}"></h:outputText>
-                        </p:column>
-                        <p:column headerText="Nro Contenedor" filterBy="#{listDet_tareo_verificacion.nrocontenedor}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.nrocontenedor}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: left">
-                            <h:outputText value="#{listDet_tareo_verificacion.nrocontenedor}"></h:outputText>
-                        </p:column>
-                        <p:column id="fecharegistro" headerText="Fecha Registro" filterBy="#{rpt_tareoweb_facturacion_formatoAction.fechaDMY(listDet_tareo_verificacion.fecharegistro)}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.fecharegistro}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: center">
-                            <h:outputText value="#{listDet_tareo_verificacion.fecharegistro}">
-                                <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
-                             </h:outputText>
-                        </p:column>
-                        <p:column id="hora_req" headerText="Hora Req." filterBy="#{listDet_tareo_verificacion.fhora_req}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.fhora_req}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: center">
-                            <h:outputText value="#{listDet_tareo_verificacion.fhora_req}">
-                                <f:convertDateTime type="both" pattern="HH:mm" timeZone="America/Lima" />
-                            </h:outputText>
-                        </p:column>
-                        <p:column headerText="Hora Llegada" filterBy="#{listDet_tareo_verificacion.shora_llegada}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.shora_llegada}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: center">
-                            <h:outputText value="#{listDet_tareo_verificacion.shora_llegada}">
-                            </h:outputText>
-                        </p:column>
-                        <p:column headerText="Hora Inicio" filterBy="#{listDet_tareo_verificacion.shora_inicio}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.shora_inicio}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: center">
-                            <h:outputText value="#{listDet_tareo_verificacion.shora_inicio}"></h:outputText>
-                        </p:column>
-                        <p:column headerText="Hora Fin" filterBy="#{listDet_tareo_verificacion.shora_fin}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.shora_fin}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: center">
-                            <h:outputText value="#{listDet_tareo_verificacion.shora_fin}"></h:outputText>
-                        </p:column>
-                        <p:column headerText="Hora Liberación" filterBy="#{listDet_tareo_verificacion.shora_liberacion}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.shora_liberacion}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: center">
-                            <h:outputText value="#{listDet_tareo_verificacion.shora_liberacion}"></h:outputText>
-                        </p:column>
-                        <p:column id="fechafinregistro" headerText="Fecha Fin" filterBy="#{rpt_tareoweb_facturacion_formatoAction.fechaDMY(listDet_tareo_verificacion.fechafinregistro)}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.fechafinregistro}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: center">
-                            <h:outputText value="#{listDet_tareo_verificacion.fechafinregistro}">
-                                <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
-                             </h:outputText>
-                        </p:column>
-                        <p:column style="white-space: nowrap; width: 130px;padding: 3px;text-align: center;" headerText="Concepto" filterBy="#{listDet_tareo_verificacion.conceptotareo}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.conceptotareo}">
-                            <h:outputText value="#{listDet_tareo_verificacion.conceptotareo}" />
-                        </p:column>
-                        <p:column style="white-space: nowrap; width: 130px;padding: 3px;text-align: center;background-color:##{listDet_tareo_verificacion.color}" headerText="T.Asistencia" filterBy="#{listDet_tareo_verificacion.asistencia}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.asistencia}">
-                            <h:outputText value="#{listDet_tareo_verificacion.asistencia}" />
-                        </p:column>
-                        <p:column filterBy="#{listDet_tareo_verificacion.glosa}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.glosa}" style="white-space: nowrap; width: 160px;padding: 3px;text-align: center">
-                           <f:facet name="header">
-                               <h:outputText value="Observación"/>
-                           </f:facet>
-                           <h:outputText value="#{listDet_tareo_verificacion.glosa}"/>
-                        </p:column>
-                        <p:column headerText="Nro Precinto" filterBy="#{listDet_tareo_verificacion.nroprecinto}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.nroprecinto}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: left">
-                            <h:outputText value="#{listDet_tareo_verificacion.nroprecinto}"></h:outputText>
-                        </p:column>
-                        <p:column headerText="Nro Servicio" filterBy="#{listDet_tareo_verificacion.nro_oservicio}" filterMatchMode="contains" sortBy="#{listDet_tareo_verificacion.nro_oservicio}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: left">
-                            <h:outputText value="#{listDet_tareo_verificacion.nro_oservicio}"></h:outputText>
-                        </p:column>
-                        <p:column>
-                           <f:facet name="header">
-                               <h:outputText value="Glosa"/>
-                           </f:facet>
-                            <h:outputText value="#{listDet_tareo_verificacion.glosa}"/>
-                        </p:column>
-                   </p:dataTable>
+                        <h:outputText value="#{listReporte_facturacionPersonal.dfecha_osc}">
+                            <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column filterBy="#{listReporte_facturacionPersonal.idcliente} #{listReporte_facturacionPersonal.dcliente}" filterMatchMode="contains" sortBy="#{listReporte_facturacionPersonal.ruc} #{listReporte_facturacionPersonal.razon}" style="white-space: nowrap; width: 50px;padding: 3px;text-align: left">
+                       <f:facet name="header">
+                           <h:outputText value="Cliente"/>
+                       </f:facet>
+                       <h:outputText value="#{listReporte_facturacionPersonal.idcliente} - #{listReporte_facturacionPersonal.dcliente}"/>
+                    </p:column>
+                    <p:column filterBy="#{listReporte_facturacionPersonal.didcargo} #{listReporte_facturacionPersonal.cargo}" filterMatchMode="contains" sortBy="#{listReporte_facturacionPersonal.didcargo} #{listReporte_facturacionPersonal.cargo}" style="white-space: nowrap; width: 50px;padding: 3px;text-align: left">
+                       <f:facet name="header">
+                           <h:outputText value="Cargo"/>
+                       </f:facet>
+                       <h:outputText value="#{listReporte_facturacionPersonal.didcargo} #{listReporte_facturacionPersonal.cargo}"/>
+                    </p:column>
+                    <p:column filterBy="#{listReporte_facturacionPersonal.dcodoperaciones_ec}" filterMatchMode="contains" sortBy="#{listReporte_facturacionPersonal.dcodoperaciones_ec}" style="white-space: nowrap; width: 40px;padding: 3px;text-align: left">
+                       <f:facet name="header">
+                           <h:outputText value="Cod.Ope."/>
+                       </f:facet>
+                       <h:outputText value="#{listReporte_facturacionPersonal.dcodoperaciones_ec}"/>
+                    </p:column>
+                    <p:column id="fecharegistro" headerText="Fecha Registro" filterBy="#{rpt_tareoweb_facturacion_formatoAction.fechaDMY(listReporte_facturacionPersonal.dfecharegistro)}" filterMatchMode="contains" sortBy="#{listReporte_facturacionPersonal.dfecharegistro}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
+                        <h:outputText value="#{listReporte_facturacionPersonal.dfecharegistro}">
+                            <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                         </h:outputText>
+                    </p:column>
+                    <p:column headerText="Hora Inicio" filterBy="#{listReporte_facturacionPersonal.dhi_s}" filterMatchMode="contains" sortBy="#{listReporte_facturacionPersonal.dhi_s}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
+                        <h:outputText value="#{listReporte_facturacionPersonal.dhi_s}">
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Hora Fin" filterBy="#{listReporte_facturacionPersonal.dhf_s}" filterMatchMode="contains" sortBy="#{listReporte_facturacionPersonal.dhf_s}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
+                        <h:outputText value="#{listReporte_facturacionPersonal.dhf_s}">
+                        </h:outputText>
+                    </p:column>
+                    <p:column id="fechafinregistro" headerText="Fecha Fin" filterBy="#{rpt_tareoweb_facturacion_formatoAction.fechaDMY(listReporte_facturacionPersonal.dfechafinregistro)}" filterMatchMode="contains" sortBy="#{listReporte_facturacionPersonal.dfechafinregistro}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
+                        <h:outputText value="#{listReporte_facturacionPersonal.dfechafinregistro}">
+                            <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                         </h:outputText>
+                    </p:column>
+                    <p:column headerText="Horas Servicio" filterBy="#{listReporte_facturacionPersonal.dhs_s}" filterMatchMode="contains" sortBy="#{listReporte_facturacionPersonal.dhs_s}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
+                        <h:outputText value="#{listReporte_facturacionPersonal.dhs_s}">
+                            <f:convertNumber pattern="#0.00" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Horas E.C." filterBy="#{listReporte_facturacionPersonal.dhbase}" filterMatchMode="contains" sortBy="#{listReporte_facturacionPersonal.dhbase}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
+                        <h:outputText value="#{listReporte_facturacionPersonal.dhbase}">
+                            <f:convertNumber pattern="#0.00" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="H.Adicional" filterBy="#{listReporte_facturacionPersonal.dhadicional}" filterMatchMode="contains" sortBy="#{listReporte_facturacionPersonal.dhadicional}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
+                        <h:outputText value="#{listReporte_facturacionPersonal.dhadicional}">
+                            <f:convertNumber pattern="#0.00" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Costo R.H." filterBy="#{listReporte_facturacionPersonal.dcosto_rh}" filterMatchMode="contains" sortBy="#{listReporte_facturacionPersonal.dcosto_rh}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
+                        <h:outputText value="#{listReporte_facturacionPersonal.dcosto_rh}">
+                            <f:convertNumber pattern="#0.00" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Costo H.Adic." filterBy="#{listReporte_facturacionPersonal.dhcosto_adicional}" filterMatchMode="contains" sortBy="#{listReporte_facturacionPersonal.dhcosto_adicional}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
+                        <h:outputText value="#{listReporte_facturacionPersonal.dhcosto_adicional}">
+                            <f:convertNumber pattern="#0.00" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Costo Bono" filterBy="#{listReporte_facturacionPersonal.dcosto_bono}" filterMatchMode="contains" sortBy="#{listReporte_facturacionPersonal.dcosto_bono}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
+                        <h:outputText value="#{listReporte_facturacionPersonal.dcosto_bono}">
+                            <f:convertNumber pattern="#0.00" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Costo Total" filterBy="#{listReporte_facturacionPersonal.tcosto}" filterMatchMode="contains" sortBy="#{listReporte_facturacionPersonal.tcosto}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
+                        <h:outputText value="#{listReporte_facturacionPersonal.tcosto}">
+                            <f:convertNumber pattern="#0.00" />
+                        </h:outputText>
+                    </p:column>
+               </p:dataTable>
+                <p:toolbar>
+                    <f:facet name="right">
+                        <p:outputLabel value="Total:" />
+                        <p:inputNumber id="tsubtotal" value="#{rpt_tareoweb_facturacion_formatoAction.scosto}" decimalPlaces="2" readonly="true" style="text-align: right;" symbol="S/."/>
+                    </f:facet>
+                </p:toolbar> 
             </p:dialog>
             <p:dialog header="#{rpt_tareoweb_facturacion_formatoAction.selectReporte_facturacion.idclieprov} - #{rpt_tareoweb_facturacion_formatoAction.selectReporte_facturacion.razon_social}" id="detalleCalculoDialog" widgetVar="detalleCalculoDialog" modal="true"  maximizable="true" showEffect="fade" hideEffect="fade" closable="true" resizable="false">
                 <p:outputPanel>
