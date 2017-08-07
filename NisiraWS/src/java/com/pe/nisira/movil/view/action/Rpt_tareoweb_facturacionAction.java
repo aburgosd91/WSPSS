@@ -300,7 +300,10 @@ public class Rpt_tareoweb_facturacionAction extends AbstactListAction<Ordenservi
                 celda.setCellValue( rpt_result_resumido.getData().get(i)[j]==null?"":rpt_result_resumido.getData().get(i)[j].toString());
             }
         }
-        
+        /*AUTOAJUSTE EN LA HOJA*/
+        for (int as = 0; as < col; as++) {
+            objWB.getSheetAt(0).autoSizeColumn((short) as);
+        }
         /*CREAR OTRA HOJA RESUMIDO*/
         HSSFSheet sheet1 = objWB.createSheet("DETALLADO_ "+WebUtil.fechaDMY(new Date(),1));
         fila_cabecera = sheet1.createRow((short)0);

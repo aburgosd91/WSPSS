@@ -57,7 +57,6 @@ public class AmbitoPagoAction extends AbstactListAction<Ambito_pago> implements 
         lstambpagRuta = new ArrayList<Ambito_pago_rutas>();
         slcAmbPagRuta = new Ambito_pago_rutas();
         lstampagcost = new ArrayList<Ambito_pago_costomo>();
-        slcampagcost = new Ambito_pago_costomo();
         workampagcost = new Ambito_pago_costomo();
         slcRutas = new Rutas();
         user = (UsuarioBean) WebUtil.getObjetoSesion(Constantes.SESION_USUARIO);
@@ -148,41 +147,53 @@ public class AmbitoPagoAction extends AbstactListAction<Ambito_pago> implements 
     }
 
     public void addAmbitoPagoCosto() {
-        if (workampagcost.getIdcargo() != null) {
-            if (workampagcost.getIdruta() != null) {
-                workampagcost.setIdempresa(getDatoEdicion().getIdempresa());
-                lstampagcost.add(workampagcost);
-                RequestContext.getCurrentInstance().update("datos:lstAmbPagoCost");
-                RequestContext.getCurrentInstance().execute("PF('costosdialog').hide()");
-            } else {
-                setMensaje("Seleccione La Ruta");
-                WebUtil.MensajeAdvertencia(getMensaje());
-                RequestContext.getCurrentInstance().update("datos:growl");
-            }
-        } else {
+        if(workampagcost.getIdcargo()==null){
             setMensaje("Seleccione el Cargo");
             WebUtil.MensajeAdvertencia(getMensaje());
             RequestContext.getCurrentInstance().update("datos:growl");
+        }else{
+            int pos = lstampagcost.indexOf(slcampagcost);
+            if(pos==-1){
+                lstampagcost.add(workampagcost);
+                slcampagcost = new Ambito_pago_costomo();
+            }else{
+                lstampagcost.set(pos, workampagcost);
+            }
+            RequestContext.getCurrentInstance().execute("PF('costosdialog').hide()");
+            RequestContext.getCurrentInstance().update("datos:lstAmbPagoCost");
         }
-        workampagcost = new Ambito_pago_costomo();
     }
-
+    public void reestructurarItem(){
+        int id =1;
+        for(int i=0;i<lstampagcost.size();i++){
+            lstampagcost.get(i).setItem(id++);
+        }
+    }
+    public void newAmbitoPagoCosto() throws CloneNotSupportedException {
+        workampagcost = new Ambito_pago_costomo();
+        workampagcost.setIdempresa(getDatoEdicion().getIdempresa());
+        workampagcost.setCodigo(getDatoEdicion().getCodigo());
+        workampagcost.setItem(lstampagcost.size()+1);
+        RequestContext.getCurrentInstance().update("datos:costosdialog");
+        RequestContext.getCurrentInstance().execute("PF('costosdialog').show()");
+        
+    }
     public void editAmbitoPagoCosto() throws CloneNotSupportedException {
         if (slcampagcost != null) {
             workampagcost = (Ambito_pago_costomo) slcampagcost.clone();
-            RequestContext.getCurrentInstance().execute("PF('costosdialog').show()");
             RequestContext.getCurrentInstance().update("datos:costosdialog");
+            RequestContext.getCurrentInstance().execute("PF('costosdialog').show()");
         } else {
             setMensaje("Seleccione un detalle");
             WebUtil.MensajeAdvertencia(getMensaje());
             RequestContext.getCurrentInstance().update("datos:growl");
         }
-
     }
 
     public void delAmbitoPagoCosto() {
         if (slcampagcost != null) {
             lstampagcost.remove(slcampagcost);
+            reestructurarItem();
             RequestContext.getCurrentInstance().update("datos:lstAmbPagoCost");
         } else {
             setMensaje("Seleccione un detalle");
@@ -237,16 +248,19 @@ public class AmbitoPagoAction extends AbstactListAction<Ambito_pago> implements 
     public boolean validar() {
         if (getDatoEdicion().getDescripcion().equalsIgnoreCase("")) {
             setMensaje("Falta Llenar Descripcion");
+            RequestContext.getCurrentInstance().update("datos:growl");
             return false;
         }
-        if (getDatoEdicion().getCosto_por_hora() == 0.0f) {
-            setMensaje("Falta Llenar Costo por Hora");
-            return false;
-        }
-        if (lstambpagRuta.isEmpty()) {
-            setMensaje("Falta Llenar Rutas");
-            return false;
-        }
+//        if (getDatoEdicion().getCosto_por_hora().floatValue() == 0.0f) {
+//            setMensaje("Falta Llenar Costo por Hora");
+//            RequestContext.getCurrentInstance().update("datos:growl");
+//            return false;
+//        }
+//        if (lstambpagRuta.isEmpty()) {
+//            setMensaje("Falta Llenar Rutas");
+//            RequestContext.getCurrentInstance().update("datos:growl");
+//            return false;
+//        }
         return true;
     }
 
@@ -265,7 +279,7 @@ public class AmbitoPagoAction extends AbstactListAction<Ambito_pago> implements 
                 WebUtil.info(getMensaje());
                 setLvalidate(true);
             }
-            RequestContext.getCurrentInstance().update("datos:growl");
+            RequestContext.getCurrentInstance().update("datos");
         } catch (Exception ex) {
             this.setMensaje(ex.toString());
             WebUtil.error(mensaje);

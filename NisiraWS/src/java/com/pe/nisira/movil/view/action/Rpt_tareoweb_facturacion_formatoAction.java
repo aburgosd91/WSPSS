@@ -97,6 +97,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.usermodel.helpers.HSSFRowShifter;
+import org.apache.poi.ss.usermodel.DataFormat;
 import org.primefaces.component.datatable.DataTable;
 import org.primefaces.component.tabview.TabView;
 import org.primefaces.context.RequestContext;
@@ -142,6 +143,7 @@ public class Rpt_tareoweb_facturacion_formatoAction extends AbstactListAction<Or
     private String mensaje;
     private String idtiposervicio;
     private Reporte_facturacion selectReporte_facturacion; 
+    private Reporte_facturacion selectReporte_facturacion_detalle; 
     private Det_tareoweb cabercerDet_tareoweb;
     /************************************* CONTROLES *****************************************/
     private String type_formato_rpt;
@@ -597,6 +599,7 @@ public class Rpt_tareoweb_facturacion_formatoAction extends AbstactListAction<Or
         } catch (Exception e) {
             setMensaje(WebUtil.mensajeError());
             WebUtil.error(getMensaje());
+            RequestContext.getCurrentInstance().update("datos:growl");
         }
         if(tipo == 2)
             lista_accion_filtro("wLst_Rpt_tareoweb_facturacion_formato");
@@ -653,7 +656,17 @@ public class Rpt_tareoweb_facturacion_formatoAction extends AbstactListAction<Or
         estiloFila.setBorderLeft(HSSFCellStyle.BORDER_MEDIUM);
         estiloFila.setFont(fuente);
         
-        int col = 23;
+        DataFormat format = objWB.createDataFormat();
+        HSSFCellStyle estiloFila_numeric = objWB.createCellStyle();
+        estiloFila_numeric.setWrapText(true);
+        estiloFila_numeric.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+        estiloFila_numeric.setBorderBottom(HSSFCellStyle.BORDER_MEDIUM);
+        estiloFila_numeric.setBorderTop(HSSFCellStyle.BORDER_MEDIUM);
+        estiloFila_numeric.setBorderRight(HSSFCellStyle.BORDER_MEDIUM);
+        estiloFila_numeric.setBorderLeft(HSSFCellStyle.BORDER_MEDIUM);
+        estiloFila_numeric.setFont(fuente);
+        estiloFila_numeric.setDataFormat(format.getFormat("0.00"));
+        int col = 22;
         int row = listReporte_facturacion.size();
         HSSFCell celda;
         for(int i=0 ;i<col;i++){
@@ -679,10 +692,9 @@ public class Rpt_tareoweb_facturacion_formatoAction extends AbstactListAction<Or
                 case 16:celda.setCellValue("IDIMPUESTO");break;
                 case 17:celda.setCellValue("IMPUESTO");break;
                 case 18:celda.setCellValue("TOTAL");break;
-                case 19:celda.setCellValue("ORDEN REGISTRO");break;
-                case 20:celda.setCellValue("TIENE DETRACCION");break;
-                case 21:celda.setCellValue("TIPO DE DETRACCIÓN");break;
-                case 22:celda.setCellValue("TASA DE DETRACCIÓN");break;
+                case 19:celda.setCellValue("TIENE DETRACCION");break;
+                case 20:celda.setCellValue("TIPO DE DETRACCIÓN");break;
+                case 21:celda.setCellValue("TASA DE DETRACCIÓN");break;
             }
         }
         HSSFRow fila;
@@ -746,13 +758,13 @@ public class Rpt_tareoweb_facturacion_formatoAction extends AbstactListAction<Or
             celda.setCellValue(listReporte_facturacion.get(i).getIdregimen());
             
             celda = fila.createCell((short)14);
-            celda.setCellStyle(estiloFila);
             celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
-            celda.setCellValue(listReporte_facturacion.get(i).getAfecto());
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(new BigDecimal(listReporte_facturacion.get(i).getAfecto()).doubleValue());
             
             celda = fila.createCell((short)15);
-            celda.setCellStyle(estiloFila);
             celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
             celda.setCellValue(listReporte_facturacion.get(i).getInafecto());
             
             celda = fila.createCell((short)16);
@@ -760,52 +772,29 @@ public class Rpt_tareoweb_facturacion_formatoAction extends AbstactListAction<Or
             celda.setCellValue(listReporte_facturacion.get(i).getIdimpuesto());
             
             celda = fila.createCell((short)17);
-            celda.setCellStyle(estiloFila);
             celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
             celda.setCellValue(listReporte_facturacion.get(i).getImpuesto());
             
             celda = fila.createCell((short)18);
-            celda.setCellStyle(estiloFila);
             celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
             celda.setCellValue(listReporte_facturacion.get(i).getTotal());
+            
             
             celda = fila.createCell((short)19);
             celda.setCellStyle(estiloFila);
-            celda.setCellValue(listReporte_facturacion.get(i).getOrdenregistro());
+            celda.setCellValue(Float.parseFloat(listReporte_facturacion.get(i).getEsdetraccion().toString()));
             
             celda = fila.createCell((short)20);
             celda.setCellStyle(estiloFila);
-            celda.setCellValue(Float.parseFloat(listReporte_facturacion.get(i).getEsdetraccion().toString()));
+            celda.setCellValue(listReporte_facturacion.get(i).getTipodetraccion());
             
             celda = fila.createCell((short)21);
-            celda.setCellStyle(estiloFila);
-            celda.setCellValue(Integer.parseInt(listReporte_facturacion.get(i).getTipodetraccion()));
-            
-            celda = fila.createCell((short)22);
-            celda.setCellStyle(estiloFila);
             celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
             celda.setCellValue(listReporte_facturacion.get(i).getTasadetraccion());
         }
-        
-        /*CREAR OTRA HOJA RESUMIDO*/
-//        HSSFSheet sheet1 = objWB.createSheet("DETALLADO_ "+WebUtil.fechaDMY(new Date(),1));
-//        fila_cabecera = sheet1.createRow((short)0);
-//
-//        col = rpt_result_detallado.columnCount();
-//        row = rpt_result_detallado.getData().size();
-//        for(int i=0 ;i<col;i++){
-//            celda = fila_cabecera.createCell((short)i);
-//            celda.setCellStyle(estiloCelda);
-//            celda.setCellValue(rpt_result_detallado.getName()[i]);
-//        }
-//        for(int i=0;i<row;i++){
-//            fila = sheet1.createRow(i+1);
-//            for(int j=0;j<col;j++){
-//                celda = fila.createCell((short)j);
-//                celda.setCellStyle(estiloFila);
-//                celda.setCellValue( rpt_result_detallado.getData().get(i)[j]==null?"":rpt_result_detallado.getData().get(i)[j].toString());
-//            }
-//        }
         /*AUTOAJUSTE EN LA HOJA*/
         for (int as = 0; as < col; as++) {
             objWB.getSheetAt(0).autoSizeColumn((short) as);
@@ -857,6 +846,20 @@ public class Rpt_tareoweb_facturacion_formatoAction extends AbstactListAction<Or
                 RequestContext.getCurrentInstance().update("datos:detalleTareoDialog:tsubtotal");
                 RequestContext.getCurrentInstance().update("datos:detalleTareoDialog:listDet_tareo_verificacion"); 
                 RequestContext.getCurrentInstance().execute("PF('detalleTareoDialog').show()");
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public void detalleTareoCalculo() {
+        try {
+            if(selectReporte_facturacion_detalle==null){
+                this.mensaje="Seleccionar Detalle Cálculo";
+                WebUtil.MensajeError(mensaje);
+                RequestContext.getCurrentInstance().update("datos:growl");
+            }else{
+                RequestContext.getCurrentInstance().update("datos:detalleTareoCalculoDialog");
+                RequestContext.getCurrentInstance().execute("PF('detalleTareoCalculoDialog').show()");
             }
         } catch (Exception ex) {
             Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, null, ex);
@@ -1207,6 +1210,20 @@ public class Rpt_tareoweb_facturacion_formatoAction extends AbstactListAction<Or
      */
     public void setScosto(Float scosto) {
         this.scosto = scosto;
+    }
+
+    /**
+     * @return the selectReporte_facturacion_detalle
+     */
+    public Reporte_facturacion getSelectReporte_facturacion_detalle() {
+        return selectReporte_facturacion_detalle;
+    }
+
+    /**
+     * @param selectReporte_facturacion_detalle the selectReporte_facturacion_detalle to set
+     */
+    public void setSelectReporte_facturacion_detalle(Reporte_facturacion selectReporte_facturacion_detalle) {
+        this.selectReporte_facturacion_detalle = selectReporte_facturacion_detalle;
     }
 
 }

@@ -336,6 +336,51 @@ public class OrdenservicioclienteDao extends BaseDao<Ordenserviciocliente> {
                     reporte_facturacion.setDhadicional(null);
                     reporte_facturacion.setDhadicional_s("");
                 }
+                /****** DATO TAREO ****/
+                if(rs.getObject("DHORA_REQ")!=null){
+                    reporte_facturacion.setDhora_req(((BigDecimal)rs.getObject("DHORA_REQ")).floatValue());
+                    reporte_facturacion.setShora_req(CoreUtil.convertTimeFloatString(reporte_facturacion.getDhora_req()));
+                }else{
+                    reporte_facturacion.setDhora_req(null);
+                    reporte_facturacion.setShora_req("");
+                }
+                if(rs.getObject("DHORA_LLEGADA")!=null){
+                    reporte_facturacion.setDhora_llegada(((BigDecimal)rs.getObject("DHORA_LLEGADA")).floatValue());
+                    reporte_facturacion.setShora_llegada(CoreUtil.convertTimeFloatString(reporte_facturacion.getDhora_llegada()));
+                }else{
+                    reporte_facturacion.setDhora_llegada(null);
+                    reporte_facturacion.setShora_llegada("");
+                }
+                if(rs.getObject("DHORA_INICIO_SERV")!=null){
+                    reporte_facturacion.setDhora_inicio_serv(((BigDecimal)rs.getObject("DHORA_INICIO_SERV")).floatValue());
+                    reporte_facturacion.setShora_inicio_serv(CoreUtil.convertTimeFloatString(reporte_facturacion.getDhora_inicio_serv()));
+                }else{
+                    reporte_facturacion.setDhora_inicio_serv(null);
+                    reporte_facturacion.setShora_inicio_serv("");
+                }
+                if(rs.getObject("DHORA_FIN_SERV")!=null){
+                    reporte_facturacion.setDhora_fin_serv(((BigDecimal)rs.getObject("DHORA_FIN_SERV")).floatValue());
+                    reporte_facturacion.setShora_fin_serv(CoreUtil.convertTimeFloatString(reporte_facturacion.getDhora_fin_serv()));
+                }else{
+                    reporte_facturacion.setDhora_fin_serv(null);
+                    reporte_facturacion.setShora_fin_serv("");
+                }
+                if(rs.getObject("DHORA_LIBERACION")!=null){
+                    reporte_facturacion.setDhora_liberacion(((BigDecimal)rs.getObject("DHORA_LIBERACION")).floatValue());
+                    reporte_facturacion.setShora_liberacion(CoreUtil.convertTimeFloatString(reporte_facturacion.getDhora_liberacion()));
+                }else{
+                    reporte_facturacion.setDhora_liberacion(null);
+                    reporte_facturacion.setShora_liberacion("");
+                }
+                reporte_facturacion.setDchecklist(rs.getString("DCHECKLIST")!=null?rs.getString("DCHECKLIST").trim():"");
+                reporte_facturacion.setDidvehiculo(rs.getString("DIDVEHICULO")!=null?rs.getString("DIDVEHICULO").trim():"");
+                reporte_facturacion.setDnrocontenedor(rs.getString("DNROCONTENEDOR")!=null?rs.getString("DNROCONTENEDOR").trim():"");
+                reporte_facturacion.setDnroprecinto(rs.getString("DNROPRECINTO")!=null?rs.getString("DNROPRECINTO").trim():"");
+                reporte_facturacion.setDnro_oservicio(rs.getString("DNRO_OSERVICIO")!=null?rs.getString("DNRO_OSERVICIO").trim():"");
+                reporte_facturacion.setDplaca_cliente(rs.getString("DPLACA_CLIENTE")!=null?rs.getString("DPLACA_CLIENTE").trim():"");
+                reporte_facturacion.setDconductor_cliente(rs.getString("DCONDUCTOR_CLIENTE")!=null?rs.getString("DCONDUCTOR_CLIENTE").trim():"");
+                reporte_facturacion.setDbrevete_cliente(rs.getString("DBREVETE_CLIENTE")!=null?rs.getString("DBREVETE_CLIENTE").trim():"");
+                
                 reporte_facturacion.setDcosto_rh(rs.getFloat("DCOSTO_RH"));
                 reporte_facturacion.setDhcosto_adicional(rs.getFloat("DHCOSTO_ADICIONAL"));
                 reporte_facturacion.setDcosto_bono(rs.getFloat("DCOSTO_BONO"));
@@ -347,6 +392,7 @@ public class OrdenservicioclienteDao extends BaseDao<Ordenserviciocliente> {
                 reporte_facturacion.setDidruta_ec(rs.getString("DIDRUTA_EC")!=null?rs.getString("DIDRUTA_EC").trim():"");
                 reporte_facturacion.setDidruta(rs.getString("DIDRUTA")!=null?rs.getString("DIDRUTA").trim():"");
                 reporte_facturacion.setCargo(rs.getString("DCARGO")!=null?rs.getString("DCARGO").trim():"");
+                reporte_facturacion.setRutaservicio(rs.getString("RUTASERVICIOS")!=null?rs.getString("RUTASERVICIOS").trim():"");
                 lista.add(reporte_facturacion); 
             }
             return lista;

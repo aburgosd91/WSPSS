@@ -111,6 +111,7 @@ public class Ambito_pagoDao extends BaseDao<Ambito_pago> {
                 apc.setRuta(rs.getString("ruta"));
                 apc.setOrigen(rs.getString("origen"));
                 apc.setDestino(rs.getString("destino"));
+                apc.setItem(rs.getInt("item"));
                 lista.add(apc);
             }
         } catch (Exception ex) {

@@ -95,12 +95,12 @@
                                          paginator="true" paginatorPosition="top"
                                          paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
                                          widgetVar="lstAmbPagoRuta"
-                                         rowKey="#{pagCost.idruta}">
+                                         rowKey="#{pagCost.item}">
                                 <f:facet name="header">
                                     <h:outputText value="Bono" />
                                 </f:facet>
                                 <f:facet name="{Comandos}">
-                                    <p:commandButton id="btnDgen" value="Nuevo" ajax="true" image="ui-icon-nuevo"  onclick="PF('costosdialog').show()" disabled="#{!ambitoPagoAction.edicion}"/>
+                                    <p:commandButton id="btnDgen" value="Nuevo" ajax="true" image="ui-icon-nuevo"  actionListener="#{ambitoPagoAction.newAmbitoPagoCosto()}" disabled="#{!ambitoPagoAction.edicion}"/>
                                     <p:commandButton id="btDedit" value="Editar" ajax="true" image="ui-icon-editar"  actionListener="#{ambitoPagoAction.editAmbitoPagoCosto()}"  disabled="#{!ambitoPagoAction.edicion}"/>
                                     <p:commandButton id="btDdel" value="Eliminar" ajax="true" image="ui-icon-eliminar"  actionListener="#{ambitoPagoAction.delAmbitoPagoCosto()}"  disabled="#{!ambitoPagoAction.edicion}"/>
                                 </f:facet>
@@ -161,7 +161,7 @@
                         </p:panelGrid>
                     </p:panelGrid>
                     <p:panelGrid columns="2" columnClasses="no-border,no-border">
-                        <p:outputLabel value="Viaticos"/>
+                        <p:outputLabel value="Bono"/>
                         <p:inputNumber decimalPlaces="2" value="#{ambitoPagoAction.workampagcost.costo_bono}"/>
                     </p:panelGrid>
                     <p:commandButton value="Grabar" actionListener="#{ambitoPagoAction.addAmbitoPagoCosto()}"/>

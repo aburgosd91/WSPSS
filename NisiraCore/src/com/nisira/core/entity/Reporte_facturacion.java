@@ -11,6 +11,20 @@ import java.util.List;
 @XStreamAlias("REPORTE_FACTURACION")
 @Tabla(nombre = "REPORTE_FACTURACION")
 public class Reporte_facturacion  implements Serializable {
+
+    /**
+     * @return the rutaservicio
+     */
+    public String getRutaservicio() {
+        return rutaservicio;
+    }
+
+    /**
+     * @param rutaservicio the rutaservicio to set
+     */
+    public void setRutaservicio(String rutaservicio) {
+        this.rutaservicio = rutaservicio;
+    }
     @XStreamAlias("IDCLIEPROV")
     private String idclieprov;
     @XStreamAlias("RAZON_SOCIAL")
@@ -84,7 +98,9 @@ public class Reporte_facturacion  implements Serializable {
     @XStreamAlias("TCOSTO")
     @Columna
     private Float tcosto;
-
+    @XStreamAlias("RUTASERVICIO")
+    @Columna
+    private String rutaservicio;
     @XStreamAlias("DIDORDENSERVICIO")
     @Columna
     private String didordenservicio;
@@ -157,7 +173,46 @@ public class Reporte_facturacion  implements Serializable {
     @XStreamAlias("DIDRUTA")
     @Columna
     private String didruta;
-
+    /*DATOS ADICIONALES - TAREO*/
+    @XStreamAlias("DHORA_REQ")
+    @Columna
+    private Float dhora_req;
+    @XStreamAlias("DHORA_LLEGADA")
+    @Columna
+    private Float dhora_llegada;
+    @XStreamAlias("DHORA_INICIO_SERV")
+    @Columna
+    private Float dhora_inicio_serv;
+    @XStreamAlias("DHORA_FIN_SERV")
+    @Columna
+    private Float dhora_fin_serv;
+    @XStreamAlias("DHORA_LIBERACION")
+    @Columna
+    private Float dhora_liberacion;
+    @XStreamAlias("DCHECKLIST")
+    @Columna
+    private String dchecklist;
+    @XStreamAlias("DIDVEHICULO")
+    @Columna
+    private String didvehiculo;
+    @XStreamAlias("DNROCONTENEDOR")
+    @Columna
+    private String dnrocontenedor;
+    @XStreamAlias("DNROPRECINTO")
+    @Columna
+    private String dnroprecinto;
+    @XStreamAlias("DNRO_OSERVICIO")
+    @Columna
+    private String dnro_oservicio;
+    @XStreamAlias("DPLACA_CLIENTE")
+    @Columna
+    private String dplaca_cliente;
+    @XStreamAlias("DCONDUCTOR_CLIENTE")
+    @Columna
+    private String dconductor_cliente;
+    @XStreamAlias("DBREVETE_CLIENTE")
+    @Columna
+    private String dbrevete_cliente;
     private Integer item;
     private String cuenta;
     private String tipodetraccion_descripcion;
@@ -166,14 +221,19 @@ public class Reporte_facturacion  implements Serializable {
     private Tipodetraccion selectTipodetraccion;
     private Documentos selectDocumentos;
     private List<Numemisor> lstNumemisor;
-    /*DATOS ADICIONALES*/
+    /*DATOS ADICIONALES - CALCULO*/
     private String dhi_s;
     private String dhf_s;
     private String dhs_s;
     private String dhbase_s;
     private String dhadicional_s;
-
     private String cargo;
+    /*DATOS ADICIONALES - TAREO*/
+    private String shora_req;
+    private String shora_llegada;
+    private String shora_inicio_serv;
+    private String shora_fin_serv;
+    private String shora_liberacion;
     /**
      * @return the idclieprov
      */
@@ -1036,5 +1096,257 @@ public class Reporte_facturacion  implements Serializable {
      */
     public void setCargo(String cargo) {
         this.cargo = cargo;
+    }
+
+    /**
+     * @return the shora_req
+     */
+    public String getShora_req() {
+        return shora_req;
+    }
+
+    /**
+     * @param shora_req the shora_req to set
+     */
+    public void setShora_req(String shora_req) {
+        this.shora_req = shora_req;
+    }
+
+    /**
+     * @return the shora_llegada
+     */
+    public String getShora_llegada() {
+        return shora_llegada;
+    }
+
+    /**
+     * @param shora_llegada the shora_llegada to set
+     */
+    public void setShora_llegada(String shora_llegada) {
+        this.shora_llegada = shora_llegada;
+    }
+
+    /**
+     * @return the shora_inicio_serv
+     */
+    public String getShora_inicio_serv() {
+        return shora_inicio_serv;
+    }
+
+    /**
+     * @param shora_inicio_serv the shora_inicio_serv to set
+     */
+    public void setShora_inicio_serv(String shora_inicio_serv) {
+        this.shora_inicio_serv = shora_inicio_serv;
+    }
+
+    /**
+     * @return the shora_fin_serv
+     */
+    public String getShora_fin_serv() {
+        return shora_fin_serv;
+    }
+
+    /**
+     * @param shora_fin_serv the shora_fin_serv to set
+     */
+    public void setShora_fin_serv(String shora_fin_serv) {
+        this.shora_fin_serv = shora_fin_serv;
+    }
+
+    /**
+     * @return the shora_liberacion
+     */
+    public String getShora_liberacion() {
+        return shora_liberacion;
+    }
+
+    /**
+     * @param shora_liberacion the shora_liberacion to set
+     */
+    public void setShora_liberacion(String shora_liberacion) {
+        this.shora_liberacion = shora_liberacion;
+    }
+
+    /**
+     * @return the dhora_req
+     */
+    public Float getDhora_req() {
+        return dhora_req;
+    }
+
+    /**
+     * @param dhora_req the dhora_req to set
+     */
+    public void setDhora_req(Float dhora_req) {
+        this.dhora_req = dhora_req;
+    }
+
+    /**
+     * @return the dhora_llegada
+     */
+    public Float getDhora_llegada() {
+        return dhora_llegada;
+    }
+
+    /**
+     * @param dhora_llegada the dhora_llegada to set
+     */
+    public void setDhora_llegada(Float dhora_llegada) {
+        this.dhora_llegada = dhora_llegada;
+    }
+
+    /**
+     * @return the dhora_inicio_serv
+     */
+    public Float getDhora_inicio_serv() {
+        return dhora_inicio_serv;
+    }
+
+    /**
+     * @param dhora_inicio_serv the dhora_inicio_serv to set
+     */
+    public void setDhora_inicio_serv(Float dhora_inicio_serv) {
+        this.dhora_inicio_serv = dhora_inicio_serv;
+    }
+
+    /**
+     * @return the dhora_fin_serv
+     */
+    public Float getDhora_fin_serv() {
+        return dhora_fin_serv;
+    }
+
+    /**
+     * @param dhora_fin_serv the dhora_fin_serv to set
+     */
+    public void setDhora_fin_serv(Float dhora_fin_serv) {
+        this.dhora_fin_serv = dhora_fin_serv;
+    }
+
+    /**
+     * @return the dhora_liberacion
+     */
+    public Float getDhora_liberacion() {
+        return dhora_liberacion;
+    }
+
+    /**
+     * @param dhora_liberacion the dhora_liberacion to set
+     */
+    public void setDhora_liberacion(Float dhora_liberacion) {
+        this.dhora_liberacion = dhora_liberacion;
+    }
+
+    /**
+     * @return the dchecklist
+     */
+    public String getDchecklist() {
+        return dchecklist;
+    }
+
+    /**
+     * @param dchecklist the dchecklist to set
+     */
+    public void setDchecklist(String dchecklist) {
+        this.dchecklist = dchecklist;
+    }
+
+    /**
+     * @return the didvehiculo
+     */
+    public String getDidvehiculo() {
+        return didvehiculo;
+    }
+
+    /**
+     * @param didvehiculo the didvehiculo to set
+     */
+    public void setDidvehiculo(String didvehiculo) {
+        this.didvehiculo = didvehiculo;
+    }
+
+    /**
+     * @return the dnrocontenedor
+     */
+    public String getDnrocontenedor() {
+        return dnrocontenedor;
+    }
+
+    /**
+     * @param dnrocontenedor the dnrocontenedor to set
+     */
+    public void setDnrocontenedor(String dnrocontenedor) {
+        this.dnrocontenedor = dnrocontenedor;
+    }
+
+    /**
+     * @return the dnroprecinto
+     */
+    public String getDnroprecinto() {
+        return dnroprecinto;
+    }
+
+    /**
+     * @param dnroprecinto the dnroprecinto to set
+     */
+    public void setDnroprecinto(String dnroprecinto) {
+        this.dnroprecinto = dnroprecinto;
+    }
+
+    /**
+     * @return the dnro_oservicio
+     */
+    public String getDnro_oservicio() {
+        return dnro_oservicio;
+    }
+
+    /**
+     * @param dnro_oservicio the dnro_oservicio to set
+     */
+    public void setDnro_oservicio(String dnro_oservicio) {
+        this.dnro_oservicio = dnro_oservicio;
+    }
+
+    /**
+     * @return the dplaca_cliente
+     */
+    public String getDplaca_cliente() {
+        return dplaca_cliente;
+    }
+
+    /**
+     * @param dplaca_cliente the dplaca_cliente to set
+     */
+    public void setDplaca_cliente(String dplaca_cliente) {
+        this.dplaca_cliente = dplaca_cliente;
+    }
+
+    /**
+     * @return the dconductor_cliente
+     */
+    public String getDconductor_cliente() {
+        return dconductor_cliente;
+    }
+
+    /**
+     * @param dconductor_cliente the dconductor_cliente to set
+     */
+    public void setDconductor_cliente(String dconductor_cliente) {
+        this.dconductor_cliente = dconductor_cliente;
+    }
+
+    /**
+     * @return the dbrevete_cliente
+     */
+    public String getDbrevete_cliente() {
+        return dbrevete_cliente;
+    }
+
+    /**
+     * @param dbrevete_cliente the dbrevete_cliente to set
+     */
+    public void setDbrevete_cliente(String dbrevete_cliente) {
+        this.dbrevete_cliente = dbrevete_cliente;
     }
 }

@@ -10,7 +10,7 @@ import java.io.Serializable;
 @XStreamAlias("AMBITO_PAGO_COSTOMO")
 @Tabla(nombre = "AMBITO_PAGO_COSTOMO")
 public class Ambito_pago_costomo implements Serializable, Cloneable {
-
+    private int item;
     @ClavePrimaria
     @Columna
     @XStreamAlias("idempresa")
@@ -117,6 +117,20 @@ public class Ambito_pago_costomo implements Serializable, Cloneable {
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    /**
+     * @return the item
+     */
+    public int getItem() {
+        return item;
+    }
+
+    /**
+     * @param item the item to set
+     */
+    public void setItem(int item) {
+        this.item = item;
     }
 
 }
