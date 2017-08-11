@@ -30,6 +30,20 @@
                     </p:columns>
                 </p:dataTable>
             </p:panel>
+            <p:dialog header="Formato Reporte" id="dlg_leyenda" widgetVar="dlg_leyenda" modal="true" showEffect="fade" closable="true">
+                <p:outputPanel>
+                    <p:panelGrid  columns="2" columnClasses="label,value">
+                        <h:outputText style="text-align: left;font-weight: bold" value="SEDE" />
+                        <h:outputText value="ORDEN SERVICIO CLIENTE [GLOSA] - cabecera de servicio"/>
+                        <h:outputText style="text-align: left;font-weight: bold" value="PUESTO" />
+                        <h:outputText value="DETALLE ORDEN SERVICIO CLIENTE [GLOSA]"/>
+                        <h:outputText style="text-align: left;font-weight: bold" value="SERVICIO" />
+                        <h:outputText value="ESTRUCTURA_COSTOS_PRODUCTO [descripción de comercial]"/>
+                        <h:outputText style="text-align: left;font-weight: bold" value="OBSERVACION" />
+                        <h:outputText value="DETALLE DE TAREO FIJO [GLOSA]"/>
+                    </p:panelGrid>
+                </p:outputPanel>
+            </p:dialog>
             <p:growl id="growl" life="4000" showDetail="false"  />
             <cmp:mDialogElimina_lst id="cmpDialog" bean="#{rpt_tareoweb_fijoAction}" ventana="LST" />
         </h:form>

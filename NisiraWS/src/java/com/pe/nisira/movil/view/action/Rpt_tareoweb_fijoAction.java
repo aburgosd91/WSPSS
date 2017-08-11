@@ -135,7 +135,10 @@ public class Rpt_tareoweb_fijoAction extends AbstactListAction<Ordenservicioclie
     public void aprobar() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    @Override
+    public void doVisualizar(){
+        RequestContext.getCurrentInstance().execute("PF('dlg_leyenda').show()");
+    }
     public void findetalle() throws Exception {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 
