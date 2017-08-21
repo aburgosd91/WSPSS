@@ -1,0 +1,86 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    >
+    <ui:define name="metadata">        
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos" >
+            #{formatoReporteAction.findDetalle()}
+            <cmp:barra_mnt bean="#{formatoReporteAction}"/>
+            <p:panelGrid columns="1" style="width:98%; text-align: left" columnClasses="no-border">
+                <f:facet name="header">
+                    #{ambitoPagoAction.tituloHead}
+                </f:facet>
+                <div class="ui-grid">
+                    <div class="ui-grid-row">  
+                        <p:panelGrid id="cntClie" columns="3" columnClasses="no-border,no-border,no-border">
+                            <p:outputLabel value="Cliente:" escape="false" />
+                            <p:inputText  style="text-align: left" size="50"  value="#{formatoReporteAction.datoEdicion.razon_social}" readonly="true"/>
+                            <p:commandButton id="btnbuscarcliente" styleClass="boton_buscar" ajax="true" actionListener="#{formatoReporteAction.verCntClieprov}" 
+                                             icon="ui-icon-search">
+                                <p:ajax event="dialogReturn" listener="#{formatoReporteAction.valorClieprov}" update="cntClie"/>
+                            </p:commandButton>
+                        </p:panelGrid>
+                        <p:panelGrid columns="2" columnClasses="no-border,no-border">
+                            <p:outputLabel value="Descripcion:" escape="false" />
+                            <p:inputText  style="text-align: left" size="50" value="#{formatoReporteAction.datoEdicion.descripcion}" disabled="#{!formatoReporteAction.edicion}"/>
+                        </p:panelGrid>
+                        <p:panelGrid columns="2" columnClasses="no-border,no-border">
+                            <p:outputLabel value="Estado: " />
+                            <p:selectBooleanCheckbox value="#{formatoReporteAction.datoEdicion.BEstado}" disabled="#{!formatoReporteAction.edicion}"/>
+                        </p:panelGrid>
+                    </div>
+                    <div class="ui-grid-row">
+                        <p:panelGrid columns="2" columnClasses="no-border,no-border">
+                            <p:commandButton value="Agregar" update="lstDetformato" actionListener="#{formatoReporteAction.addDetRow()}"/>
+                            <p:commandButton value="Borrar"  update="lstDetformato" actionListener="#{formatoReporteAction.delDetRow()}"/>
+                        </p:panelGrid>
+                        <p:dataTable id="lstDetformato" 
+                                     widgetVar="lstDetformato" 
+                                     value="#{formatoReporteAction.lstdformareporte}" 
+                                     var="lstDetformato" 
+                                     selection="#{formatoReporteAction.slcdformato}" 
+                                     selectionMode="single"
+                                     rowKey="#{lstDetformato.item2}" 
+                                     rowIndexVar="rowIndex">
+                            <p:column headerText="Campo" style="width:20%; text-align: center">
+                                <p:selectOneMenu disabled="#{formatoReporteAction.barraVista}"  value="#{lstDetformato.parametro}" filter="true" filterMatchMode="startsWith" >
+                                    <f:selectItems value="#{lstDetformato.col}"/>
+                                </p:selectOneMenu>
+                            </p:column>
+                            <p:column headerText="Orden" style="width:20%; text-align: center">
+                                <p:inputNumber style="width: 80% !important;font-size: 11px" value="#{lstDetformato.orden}" disabled="#{formatoReporteAction.barraVista}"/>
+                            </p:column>
+                            <p:column headerText="Nivel" style="width:20%; text-align: center">
+                                <p:inputNumber style="width: 80% !important;font-size: 11px" value="#{lstDetformato.nivel}" disabled="#{formatoReporteAction.barraVista}"/>
+                            </p:column>
+                            <p:column headerText="Etiqueta" style="width:20%; text-align: center">
+                                <p:inputText style="width: 80% !important;font-size: 11px" value="#{lstDetformato.etiqueta}" disabled="#{formatoReporteAction.barraVista}"/>
+                            </p:column>
+                            <p:column headerText="Tabla de Campo" style="width:20%; text-align: center">
+                                <p:selectOneMenu id="country" value="#{lstDetformato.tabla}" disabled="#{formatoReporteAction.barraVista}">
+                                    <p:ajax listener="#{formatoReporteAction.onTableSelect(rowIndex)}" update="lstDetformato"
+                                            >
+                                    </p:ajax>
+                                    <f:selectItem itemLabel="ORDENSERVICIOCLIENTE" itemValue="ORDENSERVICIOCLIENTE" noSelectionOption="true" />
+                                    <f:selectItem itemLabel="DORDENSERVICIOCLIENTE" itemValue="DORDENSERVICIOCLIENTE"/>
+                                    <f:selectItem itemLabel="PERSONAL_SERVICIO" itemValue="PERSONAL_SERVICIO" />
+                                    <f:selectItem itemLabel="CLIEPROV" itemValue="CLIEPROV" />
+                                    <f:selectItem itemLabel="RUTAS" itemValue="RUTAS" />
+                                </p:selectOneMenu>
+                            </p:column>
+                        </p:dataTable>
+                    </div>
+                </div>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{formatoReporteAction}" ventana="MNT" />
+        </h:form>
+    </ui:define>
+</ui:composition>
