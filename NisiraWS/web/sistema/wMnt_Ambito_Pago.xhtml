@@ -101,7 +101,7 @@
                                 </f:facet>
                                 <f:facet name="{Comandos}">
                                     <p:commandButton id="btnDgen" value="Nuevo" ajax="true" image="ui-icon-nuevo"  actionListener="#{ambitoPagoAction.newAmbitoPagoCosto()}" disabled="#{!ambitoPagoAction.edicion}"/>
-                                    <p:commandButton id="btDedit" value="Editar" ajax="true" image="ui-icon-editar"  actionListener="#{ambitoPagoAction.editAmbitoPagoCosto()}"  disabled="#{!ambitoPagoAction.edicion}"/>
+                                    <p:commandButton id="btDedit" value="Editar" ajax="true" image="ui-icon-edit"  actionListener="#{ambitoPagoAction.editAmbitoPagoCosto()}"  disabled="#{!ambitoPagoAction.edicion}"/>
                                     <p:commandButton id="btDdel" value="Eliminar" ajax="true" image="ui-icon-eliminar"  actionListener="#{ambitoPagoAction.delAmbitoPagoCosto()}"  disabled="#{!ambitoPagoAction.edicion}"/>
                                 </f:facet>
                                 <p:column style="width:15%;" filterBy="#{pagCost.cargo}" filterMatchMode="contains" sortBy="#{pagCost.cargo}">

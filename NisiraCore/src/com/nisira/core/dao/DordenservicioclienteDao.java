@@ -123,6 +123,9 @@ public class DordenservicioclienteDao extends BaseDao<Dordenserviciocliente> {
                 dordenserviciocliente.setGlosa(rs.getString("GLOSA")!=null?rs.getString("GLOSA").trim():"");
                 dordenserviciocliente.setCodoperaciones(rs.getString("CODOPERACIONES")!=null?rs.getString("CODOPERACIONES").trim():"");
                 dordenserviciocliente.setIdruta_ec(rs.getString("IDRUTA_EC")!=null?rs.getString("IDRUTA_EC").trim():"");
+                dordenserviciocliente.setBrevete(rs.getString("BREVETE")!=null?rs.getString("BREVETE").trim():"");
+                dordenserviciocliente.setIdruta_viaje(rs.getString("IDRUTA_VIAJE")!=null?rs.getString("IDRUTA_VIAJE").trim():"");
+                dordenserviciocliente.setRuta_viaje(rs.getString("RUTA_VIAJE")!=null?rs.getString("RUTA_VIAJE").trim():"");
                 lista.add(dordenserviciocliente); 
             }
         } catch(Exception ex) {

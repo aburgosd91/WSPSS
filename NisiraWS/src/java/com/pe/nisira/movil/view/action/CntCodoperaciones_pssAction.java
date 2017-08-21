@@ -26,17 +26,19 @@ import org.primefaces.context.RequestContext;
 @ViewScoped
 public class CntCodoperaciones_pssAction {
     private List<Codoperaciones_pss> datos;
+    /*PAREMTROS*/
+    private String tipo;
     @PostConstruct
-    public void init() {
+    public void init() {}
+    public void cargarDatos(){
         Codoperaciones_pssDao rd= new Codoperaciones_pssDao();
         try {
             UsuarioBean u =(UsuarioBean) WebUtil.getObjetoSesion(Constantes.SESION_USUARIO);
-            setDatos(rd.listarPorEmpresaWeb_Activo());
+            setDatos(rd.listarPorEmpresaWeb_Activo(tipo));
         } catch (Exception ex) {
             Logger.getLogger(CntCodoperaciones_pssAction.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
     public void selectFromDialog(Codoperaciones_pss t) {
         RequestContext.getCurrentInstance().closeDialog(t);
     }
@@ -47,5 +49,19 @@ public class CntCodoperaciones_pssAction {
 
     public void setDatos(List<Codoperaciones_pss> datos) {
         this.datos = datos;
+    }
+
+    /**
+     * @return the tipo
+     */
+    public String getTipo() {
+        return tipo;
+    }
+
+    /**
+     * @param tipo the tipo to set
+     */
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 }

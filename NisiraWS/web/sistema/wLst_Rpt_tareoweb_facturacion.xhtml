@@ -14,8 +14,8 @@
             <p:panelGrid columns="4" style="border: 0px solid ;font-size: 11px !important;padding: 0px !important" id="panelHeader">
                 <p:outputLabel for="tiposervicio"  value="Tipo Servicio:" />
                 <p:selectOneMenu id="tiposervicio" value="#{rpt_tareoweb_facturacionAction.idtiposervicio}">    
-                    <p:ajax listener="#{rpt_tareoweb_facturacionAction.onTiposervicio()}"/>
-                    <f:selectItems value="#{rpt_tareoweb_facturacionAction.listWtiposervicio}" var="tiposer" itemLabel="(#{tiposer.descripcion_corta}) #{tiposer.descripcion}" itemValue="#{tiposer.idtiposervicio}" />
+                    <f:selectItem itemLabel="ESPECIAL" itemValue="ESPECIAL" />
+                    <f:selectItem itemLabel="FIJO" itemValue="FIJO" />
                 </p:selectOneMenu>
                 <p:outputLabel value="Tipo:" />
                 <p:selectOneMenu id="tipo" value="#{rpt_tareoweb_facturacionAction.type_formato_rpt}">

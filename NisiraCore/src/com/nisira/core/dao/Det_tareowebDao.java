@@ -387,6 +387,11 @@ public class Det_tareowebDao extends BaseDao<Det_tareoweb> {
                 tareoweb.setPrecinto_rpt(rs.getString("PRECINTO_RPT")!=null?rs.getString("PRECINTO_RPT").trim():"");
                 tareoweb.setPlaca_cliente_rpt(rs.getString("PLACA_CLIENTE_RPT")!=null?rs.getString("PLACA_CLIENTE_RPT").trim():"");
                 tareoweb.setFecha_osc(rs.getDate("FECHA_OSC"));
+                tareoweb.setCodoperaciones(rs.getString("CODOPERACIONES")!=null?rs.getString("CODOPERACIONES").trim():"");
+                tareoweb.setRutaservicios(rs.getString("RUTASERVICIOS")!=null?rs.getString("RUTASERVICIOS").trim():"");
+                tareoweb.setIdruta_ec(rs.getString("IDRUTA_EC")!=null?rs.getString("IDRUTA_EC").trim():"");
+                tareoweb.setIdreferencia(rs.getString("IDREFERENCIA")!=null?rs.getString("IDREFERENCIA").trim():"");
+                tareoweb.setItemreferencia(rs.getString("ITEMREFERENCIA")!=null?rs.getString("ITEMREFERENCIA").trim():"");
                 tareoweb.setTareo(new ArrayList<>());
                 lista.add(tareoweb); 
             }
@@ -559,6 +564,11 @@ public class Det_tareowebDao extends BaseDao<Det_tareoweb> {
                 tareoweb.setPrecinto_rpt(rs.getString("PRECINTO_RPT")!=null?rs.getString("PRECINTO_RPT").trim():"");
                 tareoweb.setPlaca_cliente_rpt(rs.getString("PLACA_CLIENTE_RPT")!=null?rs.getString("PLACA_CLIENTE_RPT").trim():"");
                 tareoweb.setFecha_osc(rs.getDate("FECHA_OSC"));
+                tareoweb.setCodoperaciones(rs.getString("CODOPERACIONES")!=null?rs.getString("CODOPERACIONES").trim():"");
+                tareoweb.setRutaservicios(rs.getString("RUTASERVICIOS")!=null?rs.getString("RUTASERVICIOS").trim():"");
+                tareoweb.setIdruta_ec(rs.getString("IDRUTA_EC")!=null?rs.getString("IDRUTA_EC").trim():"");
+                tareoweb.setIdreferencia(rs.getString("IDREFERENCIA")!=null?rs.getString("IDREFERENCIA").trim():"");
+                tareoweb.setItemreferencia(rs.getString("ITEMREFERENCIA")!=null?rs.getString("ITEMREFERENCIA").trim():"");
                 tareoweb.setTareo(new ArrayList<>());
                 lista.add(tareoweb); 
             }

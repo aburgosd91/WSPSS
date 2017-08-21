@@ -204,7 +204,7 @@
                                     </h:outputText>
                                 </p:column>
                              </p:dataTable> 
-                            <h:outputLabel value="*Seleccionar Detalle de servicio para agregar rutas" style="color: rgb(37, 42, 84);font-size: 12px;"/>
+                            <h:outputLabel value="*Seleccionar Detalle de servicio para agregar rutas / puesto" style="color: rgb(37, 42, 84);font-size: 12px;"/>
                             <p:fieldset legend="Rutas" style="width: 100%" toggleable="true" collapsed="true" >
                                 <p:dataTable id="listRuta_servicios" var="listRuta_servicios" value="#{ordenservicioclienteAction.listRuta_servicios}" widgetVar="listRuta_servicios"
                                     paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
@@ -445,8 +445,21 @@
                                     <p:outputLabel value="Conductor/Cliente:" />
                                     <p:inputTextarea  cols="60" rows="2"  value="#{ordenservicioclienteAction.dordenserviciocliente.conductor_cliente}" maxlength="80" onkeyup="javascript:this.value = this.value.toUpperCase();">
                                     </p:inputTextarea>
-                                    <p:outputLabel for="fecha_fin_servicio" value="F. Fin:" />
-                                    <p:calendar id="fecha_fin_servicio" value="#{ordenservicioclienteAction.dordenserviciocliente.fecha_fin_servicio}" pattern="dd-MM-yyyy" mask="true" />
+                                    <p:outputLabel value="Brevete:" />
+                                    <p:inputTextarea  cols="30" rows="1"  value="#{ordenservicioclienteAction.dordenserviciocliente.brevete}" maxlength="30" onkeyup="javascript:this.value = this.value.toUpperCase();" disabled="#{ordenservicioclienteAction.ftipo_servicio}">
+                                    </p:inputTextarea>
+                                    <p:outputLabel value="Ruta:" escape="false" />
+                                    <h:panelGrid id="cntRutas_detalle" cellpadding="0" cellspacing="0" columns="3">
+                                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{ordenservicioclienteAction.verCntRuta}" 
+                                                        disabled="#{!ordenservicioclienteAction.edicion}"  icon="ui-icon-search">
+                                            <p:ajax event="dialogReturn" listener="#{ordenservicioclienteAction.valorRuta_detalle}" update="cntRutas_detalle"/>
+                                        </p:commandButton>
+                                        <p:inputText  size="30" readonly="true"  value="#{ordenservicioclienteAction.dordenserviciocliente.ruta_viaje}" />
+                                        <p:commandButton ajax="true" actionListener="#{ordenservicioclienteAction.verCntRutaMantenedor}" icon="ui-icon-nuevo">
+                                        </p:commandButton>
+                                    </h:panelGrid>
+                                    <p:outputLabel for="fecha_fin_servicio" value="F. Fin:" rendered="false"/>
+                                    <p:calendar id="fecha_fin_servicio" value="#{ordenservicioclienteAction.dordenserviciocliente.fecha_fin_servicio}" pattern="dd-MM-yyyy" mask="true" rendered="false"/>
                                     <p:outputLabel value="Glosa"/>
                                     <p:inputTextarea rows="2" cols="50" value="#{ordenservicioclienteAction.dordenserviciocliente.glosa}"/>
                                     <p:outputLabel value="#Horas:" />
@@ -855,6 +868,34 @@
                             <h:outputText value="#{listDet_tareo_verificacion.glosa}"/>
                         </p:column>
                    </p:dataTable>
+            </p:dialog>
+            <p:dialog header="Nueva Ruta" id="rutas_mantenedor" widgetVar="rutas_mantenedor" modal="true" closable="true">
+                <p:panelGrid columns="2" columnClasses="no-border,no-border">
+                    <p:outputLabel value="Código: " />
+                    <p:inputText id="idruta" size="3"
+                                 disabled="true" value="#{ordenservicioclienteAction.newRutas.idruta}"/>
+                    <p:outputLabel for="descripcion"  value="Descripcion:" />
+                    <p:inputTextarea id="descripcion" cols="60" rows="2"
+                                     value="#{ordenservicioclienteAction.newRutas.descripcion}" 
+                                     onkeyup="javascript:this.value = this.value.toUpperCase();">
+                        <p:ajax event="valueChange" immediate="true" process="@this"/>
+                    </p:inputTextarea>
+                    <p:outputLabel value="Origen: " />
+                    <p:panelGrid id="cntUbiOr" columns="2" columnClasses="no-border,no-border">
+                        <p:inputText value="#{ordenservicioclienteAction.newRutas.origendesc}"/>
+                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{ordenservicioclienteAction.verCntUbigeoOrigen()}" icon="ui-icon-search">
+                            <p:ajax event="dialogReturn" listener="#{ordenservicioclienteAction.valorUbigeoOrigen}" update="datos:cntUbiOr"/>
+                        </p:commandButton>
+                    </p:panelGrid>
+                    <p:outputLabel value="Destino: " />
+                    <p:panelGrid id="cntUbiDest" columns="2" columnClasses="no-border,no-border">
+                        <p:inputText value="#{ordenservicioclienteAction.newRutas.destinodesc}"/>
+                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{ordenservicioclienteAction.verCntUbigeoDestino()}" icon="ui-icon-search">
+                            <p:ajax event="dialogReturn" listener="#{ordenservicioclienteAction.valorUbigeoDestino}" update="datos:cntUbiDest"/>
+                        </p:commandButton>
+                    </p:panelGrid>
+                    <p:commandButton value="Grabar" ajax="true" actionListener="#{ordenservicioclienteAction.grabarRutaNew()}"/>
+                </p:panelGrid>
             </p:dialog>
             <cmp:mDialogElimina_lst id="cmpDialog" bean="#{ordenservicioclienteAction}" ventana="MNT" />
         </h:form>

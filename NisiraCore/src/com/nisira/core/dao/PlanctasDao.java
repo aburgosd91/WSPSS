@@ -35,6 +35,7 @@ public class PlanctasDao extends BaseDao<Planctas> {
                 planctas.setIdcuenta(rs.getString("IDCUENTA")!=null?rs.getString("IDCUENTA").trim():"");
                 planctas.setDescripcion(rs.getString("DESCRIPCION")!=null?rs.getString("DESCRIPCION").trim():"");
                 planctas.setEstado(rs.getFloat("ESTADO"));
+                planctas.setDescreqv(rs.getString("DESCREQV")!=null?rs.getString("DESCREQV").trim():"");
                 lista.add(planctas);                             
                 
             }

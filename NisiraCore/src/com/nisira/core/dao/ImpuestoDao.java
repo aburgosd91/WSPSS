@@ -50,17 +50,22 @@ public class ImpuestoDao extends BaseDao<Impuesto> {
         return lista;
         }
     
-    public Float getImpuesto(String idempresa, String idimpuesto) {
+    public Float[] getImpuesto(String idempresa, String idimpuesto) {
+        Float resta_base = 0f;
         Float result = 0f;
         try {
             ResultSet rs = null;
             rs = execProcedure("GETIMPUESTO", idempresa,idimpuesto);
             while (rs.next()) {
                 result = rs.getFloat("VALOR");
+                resta_base = rs.getFloat("RESTA_BASE");
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return result;
+        Float[] array = new Float[2];
+        array[0] = resta_base;
+        array[1] = result;
+        return array;
     }
 }

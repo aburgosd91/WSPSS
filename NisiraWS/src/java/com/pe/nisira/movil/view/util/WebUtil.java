@@ -102,7 +102,7 @@ public class WebUtil {
         }else if(time.trim().equals("__:__")){
             return false;
         }else if(time.trim().equals("24:00"))
-            return true;
+            return false;
         else{
             Matcher matcher = pattern.matcher(time);
             return matcher.matches();
@@ -116,7 +116,7 @@ public class WebUtil {
         }else if(time.trim().equals("__:__")){
             return 0.0f;
         }else if(time.trim().equals("24:00"))
-            return 24.0f;
+            return 0.0f;
         else if(time.trim().equals("00:00"))
             return 0.0f;
         else{
@@ -225,6 +225,7 @@ public class WebUtil {
             case 5:forma="yyyyMMdd";break;
             case 6:forma="dd MM yy";break;
             case 7:forma="dd/MM/yyyy";break;
+            case 8:forma="dd-MM";break;
         }
         SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(forma);
         return DATE_FORMAT.format(fecha);
@@ -653,6 +654,12 @@ public class WebUtil {
             System.err.println(ex.getMessage());
             return false;
         }
+    }
+    public static String isnull(String value,String opcional){
+        if(value==null)
+            return opcional;
+        else
+            return value;
     }
     public static void main(String[] args) {
 //        System.out.println("Hora :"+convertStringTimeFloat("24:00"));

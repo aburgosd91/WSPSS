@@ -183,7 +183,7 @@ public class Rpt_tareoweb_facturacion_formatoAction extends AbstactListAction<Or
             listDocumentos = documentoDao.listarPorEmpresaWeb(user.getIDEMPRESA());
             listConsumidor = consumidorDao.listarPorEmpresaWeb(user.getIDEMPRESA());
             /********************************** CONFIGURACIÓN - SERVIDOR ***********************/
-            idtiposervicio = "002";
+            idtiposervicio = "ESPECIAL";
         }catch (Exception ex) {
             Logger.getLogger(Rpt_tareoweb_facturacion_formatoAction.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -267,7 +267,9 @@ public class Rpt_tareoweb_facturacion_formatoAction extends AbstactListAction<Or
                         entity.setIdimpuesto("000");
                         entity.setImpuesto(0.0f);
                     }else{
-                        Float imp = impuestoDao.getImpuesto(user.getIDEMPRESA(), newValue.toString());
+                        Float[] valores = impuestoDao.getImpuesto(user.getIDEMPRESA(), newValue.toString());
+                        Float imp = valores[1];
+                        entity.setResta_base(valores[0].intValue());
                         Float imp_dec =  imp/100;
                         entity.setIdimpuesto(newValue.toString());
                         if(entity.getIdregimen().trim().equals("01")){
@@ -279,7 +281,7 @@ public class Rpt_tareoweb_facturacion_formatoAction extends AbstactListAction<Or
                     ;break;
             }
             /*CALCULO DE TOTAL*/
-            entity.setTotal(entity.getAfecto()+entity.getInafecto()+entity.getImpuesto());
+            entity.setTotal(entity.getAfecto()+entity.getInafecto()+(entity.getImpuesto()* (entity.getResta_base()==1?-1:1)));
         }
         RequestContext.getCurrentInstance().update("datos:tbl");
     }
@@ -406,6 +408,7 @@ public class Rpt_tareoweb_facturacion_formatoAction extends AbstactListAction<Or
         return filteredConsumidor;
     }
     public void onRefresh(){
+        cargarDatosGenerales_detalle();
         RequestContext.getCurrentInstance().update("datos:tbl");
     }
     public void findetalle() throws Exception {
@@ -454,6 +457,7 @@ public class Rpt_tareoweb_facturacion_formatoAction extends AbstactListAction<Or
                 newObj.setTipodetraccion(result1.getTipodetraccion());
                 newObj.setTipodetraccion_descripcion(result1.getTipodetraccion_descripcion());
                 newObj.setTasadetraccion(result1.getTasadetraccion());
+                newObj.setEsplanilla(result1.getEsplanilla());
                 /**** Calcular ****/
                 if(newObj.getIdregimen().toString().trim().equals("01")){
                     newObj.setAfecto(newObj.getTcosto());
@@ -468,7 +472,9 @@ public class Rpt_tareoweb_facturacion_formatoAction extends AbstactListAction<Or
                     newObj.setIdimpuesto("000");
                     newObj.setImpuesto(0.0f);
                 }else{
-                    Float imp = impuestoDao.getImpuesto(user.getIDEMPRESA(), newObj.getIdimpuesto().toString());
+                    Float[] object = impuestoDao.getImpuesto(user.getIDEMPRESA(), newObj.getIdimpuesto().toString()); 
+                    newObj.setResta_base(object[0].intValue());
+                    Float imp = object[1];
                     Float imp_dec =  imp/100;
                     newObj.setIdimpuesto(newObj.getIdimpuesto().toString());
                     if(newObj.getIdregimen().trim().equals("01")){
@@ -477,7 +483,7 @@ public class Rpt_tareoweb_facturacion_formatoAction extends AbstactListAction<Or
                         newObj.setImpuesto(newObj.getInafecto()*imp_dec);
                     }
                 }
-                newObj.setTotal(newObj.getAfecto()+newObj.getInafecto()+newObj.getImpuesto());
+                newObj.setTotal(newObj.getAfecto()+newObj.getInafecto()+(newObj.getImpuesto()*(newObj.getResta_base()==1?-1:1)));
                 listReporte_facturacion.add(newObj);
             });
             
@@ -555,7 +561,9 @@ public class Rpt_tareoweb_facturacion_formatoAction extends AbstactListAction<Or
                 dtw.setSelectTipodetraccion(selectReporte_facturacion.getSelectTipodetraccion());
                 dtw.setTasadetraccion(selectReporte_facturacion.getTasadetraccion());
                 /*CALCULAR IMPORTES*/
-                Float imp = impuestoDao.getImpuesto(user.getIDEMPRESA(), dtw.getIdimpuesto());
+                Float[] array = impuestoDao.getImpuesto(user.getIDEMPRESA(), dtw.getIdimpuesto());
+                Float imp = array[1];
+                dtw.setResta_base(array[0].intValue());
                 Float imp_dec =  imp/100;
                 if(dtw.getIdregimen().trim().equals("01")){
                     dtw.setAfecto(dtw.getTcosto());
@@ -566,7 +574,7 @@ public class Rpt_tareoweb_facturacion_formatoAction extends AbstactListAction<Or
                     dtw.setAfecto(0.0f);
                     dtw.setImpuesto(dtw.getInafecto()*imp_dec);
                 }
-                dtw.setTotal(dtw.getAfecto()+dtw.getInafecto()+dtw.getImpuesto());
+                dtw.setTotal(dtw.getAfecto()+dtw.getInafecto()+(dtw.getImpuesto()*(dtw.getResta_base()==1?-1:1)));
                 listReporte_facturacion.set(i, dtw);
             }
             //RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
@@ -580,8 +588,8 @@ public class Rpt_tareoweb_facturacion_formatoAction extends AbstactListAction<Or
     public void setUser(UsuarioBean user) {
         this.user = user;
     }
-
-
+        
+    
     @Override
     public String buscarFiltro(int tipo){
         try {
@@ -620,10 +628,13 @@ public class Rpt_tareoweb_facturacion_formatoAction extends AbstactListAction<Or
     public JRDataSource getDataSourceReport_lst() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    @Override
+    @Override   
     public void downFormatExcelEspecial(Object document) {
+        /*Actulizar datos de resumen al detalle*/
+        cargarDatosGenerales_detalle();
+        
         HSSFWorkbook objWB = (HSSFWorkbook) document;
-        objWB.setSheetName(0,"FORMATO_ "+WebUtil.fechaDMY(new Date(),1));
+        objWB.setSheetName(0,"RESUMEN "+this.idtiposervicio+" "+WebUtil.fechaDMY(getDesde(),8)+" "+WebUtil.fechaDMY(getHasta(),8));
         HSSFRow fila_cabecera = objWB.getSheetAt(0).getRow(0);
 
         HSSFFont fuente = objWB.createFont();
@@ -666,7 +677,17 @@ public class Rpt_tareoweb_facturacion_formatoAction extends AbstactListAction<Or
         estiloFila_numeric.setBorderLeft(HSSFCellStyle.BORDER_MEDIUM);
         estiloFila_numeric.setFont(fuente);
         estiloFila_numeric.setDataFormat(format.getFormat("0.00"));
-        int col = 22;
+        
+        HSSFCellStyle estiloFila_date = objWB.createCellStyle();
+        estiloFila_date.setWrapText(true);
+        estiloFila_date.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+        estiloFila_date.setBorderBottom(HSSFCellStyle.BORDER_MEDIUM);
+        estiloFila_date.setBorderTop(HSSFCellStyle.BORDER_MEDIUM);
+        estiloFila_date.setBorderRight(HSSFCellStyle.BORDER_MEDIUM);
+        estiloFila_date.setBorderLeft(HSSFCellStyle.BORDER_MEDIUM);
+        estiloFila_date.setFont(fuente);
+        estiloFila_date.setDataFormat(format.getFormat("dd/mm/yyyy"));
+        int col = 23;
         int row = listReporte_facturacion.size();
         HSSFCell celda;
         for(int i=0 ;i<col;i++){
@@ -695,6 +716,7 @@ public class Rpt_tareoweb_facturacion_formatoAction extends AbstactListAction<Or
                 case 19:celda.setCellValue("TIENE DETRACCION");break;
                 case 20:celda.setCellValue("TIPO DE DETRACCIÓN");break;
                 case 21:celda.setCellValue("TASA DE DETRACCIÓN");break;
+                case 22:celda.setCellValue("ESPLANILLA");break;
             }
         }
         HSSFRow fila;
@@ -722,16 +744,16 @@ public class Rpt_tareoweb_facturacion_formatoAction extends AbstactListAction<Or
             celda.setCellValue(listReporte_facturacion.get(i).getNumero());
             
             celda = fila.createCell((short)5);
-            celda.setCellStyle(estiloFila);
-            celda.setCellValue(WebUtil.fechaDMY(listReporte_facturacion.get(i).getFecha(), 2));
+            celda.setCellStyle(estiloFila_date);
+            celda.setCellValue(WebUtil.fechaDMY(listReporte_facturacion.get(i).getFecha(), 7));
             
             celda = fila.createCell((short)6);
-            celda.setCellStyle(estiloFila);
-            celda.setCellValue(WebUtil.fechaDMY(listReporte_facturacion.get(i).getFecha_operacion(), 2));
+            celda.setCellStyle(estiloFila_date);
+            celda.setCellValue(WebUtil.fechaDMY(listReporte_facturacion.get(i).getFecha_operacion(), 7));
             
             celda = fila.createCell((short)7);
-            celda.setCellStyle(estiloFila);
-            celda.setCellValue(listReporte_facturacion.get(i).getVencimiento());
+            celda.setCellStyle(estiloFila_date);
+            celda.setCellValue(WebUtil.fechaDMY(listReporte_facturacion.get(i).getVencimiento(),7));
             
             celda = fila.createCell((short)8);
             celda.setCellStyle(estiloFila);
@@ -794,10 +816,482 @@ public class Rpt_tareoweb_facturacion_formatoAction extends AbstactListAction<Or
             celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
             celda.setCellStyle(estiloFila_numeric);
             celda.setCellValue(listReporte_facturacion.get(i).getTasadetraccion());
+            
+            celda = fila.createCell((short)22);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacion.get(i).getEsplanilla());
         }
         /*AUTOAJUSTE EN LA HOJA*/
         for (int as = 0; as < col; as++) {
             objWB.getSheetAt(0).autoSizeColumn((short) as);
+        }
+        /*CREAR OTRA HOJA DETALLADO NISIRA*/
+        HSSFSheet sheet1 = objWB.createSheet("NISIRA "+this.idtiposervicio+" "+WebUtil.fechaDMY(getDesde(),8)+" "+WebUtil.fechaDMY(getHasta(),8));
+        fila_cabecera = sheet1.createRow((short)0);
+        col = 24;
+        row = listReporte_facturacionTotal.size();
+        for(int i=0 ;i<col;i++){
+            celda = fila_cabecera.createCell((short)i);
+            celda.setCellStyle(estiloCelda);
+            switch(i){
+                case 0:celda.setCellValue("IDCLIEPROV");break;
+                case 1:celda.setCellValue("RAZON SOCIAL");break;
+                case 2:celda.setCellValue("IDDOCUMENTO");break;
+                case 3:celda.setCellValue("SERIE");break;
+                case 4:celda.setCellValue("NUMERO");break;
+                case 5:celda.setCellValue("FECHA");break;
+                case 6:celda.setCellValue("FECHA OPERACION");break;
+                case 7:celda.setCellValue("VENCIMIENTO");break;
+                case 8:celda.setCellValue("IDMONEDA");break;
+                case 9:celda.setCellValue("IDCUENTA");break;
+                case 10:celda.setCellValue("IDCCOSTO");break;
+                case 11:celda.setCellValue("CONCEPTO");break;
+                case 12:celda.setCellValue("IDCLIENTE");break;
+                case 13:celda.setCellValue("IDREGIMEN");break;
+                case 14:celda.setCellValue("AFECTO");break;
+                case 15:celda.setCellValue("INAFECTO");break;
+                case 16:celda.setCellValue("IDIMPUESTO");break;
+                case 17:celda.setCellValue("IMPUESTO");break;
+                case 18:celda.setCellValue("TOTAL");break;
+                case 19:celda.setCellValue("ORDEN REGISTRO");break;
+                case 20:celda.setCellValue("TIENE DETRACCION");break;
+                case 21:celda.setCellValue("TIPO DE DETRACCIÓN");break;
+                case 22:celda.setCellValue("TASA DE DETRACCIÓN");break;
+                case 23:celda.setCellValue("ESPLANILLA");break;
+            }
+        }
+        for(int i=0;i<row;i++){
+            fila = sheet1.createRow(i+1);
+            
+            celda = fila.createCell((short)0);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getIdclieprov());
+            
+            celda = fila.createCell((short)1);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getRazon_social());
+            
+            celda = fila.createCell((short)2);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getIddocumento());
+            
+            celda = fila.createCell((short)3);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getSerie());
+            
+            celda = fila.createCell((short)4);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getNumero());
+            
+            celda = fila.createCell((short)5);
+            celda.setCellStyle(estiloFila_date);
+            celda.setCellValue(WebUtil.fechaDMY(listReporte_facturacionTotal.get(i).getFecha(), 7));
+            
+            celda = fila.createCell((short)6);
+            celda.setCellStyle(estiloFila_date);
+            celda.setCellValue(WebUtil.fechaDMY(listReporte_facturacionTotal.get(i).getFecha_operacion(), 7));
+            
+            celda = fila.createCell((short)7);
+            celda.setCellStyle(estiloFila_date);
+            celda.setCellValue(WebUtil.fechaDMY(listReporte_facturacionTotal.get(i).getVencimiento(),7));
+            
+            celda = fila.createCell((short)8);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getIdmoneda());
+            
+            celda = fila.createCell((short)9);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getIdcuenta());
+            
+            celda = fila.createCell((short)10);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getIdccosto());
+            
+            celda = fila.createCell((short)11);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getConcepto());
+            
+            celda = fila.createCell((short)12);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getIdcliente());
+            
+            celda = fila.createCell((short)13);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getIdregimen());
+            
+            celda = fila.createCell((short)14);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(new BigDecimal(listReporte_facturacionTotal.get(i).getAfecto()).doubleValue());
+            
+            celda = fila.createCell((short)15);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getInafecto());
+            
+            celda = fila.createCell((short)16);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getIdimpuesto());
+            
+            celda = fila.createCell((short)17);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getImpuesto());
+            
+            celda = fila.createCell((short)18);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getTotal());
+            
+            celda = fila.createCell((short)19);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getOrdenregistro());
+            
+            celda = fila.createCell((short)20);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(Float.parseFloat(listReporte_facturacionTotal.get(i).getEsdetraccion().toString()));
+            
+            celda = fila.createCell((short)21);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getTipodetraccion());
+            
+            celda = fila.createCell((short)22);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getTasadetraccion());
+            
+            celda = fila.createCell((short)23);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getEsplanilla());
+        }
+        /*AUTOAJUSTE EN LA HOJA*/
+        for (int as = 0; as < col; as++) {
+            objWB.getSheetAt(1).autoSizeColumn((short) as);
+        }
+        
+        /*CREAR OTRA HOJA DETALLADO NISIRA*/
+        HSSFSheet sheet2 = objWB.createSheet("DETALLADO "+this.idtiposervicio+" "+WebUtil.fechaDMY(getDesde(),8)+" "+WebUtil.fechaDMY(getHasta(),8));
+        fila_cabecera = sheet2.createRow((short)0);
+        col = 48;
+        row = listReporte_facturacionTotal.size();
+        for(int i=0 ;i<col;i++){
+            celda = fila_cabecera.createCell((short)i);
+            celda.setCellStyle(estiloCelda);
+            switch(i){
+                case 0:celda.setCellValue("IDCLIEPROV");break;
+                case 1:celda.setCellValue("RAZON SOCIAL");break;
+                case 2:celda.setCellValue("IDDOCUMENTO");break;
+                case 3:celda.setCellValue("SERIE");break;
+                case 4:celda.setCellValue("NUMERO");break;
+                case 5:celda.setCellValue("FECHA");break;
+                case 6:celda.setCellValue("FECHA OPERACION");break;
+                case 7:celda.setCellValue("VENCIMIENTO");break;
+                case 8:celda.setCellValue("IDMONEDA");break;
+                case 9:celda.setCellValue("IDCUENTA");break;
+                case 10:celda.setCellValue("IDCCOSTO");break;
+                case 11:celda.setCellValue("CONCEPTO");break;
+                case 12:celda.setCellValue("IDCLIENTE");break;
+                case 13:celda.setCellValue("IDREGIMEN");break;
+                case 14:celda.setCellValue("AFECTO");break;
+                case 15:celda.setCellValue("INAFECTO");break;
+                case 16:celda.setCellValue("IDIMPUESTO");break;
+                case 17:celda.setCellValue("IMPUESTO");break;
+                case 18:celda.setCellValue("TOTAL");break;
+                case 19:celda.setCellValue("ORDEN REGISTRO");break;
+                case 20:celda.setCellValue("TIENE DETRACCION");break;
+                case 21:celda.setCellValue("TIPO DE DETRACCIÓN");break;
+                case 22:celda.setCellValue("TASA DE DETRACCIÓN");break;
+                case 23:celda.setCellValue("ESPLANILLA");break;
+                /*AGREGAR CAMPOS ADICIONALES*/
+                case 24:celda.setCellValue("DOC SER");break;
+                case 25:celda.setCellValue("SERIE SER");break;
+                case 26:celda.setCellValue("NUMERO SER");break;
+                case 27:celda.setCellValue("FECHA SER");break;
+                case 28:celda.setCellValue("RUC");break;
+                case 29:celda.setCellValue("CLIENTE");break;
+                case 30:celda.setCellValue("CARGO");break;
+                case 31:celda.setCellValue("CODOPERACION");break;
+                case 32:celda.setCellValue("RUTA SERV");break;
+                case 33:celda.setCellValue("FECHA INICIO");break;
+                case 34:celda.setCellValue("HORA INICIO");break;
+                case 35:celda.setCellValue("HORA FIN");break;
+                case 36:celda.setCellValue("FECHA FIN");break;
+                case 37:celda.setCellValue("HORAS SERVICIO");break;
+                case 38:celda.setCellValue("HORAS E.C");break;
+                case 39:celda.setCellValue("HORAS ADICIONAL");break;
+                case 40:celda.setCellValue("COSTO RxH");break;
+                case 41:celda.setCellValue("COSTO H.ADICIONAL");break;
+                case 42:celda.setCellValue("COSTO BONO");break;
+                /*AGREGAR CAMPOS ADICIONALES - TAREO*/
+                case 43:celda.setCellValue("T.HORA REQ.");break;
+                case 44:celda.setCellValue("T.HORA LLEGADA");break;
+                case 45:celda.setCellValue("T.HORA INICIO");break;
+                case 46:celda.setCellValue("T.HORA FIN");break;
+                case 47:celda.setCellValue("T.HORA LIBERACION");break;
+            }
+        }
+        for(int i=0;i<row;i++){
+            fila = sheet2.createRow(i+1);
+            
+            celda = fila.createCell((short)0);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getIdclieprov());
+            
+            celda = fila.createCell((short)1);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getRazon_social());
+            
+            celda = fila.createCell((short)2);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getIddocumento());
+            
+            celda = fila.createCell((short)3);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getSerie());
+            
+            celda = fila.createCell((short)4);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getNumero());
+            
+            celda = fila.createCell((short)5);
+            celda.setCellStyle(estiloFila_date);
+            celda.setCellValue(WebUtil.fechaDMY(listReporte_facturacionTotal.get(i).getFecha(), 7));
+            
+            celda = fila.createCell((short)6);
+            celda.setCellStyle(estiloFila_date);
+            celda.setCellValue(WebUtil.fechaDMY(listReporte_facturacionTotal.get(i).getFecha_operacion(), 7));
+            
+            celda = fila.createCell((short)7);
+            celda.setCellStyle(estiloFila_date);
+            celda.setCellValue(WebUtil.fechaDMY(listReporte_facturacionTotal.get(i).getVencimiento(),7));
+            
+            celda = fila.createCell((short)8);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getIdmoneda());
+            
+            celda = fila.createCell((short)9);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getIdcuenta());
+            
+            celda = fila.createCell((short)10);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getIdccosto());
+            
+            celda = fila.createCell((short)11);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getConcepto());
+            
+            celda = fila.createCell((short)12);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getIdcliente());
+            
+            celda = fila.createCell((short)13);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getIdregimen());
+            
+            celda = fila.createCell((short)14);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(new BigDecimal(listReporte_facturacionTotal.get(i).getAfecto()).doubleValue());
+            
+            celda = fila.createCell((short)15);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getInafecto());
+            
+            celda = fila.createCell((short)16);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getIdimpuesto());
+            
+            celda = fila.createCell((short)17);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getImpuesto());
+            
+            celda = fila.createCell((short)18);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getTotal());
+            
+            celda = fila.createCell((short)19);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getOrdenregistro());
+            
+            celda = fila.createCell((short)20);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(Float.parseFloat(listReporte_facturacionTotal.get(i).getEsdetraccion().toString()));
+            
+            celda = fila.createCell((short)21);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getTipodetraccion());
+            
+            celda = fila.createCell((short)22);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getTasadetraccion());
+            
+            celda = fila.createCell((short)23);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getEsplanilla());
+            
+            /*AGREGAR CAMPOS ADICIONALES*/
+            celda = fila.createCell((short)24);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getDiddocumento());
+            
+            celda = fila.createCell((short)25);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getDserie());
+            
+            celda = fila.createCell((short)26);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getDnumero());
+            
+            celda = fila.createCell((short)27);
+            celda.setCellStyle(estiloFila_date);
+            celda.setCellValue(WebUtil.fechaDMY(listReporte_facturacionTotal.get(i).getDfecha_osc(), 7));
+            
+            celda = fila.createCell((short)28);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getIdcliente());
+            
+            celda = fila.createCell((short)29);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getDcliente());
+            
+            celda = fila.createCell((short)30);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getDidcargo()+" "+listReporte_facturacionTotal.get(i).getCargo());
+        
+            celda = fila.createCell((short)31);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getDcodoperaciones_ec());
+            
+            celda = fila.createCell((short)32);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getRutaservicio());
+            
+            celda = fila.createCell((short)33);
+            celda.setCellStyle(estiloFila_date);
+            celda.setCellValue(WebUtil.fechaDMY(listReporte_facturacionTotal.get(i).getDfecharegistro(), 7));
+            
+            celda = fila.createCell((short)34);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getDhi_s());
+            
+            celda = fila.createCell((short)35);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getDhf_s());
+            
+            celda = fila.createCell((short)36);
+            celda.setCellStyle(estiloFila_date);
+            celda.setCellValue(WebUtil.fechaDMY(listReporte_facturacionTotal.get(i).getDfechafinregistro(), 7));
+            
+            celda = fila.createCell((short)37);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getDhs_s());
+            
+            celda = fila.createCell((short)38);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getDhbase());
+            
+            celda = fila.createCell((short)39);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getDhadicional());
+            
+            celda = fila.createCell((short)40);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getDcosto_rh());
+            
+            celda = fila.createCell((short)41);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getDhcosto_adicional());
+            
+            celda = fila.createCell((short)42);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getDcosto_bono());
+            
+            /************************** HORAS TAREO ***************************/
+            celda = fila.createCell((short)43);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getShora_req());
+            
+            celda = fila.createCell((short)44);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getShora_llegada());
+            
+            celda = fila.createCell((short)45);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getShora_inicio_serv());
+            
+            celda = fila.createCell((short)46);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getShora_fin_serv());
+            
+            celda = fila.createCell((short)47);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listReporte_facturacionTotal.get(i).getShora_liberacion());
+        }
+        /*AUTOAJUSTE EN LA HOJA*/
+        for (int as = 0; as < col; as++) {
+            objWB.getSheetAt(2).autoSizeColumn((short) as);
+        }
+    }
+    public void cargarDatosGenerales_detalle(){
+        if(!listReporte_facturacion.isEmpty()){
+            for(Reporte_facturacion cb:listReporte_facturacion){
+                for(int i=0;i<listReporte_facturacionTotal.size();i++){
+                    if(listReporte_facturacionTotal.get(i).getIdclieprov().trim().equals(cb.getIdclieprov().trim())){
+                        listReporte_facturacionTotal.get(i).setIddocumento(cb.getIddocumento());
+                        listReporte_facturacionTotal.get(i).setSerie(cb.getSerie());
+                        listReporte_facturacionTotal.get(i).setIdmoneda(cb.getIdmoneda());
+                        listReporte_facturacionTotal.get(i).setIdcuenta(cb.getIdcuenta());
+                        listReporte_facturacionTotal.get(i).setCuenta(cb.getCuenta());
+                        listReporte_facturacionTotal.get(i).setIdccosto(cb.getIdccosto());
+                        listReporte_facturacionTotal.get(i).setConcepto(cb.getConcepto());
+                        listReporte_facturacionTotal.get(i).setIdregimen(cb.getIdregimen());
+                        listReporte_facturacionTotal.get(i).setIdimpuesto(cb.getIdimpuesto());
+                        listReporte_facturacionTotal.get(i).setTipodetraccion(cb.getTipodetraccion());
+                        listReporte_facturacionTotal.get(i).setTipodetraccion_descripcion(cb.getTipodetraccion_descripcion());
+                        listReporte_facturacionTotal.get(i).setTasadetraccion(cb.getTasadetraccion());
+                        /**** Calcular ****/
+                        if(listReporte_facturacionTotal.get(i).getIdregimen().toString().trim().equals("01")){
+                            listReporte_facturacionTotal.get(i).setAfecto(listReporte_facturacionTotal.get(i).getTcosto());
+                            listReporte_facturacionTotal.get(i).setInafecto(0.0f);
+                        }else if(listReporte_facturacionTotal.get(i).getIdregimen().toString().trim().equals("02")){
+
+                        }else if(listReporte_facturacionTotal.get(i).getIdregimen().toString().trim().equals("03")){
+                            listReporte_facturacionTotal.get(i).setAfecto(0.0f);
+                            listReporte_facturacionTotal.get(i).setInafecto(listReporte_facturacionTotal.get(i).getTcosto());
+                        }
+                        if(listReporte_facturacionTotal.get(i).getIdimpuesto()==null){
+                            listReporte_facturacionTotal.get(i).setIdimpuesto("000");
+                            listReporte_facturacionTotal.get(i).setImpuesto(0.0f);
+                        }else{
+                            Float[] array = impuestoDao.getImpuesto(user.getIDEMPRESA(), listReporte_facturacionTotal.get(i).getIdimpuesto().toString());
+                            Float imp = array[1];
+                            Float imp_dec =  imp/100;
+                            listReporte_facturacionTotal.get(i).setResta_base(array[0].intValue());
+                            listReporte_facturacionTotal.get(i).setIdimpuesto(listReporte_facturacionTotal.get(i).getIdimpuesto().toString());
+                            if(listReporte_facturacionTotal.get(i).getIdregimen().trim().equals("01")){
+                                listReporte_facturacionTotal.get(i).setImpuesto(listReporte_facturacionTotal.get(i).getAfecto()*imp_dec);
+                            }else if(listReporte_facturacionTotal.get(i).getIdregimen().trim().equals("03")){
+                                listReporte_facturacionTotal.get(i).setImpuesto(listReporte_facturacionTotal.get(i).getInafecto()*imp_dec);
+                            }
+                        }
+                        listReporte_facturacionTotal.get(i).setTotal(listReporte_facturacionTotal.get(i).getAfecto()+listReporte_facturacionTotal.get(i).getInafecto()+
+                                (listReporte_facturacionTotal.get(i).getImpuesto()*(listReporte_facturacionTotal.get(i).getResta_base()==1?-1:1)));
+                    }
+                    
+                }
+            }
         }
     }
     public String fechaDMY(Date fecha){

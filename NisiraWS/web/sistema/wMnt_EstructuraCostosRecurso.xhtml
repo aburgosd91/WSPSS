@@ -55,11 +55,19 @@
                                         </f:facet>
                                         <h:outputText value="#{listEstructura_costos_clieprov.idclieprov}"/>
                                     </p:column>
-                                    <p:column style="width:15%;" filterBy="#{listEstructura_costos_clieprov.razon_social}" filterMatchMode="contains" sortBy="#{listEstructura_costos_clieprov.razon_social}">
+                                    <p:column style="width:65%;" filterBy="#{listEstructura_costos_clieprov.razon_social}" filterMatchMode="contains" sortBy="#{listEstructura_costos_clieprov.razon_social}">
                                         <f:facet name="header" >
                                             <h:outputText value="Razón" />
                                         </f:facet>
                                         <h:outputText value="#{listEstructura_costos_clieprov.razon_social}" />
+                                    </p:column>
+                                    <p:column style="width:15%;" filterBy="#{listEstructura_costos_clieprov.costoh_fijo}" filterMatchMode="contains" sortBy="#{listEstructura_costos_clieprov.razon_social}">
+                                        <f:facet name="header" >
+                                            <h:outputText value="Costo Hora - Fijo" />
+                                        </f:facet>
+                                        <h:outputText value="#{listEstructura_costos_clieprov.costoh_fijo}">
+                                            <f:convertNumber pattern="#0.00" />
+                                        </h:outputText>
                                     </p:column>
                                 </p:dataTable>  
                             </p:fieldset>
@@ -77,6 +85,8 @@
                                             <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{estructuracostosrecursoAction.estructura_costos_clieprov.idclieprov}" disabled="#{!estructuracostosrecursoAction.edicion}"/>
                                             <p:inputText size="50" readonly="true" value="#{estructuracostosrecursoAction.estructura_costos_clieprov.razon_social}" disabled="#{!estructuracostosrecursoAction.edicion}"/>
                                         </h:panelGrid>
+                                        <p:outputLabel value="Costo Hora - Serv.Fijo:" />
+                                        <p:inputNumber value="#{estructuracostosrecursoAction.estructura_costos_clieprov.costoh_fijo}" decimalPlaces="2"/>
                                     </p:panelGrid>
                                     <br/>
                                     <p:toolbar>
@@ -166,6 +176,10 @@
                                             <p:inputText  size="10" readonly="true"  value="#{estructuracostosrecursoAction.estructura_costos_producto.idruta}" />
                                             <p:inputText  size="50" readonly="true"  value="#{estructuracostosrecursoAction.estructura_costos_producto.descripcion_ruta}" />
                                         </h:panelGrid>
+                                        <p:outputLabel value="Rango - Dias:" />
+                                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{estructuracostosrecursoAction.onFormularioEstructuraCostosProductoDiasRango}" 
+                                                         disabled="#{estructuracostosrecursoAction.datoEdicion.codigo eq null?true:false}"  icon="ui-icon-search">
+                                        </p:commandButton>
                                     </p:panelGrid>
                                     <br/>
                                     <p:toolbar>
@@ -328,7 +342,6 @@
                                     </p:dataTable>
                                 </p:tab>
                             </p:tabView>
-                            
                             <p:dialog id="dlgnew_estructura_costos_mano_obra" header="..::Estructura - Costos - Mano - Obra::." widgetVar="dlgnew_estructura_costos_mano_obra" modal="true" showEffect="popup" closable="false">
                                 <p:panelGrid columns="1" columnClasses="no-border">
                                     <p:panelGrid columns="2" columnClasses="no-border, no-border">
@@ -461,6 +474,20 @@
                             </p:cellEditor>
                         </p:column>
                     </p:dataTable>
+            </p:dialog>
+            <p:dialog id="dlgEstructura_costos_producto_diasrango" header="..:: Dias - Rango Servicio ::." widgetVar="dlgEstructura_costos_producto_diasrango" modal="true" showEffect="popup" closable="true">
+                <p:dataList value="#{estructuracostosrecursoAction.listEstructura_costos_producto_diasrango}" var="diasrango" type="definition">
+                    <p:selectBooleanCheckbox value="#{diasrango.seleccion}"/>
+                    <h:outputText value="#{diasrango.dia}" style="display:inline-block"/>
+                </p:dataList>
+                <br/>
+                <p:toolbar>
+                    <f:facet name="right">
+                        <p:commandButton value="Grabar" ajax="true" actionListener="#{estructuracostosrecursoAction.grabar_estructura_costos_diasrango()}" 
+                                         image="ui-icon-grabar" update="datos:growl"/>
+                        <p:commandButton value="Cancelar" process="@this"  image="ui-icon-cancelar" onclick="PF('dlgEstructura_costos_producto_diasrango').hide()" />
+                    </f:facet>
+                </p:toolbar> 
             </p:dialog>
             <p:growl id="growl" life="4000" showDetail="false"  />
             <cmp:mDialogElimina_lst id="cmpDialog" bean="#{estructuracostosrecursoAction}" ventana="MNT" />

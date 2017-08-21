@@ -103,6 +103,32 @@ public class RutasDao extends BaseDao<Rutas> {
         }
             return lista;
         }
+        public ArrayList<Rutas> filtroPorEmpresaDescripcionWeb(String idempresa,String descripcion) throws NisiraORMException {
+            ArrayList<Rutas> lista = new ArrayList<Rutas>();
+        try
+        {
+            ResultSet rs = null;
+            rs = execProcedure("GETRUTAS_FILTRO_TMPSS",idempresa,descripcion);
+            while (rs.next()) {
+                Rutas ruta = new Rutas();
+                ruta.setIdempresa(rs.getString("IDEMPRESA").trim());
+                ruta.setIdruta(rs.getString("IDRUTA")!=null?rs.getString("IDRUTA").trim():"");
+                ruta.setDescripcion(rs.getString("DESCRIPCION")!=null?rs.getString("DESCRIPCION").trim():"");
+                ruta.setKilometros(rs.getFloat("KILOMETROS"));
+                ruta.setPeaje(rs.getString("PEAJE")!=null?rs.getString("PEAJE").trim():"");
+                ruta.setFechacreacion(rs.getDate("FECHACREACION"));
+                ruta.setEstado(rs.getInt("ESTADO"));
+                ruta.setOrigen(rs.getString("ORIGEN")!=null?rs.getString("ORIGEN").trim():"");
+                ruta.setDestino(rs.getString("DESTINO")!=null?rs.getString("DESTINO").trim():"");
+                ruta.setOrigendesc(rs.getString("ORIGEND")!=null?rs.getString("ORIGEND").trim():"");
+                ruta.setDestinodesc(rs.getString("DESTINOD")!=null?rs.getString("DESTINOD").trim():"");
+                lista.add(ruta);        
+            }
+        } catch(Exception ex) {
+            ex.printStackTrace();
+        }
+            return lista;
+        }
         /*nuevo / editar*/
         public String grabar(int tipo,Rutas obj) throws Exception {
             String mensaje="";

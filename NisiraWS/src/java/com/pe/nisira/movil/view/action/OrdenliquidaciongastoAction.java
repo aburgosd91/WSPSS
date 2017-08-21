@@ -401,7 +401,7 @@ public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidac
         getDordenliquidaciongasto().setIddocumento(doc.getIddocumento());
         getDordenliquidaciongasto().setDocumento(doc.getDescripcion());
         if(doc.getIddocumento().equalsIgnoreCase("FAC")){
-            getDordenliquidaciongasto().setPimpuesto((new ImpuestoDao()).getImpuesto(getDatoEdicion().getIdempresa(),"001"));
+            getDordenliquidaciongasto().setPimpuesto((new ImpuestoDao()).getImpuesto(getDatoEdicion().getIdempresa(),"001")[1]);
             getDordenliquidaciongasto().setInafecto(0f);
             getDordenliquidaciongasto().setImporte(0f);
         }else{

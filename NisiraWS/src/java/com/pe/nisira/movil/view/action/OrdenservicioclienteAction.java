@@ -59,6 +59,7 @@ import com.nisira.core.entity.Producto;
 import com.nisira.core.entity.Ruta;
 import com.nisira.core.entity.Ruta_servicios;
 import com.nisira.core.entity.Rutas;
+import com.nisira.core.entity.Ubigeo;
 import static com.pe.nisira.movil.view.action.AbstactListAction.modalGoogleMapOptions;
 import static com.pe.nisira.movil.view.action.AbstactListAction.modalOptions;
 import com.pe.nisira.movil.view.bean.UsuarioBean;
@@ -73,6 +74,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -206,6 +208,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
     private List<Float> lstHoras;
     private List<Rutas> lstComboRutas;
     private String log_consola;
+    private Rutas newRutas;
     /************************************* DATOS *****************************************/
     private int num_repetir;
     private int num_repetir_detalle;
@@ -224,6 +227,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
             ruta_servicios = new Ruta_servicios();
             dpersonal_servicio = new Dpersonal_servicio();
             cabercerDet_tareoweb = new Det_tareoweb();
+            newRutas = new Rutas();
             /*********************************LISTAS*******************************************/
             lstdordenserviciocliente = new ArrayList<Dordenserviciocliente>();
             listDocumentos = new ArrayList<Documentos>();
@@ -454,10 +458,21 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
     public void eliminar() {
         try {
             if (getOpc_anular_eliminar().equalsIgnoreCase("ANULAR")) {
-                String msj = (new Det_tareowebDao()).verificacionPersonalServicio_det_tareoweb_global(getDatoEdicion().getIdempresa(),getDatoEdicion().getIdordenservicio());
-                if(!msj.trim().equals("")){
-                    mostrarLog_txt("************* TAREO EXISTENE *************"+"\n"+msj.trim());
-                }else{
+                if(getDatoEdicion().getTipo_servicio().trim().equals("E")){
+                    String msj = (new Det_tareowebDao()).verificacionPersonalServicio_det_tareoweb_global(getDatoEdicion().getIdempresa(),getDatoEdicion().getIdordenservicio());
+                    if(!msj.trim().equals("")){
+                        mostrarLog_txt("************* TAREO EXISTENE *************"+"\n"+msj.trim());
+                    }else{
+                        getDatoEdicion().setIdestado("AN");
+                        mensaje=getOrdenservicioclienteDao().anular(getDatoEdicion(),user.getIDUSUARIO());
+                        if(mensaje!=null){
+                            setMensaje(WebUtil.exitoEliminar("Orden servicio cliente", mensaje));
+                            WebUtil.info(getMensaje());
+                            setLvalidate(true);
+                            buscarFiltro(2);
+                        }
+                    }
+                }else if(getDatoEdicion().getTipo_servicio().trim().equals("F")){
                     getDatoEdicion().setIdestado("AN");
                     mensaje=getOrdenservicioclienteDao().anular(getDatoEdicion(),user.getIDUSUARIO());
                     if(mensaje!=null){
@@ -467,6 +482,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                         buscarFiltro(2);
                     }
                 }
+                
             }
         } catch (Exception ex) {
             Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, null, ex);
@@ -525,49 +541,79 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
         try {
             List lst;
             if(getDatoSeleccionado() != null){
-                /*VERIFICAR - DATOS*/
-                List<Personal_servicio> lisPers = personal_servicioDao.listarPorOrdenServicioClienteWeb_Total(getDatoSeleccionado().getIdempresa(),
-                        getDatoSeleccionado().getIdordenservicio());
-                if(!lisPers.isEmpty()){
-                    String msj = verificacionOrdenservicioDetalle_cerrado(lisPers);
-                    if(msj.trim().equals("")){
-                        lst = new ArrayList<>();
-                        lst.add(getDatoEdicion());
-                        this.mensaje = getOrdenservicioclienteDao().cierreMasivo(1,lst);
-                        setMensaje(WebUtil.exitoRegistrar("Orden Servicio ", mensaje));
-                        WebUtil.info(getMensaje());
-                        setSelectListOrdenserviciocliente(new ArrayList<>());
-                        buscarFiltro(2);
+                if(getDatoSeleccionado().getIdestado().trim().equals("AN")){
+                    this.mensaje = "Orden se encuentra ANULADA";
+                    WebUtil.error(getMensaje());
+                    RequestContext.getCurrentInstance().update("datos:growl");
+                }else if(getDatoSeleccionado().getTipo_servicio().trim().equals("E")){
+                    /*VERIFICAR - DATOS*/
+                    List<Personal_servicio> lisPers = personal_servicioDao.listarPorOrdenServicioClienteWeb_Total(getDatoSeleccionado().getIdempresa(),
+                            getDatoSeleccionado().getIdordenservicio());
+                    if(!lisPers.isEmpty()){
+                        String msj = verificacionOrdenservicioDetalle_cerrado(lisPers);
+                        if(msj.trim().equals("")){
+                            lst = new ArrayList<>();
+                            lst.add(getDatoSeleccionado());
+                            this.mensaje = getOrdenservicioclienteDao().cierreMasivo(1,lst);
+                            setMensaje(WebUtil.exitoRegistrar("Orden Servicio ", mensaje));
+                            WebUtil.info(getMensaje());
+                            setSelectListOrdenserviciocliente(new ArrayList<>());
+                            buscarFiltro(2);
+                        }else{
+                            this.mensaje = "Documento no se puede cerrar.\n"+msj;
+                            WebUtil.MensajeError(this.mensaje);
+                        }
                     }else{
-                        this.mensaje = "Documento no se puede cerrar.\n"+msj;
+                        this.mensaje = "Documento no se puede cerrar.\n"+"No existe detalle personal";
                         WebUtil.MensajeError(this.mensaje);
                     }
-                }else{
-                    this.mensaje = "Documento no se puede cerrar.\n"+"No existe detalle personal";
-                    WebUtil.MensajeError(this.mensaje);
+                }else if(getDatoSeleccionado().getTipo_servicio().trim().equals("F")){
+                    lst = new ArrayList<>();
+                    lst.add(getDatoSeleccionado());
+                    this.mensaje = getOrdenservicioclienteDao().cierreMasivo(1,lst);
+                    setMensaje(WebUtil.exitoRegistrar("Orden Servicio ", mensaje));
+                    WebUtil.info(getMensaje());
+                    setSelectListOrdenserviciocliente(new ArrayList<>());
+                    buscarFiltro(2);
                 }
+                
             }else if(getDatoEdicion()!= null){
-                /*VERIFICAR - DATOS*/
-                List<Personal_servicio> lisPers = personal_servicioDao.listarPorOrdenServicioClienteWeb_Total(getDatoEdicion().getIdempresa(),
-                        getDatoEdicion().getIdordenservicio());
-                if(!lisPers.isEmpty()){
-                    String msj = verificacionOrdenservicioDetalle_cerrado(lisPers);
-                    if(msj.trim().equals("")){
-                        lst = new ArrayList<>();
-                        lst.add(getDatoSeleccionado());
-                        this.mensaje = getOrdenservicioclienteDao().cierreMasivo(1,lst);
-                        setMensaje(WebUtil.exitoRegistrar("Orden Servicio ", mensaje));
-                        WebUtil.info(getMensaje());
-                        setSelectListOrdenserviciocliente(new ArrayList<>());
-                        buscarFiltro(2);
+                if(getDatoEdicion().getIdestado().trim().equals("AN")){
+                    this.mensaje = "Orden se encuentra ANULADA";
+                    WebUtil.error(getMensaje());
+                    RequestContext.getCurrentInstance().update("datos:growl");
+                }else if(getDatoEdicion().getTipo_servicio().trim().equals("E")){
+                    /*VERIFICAR - DATOS*/
+                    List<Personal_servicio> lisPers = personal_servicioDao.listarPorOrdenServicioClienteWeb_Total(getDatoEdicion().getIdempresa(),
+                            getDatoEdicion().getIdordenservicio());
+                    if(!lisPers.isEmpty()){
+                        String msj = verificacionOrdenservicioDetalle_cerrado(lisPers);
+                        if(msj.trim().equals("")){
+                            lst = new ArrayList<>();
+                            lst.add(getDatoEdicion());
+                            this.mensaje = getOrdenservicioclienteDao().cierreMasivo(1,lst);
+                            setMensaje(WebUtil.exitoRegistrar("Orden Servicio ", mensaje));
+                            WebUtil.info(getMensaje());
+                            setSelectListOrdenserviciocliente(new ArrayList<>());
+                            buscarFiltro(2);
+                        }else{
+                            this.mensaje = "Documento no se puede cerrar.\n"+msj;
+                            WebUtil.MensajeError(this.mensaje);
+                        }
                     }else{
-                        this.mensaje = "Documento no se puede cerrar.\n"+msj;
+                        this.mensaje = "Documento no se puede cerrar.\n"+"No existe detalle personal";
                         WebUtil.MensajeError(this.mensaje);
                     }
-                }else{
-                    this.mensaje = "Documento no se puede cerrar.\n"+"No existe detalle personal";
-                    WebUtil.MensajeError(this.mensaje);
+                }else if(getDatoEdicion().getTipo_servicio().trim().equals("F")){
+                    lst = new ArrayList<>();
+                    lst.add(getDatoEdicion());
+                    this.mensaje = getOrdenservicioclienteDao().cierreMasivo(1,lst);
+                    setMensaje(WebUtil.exitoRegistrar("Orden Servicio ", mensaje));
+                    WebUtil.info(getMensaje());
+                    setSelectListOrdenserviciocliente(new ArrayList<>());
+                    buscarFiltro(2);
                 }
+                
             }else{
                 this.mensaje = "Seleccionar Documento";
                 WebUtil.MensajeError(this.mensaje);
@@ -1228,6 +1274,9 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                         obj_p.setItemreferencia(dordenserviciocliente.getItemreferencia());
                         obj_p.setIdservicio(dordenserviciocliente.getIdservicio());
                         obj_p.setConductor_cliente(dordenserviciocliente.getConductor_cliente());
+                        obj_p.setBrevete(dordenserviciocliente.getBrevete());
+                        obj_p.setIdruta_viaje(dordenserviciocliente.getIdruta_viaje());
+                        obj_p.setRuta_viaje(dordenserviciocliente.getRuta_viaje());
                         obj_p.setHora_rc(dordenserviciocliente.getHora_rc());
                         obj_p.setGlosa(dordenserviciocliente.getGlosa());
                         obj_p.setCodoperaciones(dordenserviciocliente.getCodoperaciones());
@@ -1237,6 +1286,18 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                         obj_p.setDescripcion(dordenserviciocliente.getDescripcion());
                         obj_p.setRuta_ec(dordenserviciocliente.getRuta_ec());
                         lstdordenserviciocliente.add(obj_p);
+                        /****************************** Rutas _ servicio ***************************/
+                        if(!WebUtil.isnull(dordenserviciocliente.getIdruta_viaje(), "").equals("")){
+                            Ruta_servicios rt = new Ruta_servicios();
+                            rt.setIdempresa(user.getIDEMPRESA());
+                            rt.setIdordenservicio(dordenserviciocliente.getIdordenservicio());
+                            rt.setItem(obj_p.getItem());
+                            rt.setItemruta(agregarItemRuta_servicios());
+                            rt.setIdruta(obj_p.getIdruta_viaje());
+                            rt.setRuta(obj_p.getRuta_viaje());
+                            listRutasTotales.add(rt);
+                            listRuta_servicios = cargarRuta_servicios();   
+                        }
                         /*CREAR CARGOS APARTIR DE LA ESTRUCTURA*/
                         List<Estructura_costos_mano_obra> lstmo = estructura_costos_mano_obraDao.listarPorEmpresaWebXproducto(user.getIDEMPRESA(), 
                                 obj_p.getIdreferencia(),obj_p.getIdservicio(),obj_p.getItemreferencia());
@@ -1262,6 +1323,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                                 per_ser.setNro_oservicio(getDatoEdicion().getNro_oservicio());
                                 per_ser.setPlaca_cliente(obj_p.getPlaca_cliente());
                                 per_ser.setConductor_cliente(obj_p.getConductor_cliente());
+                                per_ser.setBrevete_cliente(obj_p.getBrevete());
                                 listPersonalservicio_total.add(per_ser);
                             }
                             setSelectPersonal_servicio(per_ser);
@@ -1276,10 +1338,8 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                 setBotonNuevoRuta_servicios(false);
                 /*** CONFIGURACIONES ****/
                 configuracion_motivo_detalle(getDatoEdicion().getIdmotivo());
-                
                 listPersonal_Servicio = cargarPersonal_servicio(dordenserviciocliente);
                 listRuta_servicios = cargarRuta_servicios();
-                
                 RequestContext.getCurrentInstance().update("datos:lstdordenserviciocliente");
                 RequestContext.getCurrentInstance().update("datos:tabs:listPersonal_Servicio");
                 RequestContext.getCurrentInstance().update("datos:listRuta_servicios");
@@ -1537,7 +1597,14 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
     /***************** DETALLE CODIGO OPERACIONES ********************/
     public void verCntCodoperaciones_pss(){
         if(getDatoEdicion().getTipo_servicio().trim().equals("E")){
-            RequestContext.getCurrentInstance().openDialog("cntCodoperaciones_pss", modalOptions, null);
+            Map<String, List<String>> params = new HashMap<String, List<String>>();
+            List<String> values = new ArrayList<String>();
+//            if(getDatoEdicion().getTipo_servicio().trim().equals("E"))
+                values.add("ESPECIAL");
+//            else if(getDatoEdicion().getTipo_servicio().trim().equals("F"))
+//                values.add("FIJO");
+            params.put("tipo", values);
+            RequestContext.getCurrentInstance().openDialog("cntCodoperaciones_pss", modalParamsOptions, params);
         }else if(getDatoEdicion().getTipo_servicio().trim().equals("F")){
             verCntProducto();
         }
@@ -1647,17 +1714,14 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
         if(getDatoEdicion().getIdclieprov()!=null){
             Map<String, List<String>> params = new HashMap<String, List<String>>();
             List<String> values = new ArrayList<String>();
-            values.add(getDatoEdicion().getIdclieprov());
+            values.add(getDatoEdicion().getIdclieprov()+","+"FIJO");
             params.put("codigo_estructura", values);
-            RequestContext.getCurrentInstance().openDialog("cntEstructura_Costos_Producto", modalParamsOptions, params);
+            RequestContext.getCurrentInstance().openDialog("cntEstructura_Costos_Producto_Servicio", modalParamsOptions, params);
         }else{
             mensaje = "No existe registro <ESTRUCTURA_COSTOS_CLIEPROV>";
             WebUtil.error(mensaje);
             RequestContext.getCurrentInstance().update("datos:growl");
         }
-//        }else{
-//            RequestContext.getCurrentInstance().openDialog("cntProducto", modalOptions, null);
-//        }
     }
     public void valorProducto(SelectEvent event) {
         if(getDatoEdicion().getIdmotivo().trim().equalsIgnoreCase("FIP")){
@@ -2059,10 +2123,23 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
     public void verCntRuta() {
         RequestContext.getCurrentInstance().openDialog("cntRutas", modalOptions, null);
     }
+    public void verCntRutaMantenedor() {
+        this.newRutas = new Rutas();
+        this.newRutas.setIdempresa(user.getIDEMPRESA());
+        this.newRutas.setEstado(1);
+        RequestContext.getCurrentInstance().update("datos:rutas_mantenedor");
+        RequestContext.getCurrentInstance().execute("PF('rutas_mantenedor').show()");
+        //RequestContext.getCurrentInstance().openDialog("cntMantenedorRutas", modalOptions, null);
+    }
     public void valorRuta(SelectEvent event) {
         this.setSelectRutas((Rutas) event.getObject());
         this.getRuta_servicios().setIdruta(this.selectRutas.getIdruta());
         this.getRuta_servicios().setRuta(this.selectRutas.getDescripcion());
+    }
+    public void valorRuta_detalle(SelectEvent event) {
+        Rutas rs = (Rutas) event.getObject();
+        this.getDordenserviciocliente().setIdruta_viaje(rs.getIdruta());
+        this.getDordenserviciocliente().setRuta_viaje(rs.getDescripcion());
     }
     public void openGMap() {
         RequestContext.getCurrentInstance().openDialog("cnt_geocode", modalGoogleMapOptions, null);
@@ -2073,6 +2150,62 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
         this.getRuta_servicios().setLongitud(getSelectGmap().getLongitud());
         RequestContext.getCurrentInstance().update("datos:dlgnew_ruta_servicios:latitud");
         RequestContext.getCurrentInstance().update("datos:dlgnew_ruta_servicios:longitud");
+    }
+    public void verCntUbigeoOrigen() {
+        RequestContext.getCurrentInstance().openDialog("cntUbigeo", modalOptions, null);
+    }
+
+    public void valorUbigeoOrigen(SelectEvent event) {
+        Ubigeo ob = (Ubigeo) event.getObject();
+        getNewRutas().setOrigen(ob.getIdubigeo());
+        getNewRutas().setOrigendesc(ob.getDescripcion());
+
+    }
+
+    public void verCntUbigeoDestino() {
+        RequestContext.getCurrentInstance().openDialog("cntUbigeo", modalOptions, null);
+    }
+
+    public void valorUbigeoDestino(SelectEvent event) {
+        Ubigeo ob = (Ubigeo) event.getObject();
+        getNewRutas().setDestino(ob.getIdubigeo());
+        getNewRutas().setDestinodesc(ob.getDescripcion());
+    }
+    public boolean validarEdicion_newruta() throws NisiraORMException {
+        if (getNewRutas().getDescripcion() == null || getNewRutas().getDescripcion().equalsIgnoreCase("")) {
+            WebUtil.MensajeAdvertencia("Ingrese Descripción de Ruta nueva");
+            RequestContext.getCurrentInstance().update("datos:growl");
+            return false;
+        }
+        ArrayList<Rutas> lst_ru = (new RutasDao()).filtroPorEmpresaDescripcionWeb(user.getIDEMPRESA(),getNewRutas().getDescripcion());
+        if(!lst_ru.isEmpty()){
+            WebUtil.MensajeAdvertencia("Existe ruta con la misma descripción");
+            RequestContext.getCurrentInstance().update("datos:growl");
+            return false;
+        }
+        return true;
+    }
+    public void grabarRutaNew() {
+        try {
+            if (validarEdicion_newruta()) {
+                mensaje = (new RutasDao()).grabar(1, getNewRutas());
+                if (mensaje != null) {
+                    if (mensaje.trim().length() == 6) {
+                        getNewRutas().setIdruta(mensaje.trim());
+                    }
+                }
+                setMensaje(WebUtil.exitoRegistrar("Ruta ", mensaje));
+                WebUtil.info(getMensaje());
+                RequestContext.getCurrentInstance().update("datos:growl");
+                RequestContext.getCurrentInstance().execute("PF('rutas_mantenedor').hide()");
+            }
+        } catch (Exception ex) {
+            setMensaje(ex.getMessage() + "\n" + ex.getLocalizedMessage());
+            Logger.getLogger(OrdenliquidaciongastoAction.class.getName()).log(Level.SEVERE, null, ex);
+            WebUtil.fatal(mensaje);
+            RequestContext.getCurrentInstance().update("datos:growl");
+        }
+        ;
     }
     /***************** GENERADOR ID *********************/    
     public String agregarItemDordenservicio(){
@@ -3514,6 +3647,20 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
      */
     public void setCabercerDet_tareoweb(Det_tareoweb cabercerDet_tareoweb) {
         this.cabercerDet_tareoweb = cabercerDet_tareoweb;
+    }
+
+    /**
+     * @return the newRutas
+     */
+    public Rutas getNewRutas() {
+        return newRutas;
+    }
+
+    /**
+     * @param newRutas the newRutas to set
+     */
+    public void setNewRutas(Rutas newRutas) {
+        this.newRutas = newRutas;
     }
 
 }

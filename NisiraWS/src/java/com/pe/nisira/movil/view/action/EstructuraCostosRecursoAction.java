@@ -14,6 +14,7 @@ import com.nisira.core.dao.Estructura_costos_clieprovDao;
 import com.nisira.core.dao.Estructura_costos_mano_obraDao;
 import com.nisira.core.dao.Estructura_costos_mano_obra_detalladoDao;
 import com.nisira.core.dao.Estructura_costos_productoDao;
+import com.nisira.core.dao.Estructura_costos_producto_diasrangoDao;
 import com.nisira.core.dao.MonedaDao;
 import com.nisira.core.dao.MonedasDao;
 import com.nisira.core.dao.SucursalDao;
@@ -29,6 +30,7 @@ import com.nisira.core.entity.Estructura_costos_clieprov;
 import com.nisira.core.entity.Estructura_costos_mano_obra;
 import com.nisira.core.entity.Estructura_costos_mano_obra_detallado;
 import com.nisira.core.entity.Estructura_costos_producto;
+import com.nisira.core.entity.Estructura_costos_producto_diasrango;
 import com.nisira.core.entity.Monedas;
 import com.nisira.core.entity.Multitabla;
 import com.nisira.core.entity.Producto;
@@ -104,6 +106,7 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
     private Destructura_costos_recursosDao destructura_costos_recursosDao;
     private Estructura_costos_mano_obraDao estructura_costos_mano_obraDao;
     private Estructura_costos_mano_obra_detalladoDao estructura_costos_mano_obra_detalladoDao;
+    private Estructura_costos_producto_diasrangoDao estructura_costos_producto_diasrangoDao;
     /*ARRAY*/
     private List<String> lstTipoRecurso;
     private List<Es_PorcentajeCombo> lstEs_porcentaje;
@@ -119,6 +122,8 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
     private List<Monedas> listMoneda;
     private List<Estructura_costos_mano_obra_detallado> listTotalEstructura_costos_mano_obra_detallado;
     private List<Estructura_costos_mano_obra_detallado> listEstructura_costos_mano_obra_detallado;
+    private List<Estructura_costos_producto_diasrango> listEstructura_costos_producto_diasrango;
+    private List<Estructura_costos_producto_diasrango> listTotalEstructura_costos_producto_diasrango;
     /***************** ENTITY ****************/
     private Estructura_costos_mano_obra estructura_costos_mano_obra; 
     private Estructura_costos_mano_obra_detallado estructura_costos_mano_obra_detallado; 
@@ -177,6 +182,7 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
         destructura_costos_recursosDao = new Destructura_costos_recursosDao();
         estructura_costos_mano_obraDao = new Estructura_costos_mano_obraDao();
         estructura_costos_mano_obra_detalladoDao = new Estructura_costos_mano_obra_detalladoDao();
+        estructura_costos_producto_diasrangoDao = new Estructura_costos_producto_diasrangoDao();
         /*ARRAY*/
         listEstructura_costos_clieprov = new ArrayList<>();
         listEstructura_costos_producto = new ArrayList<>();
@@ -187,6 +193,7 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
         listMoneda = new ArrayList<>();
         listEstructura_costos_mano_obra_detallado= new ArrayList<>();
         listTotalEstructura_costos_mano_obra_detallado= new ArrayList<>();
+        listEstructura_costos_producto_diasrango= new ArrayList<>();
         /*ENTITY*/
         selectEstructura_costos_clieprov = new Estructura_costos_clieprov();
         selectEstructura_costos_producto = new Estructura_costos_producto();
@@ -298,7 +305,6 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
                         getListTotalEstructura_costos_mano_obra_detallado(),
                         user.getIDUSUARIO());
                 if(mensaje!=null)
-                    if(mensaje.trim().length()==15)
                         getDatoEdicion().setCodigo(mensaje.trim());
             }
             else
@@ -801,6 +807,38 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
             RequestContext.getCurrentInstance().execute("PF('dlgEstructura_costos_mano_obra_detallado').show()");
         }
     }
+    public void grabar_estructura_costos_diasrango() {
+        try {
+            mensaje=getEstructura_costos_producto_diasrangoDao().grabar( 
+                        getDatoEdicion().getIdempresa(),
+                        getDatoEdicion().getCodigo(),
+                        listEstructura_costos_producto_diasrango,
+                        user.getIDUSUARIO());
+            RequestContext.getCurrentInstance().execute("PF('dlgEstructura_costos_producto_diasrango').hide()");
+        } catch (Exception ex) {
+            Logger.getLogger(EstructuraCostosRecursoAction.class.getName()).log(Level.SEVERE, null, ex);
+            setMensaje(ex.getMessage());
+            WebUtil.MensajeError(mensaje);
+            RequestContext.getCurrentInstance().update("datos:growl");
+        }
+    }
+    /****************************** ESTRUCTURA COSTOS PRODUCTO DIAS X RANGO******************************/
+    public void onFormularioEstructuraCostosProductoDiasRango(){
+        try {
+            if(getEstructura_costos_producto()!=null){
+                listEstructura_costos_producto_diasrango = estructura_costos_producto_diasrangoDao.listarPorEmpresaWeb(getEstructura_costos_producto().getIdempresa(),
+                        getEstructura_costos_producto().getCodigo(), getEstructura_costos_producto().getIdproducto(), getEstructura_costos_producto().getItem(),
+                        getEstructura_costos_producto().getNhoras(), getEstructura_costos_producto().getCodoperativo(), getEstructura_costos_producto().getIdruta());
+                RequestContext.getCurrentInstance().update("datos:dlgEstructura_costos_producto_diasrango");
+                RequestContext.getCurrentInstance().execute("PF('dlgEstructura_costos_producto_diasrango').show()");
+            }
+        } catch (NisiraORMException ex) {
+            Logger.getLogger(EstructuraCostosRecursoAction.class.getName()).log(Level.SEVERE, null, ex);
+            mensaje = ex.getMessage();
+            WebUtil.error(mensaje);
+            RequestContext.getCurrentInstance().update("datos:growl");
+        }
+    }
     /************COPIAR ESTRUCTURA COSTOS DE OTRO CLIENTE**************/
     public void openDialogCopyEstructura(){
         selectClieprov_copy = new Clieprov();
@@ -944,14 +982,16 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
             if(estructura_costos_clieprov.getIdclieprov().isEmpty()){
                 mensaje = "Seleccionar Cliente";
                 WebUtil.error(mensaje);
-            }
-            else if(existeCliente(estructura_costos_clieprov.getIdclieprov())){
-                mensaje = "Cliente repetido";
-                WebUtil.error(mensaje);
             }else{
                 int pos=listEstructura_costos_clieprov.indexOf(estructura_costos_clieprov);
-                if(pos==-1)
-                    listEstructura_costos_clieprov.add(estructura_costos_clieprov);
+                if(pos==-1){
+                    if(existeCliente(estructura_costos_clieprov.getIdclieprov())){
+                        mensaje = "Cliente repetido";
+                        WebUtil.error(mensaje);
+                    }else{
+                        listEstructura_costos_clieprov.add(estructura_costos_clieprov);
+                    }
+                }
                 else
                     listEstructura_costos_clieprov.set(pos, estructura_costos_clieprov);
                 RequestContext.getCurrentInstance().update("datos:listEstructura_costos_clieprov");
@@ -1194,10 +1234,6 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
             WebUtil.error(mensaje);
             RequestContext.getCurrentInstance().update("datos");
         }
-//        else if(existeCargo(estructura_costos_mano_obra.getIdcargo())){
-//            mensaje = "Cargo repetido";
-//            WebUtil.error(mensaje);
-//        }
         else{
             estructura_costos_mano_obra.setCosto(this.costo_mano_obra);
             int pos=listTotalEstructura_costos_mano_obra.indexOf(estructura_costos_mano_obra);
@@ -1207,8 +1243,6 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
                 listTotalEstructura_costos_mano_obra.set(pos, estructura_costos_mano_obra);
             listEstructura_costos_mano_obra = listarPorEmpresaWebXProducto_Estructura_costos_mano_obra_action();
             RequestContext.getCurrentInstance().update("datos:tabs:listEstructura_costos_mano_obra");
-//            tabView.setActiveIndex(indexTab);
-//            RequestContext.getCurrentInstance().update("datos:listEstructura_costos_producto");
             RequestContext.getCurrentInstance().update("datos:dlgnew_estructura_costos_mano_obra");
             RequestContext.getCurrentInstance().execute("PF('dlgnew_estructura_costos_mano_obra').hide()");
         }
@@ -2247,6 +2281,48 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
      */
     public void setVexcluir(boolean vexcluir) {
         this.vexcluir = vexcluir;
+    }
+
+    /**
+     * @return the estructura_costos_producto_diasrangoDao
+     */
+    public Estructura_costos_producto_diasrangoDao getEstructura_costos_producto_diasrangoDao() {
+        return estructura_costos_producto_diasrangoDao;
+    }
+
+    /**
+     * @param estructura_costos_producto_diasrangoDao the estructura_costos_producto_diasrangoDao to set
+     */
+    public void setEstructura_costos_producto_diasrangoDao(Estructura_costos_producto_diasrangoDao estructura_costos_producto_diasrangoDao) {
+        this.estructura_costos_producto_diasrangoDao = estructura_costos_producto_diasrangoDao;
+    }
+
+    /**
+     * @return the listEstructura_costos_producto_diasrango
+     */
+    public List<Estructura_costos_producto_diasrango> getListEstructura_costos_producto_diasrango() {
+        return listEstructura_costos_producto_diasrango;
+    }
+
+    /**
+     * @param listEstructura_costos_producto_diasrango the listEstructura_costos_producto_diasrango to set
+     */
+    public void setListEstructura_costos_producto_diasrango(List<Estructura_costos_producto_diasrango> listEstructura_costos_producto_diasrango) {
+        this.listEstructura_costos_producto_diasrango = listEstructura_costos_producto_diasrango;
+    }
+
+    /**
+     * @return the listTotalEstructura_costos_producto_diasrango
+     */
+    public List<Estructura_costos_producto_diasrango> getListTotalEstructura_costos_producto_diasrango() {
+        return listTotalEstructura_costos_producto_diasrango;
+    }
+
+    /**
+     * @param listTotalEstructura_costos_producto_diasrango the listTotalEstructura_costos_producto_diasrango to set
+     */
+    public void setListTotalEstructura_costos_producto_diasrango(List<Estructura_costos_producto_diasrango> listTotalEstructura_costos_producto_diasrango) {
+        this.listTotalEstructura_costos_producto_diasrango = listTotalEstructura_costos_producto_diasrango;
     }
     
     public class Es_PorcentajeCombo{

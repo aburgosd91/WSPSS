@@ -117,7 +117,7 @@ public class Rpt_tareoweb_facturacionAction extends AbstactListAction<Ordenservi
             /**********************************CONTROLADOR*************************************/
             listWtiposervicio = wtiposervicioDao.listarPorEmpresaWeb(user.getIDEMPRESA());
             /********************************** CONFIGURACIÓN - SERVIDOR ***********************/
-            idtiposervicio = "002";
+            idtiposervicio = "ESPECIAL";
             type_formato_rpt = "Formato";
             lst_type_rpt= new String[2];
             lst_type_rpt[0]="Formato";

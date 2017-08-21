@@ -203,7 +203,7 @@ public class Mod_tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
             filtroFecha = new Date();
             btn_asignar_personal = true;
             num_repetir = 1;
-            /*********************************LISTAS*******************************************/
+            /********************************* LISTAS *******************************************/
             listDocumentos =  new ArrayList<>();
             lista_solution  = new ArrayList<>();
             listAlmacenes = new ArrayList<>();
@@ -214,7 +214,7 @@ public class Mod_tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
             listProgramacion  = new ArrayList<>();
             listTipo_asistencia  = new ArrayList<>();
             listConcepto_tareo  = new ArrayList<>();
-            /*********************************DAO**********************************************/
+            /********************************* DAO **********************************************/
             documentoDao = new DocumentosDao();
             det_tareoweb_verificationDao = new Det_tareowebDao();
             tareoWebDao = new Det_tareowebDao();
@@ -253,7 +253,7 @@ public class Mod_tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
         }catch (Exception ex) {
             Logger.getLogger(Mod_tareoweb_fijoAction.class.getName()).log(Level.SEVERE, null, ex);
         }
-        actualiza_ventana("wMnt_Tareoweb_fijo");
+        actualiza_ventana("wMnt_Tareoweb");
     }
     public void actionBotonFiltro(){
         try {

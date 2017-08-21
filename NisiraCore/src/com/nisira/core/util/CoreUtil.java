@@ -190,7 +190,7 @@ public final class CoreUtil {
         }else if(time.trim().equals("__:__")){
             return 0.0f;
         }else if(time.trim().equals("24:00"))
-            return 24.0f;
+            return 0.0f;
         else if(time.trim().equals("00:00"))
             return 0.0f;
         else{

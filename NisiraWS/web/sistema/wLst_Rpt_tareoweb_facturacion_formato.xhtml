@@ -14,8 +14,8 @@
             <p:panelGrid columns="4" style="border: 0px solid ;font-size: 11px !important;padding: 0px !important" id="panelHeader">
                 <p:outputLabel for="tiposervicio"  value="Tipo Servicio:" />
                 <p:selectOneMenu id="tiposervicio" value="#{rpt_tareoweb_facturacion_formatoAction.idtiposervicio}">    
-                    <p:ajax listener="#{rpt_tareoweb_facturacion_formatoAction.onTiposervicio()}"/>
-                    <f:selectItems value="#{rpt_tareoweb_facturacion_formatoAction.listWtiposervicio}" var="tiposer" itemLabel="(#{tiposer.descripcion_corta}) #{tiposer.descripcion}" itemValue="#{tiposer.idtiposervicio}" />
+                    <f:selectItem itemLabel="ESPECIAL" itemValue="ESPECIAL" />
+                    <f:selectItem itemLabel="FIJO" itemValue="FIJO" />
                 </p:selectOneMenu>
             </p:panelGrid>
             <br/>
@@ -32,7 +32,11 @@
                     scrollable="true" scrollWidth="99%"
                    selection="#{rpt_tareoweb_facturacion_formatoAction.selectReporte_facturacion}" 
                    selectionMode="single" rowKey="#{lst_rpt.item}"  
-                   resizableColumns="true" editable="true" editMode="cell" >
+                   resizableColumns="true" editable="true" editMode="cell" 
+                   rows="25"
+                   paginator="true"
+                   paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                   rowsPerPageTemplate="25,35,50,70,100">
                 <p:ajax event="cellEdit" listener="#{rpt_tareoweb_facturacion_formatoAction.onCellEdit}" update="tbl"/>
                  <f:facet name="header">
                      Provisión Documentos x Pagar (#{rpt_tareoweb_facturacion_formatoAction.listReporte_facturacion.size()}) - #{rpt_tareoweb_facturacion_formatoAction.fechaDMY(rpt_tareoweb_facturacion_formatoAction.desde)} - #{rpt_tareoweb_facturacion_formatoAction.fechaDMY(rpt_tareoweb_facturacion_formatoAction.hasta)}
@@ -141,8 +145,11 @@
                                 <p:column style="width:10%">
                                     <h:outputText value="#{planctas.idcuenta}" />
                                  </p:column>
-                                 <p:column style="width:90%">
+                                 <p:column style="width:50%">
                                      <h:outputText value="#{planctas.descripcion}" />
+                                 </p:column>
+                                <p:column style="width:40%">
+                                     <h:outputText value="#{planctas.descreqv}" />
                                  </p:column>
                             </p:autoComplete>
                         </f:facet>
@@ -284,6 +291,9 @@
                             </p:inputNumber>
                         </f:facet>
                     </p:cellEditor>
+                </p:column>
+                <p:column headerText="Planilla?" filterBy="#{lst_rpt.esplanilla}" sortBy="#{lst_rpt.esplanilla}" style="white-space: nowrap; width: 30px;padding: 3px;text-align: center">
+                    <h:outputText value="#{lst_rpt.esplanilla}"/>
                 </p:column>
              </p:dataTable> 
             <p:contextMenu for="tbl">

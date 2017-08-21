@@ -57,10 +57,17 @@ public class Dordenserviciocliente implements Serializable{
         @Columna
         @XStreamAlias("IDRUTA_EC")
         private String idruta_ec;
+        @Columna
+        @XStreamAlias("BREVETE")
+        private String brevete;
+        @Columna
+        @XStreamAlias("IDRUTA_VIAJE")
+        private String idruta_viaje;
         private String vehiculo;
         private Date hora_reqConvert;
         private String descripcion;
         private String ruta_ec;
+        private String ruta_viaje;
 	/* Sets & Gets */
 	public void setIdempresa(String idempresa) {
 		this.idempresa = idempresa;
@@ -296,6 +303,48 @@ public class Dordenserviciocliente implements Serializable{
      */
     public void setRuta_ec(String ruta_ec) {
         this.ruta_ec = ruta_ec;
+    }
+
+    /**
+     * @return the brevete
+     */
+    public String getBrevete() {
+        return brevete;
+    }
+
+    /**
+     * @param brevete the brevete to set
+     */
+    public void setBrevete(String brevete) {
+        this.brevete = brevete;
+    }
+
+    /**
+     * @return the idruta_viaje
+     */
+    public String getIdruta_viaje() {
+        return idruta_viaje;
+    }
+
+    /**
+     * @param idruta_viaje the idruta_viaje to set
+     */
+    public void setIdruta_viaje(String idruta_viaje) {
+        this.idruta_viaje = idruta_viaje;
+    }
+
+    /**
+     * @return the ruta_viaje
+     */
+    public String getRuta_viaje() {
+        return ruta_viaje;
+    }
+
+    /**
+     * @param ruta_viaje the ruta_viaje to set
+     */
+    public void setRuta_viaje(String ruta_viaje) {
+        this.ruta_viaje = ruta_viaje;
     }
 
 }

@@ -25,12 +25,12 @@ public class Codoperaciones_pssDao extends BaseDao<Codoperaciones_pss> {
 		}
 	}
         /*APP WEB*/
-        public ArrayList<Codoperaciones_pss> listarPorEmpresaWeb_Activo() throws NisiraORMException {
+        public ArrayList<Codoperaciones_pss> listarPorEmpresaWeb_Activo(String filtro) throws NisiraORMException {
             ArrayList<Codoperaciones_pss> lista = new ArrayList<Codoperaciones_pss>();
         try
         {
             ResultSet rs = null;
-            rs = execProcedure("GETCODOPERACIONES_PSS_ACTIVO_TMPSS");
+            rs = execProcedure("GETCODOPERACIONES_PSS_ACTIVO_TMPSS",filtro);
             while (rs.next()) {
                 Codoperaciones_pss codoperaciones_pss = new Codoperaciones_pss();
                 codoperaciones_pss.setIdcodoperaciones(rs.getString("IDCODOPERACIONES").trim());

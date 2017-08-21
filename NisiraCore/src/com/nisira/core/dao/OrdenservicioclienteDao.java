@@ -393,6 +393,7 @@ public class OrdenservicioclienteDao extends BaseDao<Ordenserviciocliente> {
                 reporte_facturacion.setDidruta(rs.getString("DIDRUTA")!=null?rs.getString("DIDRUTA").trim():"");
                 reporte_facturacion.setCargo(rs.getString("DCARGO")!=null?rs.getString("DCARGO").trim():"");
                 reporte_facturacion.setRutaservicio(rs.getString("RUTASERVICIOS")!=null?rs.getString("RUTASERVICIOS").trim():"");
+                reporte_facturacion.setEsplanilla(rs.getInt("ESPLANILLA"));
                 lista.add(reporte_facturacion); 
             }
             return lista;

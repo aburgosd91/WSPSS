@@ -59,6 +59,7 @@ public class Estructura_costos_clieprovDao extends BaseDao<Estructura_costos_cli
                     estructura_costos_clieprov.setIdclieprov(rs.getString("IDCLIEPROV")!=null?rs.getString("IDCLIEPROV").trim():"");
                     estructura_costos_clieprov.setRazon_social(rs.getString("RAZON_SOCIAL")!=null?rs.getString("RAZON_SOCIAL").trim():"");
                     estructura_costos_clieprov.setEstructuracostos(rs.getString("ESTRUCTURACOSTOS")!=null?rs.getString("ESTRUCTURACOSTOS").trim():"");
+                    estructura_costos_clieprov.setCostoh_fijo(rs.getFloat("COSTOH_FIJO"));
                     lista.add(estructura_costos_clieprov);                             
                 }
             } catch(Exception ex) {

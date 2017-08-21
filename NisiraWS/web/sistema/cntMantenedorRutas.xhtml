@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <title>Formulario Rutas</title>
+        <style type="text/css">
+            .ui-widget {
+                font-size: 90%;
+            }
+        </style>
+        <link href="../css/estilos.css" type="text/css" rel="stylesheet" />
+    </h:head>
+    <h:body>
+        <h:form id="datos">
+            #{cntMantenedor_rutaAction.cargarDatos()}
+            <p:dataTable id="listRutaMant" var="car" value="#{cntMantenedor_rutaAction.datos}" 
+                         paginator="true"
+                         rows="7"
+                         resizableColumns="true"
+                         paginatorPosition="top"
+                         selectionMode="single" 
+                         selection="#{cntMantenedor_rutaAction.selectRutas}" 
+                         paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" 
+                         rowKey="#{car.idruta}" 
+                         style="width: 100%;font-size: 11px;height: 100%">
+                <f:facet name="{Comandos}">
+                    <p:commandButton id="btnDgen" value="Nuevo" ajax="true" image="ui-icon-nuevo"  actionListener="#{cntMantenedor_rutaAction.newrutas()}" />
+                    <p:commandButton id="btDedit" value="Editar" ajax="true" image="ui-icon-edit"  actionListener="#{cntMantenedor_rutaAction.editrutas()}" />
+                    <p:commandButton id="btDdel" value="Eliminar" ajax="true" image="ui-icon-eliminar"  actionListener="#{cntMantenedor_rutaAction.delrutas()}" />
+                </f:facet>
+                <p:column headerText="Código" filterBy="#{car.idruta}" filterMatchMode="contains" filterStyle="width: 75%" style="width: 8%;padding: 3px !important;text-align: center">
+                    <h:outputText value="#{car.idruta}" />
+                </p:column>
+                <p:column headerText="Descripción" filterBy="#{car.descripcion}" filterMatchMode="contains" filterStyle="width: 75%" style="width: 40%;padding: 3px !important;text-align: center">
+                    <h:outputText value="#{car.descripcion}" />
+                </p:column>
+                <p:column headerText="Origen" filterBy="#{car.origendesc}" filterMatchMode="contains" filterStyle="width: 75%" style="width: 20%;padding: 3px !important;text-align: center">
+                    <h:outputText value="#{car.origendesc}" />
+                </p:column>
+                <p:column headerText="Destino" filterBy="#{car.destinodesc}" filterMatchMode="contains" filterStyle="width: 75%" style="width: 20%;padding: 3px !important;text-align: center">
+                    <h:outputText value="#{car.destinodesc}" />
+                </p:column>
+            </p:dataTable>
+            <p:dialog header="#{cntMantenedor_rutaAction.ladd eq 1?'Nueva Ruta':'Editar Ruta'}" id="rutas_mantenedor" widgetVar="rutas_mantenedor" modal="true" closable="true">
+                <p:panelGrid columns="2" columnClasses="no-border,no-border">
+                    <p:outputLabel value="Código: " />
+                    <p:inputText id="idruta" size="3"
+                                 disabled="true" value="#{cntMantenedor_rutaAction.datoEdicion.idruta}"/>
+                    <p:outputLabel for="descripcion"  value="Descripcion:" />
+                    <p:inputTextarea id="descripcion" cols="60" rows="2"
+                                     value="#{cntMantenedor_rutaAction.datoEdicion.descripcion}" 
+                                     onkeyup="javascript:this.value = this.value.toUpperCase();">
+                        <p:ajax event="valueChange" immediate="true" process="@this"/>
+                    </p:inputTextarea>
+                    <p:outputLabel value="Estado: " />
+                    <p:selectBooleanCheckbox value="#{cntMantenedor_rutaAction.estado}" />
+                    <p:outputLabel value="Origen: " />
+                    <p:panelGrid id="cntUbiOr" columns="2" columnClasses="no-border,no-border">
+                        <p:inputText value="#{cntMantenedor_rutaAction.datoEdicion.origendesc}"/>
+                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{cntMantenedor_rutaAction.verCntUbigeoOrigen()}" icon="ui-icon-search">
+                            <p:ajax event="dialogReturn" listener="#{cntMantenedor_rutaAction.valorUbigeoOrigen}" update="datos:cntUbiOr"/>
+                        </p:commandButton>
+                    </p:panelGrid>
+                    <p:outputLabel value="Destino: " />
+                    <p:panelGrid id="cntUbiDest" columns="2" columnClasses="no-border,no-border">
+                        <p:inputText value="#{cntMantenedor_rutaAction.datoEdicion.destinodesc}"/>
+                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{cntMantenedor_rutaAction.verCntUbigeoDestino()}" icon="ui-icon-search">
+                            <p:ajax event="dialogReturn" listener="#{cntMantenedor_rutaAction.valorUbigeoDestino}" update="datos:cntUbiDest"/>
+                        </p:commandButton>
+                    </p:panelGrid>
+                    <p:commandButton value="Grabar" actionListener="#{cntMantenedor_rutaAction.grabar()}"/>
+                    <p:commandButton value="Cancelar" actionListener="#{cntMantenedor_rutaAction.selectFromDialog}"/>
+                </p:panelGrid>
+            </p:dialog>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+        </h:form>
+    </h:body>
+</html>

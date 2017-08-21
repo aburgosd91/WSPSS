@@ -2,8 +2,11 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:p="http://primefaces.org/ui">
-
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <f:metadata>
+        <f:viewParam name="tipo" value="#{cntCodoperaciones_pssAction.tipo}"/>
+    </f:metadata>
     <h:head>
         <title>Código de Operaciones</title>
         <style type="text/css">
@@ -14,6 +17,7 @@
     </h:head>
     <h:body>
         <h:form>
+            #{cntCodoperaciones_pssAction.cargarDatos()}
             <p:dataTable var="car" value="#{cntCodoperaciones_pssAction.datos}" 
                          paginator="true"
                          rows="7"

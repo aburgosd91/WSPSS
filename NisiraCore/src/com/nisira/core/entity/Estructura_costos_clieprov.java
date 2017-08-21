@@ -25,6 +25,9 @@ public class Estructura_costos_clieprov  implements Serializable{
     @XStreamAlias("ESTADO")
     @Columna
     private Float estado;
+    @Columna
+    @XStreamAlias("COSTOH_FIJO")
+    private Float costoh_fijo;
     private String razon_social;
     private String estructuracostos;
 
@@ -102,5 +105,19 @@ public class Estructura_costos_clieprov  implements Serializable{
      */
     public void setEstructuracostos(String estructuracostos) {
         this.estructuracostos = estructuracostos;
+    }
+
+    /**
+     * @return the costoh_fijo
+     */
+    public Float getCostoh_fijo() {
+        return costoh_fijo;
+    }
+
+    /**
+     * @param costoh_fijo the costoh_fijo to set
+     */
+    public void setCostoh_fijo(Float costoh_fijo) {
+        this.costoh_fijo = costoh_fijo;
     }
 }

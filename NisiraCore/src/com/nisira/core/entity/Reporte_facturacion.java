@@ -12,19 +12,6 @@ import java.util.List;
 @Tabla(nombre = "REPORTE_FACTURACION")
 public class Reporte_facturacion  implements Serializable {
 
-    /**
-     * @return the rutaservicio
-     */
-    public String getRutaservicio() {
-        return rutaservicio;
-    }
-
-    /**
-     * @param rutaservicio the rutaservicio to set
-     */
-    public void setRutaservicio(String rutaservicio) {
-        this.rutaservicio = rutaservicio;
-    }
     @XStreamAlias("IDCLIEPROV")
     private String idclieprov;
     @XStreamAlias("RAZON_SOCIAL")
@@ -213,6 +200,9 @@ public class Reporte_facturacion  implements Serializable {
     @XStreamAlias("DBREVETE_CLIENTE")
     @Columna
     private String dbrevete_cliente;
+    @XStreamAlias("ESPLANILLA")
+    @Columna
+    private Integer esplanilla;
     private Integer item;
     private String cuenta;
     private String tipodetraccion_descripcion;
@@ -234,6 +224,8 @@ public class Reporte_facturacion  implements Serializable {
     private String shora_inicio_serv;
     private String shora_fin_serv;
     private String shora_liberacion;
+    
+    private int resta_base;
     /**
      * @return the idclieprov
      */
@@ -1348,5 +1340,46 @@ public class Reporte_facturacion  implements Serializable {
      */
     public void setDbrevete_cliente(String dbrevete_cliente) {
         this.dbrevete_cliente = dbrevete_cliente;
+    }
+    /**
+     * @return the rutaservicio
+     */
+    public String getRutaservicio() {
+        return rutaservicio;
+    }
+
+    /**
+     * @param rutaservicio the rutaservicio to set
+     */
+    public void setRutaservicio(String rutaservicio) {
+        this.rutaservicio = rutaservicio;
+    }
+
+    /**
+     * @return the resta_base
+     */
+    public int getResta_base() {
+        return resta_base;
+    }
+
+    /**
+     * @param resta_base the resta_base to set
+     */
+    public void setResta_base(int resta_base) {
+        this.resta_base = resta_base;
+    }
+
+    /**
+     * @return the esplanilla
+     */
+    public Integer getEsplanilla() {
+        return esplanilla;
+    }
+
+    /**
+     * @param esplanilla the esplanilla to set
+     */
+    public void setEsplanilla(Integer esplanilla) {
+        this.esplanilla = esplanilla;
     }
 }
