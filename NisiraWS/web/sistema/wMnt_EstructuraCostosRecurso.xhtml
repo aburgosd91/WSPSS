@@ -209,13 +209,13 @@
                                                    <p:commandButton value="Eliminar" ajax="true" image="ui-icon-eliminar" actionListener="#{estructuracostosrecursoAction.eliminarDestructuraCostosRecurso()}" disabled="#{estructuracostosrecursoAction.botonEliminarDestructura_costos_recurso or !estructuracostosrecursoAction.edicion}"/>
                                                </f:facet>
                                                <p:column selectionMode="single" style="width:16px;text-align:center"/>
-                                               <p:column style="width:10%;" filterBy="#{listDestructura_costos_recursos.item}" filterMatchMode="contains" sortBy="#{listDestructura_costos_recursos.item}">
+                                               <p:column style="width:5%;" filterBy="#{listDestructura_costos_recursos.item}" filterMatchMode="contains" sortBy="#{listDestructura_costos_recursos.item}">
                                                    <f:facet name="header">
                                                        <h:outputText value="N°"/>
                                                    </f:facet>
                                                    <h:outputText value="#{listDestructura_costos_recursos.item}"/>
                                                 </p:column>
-                                                <p:column style="width:15%;" headerText="Tip. Rec." filterBy="#{listDestructura_costos_recursos.tipo_recurso}" filterMatchMode="contains" sortBy="#{listDestructura_costos_recursos.tipo_recurso}">
+                                                <p:column style="width:7%;" headerText="Tip. Rec." filterBy="#{listDestructura_costos_recursos.tipo_recurso}" filterMatchMode="contains" sortBy="#{listDestructura_costos_recursos.tipo_recurso}">
                                                     <p:cellEditor>
                                                        <f:facet name="output"><h:outputText value="#{listDestructura_costos_recursos.tipo_recurso}" /></f:facet>
                                                        <f:facet name="input">
@@ -225,7 +225,7 @@
                                                        </f:facet>
                                                    </p:cellEditor>
                                                </p:column>
-                                               <p:column style="width:55%;" headerText="Descripción" filterBy="#{listDestructura_costos_recursos.descripcion}" filterMatchMode="contains" sortBy="#{listDestructura_costos_recursos.descripcion}">
+                                               <p:column style="width:40%;" headerText="Descripción" filterBy="#{listDestructura_costos_recursos.descripcion}" filterMatchMode="contains" sortBy="#{listDestructura_costos_recursos.descripcion}">
                                                    <p:cellEditor>
                                                        <f:facet name="output">
                                                            <h:outputText value="#{listDestructura_costos_recursos.descripcion}"/>
@@ -261,7 +261,7 @@
                                                        </f:facet>
                                                    </p:cellEditor>
                                                </p:column>
-                                               <p:column style="width:15%;" headerText="Es_Porcentaje" filterBy="#{listDestructura_costos_recursos.es_porcentaje}" filterMatchMode="contains" sortBy="#{listDestructura_costos_recursos.es_porcentaje}">
+                                               <p:column style="width:6%;" headerText="Es Por.?" filterBy="#{listDestructura_costos_recursos.es_porcentaje}" filterMatchMode="contains" sortBy="#{listDestructura_costos_recursos.es_porcentaje}">
                                                     <p:cellEditor>
                                                        <f:facet name="output"><h:outputText value="#{listDestructura_costos_recursos.es_porcentaje}" /></f:facet>
                                                        <f:facet name="input">
@@ -271,7 +271,7 @@
                                                        </f:facet>
                                                    </p:cellEditor>
                                                </p:column>
-                                               <p:column style="width:15%;" headerText="U.M." filterBy="#{listDestructura_costos_recursos.idmedida}" filterMatchMode="contains" sortBy="#{listDestructura_costos_recursos.idmedida}">
+                                               <p:column style="width:5%;" headerText="U.M." filterBy="#{listDestructura_costos_recursos.idmedida}" filterMatchMode="contains" sortBy="#{listDestructura_costos_recursos.idmedida}">
                                                     <p:cellEditor>
                                                        <f:facet name="output"><h:outputText value="#{listDestructura_costos_recursos.idmedida}" /></f:facet>
                                                        <f:facet name="input">
@@ -281,6 +281,24 @@
                                                        </f:facet>
                                                    </p:cellEditor>
                                                </p:column>
+                                               <p:column headerText="idProducto" filterBy="#{listDestructura_costos_recursos.idproducto} - #{listDestructura_costos_recursos.idproducto_descripcion}" filterMatchMode="contains" sortBy="#{listDestructura_costos_recursos.idproducto} - #{listDestructura_costos_recursos.idproducto_descripcion}" style="white-space: nowrap; width: 250px;padding: 3px;text-align: left">
+                                                    <p:cellEditor >
+                                                        <f:facet name="output">
+                                                            <h:outputText value="#{listDestructura_costos_recursos.idproducto} - #{listDestructura_costos_recursos.idproducto_descripcion}"/>
+                                                        </f:facet>
+                                                        <f:facet name="input" >
+                                                            <p:autoComplete size="80" id="productos" value="#{listDestructura_costos_recursos.selectProductos}" maxResults="10" completeMethod="#{estructuracostosrecursoAction.completeProductos}"
+                                                                            var="productos" itemLabel="#{productos.idproducto}" itemValue="#{productos}" converter="productosConverter" forceSelection="true">
+                                                                <p:column style="width:10%">
+                                                                     <h:outputText value="#{productos.idproducto}" />
+                                                                 </p:column>
+                                                                 <p:column style="width:90%">
+                                                                     <h:outputText value="#{productos.descripcion}" />
+                                                                 </p:column>
+                                                            </p:autoComplete>
+                                                        </f:facet>
+                                                    </p:cellEditor>
+                                                </p:column>
                                            </p:dataTable>
                                     <p:layout style="min-width:100%;min-height:200px">
                                         <p:layoutUnit position="center">

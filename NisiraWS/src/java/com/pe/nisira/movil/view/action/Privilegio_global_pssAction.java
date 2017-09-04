@@ -30,7 +30,7 @@ import org.primefaces.event.SelectEvent;
 public class Privilegio_global_pssAction extends AbstactListAction<Privilegio_global_pss> implements Serializable {
 
     private String mensaje;
-     private Usuario selectUsuario;
+    private Usuario selectUsuario;
     private Privilegio_global_pssDao privilegio_global_pssDao;
     private UsuarioBean user;
     public Privilegio_global_pssAction() {

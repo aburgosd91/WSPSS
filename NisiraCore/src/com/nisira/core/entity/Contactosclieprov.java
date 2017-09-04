@@ -6,67 +6,97 @@ import com.nisira.annotation.Tabla;
 import java.util.Date;
 import com.nisira.annotation.RelacionTabla;
 import com.nisira.annotation.CampoRelacionado;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 import java.io.Serializable;
 
+@XStreamAlias("CONTACTOSCLIEPROV")
 @Tabla(nombre = "CONTACTOSCLIEPROV")
 public class Contactosclieprov  implements Serializable {
+        @XStreamAlias("IDBASEDATOS")
         private String idbasedatos;
 	@ClavePrimaria
 	@Columna
+        @XStreamAlias("IDEMPRESA")
 	private String idempresa;
 	@ClavePrimaria
 	@Columna
+        @XStreamAlias("IDCLIEPROV")
 	private String idclieprov;
 	@ClavePrimaria
 	@Columna
-	private String item;
+	@XStreamAlias("ITEM")
+        private String item;
 	@Columna
+        @XStreamAlias("NOMBRE")
 	private String nombre;
 	@Columna
+        @XStreamAlias("DIRECCION")
 	private String direccion;
 	@Columna
+        @XStreamAlias("TELEFONO1")
 	private String telefono1;
 	@Columna
-	private String telefono2;
+	@XStreamAlias("TELEFONO2")
+        private String telefono2;
 	@Columna
+        @XStreamAlias("TELEFONO3")
 	private String telefono3;
 	@Columna
+        @XStreamAlias("EMAIL")
 	private String email;
 	@Columna
+        @XStreamAlias("PREDETERMINADO")
 	private Float predeterminado;
 	@Columna
+        @XStreamAlias("ESTADO")
 	private Float estado;
 	@Columna
+        @XStreamAlias("SINCRONIZA")
 	private String sincroniza;
 	@Columna
+        @XStreamAlias("FECHACREACION")
 	private Date fechacreacion;
 	@Columna
+        @XStreamAlias("IDCARGO")
 	private String idcargo;
 	@Columna
+        @XStreamAlias("DNI")
 	private String dni;
 	@Columna
+        @XStreamAlias("APELLIDOPATERNO")
 	private String apellidopaterno;
 	@Columna
+        @XStreamAlias("APELLIDOMATERNO")
 	private String apellidomaterno;
 	@Columna
+        @XStreamAlias("SEXO")
 	private String sexo;
 	@Columna
+        @XStreamAlias("FECHA_NACIMIENTO")
 	private Date fecha_nacimiento;
 	@Columna
+        @XStreamAlias("DIRECCION_NUMERO")
 	private Float direccion_numero;
 	@Columna
+        @XStreamAlias("IDUBIGEO")
 	private String idubigeo;
 	@Columna
+        @XStreamAlias("IDESTADOCIVIL")
 	private String idestadocivil;
 	@Columna
+        @XStreamAlias("TELEFONO4")
 	private String telefono4;
 	@Columna
+        @XStreamAlias("TELEFONO5")
 	private String telefono5;
 	@Columna
+        @XStreamAlias("HORAPREF")
 	private String horapref;
 	@Columna
+        @XStreamAlias("MODOCONTACTO")
 	private String modocontacto;
 	@Columna
+        @XStreamAlias("CARGO")
 	private String cargo;
 	@Columna
 	private Float espropietario;

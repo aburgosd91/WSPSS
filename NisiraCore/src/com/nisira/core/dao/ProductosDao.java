@@ -57,7 +57,51 @@ public class ProductosDao extends BaseDao<Productos> {
         } catch(Exception ex) {
             ex.printStackTrace();
         }
-        return lista;
+            return lista;
+        }
+        public ArrayList<Productos> listarPorEmpresaWebxIdproducto(String idempresa,String idproducto) throws NisiraORMException {
+            ArrayList<Productos> lista = new ArrayList<Productos>();
+        try
+        {
+            ResultSet rs = null;
+            rs = execProcedure("GETPRODUCTOS_ESTRUCTURAXID_TMPSS",idempresa,idproducto);
+            while (rs.next()) {
+                Productos productos = new Productos();
+                productos.setIdbasedatos(rs.getString("IDBASEDATOS").trim());
+                productos.setIdempresa(rs.getString("IDEMPRESA").trim());
+                productos.setIdproducto(rs.getString("IDPRODUCTO").trim());
+                productos.setDescripcion(rs.getString("DESCRIPCION")!=null?rs.getString("DESCRIPCION").trim():"");
+                productos.setIdmedida(rs.getString("IDMEDIDA")!=null?rs.getString("IDMEDIDA").trim():"");
+//                productos.setRazonsocial(rs.getString("RAZONSOCIAL"));
+                productos.setEstado(rs.getFloat("ESTADO"));
+                lista.add(productos);
+            }
+        } catch(Exception ex) {
+            ex.printStackTrace();
+        }
+            return lista;
+        }
+        public ArrayList<Productos> listarPorEmpresaEstructuraWeb(String idempresa) throws NisiraORMException {
+            ArrayList<Productos> lista = new ArrayList<Productos>();
+        try
+        {
+            ResultSet rs = null;
+            rs = execProcedure("GETPRODUCTOS_ESTRUCTURA_TMPSS",idempresa);
+            while (rs.next()) {
+                Productos productos = new Productos();
+                productos.setIdbasedatos(rs.getString("IDBASEDATOS").trim());
+                productos.setIdempresa(rs.getString("IDEMPRESA").trim());
+                productos.setIdproducto(rs.getString("IDPRODUCTO").trim());
+                productos.setDescripcion(rs.getString("DESCRIPCION")!=null?rs.getString("DESCRIPCION").trim():"");
+                productos.setIdmedida(rs.getString("IDMEDIDA")!=null?rs.getString("IDMEDIDA").trim():"");
+//                productos.setRazonsocial(rs.getString("RAZONSOCIAL"));
+                productos.setEstado(rs.getFloat("ESTADO"));
+                lista.add(productos);
+            }
+        } catch(Exception ex) {
+            ex.printStackTrace();
+        }
+            return lista;
         }
         public ArrayList<Object> returnImpuestoxproducto(String idempresa, String idproducto,String fecha) throws NisiraORMException {
             ArrayList<Object> lista = new ArrayList<Object>();

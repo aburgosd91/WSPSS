@@ -186,6 +186,7 @@ public class Ordenliquidaciongasto  implements Serializable{
         @XStreamAlias("ESTADOSUNAT")
 	@Columna
 	private String estadosunat;
+        private String estado;
         private String moneda;
         private String sucursal;
         private String emisor;
@@ -727,6 +728,20 @@ public class Ordenliquidaciongasto  implements Serializable{
      */
     public void setMes(String mes) {
         this.mes = mes;
+    }
+
+    /**
+     * @return the estado
+     */
+    public String getEstado() {
+        return estado;
+    }
+
+    /**
+     * @param estado the estado to set
+     */
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 
 }

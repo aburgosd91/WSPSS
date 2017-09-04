@@ -1,0 +1,538 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        #{RegistroAction.buscarTodo()}
+        <style>
+            fieldset{
+                border: 1px solid #ddd !important;
+                margin: 0;
+                xmin-width: 0;
+                padding: 10px;       
+                position: relative;
+                border-radius:4px;
+                background-color:#f5f5f5;
+                padding-left:10px!important;
+            }	
+            legend{
+                margin-bottom: 0px; 
+                border: 1px solid #ddd;
+                border-radius: 4px; 
+                padding: 5px 5px 5px 10px;
+                border-left: 1px solid white;
+                border-right: 1px solid white;
+                /*text-align: center;*/
+                font-size: 12px;
+                font-weight:bold;
+                
+            }
+        </style>
+        <h:form id="form">
+            <p:fieldset legend="..:: Consulta SUNAT ::.." toggleable="true" collapsed="true">
+                <p:panelGrid columns="3" styleClass="ui-noborder">
+                    <p:outputLabel value="Código"/>
+                    <p:inputText id="codsunat" value="#{RegistroAction.idcodigo}" maxlength="11" 
+                                     onkeypress="if (event.which lt; 48 || event.which gt; 57) return false;"/>
+                    <p:commandButton  actionListener="#{RegistroAction.consultar_ruc()}"  value="    Consulta" icon="ui-icon-sunat"/>    
+                </p:panelGrid>
+            </p:fieldset>
+            <p:fieldset legend="..:: Formulario cliente ::..">
+                <p:panelGrid columns="5" styleClass="ui-noborder">
+                    <p:outputLabel value="Tipo :"/>
+                    <p:selectOneMenu value="#{RegistroAction.tiporegistro}" style="width: 100px;">
+                        <p:ajax update="form" listener="#{RegistroAction.getInicio()}"/>
+                        <f:selectItem itemLabel="Natural" itemValue="#{1}"/>
+                        <f:selectItem itemLabel="Juridica" itemValue="#{2}"/>
+                    </p:selectOneMenu>
+                    <p:commandButton  actionListener="#{RegistroAction.grabar()}"  value="Grabar" icon="ui-icon-disk"/>
+                    <p:outputLabel value="Aprobar?: " />
+                    <p:selectBooleanCheckbox value="#{RegistroAction.faprobar}" disabled="#{RegistroAction.baprobar}"/>
+                </p:panelGrid>
+                <p:panelGrid columns="2" styleClass="ui-noborder"> 
+                    <p:outputLabel value="Doc.Identidad:" rendered="#{RegistroAction.tiporegistro == 1 ? true:false}"/>
+                    <p:inputText value="#{RegistroAction.clienteNatural.IDDOCIDENTIDAD}" onkeypress="if (event.which lt; 48 || event.which gt; 57) return false;" 
+                                 rendered="#{RegistroAction.tiporegistro == 1 ? true:false}">
+                        <p:ajax event="blur" listener="#{RegistroAction.verificarNatural}" />
+                    </p:inputText>
+
+                    <p:outputLabel value="Apellido Paterno" rendered="#{RegistroAction.tiporegistro == 1 ? true:false}"/>
+                    <p:inputText value="#{RegistroAction.clienteNatural.APELLIDOPATERNO}" style="width: 200px;"
+                                 rendered="#{RegistroAction.tiporegistro == 1 ? true:false}"/>
+
+                    <p:outputLabel value="Apellido Materno" rendered="#{RegistroAction.tiporegistro == 1 ? true:false}"/>
+                    <p:inputText value="#{RegistroAction.clienteNatural.APELLIDOMATERNO}" style="width: 200px;"
+                                 rendered="#{RegistroAction.tiporegistro == 1 ? true:false}"/>
+
+                    <p:outputLabel value="Nombres" rendered="#{RegistroAction.tiporegistro == 1 ? true:false}"/>
+                    <p:inputText value="#{RegistroAction.clienteNatural.NOMBRES}" style="width: 200px;"
+                                 rendered="#{RegistroAction.tiporegistro == 1 ? true:false}"/>
+                </p:panelGrid>
+                <p:panelGrid columns="6" styleClass="ui-noborder" rendered="#{RegistroAction.tiporegistro == 1 ? true:false}">
+                    <p:outputLabel value="Departamento" rendered="#{RegistroAction.tiporegistro == 1 ? true:false}"/>
+                    <p:selectOneMenu id="departamento_natural" value="#{RegistroAction.clienteNatural.DEPARTAMENTO}" rendered="#{RegistroAction.tiporegistro == 1 ? true:false}">
+                        <p:ajax listener="#{RegistroAction.onDeptSelect()}" update=":form:provincial_natural,:form:ciudad_natural"/>
+                        <f:selectItems  value="#{RegistroAction.lstDept}" var="dept" itemLabel="#{dept[1]}" itemValue="#{dept[0]}"/>
+                    </p:selectOneMenu>
+                    <p:outputLabel value="Provincia" rendered="#{RegistroAction.tiporegistro == 1 ? true:false}"/>
+                    <p:selectOneMenu id="provincial_natural" value="#{RegistroAction.clienteNatural.PROVINCIA}" rendered="#{RegistroAction.tiporegistro == 1 ? true:false}">
+                        <p:ajax listener="#{RegistroAction.onProvSelect()}"  update=":form:ciudad_natural"/>
+                        <f:selectItem itemLabel="" itemValue="#{null}"/>
+                        <f:selectItems  value="#{RegistroAction.lstProv}" var="prov" itemLabel="#{prov[1]}" itemValue="#{prov[0]}"/>
+                    </p:selectOneMenu>
+                    <p:outputLabel value="Ciudad" rendered="#{RegistroAction.tiporegistro == 1 ? true:false}"/>
+                    <p:selectOneMenu id="ciudad_natural" value="#{RegistroAction.clienteNatural.DISTRITO}" rendered="#{RegistroAction.tiporegistro == 1 ? true:false}">
+                        <f:selectItem itemLabel="" itemValue="#{null}" />
+                        <f:selectItems  value="#{RegistroAction.lstDist}" var="ciu" itemLabel="#{ciu[1]}" itemValue="#{ciu[0]}"/>
+                    </p:selectOneMenu>
+                </p:panelGrid>
+                <p:panelGrid columns="2" styleClass="ui-noborder">
+                    <p:outputLabel value="Direccion" rendered="#{RegistroAction.tiporegistro == 1 ? true:false}"/>
+                    <p:inputTextarea value="#{RegistroAction.clienteNatural.DIRECCION}" rows="2" cols="50" rendered="#{RegistroAction.tiporegistro == 1 ? true:false}"/>
+
+                    <p:outputLabel value="Código Postal" rendered="#{RegistroAction.tiporegistro == 1 ? true:false}"/>
+                    <p:inputText value="#{RegistroAction.clienteNatural.CODIGOPOSTAL}" rendered="#{RegistroAction.tiporegistro == 1 ? true:false}"/>
+
+                    <p:outputLabel value="Email" rendered="#{RegistroAction.tiporegistro == 1 ? true:false}"/>
+                    <p:inputText value="#{RegistroAction.clienteNatural.EMAIL}" rendered="#{RegistroAction.tiporegistro == 1 ? true:false}"  style="width: 200px;"/>
+
+                    <p:outputLabel value="Teléfono Fijo" rendered="#{RegistroAction.tiporegistro == 1 ? true:false}"/>
+                    <p:inputText value="#{RegistroAction.clienteNatural.TELFFIJO}" rendered="#{RegistroAction.tiporegistro == 1 ? true:false}"/>
+
+                    <p:outputLabel value="Teléfono Celular" rendered="#{RegistroAction.tiporegistro == 1 ? true:false}"/>
+                    <p:inputText value="#{RegistroAction.clienteNatural.TELFCEL}" rendered="#{RegistroAction.tiporegistro == 1 ? true:false}"/>
+
+                    <p:outputLabel value="Tipo de Servicio" rendered="#{RegistroAction.tiporegistro == 1 ? true:false}"/>
+                    <p:selectOneMenu value="#{RegistroAction.clienteNatural.IDTIPOSERVICIO}" rendered="#{RegistroAction.tiporegistro == 1 ? true:false}">
+                        <f:selectItem  itemLabel="70 Soles por Servicio" itemValue="#{1}"/>
+                        <f:selectItem  itemLabel="100 Soles por Servicio" itemValue="#{2}"/>
+                    </p:selectOneMenu>
+
+                    <p:outputLabel value="Comprobante" rendered="#{RegistroAction.tiporegistro == 1 ? true:false}"/>
+                    <p:selectOneMenu value="#{RegistroAction.clienteNatural.TIPDOCSERVICIO}" rendered="#{RegistroAction.tiporegistro == 1 ? true:false}">
+                        <f:selectItem  itemLabel="Boleta" itemValue="#{'01'}"/>
+                        <f:selectItem  itemLabel="Factura" itemValue="#{'06'}"/>
+                    </p:selectOneMenu>
+
+                    <p:outputLabel value="Datos Públicos" rendered="#{RegistroAction.tiporegistro == 1 ? true:false}"/>
+                    <p:selectOneMenu value="#{RegistroAction.clienteNatural.PUBLICDAT}" rendered="#{RegistroAction.tiporegistro == 1 ? true:false}">
+                        <f:selectItem  itemLabel="SI" itemValue="#{1}"/>
+                        <f:selectItem  itemLabel="NO" itemValue="#{2}"/>
+                    </p:selectOneMenu>            
+                </p:panelGrid>
+                <p:panelGrid columns="2" styleClass="ui-noborder">
+                    <p:outputLabel value="RUC" for="ruc" rendered="#{RegistroAction.tiporegistro == 1 ? false:true}"/>
+                    <p:inputText id="ruc" value="#{RegistroAction.clienteJuridico.IDDOCIDENTIDAD}" maxlength="11" rendered="#{RegistroAction.tiporegistro == 1 ? false:true}">
+                        <p:ajax event="blur" listener="#{RegistroAction.verificarJuridico}"/>
+                        <f:validateLength minimum="11"/>
+                        <p:ajax update="growl" event="blur"/>
+                    </p:inputText>
+                    <p:outputLabel value="Razon Social" rendered="#{RegistroAction.tiporegistro == 1 ? false:true}"/>
+                    <p:inputTextarea value="#{RegistroAction.clienteJuridico.RAZON_SOCIAL}" rows="2" cols="50" rendered="#{RegistroAction.tiporegistro == 1 ? false:true}"/>
+                </p:panelGrid>
+                <p:panelGrid columns="6" styleClass="ui-noborder" rendered="#{RegistroAction.tiporegistro == 1 ? false:true}">
+                    <p:outputLabel value="Departamento" rendered="#{RegistroAction.tiporegistro == 1 ? false:true}"/>
+                    <p:selectOneMenu value="#{RegistroAction.clienteJuridico.DEPARTAMENTO}" rendered="#{RegistroAction.tiporegistro == 1 ? false:true}">
+                        <p:ajax listener="#{RegistroAction.onDeptSelect()}" update="form"/>
+                        <f:selectItems  value="#{RegistroAction.lstDept}" var="dept" itemLabel="#{dept[1]}" itemValue="#{dept[0]}"/>
+                    </p:selectOneMenu>
+                    <p:outputLabel value="Provincia" rendered="#{RegistroAction.tiporegistro == 1 ? false:true}"/>
+                    <p:selectOneMenu value="#{RegistroAction.clienteJuridico.PROVINCIA}" rendered="#{RegistroAction.tiporegistro == 1 ? false:true}">
+                        <p:ajax listener="#{RegistroAction.onProvSelect()}" update="form"/>
+                        <f:selectItem itemLabel="" itemValue="#{null}"/>
+                        <f:selectItems  value="#{RegistroAction.lstProv}" var="prov" itemLabel="#{prov[1]}" itemValue="#{prov[0]}"/>
+                    </p:selectOneMenu>
+                    <p:outputLabel value="Ciudad" rendered="#{RegistroAction.tiporegistro == 1 ? false:true}"/>
+                    <p:selectOneMenu value="#{RegistroAction.clienteJuridico.DISTRITO}" rendered="#{RegistroAction.tiporegistro == 1 ? false:true}">
+                        <f:selectItem itemLabel="" itemValue="#{null}" />
+                        <f:selectItems  value="#{RegistroAction.lstDist}" var="ciu" itemLabel="#{ciu[1]}" itemValue="#{ciu[0]}"/>
+                    </p:selectOneMenu>
+                </p:panelGrid>
+                <p:panelGrid columns="2" columnClasses="no-border,no-border">
+                    <p:outputLabel value="Dirección" rendered="#{RegistroAction.tiporegistro == 1 ? false:true}"/>
+                    <p:inputTextarea value="#{RegistroAction.clienteJuridico.DIRECCION}" rows="2" cols="50" rendered="#{RegistroAction.tiporegistro == 1 ? false:true}"/>
+
+                    <p:outputLabel value="Código Postal" rendered="#{RegistroAction.tiporegistro == 1 ? false:true}"/>
+                    <p:inputText value="#{RegistroAction.clienteJuridico.CODIGOPOSTAL}" rendered="#{RegistroAction.tiporegistro == 1 ? false:true}"/>
+
+                    <p:outputLabel value="Objeto Social" rendered="#{RegistroAction.tiporegistro == 1 ? false:true}"/>
+                    <p:inputText value="#{RegistroAction.clienteJuridico.OBJETOSOCIAL}" rendered="#{RegistroAction.tiporegistro == 1 ? false:true}"/>
+
+                    <p:outputLabel value="Reg. Poderes" rendered="#{RegistroAction.tiporegistro == 1 ? false:true}"/>
+                    <p:inputText value="#{RegistroAction.clienteJuridico.REGPODERES}" rendered="#{RegistroAction.tiporegistro == 1 ? false:true}"/>
+
+                    <p:outputLabel value="Datos Públicos" rendered="#{RegistroAction.tiporegistro == 1 ? false:true}"/>
+                    <p:selectOneMenu value="#{RegistroAction.clienteJuridico.PUBLICDATA}" rendered="#{RegistroAction.tiporegistro == 1 ? false:true}">
+                        <f:selectItem  itemLabel="SI" itemValue="#{1}"/>
+                        <f:selectItem  itemLabel="NO" itemValue="#{2}"/>
+                    </p:selectOneMenu>
+
+                </p:panelGrid>
+            </p:fieldset>
+            <br/>
+            <fieldset class="col-md-12">    	
+                <legend>..:: Contactos de Cliente ::..</legend>
+                <h:panelGrid columns="1" styleClass="top-aligned-columns">
+                    <p:panelGrid columns="3" columnClasses="no-border,no-border,no-border">
+                        <p:commandButton  actionListener="#{RegistroAction.newContactosclientes()}" update="form:tblContactoscliente" icon="ui-icon-plus"  value="Agregar" rendered="#{RegistroAction.tiporegistro == 1 ? false:true}"/>
+                        <p:commandButton  actionListener="#{RegistroAction.editContactosclientes()}" update="form:tblContactoscliente" icon="ui-icon-pencil" value="Editar" rendered="#{RegistroAction.tiporegistro == 1 ? false:true}"/>
+                        <p:commandButton  actionListener="#{RegistroAction.delContactosclientes()}" update="form:tblContactoscliente" icon="ui-icon-minus"  value="Eliminar" rendered="#{RegistroAction.tiporegistro == 1 ? false:true}"/>
+                    </p:panelGrid>
+                    <p:dataTable id="tblContactoscliente" 
+                                 widgetVar="contactos" 
+                                 var="contactos" 
+                                 value="#{RegistroAction.lstContactosclieprov}" 
+                                 style="font-size: 10px;" 
+                                 selectionMode="single" 
+                                 selection="#{RegistroAction.selectContactosclieprov}" 
+                                 rowKey="#{contactos.item}" 
+                                 rendered="#{RegistroAction.tiporegistro == 1 ? false:true}">
+                        <f:facet name="header">
+                            Contacto de Cliente
+                        </f:facet>
+                        <p:column headerText="N°" style="width: 5%;text-align: center; vertical-align: middle">
+                            <p:outputLabel value="#{contactos.item}"/>
+                        </p:column>
+                        <p:column headerText="Nombres" style="width: 15%;text-align: center; vertical-align: middle">
+                            <p:outputLabel value="#{contactos.nombre}"/>
+                        </p:column>
+                        <p:column headerText="Cargo" style="width: 20%;text-align: center; vertical-align: middle">
+                            <p:outputLabel value="#{contactos.cargo}"/>
+                        </p:column>
+                        <p:column headerText="Dirección" style="width: 25%;text-align: center; vertical-align: middle">
+                            <p:outputLabel value="#{contactos.direccion}"/>
+                        </p:column>
+                        <p:column headerText="Email" style="width: 18%;text-align: center; vertical-align: middle">
+                            <p:outputLabel value="#{contactos.email}"/>
+                        </p:column>
+                        <p:column headerText="Telefono1" style="width: 8%;text-align: center; vertical-align: middle">
+                            <p:outputLabel value="#{contactos.telefono1}"/>
+                        </p:column>
+                        <p:column headerText="Telefono2" style="width: 8%;text-align: center; vertical-align: middle">
+                            <p:outputLabel value="#{contactos.telefono2}"/>
+                        </p:column>
+                        <p:column headerText="Telefono3" style="width: 8%;text-align: center; vertical-align: middle">
+                            <p:outputLabel value="#{contactos.telefono3}"/>
+                        </p:column>
+                    </p:dataTable>
+                </h:panelGrid>
+            </fieldset>	 
+            <fieldset class="col-md-12">    	
+                <legend>..:: Representantes Legales ::..</legend>
+                <h:panelGrid columns="1" styleClass="top-aligned-columns">
+                    <p:panelGrid columns="2" columnClasses="no-border,no-border">
+                        <p:commandButton  actionListener="#{RegistroAction.newRepLegal()}" update="form:tblRepLegal" icon="ui-icon-plus"  value="Agregar" rendered="#{RegistroAction.tiporegistro == 1 ? false:true}"/>
+                        <p:commandButton  actionListener="#{RegistroAction.delRepLegal()}" update="form:tblRepLegal" icon="ui-icon-minus"  value="Eliminar" rendered="#{RegistroAction.tiporegistro == 1 ? false:true}"/>
+                    </p:panelGrid>
+                    <p:dataTable id="tblRepLegal" 
+                                 var="var" 
+                                 value="#{RegistroAction.lstRepLegales}"
+                                 rowKey="#{var.IDREP}" 
+                                 editable="true"
+                                 style="font-size: 10px;"
+                                 rendered="#{RegistroAction.tiporegistro == 1 ? false:true}">
+                        <f:facet name="header">
+                            Representantes Legales
+                        </f:facet>
+                        <p:column headerText="Dni" style="width: 20%;text-align: center; vertical-align: middle">
+                            <p:inputText style="width: 80% !important;font-size: 11px" value="#{var.NRODOCUMENTO}"/>
+                        </p:column>
+                        <p:column headerText="Apellido Paterno" style="width: 20%;text-align: center; vertical-align: middle">
+                            <p:inputText style="width: 80% !important;font-size: 11px" value="#{var.APELLIDOPATERNO}"/>
+                        </p:column>
+                        <p:column headerText="Apellido Materno" style="width: 20%;text-align: center; vertical-align: middle">
+                            <p:inputText style="width: 80% !important;font-size: 11px" value="#{var.APELLIDOMATERNO}"/>
+                        </p:column>
+                        <p:column headerText="Nombre" style="width: 20%;text-align: center; vertical-align: middle">
+                            <p:inputText style="width: 80% !important;font-size: 11px" value="#{var.NOMBRES}"/>
+                        </p:column>
+                        <p:column headerText="Cargo" style="width: 20%;text-align: center; vertical-align: middle">
+                            <p:inputText style="width: 80% !important;font-size: 11px" value="#{var.CARGO}"/>
+                        </p:column>
+                        <p:column headerText="Correo" style="width: 20%; text-align: center; vertical-align: middle">
+                            <p:inputText style="width: 80% !important;font-size: 11px" value="#{var.CORREO}"/>
+                        </p:column>
+                    </p:dataTable>
+                </h:panelGrid>
+            </fieldset>	
+            <fieldset class="col-md-12">    	
+                <legend>..:: Contacto y Ubicación de recojo de Dinero ::..</legend>
+                <h:panelGrid columns="1" styleClass="top-aligned-columns">
+                    <p:panelGrid columns="3" columnClasses="no-border,no-border,no-border">
+                        <p:commandButton  actionListener="#{RegistroAction.newConRecoje()}" update="form:tblConRecoje" icon="ui-icon-plus"  value="Agregar" rendered="#{RegistroAction.tiporegistro == 1 ? false:true}"/>
+                        <p:commandButton  actionListener="#{RegistroAction.editConRecoje()}" update="form:tblConRecoje" icon="ui-icon-pencil" value="Editar" rendered="#{RegistroAction.tiporegistro == 1 ? false:true}"/>
+                        <p:commandButton  actionListener="#{RegistroAction.delConRecoje()}" update="form:tblConRecoje" icon="ui-icon-minus"  value="Eliminar" rendered="#{RegistroAction.tiporegistro == 1 ? false:true}"/>
+                    </p:panelGrid>
+                    <p:dataTable id="tblConRecoje" 
+                                 var="var" 
+                                 value="#{RegistroAction.conRecojo}"
+                                 style="font-size: 10px;"
+                                 selectionMode="single" 
+                                 selection="#{RegistroAction.selectRecojo}" 
+                                 rowKey="#{var.IDCONT}"
+                                 rendered="#{RegistroAction.tiporegistro == 1 ? false:true}">
+                        <f:facet name="header">
+                            Contacto y Ubicación de recojo de Dinero
+                        </f:facet>
+                        <p:column headerText="Apellido Paterno" style="width: 20%;text-align: center; vertical-align: middle">
+                            <p:outputLabel value="#{var.APELLIDOPATERNO}"/>
+                        </p:column>
+                        <p:column headerText="Apellido Materno" style="width: 20%;text-align: center; vertical-align: middle">
+                            <p:outputLabel value="#{var.APELLIDOMATERNO}"/>
+                        </p:column>
+                        <p:column headerText="Nombre" style="width: 20%;text-align: center; vertical-align: middle">
+                            <p:outputLabel value="#{var.NOMBRES}"/>
+                        </p:column>
+                        <p:column headerText="Correo" style="width: 20%;text-align: center; vertical-align: middle">
+                            <p:outputLabel value="#{var.CORREO}"/>
+                        </p:column>
+                        <p:column headerText="Celular" style="width: 20%;text-align: center; vertical-align: middle">
+                            <p:outputLabel value="#{var.TELFCEL}"/>
+                        </p:column>
+                        <p:column headerText="Departamento" style="width: 20%;text-align: center; vertical-align: middle">
+                            <p:outputLabel value="#{var.DEPARTAMENTO} #{var.departamento_descripcion}"/>
+                        </p:column>
+                        <p:column headerText="Provincia" style="width: 20%;text-align: center; vertical-align: middle">
+                            <p:outputLabel value="#{var.PROVINCIA} #{var.provincia_descripcion}"/>
+                        </p:column>
+                        <p:column headerText="Distrito" style="width: 20%;text-align: center; vertical-align: middle">
+                            <p:outputLabel value="#{var.DISTRITO} #{var.distrito_descripcio}"/>
+                        </p:column>
+                        <p:column headerText="Telf. Fijo" style="width: 20%;text-align: center; vertical-align: middle">
+                            <p:outputLabel value="#{var.DIRTELFFIJO}"/>
+                        </p:column>
+                        <p:column headerText="Telf. Celular" style="width: 20%;text-align: center; vertical-align: middle">
+                            <p:outputLabel value="#{var.DIRTELFCEL}"/>
+                        </p:column>
+                    </p:dataTable>
+                </h:panelGrid>
+            </fieldset>	 
+            <fieldset class="col-md-12">    	
+                <legend>..:: Contacto y Ubicación de recojo de Dinero ::..</legend>
+                <h:panelGrid columns="1" styleClass="top-aligned-columns">
+                    <p:panelGrid columns="3" columnClasses="no-border,no-border,no-border">
+                        <p:commandButton  actionListener="#{RegistroAction.newConEntrega()}" update="form:tblConEntrega" icon="ui-icon-plus"  value="Agregar" rendered="#{RegistroAction.tiporegistro == 1 ? false:true}"/>
+                        <p:commandButton  actionListener="#{RegistroAction.editConEntrega()}" update="form:tblConRecoje" icon="ui-icon-pencil" value="Editar" rendered="#{RegistroAction.tiporegistro == 1 ? false:true}"/>
+                        <p:commandButton  actionListener="#{RegistroAction.delConEntrega()}" update="form:tblConEntrega" icon="ui-icon-minus"  value="Eliminar" rendered="#{RegistroAction.tiporegistro == 1 ? false:true}"/>
+                    </p:panelGrid>
+                    <p:dataTable id="tblConEntrega" 
+                                 var="var" 
+                                 value="#{RegistroAction.conEntrega}"
+                                 selectionMode="single" 
+                                 selection="#{RegistroAction.selectEntrega}" 
+                                 rowKey="#{var.IDCONT}"
+                                 style="font-size: 10px;"
+                                 rendered="#{RegistroAction.tiporegistro == 1 ? false:true}">
+                        <f:facet name="header">
+                            Contacto y Ubicación de entrega de dinero
+                        </f:facet>
+                        <p:column headerText="Apellido Paterno" style="width: 20%;text-align: center; vertical-align: middle">
+                            <p:outputLabel value="#{var.APELLIDOPATERNO}"/>
+                        </p:column>
+                        <p:column headerText="Apellido Materno" style="width: 20%;text-align: center; vertical-align: middle">
+                            <p:outputLabel value="#{var.APELLIDOMATERNO}"/>
+                        </p:column>
+                        <p:column headerText="Nombre" style="width: 20%;text-align: center; vertical-align: middle">
+                            <p:outputLabel value="#{var.NOMBRES}"/>
+                        </p:column>
+                        <p:column headerText="Correo" style="width: 20%;text-align: center; vertical-align: middle">
+                            <p:outputLabel value="#{var.CORREO}"/>
+                        </p:column>
+                        <p:column headerText="Celular" style="width: 20%;text-align: center; vertical-align: middle">
+                            <p:outputLabel value="#{var.TELFCEL}"/>
+                        </p:column>
+                        <p:column headerText="Departamento" style="width: 20%;text-align: center; vertical-align: middle">
+                            <p:outputLabel value="#{var.DEPARTAMENTO} #{var.departamento_descripcion}"/>
+                        </p:column>
+                        <p:column headerText="Provincia" style="width: 20%;text-align: center; vertical-align: middle">
+                            <p:outputLabel value="#{var.PROVINCIA} #{var.provincia_descripcion}"/>
+                        </p:column>
+                        <p:column headerText="Distrito" style="width: 20%;text-align: center; vertical-align: middle">
+                            <p:outputLabel value="#{var.DISTRITO} #{var.distrito_descripcio}"/>
+                        </p:column>
+                        <p:column headerText="Telf. Fijo" style="width: 20%;text-align: center; vertical-align: middle">
+                            <p:outputLabel value="#{var.DIRTELFFIJO}"/>
+                        </p:column>
+                        <p:column headerText="Telf. Celular" style="width: 20%;text-align: center; vertical-align: middle">
+                            <p:outputLabel value="#{var.DIRTELFCEL}"/>
+                        </p:column>
+                    </p:dataTable>
+                </h:panelGrid>
+            </fieldset>	 
+            <fieldset class="col-md-12">    	
+                <legend>..:: Banco y cuenta deposito ::..</legend>
+                <h:panelGrid columns="1" styleClass="top-aligned-columns">
+                    <p:panelGrid columns="2" columnClasses="no-border,no-border">
+                        <p:commandButton  actionListener="#{RegistroAction.newBanco_cuenta()}" update="tblRegcliente_cuenta_deposito" icon="ui-icon-plus"  value="Agregar" rendered="#{RegistroAction.tiporegistro == 1 ? false:true}"/>
+                        <p:commandButton  actionListener="#{RegistroAction.delBanco_cuenta()}" update="tblRegcliente_cuenta_deposito" icon="ui-icon-minus"  value="Eliminar" rendered="#{RegistroAction.tiporegistro == 1 ? false:true}"/>
+                    </p:panelGrid>
+                    <p:dataTable id="tblRegcliente_cuenta_deposito" 
+                                 var="var" 
+                                 value="#{RegistroAction.lstRegcliente_cuenta_deposito}"
+                                 rowKey="#{var.CUENTA}" 
+                                 editable="true"
+                                 style="font-size: 10px;"
+                                 rendered="#{RegistroAction.tiporegistro == 1 ? false:true}">
+                        <f:facet name="header">
+                            Banco y cuenta deposito
+                        </f:facet>
+                        <p:column headerText="Banco" style="width: 20%;text-align: center; vertical-align: middle">
+                            <p:inputText style="width: 80% !important;font-size: 11px" value="#{var.BANCO}"/>
+                        </p:column>
+                        <p:column headerText="Cuenta" style="width: 20%;text-align: center; vertical-align: middle">
+                            <p:inputText style="width: 80% !important;font-size: 11px" value="#{var.CUENTA}"/>
+                        </p:column>
+                        <p:column headerText="Cuenta Interbancaria" style="width: 20%;text-align: center; vertical-align: middle">
+                            <p:inputText style="width: 80% !important;font-size: 11px" value="#{var.CODINTERBANCARIO}"/>
+                        </p:column>
+                    </p:dataTable>
+                </h:panelGrid>
+            </fieldset>
+            <p:dialog header="Contacto y ubicación de recojo de dinero" id="dialog_recojodinero" widgetVar="dialog_recojodinero" closable="true" modal="true">
+                <p:panelGrid columns="1" columnClasses="no-border,no-border">
+                    <p:panelGrid columns="2" columnClasses="no-border,no-border">
+                        <p:outputLabel value="Apellido Paterno"/>
+                        <p:inputText value="#{RegistroAction.objRecojo.APELLIDOPATERNO}" style="width: 200px;"/>
+                        
+                        <p:outputLabel value="Apellido Materno"/>
+                        <p:inputText value="#{RegistroAction.objRecojo.APELLIDOMATERNO}" style="width: 200px;"/>
+                        
+                        <p:outputLabel value="Nombres"/>
+                        <p:inputText value="#{RegistroAction.objRecojo.NOMBRES}" style="width: 200px;"/>
+                        
+                        <p:outputLabel value="Correo"/>
+                        <p:inputText value="#{RegistroAction.objRecojo.CORREO}" style="width: 200px;"/>
+                         
+                        <p:outputLabel value="Teléfono/Celular"/>
+                        <p:inputText value="#{RegistroAction.objRecojo.TELFCEL}" style="width: 200px;"/>
+                        
+                        <p:outputLabel value="Dirección de recojo de dinero:"/>
+                        <br/>
+                        
+                        <p:outputLabel value="Dirección"/>
+                        <p:inputTextarea value="#{RegistroAction.objRecojo.DIRECCION}" style="width: 200px;"/>
+                        
+                        <p:outputLabel value="Departamento"/>
+                        <p:selectOneMenu id="departamento_recojo" value="#{RegistroAction.objRecojo.DEPARTAMENTO}">
+                            <p:ajax listener="#{RegistroAction.onDeptSelect_ConRecoje()}" update="provincial_recojo"/>
+                            <f:selectItems  value="#{RegistroAction.lstDept_global}" var="dept_global" itemLabel="#{dept_global[1]}" itemValue="#{dept_global[0]}"/>
+                        </p:selectOneMenu>
+                        
+                        <p:outputLabel value="Provincia"/>
+                        <p:selectOneMenu id="provincial_recojo" value="#{RegistroAction.objRecojo.PROVINCIA}">
+                            <p:ajax listener="#{RegistroAction.onProvSelect_ConRecoje()}"  update="ciudad_recojo"/>
+                            <f:selectItem itemLabel="" itemValue="#{null}"/>
+                            <f:selectItems  value="#{RegistroAction.lstProv_global}" var="prov_global" itemLabel="#{prov_global[1]}" itemValue="#{prov_global[0]}"/>
+                        </p:selectOneMenu>
+                        
+                        <p:outputLabel value="Distrito"/>
+                        <p:selectOneMenu id="ciudad_recojo" value="#{RegistroAction.objRecojo.DISTRITO}">
+                            <p:ajax listener="#{RegistroAction.onDistrSelect_ConRecoje()}"/>
+                            <f:selectItem itemLabel="" itemValue="#{null}" />
+                            <f:selectItems  value="#{RegistroAction.lstDist_global}" var="ciu_global" itemLabel="#{ciu_global[1]}" itemValue="#{ciu_global[0]}"/>
+                        </p:selectOneMenu>
+                        
+                        <p:outputLabel value="Código Postal"/>
+                        <p:inputText value="#{RegistroAction.objRecojo.DCODIGOPOSTAL}" />
+                        
+                        <p:outputLabel value="Teléfono Fijo"/>
+                        <p:inputText value="#{RegistroAction.objRecojo.DIRTELFFIJO}" />
+                        
+                        <p:outputLabel value="Teléfono Celular"/>
+                        <p:inputText value="#{RegistroAction.objRecojo.DIRTELFCEL}" />
+                    </p:panelGrid>
+                    <p:commandButton value="Grabar" actionListener="#{RegistroAction.grabarConRecoje()}"/>
+                </p:panelGrid>
+            </p:dialog>
+            <p:dialog header="Contacto y ubicación de entrega de dinero" id="dialog_entregadinero" widgetVar="dialog_entregadinero" closable="true"  modal="true">
+                <p:panelGrid columns="1" columnClasses="no-border,no-border">
+                    <p:panelGrid columns="2" columnClasses="no-border,no-border">
+                        <p:outputLabel value="Apellido Paterno"/>
+                        <p:inputText value="#{RegistroAction.objEntrega.APELLIDOPATERNO}" style="width: 200px;"/>
+                        
+                        <p:outputLabel value="Apellido Materno"/>
+                        <p:inputText value="#{RegistroAction.objEntrega.APELLIDOMATERNO}" style="width: 200px;"/>
+                        
+                        <p:outputLabel value="Nombres"/>
+                        <p:inputText value="#{RegistroAction.objEntrega.NOMBRES}" style="width: 200px;"/>
+                        
+                        <p:outputLabel value="Correo"/>
+                        <p:inputText value="#{RegistroAction.objEntrega.CORREO}" style="width: 200px;"/>
+                         
+                        <p:outputLabel value="Teléfono/Celular"/>
+                        <p:inputText value="#{RegistroAction.objEntrega.TELFCEL}" style="width: 200px;"/>
+                        
+                        <p:outputLabel value="Dirección de recojo de dinero:"/>
+                        <br/>
+                        
+                        <p:outputLabel value="Dirección"/>
+                        <p:inputTextarea value="#{RegistroAction.objEntrega.DIRECCION}" style="width: 200px;"/>
+                        
+                        <p:outputLabel value="Departamento"/>
+                        <p:selectOneMenu id="departamento_entrega" value="#{RegistroAction.objEntrega.DEPARTAMENTO}">
+                            <p:ajax listener="#{RegistroAction.onDeptSelect_ConEntrega()}" update="provincial_entrega"/>
+                            <f:selectItems  value="#{RegistroAction.lstDept_global}" var="dept_global" itemLabel="#{dept_global[1]}" itemValue="#{dept_global[0]}"/>
+                        </p:selectOneMenu>
+                        
+                        <p:outputLabel value="Provincia"/>
+                        <p:selectOneMenu id="provincial_entrega" value="#{RegistroAction.objEntrega.PROVINCIA}">
+                            <p:ajax listener="#{RegistroAction.onProvSelect_ConEntrega()}"  update="ciudad_entrega"/>
+                            <f:selectItem itemLabel="" itemValue="#{null}"/>
+                            <f:selectItems  value="#{RegistroAction.lstProv_global}" var="prov_global" itemLabel="#{prov_global[1]}" itemValue="#{prov_global[0]}"/>
+                        </p:selectOneMenu>
+                        
+                        <p:outputLabel value="Distrito"/>
+                        <p:selectOneMenu id="ciudad_entrega" value="#{RegistroAction.objEntrega.DISTRITO}">
+                            <p:ajax listener="#{RegistroAction.onDistrSelect_ConEntrega()}"/>
+                            <f:selectItem itemLabel="" itemValue="#{null}" />
+                            <f:selectItems  value="#{RegistroAction.lstDist_global}" var="ciu_global" itemLabel="#{ciu_global[1]}" itemValue="#{ciu_global[0]}"/>
+                        </p:selectOneMenu>
+                        
+                        <p:outputLabel value="Código Postal"/>
+                        <p:inputText value="#{RegistroAction.objEntrega.DCODIGOPOSTAL}" />
+                        
+                        <p:outputLabel value="Teléfono Fijo"/>
+                        <p:inputText value="#{RegistroAction.objEntrega.DIRTELFFIJO}" />
+                        
+                        <p:outputLabel value="Teléfono Celular"/>
+                        <p:inputText value="#{RegistroAction.objEntrega.DIRTELFCEL}" />
+                    </p:panelGrid>
+                    <p:commandButton value="Grabar" actionListener="#{RegistroAction.grabarConEntrega()}"/>
+                </p:panelGrid>
+            </p:dialog>
+            <p:dialog header="Contactos Cliente" id="dialog_contactoscliente" widgetVar="dialog_contactoscliente" closable="true"  modal="true">
+                <p:panelGrid columns="1" columnClasses="no-border,no-border">
+                    <p:panelGrid columns="2" columnClasses="no-border,no-border">
+                        <p:outputLabel value="Nombres"/>
+                        <p:inputText value="#{RegistroAction.objContactosclieprov.nombre}" style="width: 200px;"/>
+                        
+                        <p:outputLabel value="Cargo"/>
+                        <p:inputText value="#{RegistroAction.objContactosclieprov.cargo}" style="width: 200px;"/>
+                        
+                        <p:outputLabel value="Dirección"/>
+                        <p:inputText value="#{RegistroAction.objContactosclieprov.direccion}" style="width: 200px;"/>
+                        
+                        <p:outputLabel value="Email"/>
+                        <p:inputText value="#{RegistroAction.objContactosclieprov.email}" style="width: 200px;"/>
+                         
+                        <p:outputLabel value="Teléfono 1"/>
+                        <p:inputText value="#{RegistroAction.objContactosclieprov.telefono1}" style="width: 200px;"/>
+                        
+                        <p:outputLabel value="Teléfono 2"/>
+                        <p:inputText value="#{RegistroAction.objContactosclieprov.telefono2}" style="width: 200px;"/>
+                        
+                        <p:outputLabel value="Teléfono 3"/>
+                        <p:inputText value="#{RegistroAction.objContactosclieprov.telefono3}" style="width: 200px;"/>
+                        
+                    </p:panelGrid>
+                    <p:commandButton value="Grabar" actionListener="#{RegistroAction.grabarContactosclientes()}"/>
+                </p:panelGrid>
+            </p:dialog>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+        </h:form>
+    </ui:define>
+</ui:composition>

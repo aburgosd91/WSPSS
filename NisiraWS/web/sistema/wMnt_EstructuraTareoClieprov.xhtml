@@ -74,6 +74,31 @@
                                 </f:facet>
                                 <h:outputText value="#{detEst.ruta}"/>
                             </p:column>
+                            <p:column style="width:5%;" filterBy="#{detEst.inipagar}" filterMatchMode="contains" sortBy="#{detEst.inipagar}">
+                                <f:facet name="header">
+                                    <h:outputText value="Inicio Pagar" />
+                                </f:facet>
+                                <h:outputText value="#{detEst.inipagar}"/>
+                            </p:column>
+                            <p:column style="width:5%;" filterBy="#{detEst.finpagar}" filterMatchMode="contains" sortBy="#{detEst.finpagar}">
+                                <f:facet name="header">
+                                    <h:outputText value="Fin Pagar" />
+                                </f:facet>
+                                <h:outputText value="#{detEst.finpagar}"/>
+                            </p:column>
+                            
+                            <p:column style="width:5%;" filterBy="#{detEst.inifactura}" filterMatchMode="contains" sortBy="#{detEst.inifactura}">
+                                <f:facet name="header">
+                                    <h:outputText value="Inicio Facturar" />
+                                </f:facet>
+                                <h:outputText value="#{detEst.inifactura}"/>
+                            </p:column>
+                            <p:column style="width:5%;" filterBy="#{detEst.finfactura}" filterMatchMode="contains" sortBy="#{detEst.finfactura}">
+                                <f:facet name="header">
+                                    <h:outputText value="Fin Facturar" />
+                                </f:facet>
+                                <h:outputText value="#{detEst.finfactura}"/>
+                            </p:column>
                         </p:dataTable>
                     </div>
                 </div>
@@ -85,15 +110,30 @@
                     <p:outputLabel value="Descripcion"/>
                     <p:inputText value="#{estructuraTareoClieprovAction.newtDesTar.descripcion}"/>
                     <p:outputLabel value="Ruta"/>
-                    <p:panelGrid columns="3" columnClasses="no-border, no-border, no-border, no-border">                        
+                    <p:panelGrid columns="3" columnClasses="no-border, no-border, no-border">                        
                         <p:commandButton  ajax="true" actionListener="#{estructuraTareoClieprovAction.verCntclearRuta}" icon="ui-icon-clear" update="cntRuta"/>
                         <p:commandButton  styleClass="boton_buscar" ajax="true" actionListener="#{estructuraTareoClieprovAction.verCntRuta}" icon="ui-icon-search">
                             <p:ajax event="dialogReturn" listener="#{estructuraTareoClieprovAction.valorRuta}" update="cntRuta"/>
                         </p:commandButton>
                         <p:inputText id="cntRuta" value="#{estructuraTareoClieprovAction.newtDesTar.ruta}" readonly="true"/>
                     </p:panelGrid> 
-                    <p:outputLabel value="Es Fechaa: " />
+                    <p:outputLabel value="Es Fecha: " />
                     <p:selectBooleanCheckbox value="#{estructuraTareoClieprovAction.newtDesTar.BEFecha}"/>
+                    <p:outputLabel for="xpagar" value="Por Pagar:" />
+                    <br/>
+                    <p:selectOneRadio id="xpagar" value="#{estructuraTareoClieprovAction.vpagar}">
+                        <f:selectItem itemLabel="Inicio" itemValue="1" />
+                        <f:selectItem itemLabel="Fin" itemValue="2" />
+                        <f:selectItem itemLabel="Vacio" itemValue="0" />
+                    </p:selectOneRadio>
+                    <br/>
+                    <p:outputLabel for="xfacturar" value="Por Facturar:" />
+                    <p:selectOneRadio id="xfacturar" value="#{estructuraTareoClieprovAction.vfacturar}">
+                        <f:selectItem itemLabel="Inicio" itemValue="1" />
+                        <f:selectItem itemLabel="Fin" itemValue="2" />
+                        <f:selectItem itemLabel="Vacio" itemValue="0" />
+                    </p:selectOneRadio>  
+                    <br/>
                     <p:commandButton value="GRABAR" actionListener="#{estructuraTareoClieprovAction.addDetEstruc()}"/>
                 </p:panelGrid>
             </p:dialog>

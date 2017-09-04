@@ -255,8 +255,8 @@ public class OrdenservicioclienteDao extends BaseDao<Ordenserviciocliente> {
                 mensaje = rs.getString("mensaje");
                 break;
             }
-        return mensaje;
-    }
+            return mensaje;
+        }
     /*FORMATO DETALLADO*/
         public ArrayList<Reporte_facturacion> listar_facturacion_detalladoFiltroFecha(String idempresa,String fechainicio,String fechafin,String idtiposervicio) throws NisiraORMException,Exception {
             ArrayList<Reporte_facturacion> lista = new ArrayList<Reporte_facturacion>();

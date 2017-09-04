@@ -85,15 +85,20 @@ public class DordenliquidaciongastoDao extends BaseDao<Dordenliquidaciongasto> {
                 dordenserviciocliente.setIdccosto(rs.getString("IDCCOSTO")!=null?rs.getString("IDCCOSTO").trim():"");
                 dordenserviciocliente.setIdtipomov(rs.getString("IDTIPOMOV")!=null?rs.getString("IDTIPOMOV").trim():"");
                 dordenserviciocliente.setIdclieprov(rs.getString("IDCLIEPROV")!=null?rs.getString("IDCLIEPROV").trim():"");
+                
                 dordenserviciocliente.setIddocumento(rs.getString("IDDOCUMENTO")!=null?rs.getString("IDDOCUMENTO").trim():"");
+                dordenserviciocliente.setDocumento(rs.getString("DOCUMENTO")!=null?rs.getString("DOCUMENTO").trim():"");
                 dordenserviciocliente.setSerie(rs.getString("SERIE")!=null?rs.getString("SERIE").trim():"");
                 dordenserviciocliente.setNumero(rs.getString("NUMERO")!=null?rs.getString("NUMERO").trim():"");
                 dordenserviciocliente.setFecha(rs.getDate("FECHA"));
+                
                 dordenserviciocliente.setIddestino(rs.getString("IDDESTINO")!=null?rs.getString("IDDESTINO").trim():"");
                 dordenserviciocliente.setIdmoneda(rs.getString("IDMONEDA")!=null?rs.getString("IDMONEDA").trim():"");
+                
                 dordenserviciocliente.setTcmoneda(rs.getFloat("TCMONEDA"));
                 dordenserviciocliente.setTcambio(rs.getFloat("TCAMBIO"));
                 dordenserviciocliente.setIdregimen(rs.getString("IDREGIMEN")!=null?rs.getString("IDREGIMEN").trim():"");
+                
                 dordenserviciocliente.setAfecto(rs.getFloat("AFECTO"));
                 dordenserviciocliente.setInafecto(rs.getFloat("INAFECTO"));
                 dordenserviciocliente.setPimpuesto(rs.getFloat("PIMPUESTO"));

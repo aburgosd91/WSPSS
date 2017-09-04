@@ -21,6 +21,7 @@ import com.nisira.core.dao.SucursalDao;
 import com.nisira.core.entity.Almacen;
 import com.nisira.core.entity.Sucursal;
 import com.nisira.core.dao.MultitablaDao;
+import com.nisira.core.dao.ProductosDao;
 import com.nisira.core.dao.UnimedidaDao;
 import com.nisira.core.entity.Cargos_personal;
 import com.nisira.core.entity.Clieprov;
@@ -34,6 +35,7 @@ import com.nisira.core.entity.Estructura_costos_producto_diasrango;
 import com.nisira.core.entity.Monedas;
 import com.nisira.core.entity.Multitabla;
 import com.nisira.core.entity.Producto;
+import com.nisira.core.entity.Productos;
 import com.nisira.core.entity.Rutas;
 import com.nisira.core.entity.Unimedida;
 import static com.pe.nisira.movil.view.action.AbstactListAction.modalOptions;
@@ -45,6 +47,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -124,6 +127,7 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
     private List<Estructura_costos_mano_obra_detallado> listEstructura_costos_mano_obra_detallado;
     private List<Estructura_costos_producto_diasrango> listEstructura_costos_producto_diasrango;
     private List<Estructura_costos_producto_diasrango> listTotalEstructura_costos_producto_diasrango;
+    private List<Productos> listProductos;
     /***************** ENTITY ****************/
     private Estructura_costos_mano_obra estructura_costos_mano_obra; 
     private Estructura_costos_mano_obra_detallado estructura_costos_mano_obra_detallado; 
@@ -509,6 +513,8 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
                     mensaje = "No existe registro <DESTRUCTURA_COSTOS_RECURSO>";
                     WebUtil.error(mensaje);
                 }
+                else
+                    cargarProductos();
                 if(getListTotalEstructura_costos_mano_obra().isEmpty()){
                     mensaje = "No existe registro <ESTRUCTURA_COSTOS_MANO_OBRA>";
                     WebUtil.error(mensaje);
@@ -539,6 +545,47 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
         }
         RequestContext.getCurrentInstance().update("datos");
         RequestContext.getCurrentInstance().update("datos:tabs");
+    }
+    public void cargarProductos(){
+        try{
+            if(!listTotalDestructura_costos_recursos.isEmpty()){
+                Destructura_costos_recursos temp;
+                Productos pr;
+                for(int i=0;i<listTotalDestructura_costos_recursos.size();i++){
+                    temp = listTotalDestructura_costos_recursos.get(i);
+                    if(!WebUtil.isnull(temp.getIdproducto(), "").equals("")){
+                        List<Productos> lstPro =(new ProductosDao()).listarPorEmpresaWebxIdproducto(user.getIDEMPRESA(), temp.getIdproducto());
+                        if(lstPro.isEmpty())
+                            temp.setSelectProductos(null);
+                        else
+                            temp.setSelectProductos(lstPro.get(0));
+                    }
+                    listTotalDestructura_costos_recursos.set(i, temp);
+                }
+            }
+        } catch (NisiraORMException ex) {
+            Logger.getLogger(TareowebAction.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
+    public void cargarProductosBase(){
+        try {
+            listProductos = (new ProductosDao()).listarPorEmpresaEstructuraWeb(user.getIDEMPRESA());
+        } catch (NisiraORMException ex) {
+            Logger.getLogger(TareowebAction.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public List<Productos> completeProductos(String query) {
+        cargarProductosBase();
+        List<Productos> filteredProductos = new ArrayList<Productos>(); 
+        for (int i = 0; i < listProductos.size(); i++) {
+            Productos skin = listProductos.get(i);
+            if((skin.getIdproducto()).trim().toLowerCase().contains(query.trim().toLowerCase()) || 
+                    skin.getDescripcion().trim().toLowerCase().contains(query.trim().toLowerCase())) {
+                filteredProductos.add(skin);
+            }
+        }
+        return filteredProductos;
     }
     public List<Destructura_costos_recursos> listarPorEmpresaWebXProducto_Destructura_costos_recursos_action(){
         List<Destructura_costos_recursos> temp = new ArrayList<>();
@@ -682,10 +729,25 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
         RequestContext.getCurrentInstance().update("datos:dlgEstructura_costos_mano_obra_detallado:listEstructura_costos_mano_obra_detallado");
     }
     public void onCellEdit(CellEditEvent event) {
+        Object newValue = event.getNewValue();
         Destructura_costos_recursos entity =(Destructura_costos_recursos)((DataTable)event.getComponent()).getRowData();
         int itemRow = event.getRowIndex();
+        if(event.getColumn().getHeaderText()!=null){
+            String colHead = event.getColumn().getHeaderText().trim();
+            switch(colHead){
+                case "idProducto":
+                    if(newValue==null){
+                        entity.setIdproducto("");
+                        entity.setIdproducto_descripcion("");
+                    }else{
+                        Productos ob = (Productos)newValue;
+                        entity.setIdproducto(ob.getIdproducto());
+                        entity.setIdproducto_descripcion(ob.getDescripcion());
+                        entity.setSelectProductos(ob);
+                    };break;
+            }
+        }
         Object oldValue = event.getOldValue();
-        Object newValue = event.getNewValue();
         /*OBJETO ANTES DE*/
         Destructura_costos_recursos ob_ant = getListDestructura_costos_recursos().get(itemRow);
         getListDestructura_costos_recursos().set(itemRow, entity);
@@ -2323,6 +2385,20 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
      */
     public void setListTotalEstructura_costos_producto_diasrango(List<Estructura_costos_producto_diasrango> listTotalEstructura_costos_producto_diasrango) {
         this.listTotalEstructura_costos_producto_diasrango = listTotalEstructura_costos_producto_diasrango;
+    }
+
+    /**
+     * @return the listProductos
+     */
+    public List<Productos> getListProductos() {
+        return listProductos;
+    }
+
+    /**
+     * @param listProductos the listProductos to set
+     */
+    public void setListProductos(List<Productos> listProductos) {
+        this.listProductos = listProductos;
     }
     
     public class Es_PorcentajeCombo{

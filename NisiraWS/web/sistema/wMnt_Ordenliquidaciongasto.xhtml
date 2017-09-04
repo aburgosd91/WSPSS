@@ -49,7 +49,7 @@
                                     <p:outputLabel value="Responsable:" escape="false" />
                                     <h:panelGrid id="cntClie" cellpadding="0" cellspacing="0" columns="3">
                                         <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{ordenliquidaciongastoAction.verCntClieprov}" 
-                                                         disabled="true"  icon="ui-icon-search">
+                                                         icon="ui-icon-search">
                                             <p:ajax event="dialogReturn" listener="#{ordenliquidaciongastoAction.valorClieprov}" update="cntClie"/>
                                         </p:commandButton>
                                         <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{ordenliquidaciongastoAction.datoEdicion.idclieprov}" disabled="#{!ordenliquidaciongastoAction.edicion}"/>
@@ -95,17 +95,11 @@
                                     </f:facet>
                                     <h:outputText value="#{lstdordenliquidaciongasto.item}"/>
                                 </p:column>
-                                <p:column style="width:15%;" filterBy="#{lstdordenliquidaciongasto.documento}" filterMatchMode="contains" sortBy="#{lstdordenliquidaciongasto.documento}">
+                                <p:column style="width:20%;" filterBy="#{lstdordenliquidaciongasto.idclieprov} #{lstdordenliquidaciongasto.razonsocial}" filterMatchMode="contains" sortBy="#{lstdordenliquidaciongasto.idclieprov} #{lstdordenliquidaciongasto.razonsocial}">
                                     <f:facet name="header" >
                                         <h:outputText value="Proveedor" />
                                     </f:facet>
-                                    <h:outputText value="#{lstdordenliquidaciongasto.documento}" />
-                                </p:column>
-                                <p:column style="width:15%;" filterBy="#{lstdordenliquidaciongasto.razonsocial}" filterMatchMode="contains" sortBy="#{lstdordenliquidaciongasto.razonsocial}">
-                                    <f:facet name="header" >
-                                        <h:outputText value="Razón Social" />
-                                    </f:facet>
-                                    <h:outputText value="#{lstdordenliquidaciongasto.razonsocial}" />
+                                    <h:outputText value="#{lstdordenliquidaciongasto.idclieprov} #{lstdordenliquidaciongasto.razonsocial}" />
                                 </p:column>
                                 <p:column style="width:10%;" filterBy="#{lstdordenliquidaciongasto.iddocumento}" filterMatchMode="contains" sortBy="#{lstdordenliquidaciongasto.iddocumento}">
                                     <f:facet name="header" >
@@ -239,7 +233,7 @@
                                     <p:outputLabel for="impuesto" value="Impuesto:" />
                                     <p:inputNumber id="impuesto" value="#{ordenliquidaciongastoAction.dordenliquidaciongasto.impuesto}"/>
 
-                                    <p:outputLabel for="importe" value="Total:" />
+                                    <p:outputLabel for="importe" value="Total:"/>
                                     <p:inputNumber id="importe" value="#{ordenliquidaciongastoAction.dordenliquidaciongasto.importe}" readonly="true"/>
 
                                     <p:outputLabel for="dglosa" value="Glosa:" />

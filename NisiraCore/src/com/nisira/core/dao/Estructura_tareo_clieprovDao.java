@@ -65,6 +65,11 @@ public class Estructura_tareo_clieprovDao extends BaseDao<Estructura_tareo_cliep
                 ob.setEsfecha(rs.getFloat("ESFECHA"));
                 ob.setRuta(rs.getString("RUTA"));
                 ob.setHoraH(CoreUtil.convertDecimalTime(ob.getHora()));
+                
+                ob.setInipagar(rs.getFloat("INIPAGAR"));
+                ob.setFinpagar(rs.getFloat("FINPAGAR"));
+                ob.setInifactura(rs.getFloat("INIFACTURAR"));
+                ob.setFinfactura(rs.getFloat("FINFACTURAR"));
                 list.add(ob);
             }
         } catch (Exception ex) {

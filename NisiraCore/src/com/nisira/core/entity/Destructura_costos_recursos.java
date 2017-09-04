@@ -49,9 +49,14 @@ public class Destructura_costos_recursos  implements Serializable{
     @XStreamAlias("ITEMRANGO")
     @Columna
     private String itemrango;
+    @XStreamAlias("IDPRODUCTO")
+    @Columna
+    private String idproducto;
+    private String idproducto_descripcion;
     private Float porcentaje;
     private Float subtotal;
     private Float pu;
+    private Productos selectProductos;
     @CampoRelacionado({@RelacionTabla(campo="idempresa",campoRelacionado="IDEMPRESA"), @RelacionTabla(campo="codigo",campoRelacionado="CODIGO")})
     private Estructura_costos estructura_costos_fk__destructura_cost__178d7ca5;
 
@@ -216,5 +221,47 @@ public class Destructura_costos_recursos  implements Serializable{
      */
     public void setItemrango(String itemrango) {
         this.itemrango = itemrango;
+    }
+
+    /**
+     * @return the idproducto
+     */
+    public String getIdproducto() {
+        return idproducto;
+    }
+
+    /**
+     * @param idproducto the idproducto to set
+     */
+    public void setIdproducto(String idproducto) {
+        this.idproducto = idproducto;
+    }
+
+    /**
+     * @return the idproducto_descripcion
+     */
+    public String getIdproducto_descripcion() {
+        return idproducto_descripcion;
+    }
+
+    /**
+     * @param idproducto_descripcion the idproducto_descripcion to set
+     */
+    public void setIdproducto_descripcion(String idproducto_descripcion) {
+        this.idproducto_descripcion = idproducto_descripcion;
+    }
+
+    /**
+     * @return the selectProductos
+     */
+    public Productos getSelectProductos() {
+        return selectProductos;
+    }
+
+    /**
+     * @param selectProductos the selectProductos to set
+     */
+    public void setSelectProductos(Productos selectProductos) {
+        this.selectProductos = selectProductos;
     }
 }

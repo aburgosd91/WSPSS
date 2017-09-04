@@ -41,7 +41,8 @@ public class EstructuraTareoClieprovAction extends AbstactListAction<Estructura_
     private UsuarioBean user;
     private String mensaje;
     private boolean editDet;
-
+    private int vpagar;
+    private int vfacturar;
     public EstructuraTareoClieprovAction() {
         lstDestTar = new ArrayList<Destructura_tareo_clieprov>();
         slctDesTar = new Destructura_tareo_clieprov();
@@ -206,6 +207,10 @@ public class EstructuraTareoClieprovAction extends AbstactListAction<Estructura_
         if (getDatoEdicion().getIdclieprov() != null) {
             newtDesTar = new Destructura_tareo_clieprov();
             newtDesTar.setBEFecha(true);
+            newtDesTar.setInipagar(0.0f);
+            newtDesTar.setFinpagar(0.0f);
+            newtDesTar.setInifactura(0.0f);
+            newtDesTar.setFinfactura(0.0f);
             RequestContext.getCurrentInstance().update("datos:detEstrDialog");
             RequestContext.getCurrentInstance().execute("PF('detEstrDialog').show()");
 
@@ -220,6 +225,16 @@ public class EstructuraTareoClieprovAction extends AbstactListAction<Estructura_
         if (slctDesTar != null) {
             newtDesTar =(Destructura_tareo_clieprov) slctDesTar.clone();
             editDet = true;
+            vpagar = 0;
+            vfacturar = 0;
+            if(newtDesTar.getInipagar().floatValue()==1.0f)
+                vpagar =1;
+            else if(newtDesTar.getFinpagar().floatValue()==1.0f)
+                vpagar =2;
+            if(newtDesTar.getInifactura().floatValue()==1.0f)
+                vfacturar =1;
+            else if(newtDesTar.getFinfactura().floatValue()==1.0f)
+                vfacturar =2;
             RequestContext.getCurrentInstance().update("datos:detEstrDialog");
             RequestContext.getCurrentInstance().execute("PF('detEstrDialog').show()");
         } else {
@@ -232,13 +247,36 @@ public class EstructuraTareoClieprovAction extends AbstactListAction<Estructura_
 
     public void addDetEstruc() {
         if (validadDetalle()) {
+            int pos = -1;
+            if(!lstDestTar.isEmpty())
+                pos=lstDestTar.indexOf(slctDesTar);
             newtDesTar.setIdempresa(getDatoEdicion().getIdempresa());
             newtDesTar.setIdclieprov(getDatoEdicion().getIdclieprov());
             newtDesTar.setHora(WebUtil.convertTimeDecimal(newtDesTar.getHoraH()));
+            if(vpagar == 0){
+                newtDesTar.setInipagar(0.0f);
+                newtDesTar.setFinpagar(0.0f);
+            }else if(vpagar == 1){
+                newtDesTar.setInipagar(1.0f);
+            }else if(vpagar == 2){
+                newtDesTar.setFinpagar(1.0f);
+            }
+            if(vfacturar == 0){
+                newtDesTar.setInifactura(0.0f);
+                newtDesTar.setFinfactura(0.0f);
+            }else if(vfacturar == 1){
+                newtDesTar.setInifactura(1.0f);
+            }else if(vfacturar == 2){
+                newtDesTar.setFinfactura(1.0f);
+            }
             if (!editDet) {
                 newtDesTar.setItem(WebUtil.cerosIzquierda(lstDestTar.size() + 1, 3));
                 lstDestTar.add(newtDesTar);
                 editDet = false;
+            }
+            else
+            {
+                lstDestTar.set(pos, newtDesTar);
             }
             RequestContext.getCurrentInstance().update("datos:lstDetEstruClie");
             RequestContext.getCurrentInstance().execute("PF('detEstrDialog').hide()");
@@ -254,6 +292,8 @@ public class EstructuraTareoClieprovAction extends AbstactListAction<Estructura_
                 ap.setItem(WebUtil.cerosIzquierda(String.valueOf(i), 3));
                 i++;
             }
+            editDet = false;
+            setMensaje("Registro se elimino correctamente!");
         } else {
             setMensaje("Seleccione un detalle");
         }
@@ -310,6 +350,34 @@ public class EstructuraTareoClieprovAction extends AbstactListAction<Estructura_
 
     public void setMensaje(String mensaje) {
         this.mensaje = mensaje;
+    }
+
+    /**
+     * @return the vpagar
+     */
+    public int getVpagar() {
+        return vpagar;
+    }
+
+    /**
+     * @param vpagar the vpagar to set
+     */
+    public void setVpagar(int vpagar) {
+        this.vpagar = vpagar;
+    }
+
+    /**
+     * @return the vfacturar
+     */
+    public int getVfacturar() {
+        return vfacturar;
+    }
+
+    /**
+     * @param vfacturar the vfacturar to set
+     */
+    public void setVfacturar(int vfacturar) {
+        this.vfacturar = vfacturar;
     }
 
 }

@@ -27,6 +27,7 @@ import com.nisira.core.dao.Estructura_costos_productoDao;
 import com.nisira.core.dao.MotivosproduccionDao;
 import com.nisira.core.dao.NumemisorDao;
 import com.nisira.core.dao.Personal_servicioDao;
+import com.nisira.core.dao.Privilegio_global_pssDao;
 import com.nisira.core.dao.Ruta_serviciosDao;
 import com.nisira.core.dao.RutasDao;
 import com.nisira.core.dao.UsuarioDao;
@@ -55,6 +56,7 @@ import com.nisira.core.entity.Gmap;
 import com.nisira.core.entity.Motivosproduccion;
 import com.nisira.core.entity.Numemisor;
 import com.nisira.core.entity.Personal_servicio;
+import com.nisira.core.entity.Privilegio_global_pss;
 import com.nisira.core.entity.Producto;
 import com.nisira.core.entity.Ruta;
 import com.nisira.core.entity.Ruta_servicios;
@@ -174,6 +176,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
     private UsuarioDao usuariodao;
     private Ambito_pagoDao ambito_pagodao;
     private Det_tareowebDao det_tareoweb_verificationDao; 
+    private Privilegio_global_pssDao privilegio_global_pssDao;
     /*************************************ENTITY***************************************/
     private UsuarioBean user;
     private String numero;
@@ -275,6 +278,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
             usuariodao = new UsuarioDao();
             ambito_pagodao = new Ambito_pagoDao();
             det_tareoweb_verificationDao = new Det_tareowebDao();
+            privilegio_global_pssDao = new Privilegio_global_pssDao();
             /**********************************CONTROLADOR********************************/
             /*DETALLE ORDEN SERVICIO*/
             botonNuevoDOrdenservicio=true;
@@ -545,6 +549,15 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                     this.mensaje = "Orden se encuentra ANULADA";
                     WebUtil.error(getMensaje());
                     RequestContext.getCurrentInstance().update("datos:growl");
+                }else if(getDatoSeleccionado().getIdestado().trim().equals("CR")){
+                    List<Privilegio_global_pss> lst_= privilegio_global_pssDao.listarPorUsuario(user.getIDUSUARIO());
+                    if(!lst_.isEmpty())
+                        RequestContext.getCurrentInstance().execute("PF('dialogCerrar').show()");
+                    else{
+                        this.mensaje = "Orden se encuentra CERRADA";
+                        WebUtil.error(getMensaje());
+                        RequestContext.getCurrentInstance().update("datos:growl");                        
+                    }
                 }else if(getDatoSeleccionado().getTipo_servicio().trim().equals("E")){
                     /*VERIFICAR - DATOS*/
                     List<Personal_servicio> lisPers = personal_servicioDao.listarPorOrdenServicioClienteWeb_Total(getDatoSeleccionado().getIdempresa(),
@@ -620,6 +633,20 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
             }
         } catch (Exception ex) {
             Logger.getLogger(Ordenserviciocliente_cierreAction.class.getName()).log(Level.SEVERE, null, ex);
+            WebUtil.MensajeError(ex.getMessage());
+        }
+    }
+    public void activarDocumento() {
+        try {
+            List lst = new ArrayList<>();
+            lst.add(getDatoSeleccionado());
+            this.mensaje = getOrdenservicioclienteDao().cierreMasivo(4,lst);
+            setMensaje(WebUtil.exitoRegistrar("Orden Servicio ", mensaje));
+            WebUtil.info(getMensaje());
+            setSelectListOrdenserviciocliente(new ArrayList<>());
+            buscarFiltro(2);
+        } catch (Exception ex) {
+            Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, null, ex);
             WebUtil.MensajeError(ex.getMessage());
         }
     }

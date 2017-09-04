@@ -35,6 +35,20 @@ public class Destructura_tareo_clieprov implements Serializable,Cloneable{
         @Columna
         @XStreamAlias("ESFECHA")
 	private Float esfecha;
+        
+        @Columna
+        @XStreamAlias("INIPAGAR")
+	private Float inipagar;
+        @Columna
+        @XStreamAlias("FINPAGAR")
+	private Float finpagar;
+        @Columna
+        @XStreamAlias("INIFACTURA")
+	private Float inifactura;
+        @Columna
+        @XStreamAlias("FINFACTURA")
+	private Float finfactura;
+        
         @XStreamOmitField
         private String cliente;
         @XStreamOmitField
@@ -149,4 +163,60 @@ public class Destructura_tareo_clieprov implements Serializable,Cloneable{
     public Object clone() throws CloneNotSupportedException {
         return super.clone(); //To change body of generated methods, choose Tools | Templates.
     }    
+
+    /**
+     * @return the inipagar
+     */
+    public Float getInipagar() {
+        return inipagar;
+    }
+
+    /**
+     * @param inipagar the inipagar to set
+     */
+    public void setInipagar(Float inipagar) {
+        this.inipagar = inipagar;
+    }
+
+    /**
+     * @return the finpagar
+     */
+    public Float getFinpagar() {
+        return finpagar;
+    }
+
+    /**
+     * @param finpagar the finpagar to set
+     */
+    public void setFinpagar(Float finpagar) {
+        this.finpagar = finpagar;
+    }
+
+    /**
+     * @return the inifactura
+     */
+    public Float getInifactura() {
+        return inifactura;
+    }
+
+    /**
+     * @param inifactura the inifactura to set
+     */
+    public void setInifactura(Float inifactura) {
+        this.inifactura = inifactura;
+    }
+
+    /**
+     * @return the finfactura
+     */
+    public Float getFinfactura() {
+        return finfactura;
+    }
+
+    /**
+     * @param finfactura the finfactura to set
+     */
+    public void setFinfactura(Float finfactura) {
+        this.finfactura = finfactura;
+    }
 }

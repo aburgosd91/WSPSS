@@ -48,6 +48,8 @@ public class Destructura_costos_recursosDao extends BaseDao<Destructura_costos_r
                     estructura_costos_clieprov.setSubtotal(rs.getFloat("SUBTOTAL"));
                     estructura_costos_clieprov.setPorcentaje(rs.getFloat("PORCENTAJE"));
                     estructura_costos_clieprov.setPu(rs.getFloat("PU"));
+                    estructura_costos_clieprov.setIdproducto(rs.getString("IDPRODUCTO")!=null?rs.getString("IDPRODUCTO").trim():"");
+                    estructura_costos_clieprov.setIdproducto_descripcion(rs.getString("IDPRODUCTO_DESCRIPCION")!=null?rs.getString("IDPRODUCTO_DESCRIPCION").trim():"");
                     lista.add(estructura_costos_clieprov);                             
                 }
             } catch(Exception ex) {

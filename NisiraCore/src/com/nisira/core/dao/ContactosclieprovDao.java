@@ -40,14 +40,15 @@ public class ContactosclieprovDao extends BaseDao<Contactosclieprov> {
                 contactosclieprov.setApellidopaterno(rs.getString("APELLIDOPATERNO")!=null?rs.getString("APELLIDOPATERNO").trim():"");
                 contactosclieprov.setApellidomaterno(rs.getString("APELLIDOMATERNO")!=null?rs.getString("APELLIDOMATERNO").trim():"");
                 contactosclieprov.setTelefono1(rs.getString("TELEFONO1")!=null?rs.getString("TELEFONO1").trim():"");
-                contactosclieprov.setTelefono1(rs.getString("TELEFONO2")!=null?rs.getString("TELEFONO2").trim():"");
-                contactosclieprov.setTelefono1(rs.getString("TELEFONO3")!=null?rs.getString("TELEFONO3").trim():"");
+                contactosclieprov.setTelefono2(rs.getString("TELEFONO2")!=null?rs.getString("TELEFONO2").trim():"");
+                contactosclieprov.setTelefono3(rs.getString("TELEFONO3")!=null?rs.getString("TELEFONO3").trim():"");
                 contactosclieprov.setEmail(rs.getString("EMAIL")!=null?rs.getString("EMAIL").trim():"");
                 contactosclieprov.setPredeterminado(rs.getFloat("PREDETERMINADO"));
                 contactosclieprov.setEstado(rs.getFloat("ESTADO"));
                 contactosclieprov.setFechacreacion(rs.getDate("FECHACREACION"));
                 contactosclieprov.setDni(rs.getString("DNI")!=null?rs.getString("DNI").trim():"");
                 contactosclieprov.setDireccion(rs.getString("DIRECCION")!=null?rs.getString("DIRECCION").trim():"");
+                contactosclieprov.setCargo(rs.getString("CARGO")!=null?rs.getString("CARGO").trim():"");
                 lista.add(contactosclieprov);                             
                 
             }

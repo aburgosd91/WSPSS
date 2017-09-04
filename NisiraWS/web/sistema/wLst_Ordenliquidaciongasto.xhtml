@@ -22,6 +22,9 @@
                 <f:facet name="header">
                     <h:outputText value="#{ordenliquidaciongastoAction.tituloHead}" />   
                 </f:facet>
+                <p:column headerText="Estado" style="white-space: nowrap; width: 70px;padding: 3px;" filterBy="#{listOrdenliquidaciongasto.estado}" filterMatchMode="contains" sortBy="#{listOrdenliquidaciongasto.estado}">
+                    <h:outputText value="#{listOrdenliquidaciongasto.estado}" />
+                </p:column>
                 <p:column style="width:20%;" filterBy="#{listOrdenliquidaciongasto.fecharegistro}" filterMatchMode="contains" sortBy="#{listOrdenliquidaciongasto.fecharegistro}">
                     <f:facet name="header">
                         <h:outputText value="Fecha" />
@@ -30,7 +33,7 @@
                         <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
                     </h:outputText>
                 </p:column>
-                <p:column headerText="Documento" style="width:30%;" >
+                <p:column headerText="Documento" style="width:30%;" filterBy="#{listOrdenliquidaciongasto.iddocumento}-#{listOrdenliquidaciongasto.serie}-#{listOrdenliquidaciongasto.numero}" filterMatchMode="contains" sortBy="#{listOrdenliquidaciongasto.iddocumento}-#{listOrdenliquidaciongasto.serie}-#{listOrdenliquidaciongasto.numero}">
                     <h:outputText value="#{listOrdenliquidaciongasto.iddocumento}-#{listOrdenliquidaciongasto.serie}-#{listOrdenliquidaciongasto.numero}" />
                 </p:column>
                 <p:column headerText="Razón Social" style="width:40%;" filterBy="#{listOrdenliquidaciongasto.razonsocial}" filterMatchMode="contains" sortBy="#{listOrdenliquidaciongasto.razonsocial}">

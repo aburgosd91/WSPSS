@@ -77,6 +77,7 @@ public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidac
     private boolean botonEditarDOrdenliquidaciongasto;
     private boolean botonEliminarDOrdenliquidaciongasto;
     private boolean check_igv;
+    private int fdordenliquidaciongasto;
     /*********************************LISTAS*******************************************/
     private List<Clieprov> listClieprov;
     private List<Documentos> listDocumentos;
@@ -144,12 +145,12 @@ public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidac
             botonEditarDOrdenliquidaciongasto=true;
             botonEliminarDOrdenliquidaciongasto=true;
             /**********************************CONFIGURACIÓN - SERVIDOR********************************/
-            listDocumentos=docDao.getOrdenServicio(user.getIDEMPRESA());
+            listDocumentos=docDao.getOrdenLiquidacionGasto(user.getIDEMPRESA());
             listNumemisor=numemisorDao.listarPorDocWeb(user.getIDEMPRESA(), listDocumentos.get(0).getIddocumento());
             numero=listNumemisor.get(0).getNumero();
             listEstado = estadosDao.listarPorEmpresaWeb(user.getIDEMPRESA(),null);
             
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMM");
             periodoBase=dateFormat.format(new Date())+WebUtil.idGeneradoDos((new Date()).getMonth()+1);
             periodoDisenio=dateFormat.format(new Date());
             mesNumeroDisenio=WebUtil.idGeneradoDos((new Date()).getMonth()+1);
@@ -205,15 +206,19 @@ public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidac
         getDatoEdicion().setFecharegistro(new Date());
         getDatoEdicion().setIdempresa(user.getIDEMPRESA());
         getDatoEdicion().setIdemisor(lista_solution.get(5));
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMM");
         getDatoEdicion().setPeriodo(dateFormat.format(new Date()));
         getDatoEdicion().setMes(WebUtil.strMonths[(new Date()).getMonth()]);
         getDatoEdicion().setIdsucursal(Constantes.IDSUCURSALGENERAL);
         getDatoEdicion().setVventa(0.0f);
         getDatoEdicion().setImpuesto(0.0f);
         getDatoEdicion().setImporte(0.0f);
-        getDatoEdicion().setIdclieprov(WebUtil.cerosIzquierda(user.getIdcodigogeneral(),10));
+        if(!WebUtil.isnull(user.getIdcodigogeneral(), "").equals(""))
+            getDatoEdicion().setIdclieprov(WebUtil.cerosIzquierda(user.getIdcodigogeneral(),10));
+        else
+            getDatoEdicion().setIdclieprov("");
         getDatoEdicion().setRazonsocial(user.getNombres());
+        getDatoEdicion().setIdestado("PE");
         try {
             /*CONSULTAS A BD*/
             String sucursal = sucursalesDao.getPorEmpresaSucursal(user.getIDEMPRESA(),Constantes.IDSUCURSALGENERAL).getDescripcion();
@@ -252,11 +257,16 @@ public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidac
             if (esVistaValida()) {
                 /*DATOS INICIALES*/
                 getDatoEdicion().setNumero(numero);
-                if(getLadd()==1)
+                if(getLadd()==1){
                     mensaje=getOrdenliquidaciongastoDao().grabar(1, getDatoEdicion(), getLstdordenliquidaciongasto());
+                    if(mensaje!=null)
+                        if(mensaje.trim().length()==15)
+                            getDatoEdicion().setIdorden(mensaje.trim());
+                }
                 else
                     mensaje=getOrdenliquidaciongastoDao().grabar(2, getDatoEdicion(), getLstdordenliquidaciongasto());
-                setMensaje(WebUtil.exitoRegistrar("Orden Servicio ", mensaje));
+                setMensaje(WebUtil.exitoRegistrar("Orden Liquidación Gasto ", mensaje));
+                setLvalidate(true);
                 WebUtil.info(getMensaje());
                 RequestContext.getCurrentInstance().update("datos");
                 //RequestContext.getCurrentInstance().update("datos:lstdordenliquidaciongasto");
@@ -273,9 +283,19 @@ public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidac
         try {
             if (getOpc_anular_eliminar().equalsIgnoreCase("ANULAR")) {
                 getDatoEdicion().setIdestado("AN");
+                mensaje=ordenliquidaciongastoDao.anular(getDatoEdicion(),user.getIDUSUARIO());
+                if(mensaje!=null){
+                    setMensaje(WebUtil.exitoEliminar("Orden Liquidación Gasto", mensaje));
+                    WebUtil.info(getMensaje());
+                    setLvalidate(true);
+                    buscarFiltro(2);
+                }
             }
             if (getOpc_anular_eliminar().equalsIgnoreCase("ELIMINAR")) {
                 getDatoEdicion().setIdestado("CR");
+                mensaje="No existe opción eliminar";
+                setMensaje(WebUtil.exitoEliminar("Orden Liquidación Gasto", mensaje));
+                WebUtil.info(getMensaje());
             }
         } catch (Exception ex) {
             Logger.getLogger(OrdenliquidaciongastoAction.class.getName()).log(Level.SEVERE, null, ex);
@@ -341,12 +361,12 @@ public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidac
     public void findetalle() throws Exception {
         try{
             /**********************************CONFIGURACIÓN - SERVIDOR********************************/
-            listDocumentos=docDao.getOrdenServicio(user.getIDEMPRESA());
+            listDocumentos=docDao.getOrdenLiquidacionGasto(user.getIDEMPRESA());
             listNumemisor=numemisorDao.listarPorDocWeb(user.getIDEMPRESA(), listDocumentos.get(0).getIddocumento());
             numero=listNumemisor.get(0).getNumero();
             listEstado = estadosDao.listarPorEmpresaWeb(user.getIDEMPRESA(),null);
             lstdordenliquidaciongasto = dordenliquidaciongastoDao.listarPorOrdenliquidaciongastoWeb(user.getIDEMPRESA(),getDatoEdicion().getIdorden());
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMM");
             periodoBase=dateFormat.format(new Date())+WebUtil.idGeneradoDos((new Date()).getMonth()+1);
             periodoDisenio=dateFormat.format(new Date());
             mesNumeroDisenio=WebUtil.idGeneradoDos((new Date()).getMonth()+1);
@@ -461,12 +481,11 @@ public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidac
     }
     public void grabarDordenliquidaciongasto(){
         if(validarDetalle()){
-            int pos=lstdordenliquidaciongasto.indexOf(dordenliquidaciongasto);
-            if(pos==-1){
-                lstdordenliquidaciongasto.add(dordenliquidaciongasto);
-            }            
-            else {
-                lstdordenliquidaciongasto.set(pos, dordenliquidaciongasto);                
+            int pos=lstdordenliquidaciongasto.indexOf(selectDordenliquidaciongasto);
+            if(fdordenliquidaciongasto==1){
+               lstdordenliquidaciongasto.add(dordenliquidaciongasto); 
+            }else{
+                lstdordenliquidaciongasto.set(pos, dordenliquidaciongasto);  
             }
             lstdordenliquidaciongasto.forEach((ls) -> {
                 getDatoEdicion().setImporte(getDatoEdicion().getImporte()+ls.getImporte());
@@ -490,10 +509,12 @@ public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidac
             getDordenliquidaciongasto().setPimpuesto(0.0f);
             getDordenliquidaciongasto().setImpuesto(0.0f);
             getDordenliquidaciongasto().setImporte(0.0f);
+            getDordenliquidaciongasto().setIdmoneda(getDatoEdicion().getIdmoneda());
             getDordenliquidaciongasto().setIdloteproduccion("0");/*CONTIENE IGV? (1)/(0)*/
             this.check_igv = false;
             getDordenliquidaciongasto().setFecha(getDatoEdicion().getFecharegistro());
             listTipoGasto = tipogastoDao.listarPorEmpresa_Tipogasto(user.getIDEMPRESA());
+            fdordenliquidaciongasto = 1;
             RequestContext.getCurrentInstance().update("datos:dlgnew_dordenliquidaciongasto");
             RequestContext.getCurrentInstance().execute("PF('dlgnew_dordenliquidaciongasto').show()");
         } catch (NisiraORMException ex) {
@@ -513,6 +534,7 @@ public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidac
                        this.check_igv =  false;
                 else
                     this.check_igv =  false;
+                fdordenliquidaciongasto = 2;
                 listTipoGasto = tipogastoDao.listarPorEmpresa_Tipogasto(user.getIDEMPRESA());
                 setDordenliquidaciongasto((Dordenliquidaciongasto)selectDordenliquidaciongasto.clone());
                 RequestContext.getCurrentInstance().update("datos:dlgnew_dordenliquidaciongasto");
@@ -548,10 +570,12 @@ public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidac
         }
     }
     public void afectoCalc(){
+        dordenliquidaciongasto.setIdregimen("01");
         dordenliquidaciongasto.setImpuesto(dordenliquidaciongasto.getAfecto() * (dordenliquidaciongasto.getPimpuesto()*0.01f));
         dordenliquidaciongasto.setImporte(dordenliquidaciongasto.getAfecto()+dordenliquidaciongasto.getImpuesto());
     }
     public void inafectoCalc(){
+        dordenliquidaciongasto.setIdregimen("03");
         dordenliquidaciongasto.setImporte(dordenliquidaciongasto.getInafecto());
     }
     public String agregarItemDordenservicio(){
@@ -1059,5 +1083,19 @@ public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidac
      */
     public void setCheck_igv(boolean check_igv) {
         this.check_igv = check_igv;
+    }
+
+    /**
+     * @return the fdordenliquidaciongasto
+     */
+    public int getFdordenliquidaciongasto() {
+        return fdordenliquidaciongasto;
+    }
+
+    /**
+     * @param fdordenliquidaciongasto the fdordenliquidaciongasto to set
+     */
+    public void setFdordenliquidaciongasto(int fdordenliquidaciongasto) {
+        this.fdordenliquidaciongasto = fdordenliquidaciongasto;
     }
 }

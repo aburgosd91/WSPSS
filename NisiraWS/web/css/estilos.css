@@ -1126,6 +1126,9 @@ background: #003946 !important;
 .ui-icon-right{
     background: url("../img/ight.png")  no-repeat center !important;
 }
+.ui-icon-sunat{
+    background: url("../images/sunat.png")  no-repeat center !important;
+}
 /*.ui-growl-image {
         width:49px;
         height:49px;
