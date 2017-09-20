@@ -48,7 +48,7 @@
 
                     </h:panelGrid>
 
-                    <h:panelGrid columns="8" 
+                    <h:panelGrid columns="10" 
                                  style="padding: 0px !important;
                                  background: white !important;
                                  background-color: white !important;
@@ -63,6 +63,8 @@
                         <h:panelGrid width="40" > Grabar </h:panelGrid>
                         <h:panelGrid width="40" > Cerrar </h:panelGrid>
                         <h:panelGrid width="40" > Aprobar </h:panelGrid>
+                        <h:panelGrid width="40" > Visualizar </h:panelGrid>
+                        <h:panelGrid width="40" > Activar </h:panelGrid>
                     </h:panelGrid>
                     <p:dataGrid   styleClass="dataGridNoticias"   id="tabla000" var="i" value="#{privilegioEdtMenuAction.lista_seleccion}" 
                                   columns="1"     
@@ -72,7 +74,7 @@
                                   paginatorAlwaysVisible="false"
                                   emptyMessage="No Entradas Registradas">  
                         <h:column>
-                            <h:panelGrid  columns="8" style="padding: 0px !important;background: white !important;background-color: white !important;border-bottom: 1px solid orange;width: 100%">
+                            <h:panelGrid  columns="10" style="padding: 0px !important;background: white !important;background-color: white !important;border-bottom: 1px solid orange;width: 100%">
 
                                 <h:panelGrid style="text-align: center" width="40" columns="1">
                                     <h:selectBooleanCheckbox  value="#{i[0]}" />
@@ -97,6 +99,12 @@
                                 </h:panelGrid>
                                 <h:panelGrid style="text-align: center" width="40" columns="1">
                                     <h:selectBooleanCheckbox  value="#{i[9]}" />
+                                </h:panelGrid>
+                                <h:panelGrid style="text-align: center" width="40" columns="1">
+                                    <h:selectBooleanCheckbox  value="#{i[10]}" />
+                                </h:panelGrid>
+                                <h:panelGrid style="text-align: center" width="40" columns="1">
+                                    <h:selectBooleanCheckbox  value="#{i[11]}" />
                                 </h:panelGrid>
                             </h:panelGrid>
                         </h:column> 

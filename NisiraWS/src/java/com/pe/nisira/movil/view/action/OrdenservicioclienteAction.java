@@ -67,6 +67,7 @@ import static com.pe.nisira.movil.view.action.AbstactListAction.modalOptions;
 import com.pe.nisira.movil.view.bean.UsuarioBean;
 import com.pe.nisira.movil.view.util.Constantes;
 import com.pe.nisira.movil.view.util.WebUtil;
+import com.pe.nisira.movil.view.util.menuDao;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -550,8 +551,9 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                     WebUtil.error(getMensaje());
                     RequestContext.getCurrentInstance().update("datos:growl");
                 }else if(getDatoSeleccionado().getIdestado().trim().equals("CR")){
-                    List<Privilegio_global_pss> lst_= privilegio_global_pssDao.listarPorUsuario(user.getIDUSUARIO());
-                    if(!lst_.isEmpty())
+                    //List<Privilegio_global_pss> lst_= privilegio_global_pssDao.listarPorUsuario(user.getIDUSUARIO());
+                    int privilegio = (new menuDao()).buscar_privilegio_activar_usuario(user.getIDUSUARIO(),getLst_name());
+                    if(privilegio==1)
                         RequestContext.getCurrentInstance().execute("PF('dialogCerrar').show()");
                     else{
                         this.mensaje = "Orden se encuentra CERRADA";

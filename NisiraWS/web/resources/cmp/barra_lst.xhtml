@@ -36,7 +36,7 @@
                     <p:commandButton value="Exportar" ajax="false" image="ui-icon-excel">
                         <p:dataExporter type="xls" target="datos:tbl" fileName="Reporte" postProcessor="#{cc.attrs.bean.downFormatExcelEspecial}"/>
                     </p:commandButton>
-                    <p:commandButton update="botones,:datos:growl" value="Visualizar" actionListener="#{cc.attrs.bean.doVisualizar()}" icon="ui-icon-ver" /> 
+                    <p:commandButton rendered="#{cc.attrs.bean.avisualizar==1?true:false}" update="botones,:datos:growl" value="Visualizar" actionListener="#{cc.attrs.bean.doVisualizar()}" icon="ui-icon-ver" />
                 </h:panelGrid>  
             </p:toolbarGroup>
             <p:toolbarGroup align="right">

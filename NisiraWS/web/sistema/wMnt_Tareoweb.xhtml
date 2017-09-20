@@ -8,6 +8,11 @@
     <ui:define name="metadata">
     </ui:define>
     <ui:define name="body">
+        <style>
+            .highlight {
+                background: #B6A6D3  !important ;
+            }
+        </style>
         <script type='text/javascript'>
             function synchronizeRowsHeight() {
               //aligning table header row
@@ -135,7 +140,8 @@
                 resizableColumns="true"
                 selection="#{tareowebAction.selectDet_tareoweb}" selectionMode="single" 
                 frozenColumns="10" 
-                rowKey="#{listDet_tareoweb.item}" editable="#{tareowebAction.edicion}" editMode="cell">
+                rowKey="#{listDet_tareoweb.item}" editable="#{tareowebAction.edicion}" editMode="cell" 
+                rowStyleClass="#{listDet_tareoweb.chabilitado? 'highlight' : null}">
                 <p:ajax event="cellEdit" listener="#{tareowebAction.onCellEdit}" update="listDet_tareoweb"/>
                 <f:facet name="header">
                         ..:: Detalle Tareo ::..                 (Total:#{tareowebAction.listDet_tareoweb.size()})
@@ -203,7 +209,7 @@
                                 </f:facet>
                                 <f:facet name="input" >
                                     <p:autoComplete size="80" id="personal" value="#{listDet_tareoweb.selectPersonal}" maxResults="10" completeMethod="#{tareowebAction.completePersonal}"
-                                                var="personal" itemLabel="#{personal.dni}" itemValue="#{personal}" converter="personalConverter" forceSelection="true">
+                                                    var="personal" itemLabel="#{personal.dni}" itemValue="#{personal}" converter="personalConverter" forceSelection="true" disabled="#{listDet_tareoweb.chabilitado}">
                                         <p:column style="width:10%">
                                              <h:outputText value="#{personal.dni}" />
                                          </p:column>
@@ -221,7 +227,7 @@
                                </h:outputText>
                            </f:facet>
                             <f:facet name="input">
-                                <p:inputText style="font-size:10px;" id="placa_cliente_det" value="#{listDet_tareoweb.placa_cliente}">
+                                <p:inputText style="font-size:10px;" id="placa_cliente_det" value="#{listDet_tareoweb.placa_cliente}" disabled="#{listDet_tareoweb.chabilitado}">
                                 </p:inputText>
                            </f:facet>
                        </p:cellEditor>
@@ -234,7 +240,7 @@
                             </f:facet>
                             <f:facet name="input" >
                                 <p:autoComplete size="80" id="vehiculo" value="#{listDet_tareoweb.selectConsumidor}" maxResults="10" completeMethod="#{tareowebAction.completeConsumidor}"
-                                            var="vehiculo" itemLabel="#{vehiculo.idconsumidor}" itemValue="#{vehiculo}" converter="consumidorConverter" forceSelection="true">
+                                            var="vehiculo" itemLabel="#{vehiculo.idconsumidor}" itemValue="#{vehiculo}" converter="consumidorConverter" forceSelection="true" disabled="#{listDet_tareoweb.chabilitado}">
                                     <p:column style="width:10%">
                                          <h:outputText value="#{vehiculo.idconsumidor}" />
                                      </p:column>
@@ -252,7 +258,7 @@
                                </h:outputText>
                            </f:facet>
                             <f:facet name="input">
-                                <p:inputText style="font-size:10px;" id="conductor_cliente_det" value="#{listDet_tareoweb.conductor_cliente}">
+                                <p:inputText style="font-size:10px;" id="conductor_cliente_det" value="#{listDet_tareoweb.conductor_cliente}" disabled="#{listDet_tareoweb.chabilitado}">
                                 </p:inputText>
                            </f:facet>
                        </p:cellEditor>
@@ -264,7 +270,7 @@
                                </h:outputText>
                            </f:facet>
                             <f:facet name="input">
-                                <p:inputText style="font-size:10px;" id="brevete_cliente_det" value="#{listDet_tareoweb.brevete_cliente}">
+                                <p:inputText style="font-size:10px;" id="brevete_cliente_det" value="#{listDet_tareoweb.brevete_cliente}" disabled="#{listDet_tareoweb.chabilitado}">
                                 </p:inputText>
                            </f:facet>
                        </p:cellEditor>
@@ -276,7 +282,7 @@
                                </h:outputText>
                            </f:facet>
                             <f:facet name="input">
-                                <p:inputText style="font-size:10px;" id="checklist" value="#{listDet_tareoweb.checklist}">
+                                <p:inputText style="font-size:10px;" id="checklist" value="#{listDet_tareoweb.checklist}" disabled="#{listDet_tareoweb.chabilitado}">
                                 </p:inputText>
                            </f:facet>
                        </p:cellEditor>
@@ -288,7 +294,7 @@
                                </h:outputText>
                            </f:facet>
                             <f:facet name="input">
-                                <p:inputText style="font-size:10px;" id="nrocontenedor_det" value="#{listDet_tareoweb.nrocontenedor}">
+                                <p:inputText style="font-size:10px;" id="nrocontenedor_det" value="#{listDet_tareoweb.nrocontenedor}" disabled="#{listDet_tareoweb.chabilitado}">
                                 </p:inputText>
                            </f:facet>
                        </p:cellEditor>
@@ -301,7 +307,7 @@
                                 </h:outputText>
                            </f:facet>
                            <f:facet name="input">
-                               <p:calendar style="font-size:10px;" value="#{listDet_tareoweb.fecharegistro}" pattern="dd-MM-yyyy" mask="true" />
+                               <p:calendar style="font-size:10px;" value="#{listDet_tareoweb.fecharegistro}" pattern="dd-MM-yyyy" mask="true" disabled="#{listDet_tareoweb.chabilitado}"/>
                            </f:facet>
                        </p:cellEditor>
                     </p:column>
@@ -319,7 +325,7 @@
                                </h:outputText>
                            </f:facet>
                             <f:facet name="input" >
-                                <p:inputMask style="font-size:10px;" id="hora_llegada" mask="99:99" value="#{listDet_tareoweb.shora_llegada}">
+                                <p:inputMask style="font-size:10px;" id="hora_llegada" mask="99:99" value="#{listDet_tareoweb.shora_llegada}" disabled="#{listDet_tareoweb.chabilitado}">
                                </p:inputMask>
                            </f:facet>
                        </p:cellEditor>
@@ -331,7 +337,7 @@
                                </h:outputText>
                            </f:facet>
                             <f:facet name="input" >
-                               <p:inputMask style="font-size:10px;" id="hora_inicio" mask="99:99" value="#{listDet_tareoweb.shora_inicio}">
+                               <p:inputMask style="font-size:10px;" id="hora_inicio" mask="99:99" value="#{listDet_tareoweb.shora_inicio}" disabled="#{listDet_tareoweb.chabilitado}">
                                </p:inputMask>
                            </f:facet>
                        </p:cellEditor>
@@ -343,7 +349,7 @@
                                </h:outputText>
                            </f:facet>
                            <f:facet name="input" >
-                               <p:inputMask style="font-size:10px;"  id="hora_fin" mask="99:99" value="#{listDet_tareoweb.shora_fin}">
+                               <p:inputMask style="font-size:10px;"  id="hora_fin" mask="99:99" value="#{listDet_tareoweb.shora_fin}" disabled="#{listDet_tareoweb.chabilitado}">
                                </p:inputMask>
                            </f:facet>
                        </p:cellEditor>
@@ -355,7 +361,7 @@
                                </h:outputText>
                            </f:facet>
                            <f:facet name="input" >
-                               <p:inputMask style="font-size:10px;"  id="hora_liberacion" mask="99:99" value="#{listDet_tareoweb.shora_liberacion}">
+                               <p:inputMask style="font-size:10px;"  id="hora_liberacion" mask="99:99" value="#{listDet_tareoweb.shora_liberacion}" disabled="#{listDet_tareoweb.chabilitado}">
                                </p:inputMask>
                            </f:facet>
                        </p:cellEditor>
@@ -369,7 +375,7 @@
                                 </h:outputText>
                            </f:facet>
                            <f:facet name="input">
-                               <p:calendar style="font-size:10px;" value="#{listDet_tareoweb.fechafinregistro}" pattern="dd-MM-yyyy" mask="true" />
+                               <p:calendar style="font-size:10px;" value="#{listDet_tareoweb.fechafinregistro}" pattern="dd-MM-yyyy" mask="true" disabled="#{listDet_tareoweb.chabilitado}"/>
                            </f:facet>
                        </p:cellEditor>
                     </p:column>
@@ -377,7 +383,7 @@
                         <p:cellEditor>
                             <f:facet name="output"><h:outputText value="#{listDet_tareoweb.conceptotareo}" /></f:facet>
                            <f:facet name="input">
-                               <h:selectOneMenu value="#{listDet_tareoweb.idconceptotareo}" style="width:100%">
+                               <h:selectOneMenu value="#{listDet_tareoweb.idconceptotareo}" style="width:100%" disabled="#{listDet_tareoweb.chabilitado}">
                                    <f:selectItems value="#{tareowebAction.listConcepto_tareo}" var="ct" itemLabel="#{ct.descripcion}" itemValue="#{ct.idconceptotareo}" />
                                </h:selectOneMenu>
                            </f:facet>
@@ -387,7 +393,7 @@
                         <p:cellEditor>
                             <f:facet name="output"><h:outputText value="#{listDet_tareoweb.asistencia}" /></f:facet>
                            <f:facet name="input">
-                               <h:selectOneMenu value="#{listDet_tareoweb.codasistencia}" style="width:100%">
+                               <h:selectOneMenu value="#{listDet_tareoweb.codasistencia}" style="width:100%" disabled="#{listDet_tareoweb.chabilitado}">
                                    <f:selectItems value="#{tareowebAction.listTipo_asistencia}" var="ta" itemLabel="#{ta.nombre_corto}-#{ta.descripcion}" itemValue="#{ta.idtipoasistencia}" />
                                </h:selectOneMenu>
                            </f:facet>
@@ -406,7 +412,7 @@
                                </h:outputText>
                            </f:facet>
                             <f:facet name="input">
-                                <p:inputText style="font-size:10px;" id="nroprecinto_det" value="#{listDet_tareoweb.nroprecinto}">
+                                <p:inputText style="font-size:10px;" id="nroprecinto_det" value="#{listDet_tareoweb.nroprecinto}" disabled="#{listDet_tareoweb.chabilitado}">
                                 </p:inputText>
                            </f:facet>
                        </p:cellEditor>
@@ -418,10 +424,16 @@
                                </h:outputText>
                            </f:facet>
                             <f:facet name="input">
-                                <p:inputText style="font-size:10px;" id="nro_oservicio_det" value="#{listDet_tareoweb.nro_oservicio}">
+                                <p:inputText style="font-size:10px;" id="nro_oservicio_det" value="#{listDet_tareoweb.nro_oservicio}" disabled="#{listDet_tareoweb.chabilitado}">
                                 </p:inputText>
                            </f:facet>
                        </p:cellEditor>
+                    </p:column>
+                    <p:column style="white-space: nowrap; width: 110px;padding: 3px;text-align: left" filterBy="#{listDet_tareoweb.cestado}" filterMatchMode="contains" sortBy="#{listDet_tareoweb.cestado}">
+                        <f:facet name="header">
+                            <h:outputText value="Orden->Estado?"/>
+                        </f:facet>
+                        <h:outputText value="#{listDet_tareoweb.cestado}"/>
                     </p:column>
                     <!-- FOR REPORT -->
                     <p:column visible="false">

@@ -119,7 +119,9 @@ public class Det_tareowebDao extends BaseDao<Det_tareoweb> {
                 tareoweb.setConductor_rpt(rs.getString("CONDUCTOR_RPT")!=null?rs.getString("CONDUCTOR_RPT").trim():"");
                 tareoweb.setPrecinto_rpt(rs.getString("PRECINTO_RPT")!=null?rs.getString("PRECINTO_RPT").trim():"");
                 tareoweb.setPlaca_cliente_rpt(rs.getString("PLACA_CLIENTE_RPT")!=null?rs.getString("PLACA_CLIENTE_RPT").trim():"");
-                
+                tareoweb.setCidestado(rs.getString("IDESTADO_DOC")!=null?rs.getString("IDESTADO_DOC").trim():"");
+                tareoweb.setCestado(rs.getString("DESCRIPCION_ESTADO_DOC")!=null?rs.getString("DESCRIPCION_ESTADO_DOC").trim():"");
+                tareoweb.setChabilitado(rs.getBoolean("HABILITADO"));
                 lista.add(tareoweb); 
             }
 
@@ -219,6 +221,9 @@ public class Det_tareowebDao extends BaseDao<Det_tareoweb> {
                 tareoweb.setConductor_rpt(rs.getString("CONDUCTOR_RPT")!=null?rs.getString("CONDUCTOR_RPT").trim():"");
                 tareoweb.setPrecinto_rpt(rs.getString("PRECINTO_RPT")!=null?rs.getString("PRECINTO_RPT").trim():"");
                 tareoweb.setPlaca_cliente_rpt(rs.getString("PLACA_CLIENTE_RPT")!=null?rs.getString("PLACA_CLIENTE_RPT").trim():"");
+                tareoweb.setCidestado(rs.getString("IDESTADO_DOC")!=null?rs.getString("IDESTADO_DOC").trim():"");
+                tareoweb.setCestado(rs.getString("DESCRIPCION_ESTADO_DOC")!=null?rs.getString("DESCRIPCION_ESTADO_DOC").trim():"");
+                tareoweb.setChabilitado(rs.getBoolean("HABILITADO"));
                 lista.add(tareoweb); 
             }
 

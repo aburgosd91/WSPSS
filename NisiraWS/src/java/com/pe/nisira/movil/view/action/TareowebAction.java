@@ -1202,13 +1202,13 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
                 /*DATOS INICIALES*/
                 if(getDatoEdicion().getIdcabtareoweb()==null){
                     mensaje=getCabtareowebDao().grabar(1, getDatoEdicion(), 
-                            getListDet_tareoweb());
+                            getListDet_tareoweb(),user.getIDUSUARIO());
                     if(mensaje!=null)
                         if(mensaje.trim().length()==15)
                             getDatoEdicion().setIdcabtareoweb(mensaje.trim());
                 }
                 else
-                    mensaje=getCabtareowebDao().grabar(2, getDatoEdicion(),getListDet_tareoweb());
+                    mensaje=getCabtareowebDao().grabar(2, getDatoEdicion(),getListDet_tareoweb(),user.getIDUSUARIO());
                 setMensaje(WebUtil.exitoRegistrar("Tareo Web - Especial", mensaje));
                 WebUtil.info(getMensaje());
                 setLvalidate(true);
@@ -1228,14 +1228,14 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
                 /*DATOS INICIALES*/
                 if(getDatoEdicion().getIdcabtareoweb()==null){
                     mensaje=getCabtareowebDao().grabar(1, getDatoEdicion(), 
-                            getListDet_tareoweb());
+                            getListDet_tareoweb(),user.getIDUSUARIO());
                     if(mensaje!=null)
                         if(mensaje.trim().length()==15){
                             getDatoEdicion().setIdcabtareoweb(mensaje.trim());
                             setLadd(2);
                         }
                 }else{
-                    mensaje=getCabtareowebDao().grabar(2, getDatoEdicion(),getListDet_tareoweb());
+                    mensaje=getCabtareowebDao().grabar(2, getDatoEdicion(),getListDet_tareoweb(),user.getIDUSUARIO());
                 }
 //                setMensaje(WebUtil.exitoRegistrar("Tareo Web", mensaje));
 //                WebUtil.info(getMensaje());

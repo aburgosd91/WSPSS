@@ -26,7 +26,7 @@ import org.primefaces.model.TreeNode;
 public class PrivilegioEdtMenuAction {
     private TreeNode patriarca;
     private TreeNode nodoSeleccionado;
-    private Object[] nodoS = new Object[7];
+    private Object[] nodoS = new Object[9];
     private String tipo_arbol;
     private String idusuario;
     private String idempresa;

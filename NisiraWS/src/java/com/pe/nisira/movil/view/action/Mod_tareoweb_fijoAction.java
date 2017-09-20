@@ -510,14 +510,14 @@ public class Mod_tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
                 /*DATOS INICIALES*/
 //                groupProgramation();
                 if(getDatoEdicion().getIdcabtareoweb()==null){
-                    mensaje=cabtareowebDao.grabar_fijo(1, getDatoEdicion(), getListDet_tareoweb());
+                    mensaje=cabtareowebDao.grabar_fijo(1, getDatoEdicion(), getListDet_tareoweb(),user.getIDUSUARIO());
                     if(mensaje!=null)
                         if(mensaje.trim().length()==15){
                             getDatoEdicion().setIdcabtareoweb(mensaje.trim());
                             setLadd(2);
                         }
                 }else{
-                    mensaje=cabtareowebDao.grabar_fijo(2, getDatoEdicion(), getListDet_tareoweb());
+                    mensaje=cabtareowebDao.grabar_fijo(2, getDatoEdicion(), getListDet_tareoweb(),user.getIDUSUARIO());
                 }
 //                setMensaje(WebUtil.exitoRegistrar("Tareo Web", mensaje));
 //                WebUtil.info(getMensaje());
@@ -938,13 +938,13 @@ public class Mod_tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
 //                groupProgramation();
                 if(getDatoEdicion().getIdcabtareoweb()==null){
                     mensaje=cabtareowebDao.grabar_fijo(1, getDatoEdicion(), 
-                            getListDet_tareoweb());
+                            getListDet_tareoweb(),user.getIDUSUARIO());
                     if(mensaje!=null)
                         if(mensaje.trim().length()==15)
                             getDatoEdicion().setIdcabtareoweb(mensaje.trim());
                 }
                 else
-                    mensaje=cabtareowebDao.grabar_fijo(2, getDatoEdicion(),getListDet_tareoweb());
+                    mensaje=cabtareowebDao.grabar_fijo(2, getDatoEdicion(),getListDet_tareoweb(),user.getIDUSUARIO());
                 setMensaje(WebUtil.exitoRegistrar("Tareo Web Fijo", mensaje));
                 WebUtil.info(getMensaje());
                 setLvalidate(true);

@@ -67,6 +67,8 @@ public abstract class AbstactListAction<T> {
     private int aeliminar;
     private int acerrar;
     private int aaprobar;
+    private int avisualizar;
+    private int aactivar;
     /*FILTRO*/
     private Date desde;
     private Date hasta;
@@ -146,6 +148,7 @@ public abstract class AbstactListAction<T> {
                     this.aeliminar=Integer.parseInt(a[5]);
                     this.setAcerrar(Integer.parseInt(a[6]));
                     this.aaprobar=Integer.parseInt(a[7]);
+                    this.avisualizar=Integer.parseInt(a[8]);
                 }
             }
         }
@@ -204,6 +207,7 @@ public abstract class AbstactListAction<T> {
                     this.aeliminar=Integer.parseInt(a[5]);
                     this.acerrar=Integer.parseInt(a[6]);
                     this.aaprobar=Integer.parseInt(a[7]);
+                    this.avisualizar=Integer.parseInt(a[8]);
                 }
             }
         }
@@ -794,5 +798,33 @@ public abstract class AbstactListAction<T> {
      */
     public void setRestricted(Date restricted) {
         this.restricted = restricted;
+    }
+
+    /**
+     * @return the avisualizar
+     */
+    public int getAvisualizar() {
+        return avisualizar;
+    }
+
+    /**
+     * @param avisualizar the avisualizar to set
+     */
+    public void setAvisualizar(int avisualizar) {
+        this.avisualizar = avisualizar;
+    }
+
+    /**
+     * @return the aactivar
+     */
+    public int getAactivar() {
+        return aactivar;
+    }
+
+    /**
+     * @param aactivar the aactivar to set
+     */
+    public void setAactivar(int aactivar) {
+        this.aactivar = aactivar;
     }
 }

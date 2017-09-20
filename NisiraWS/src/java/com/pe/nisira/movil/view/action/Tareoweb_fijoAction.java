@@ -1177,13 +1177,13 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
 //                groupProgramation();
                 if(getDatoEdicion().getIdcabtareoweb()==null){
                     mensaje=getCabtareowebDao().grabar_fijo(1, getDatoEdicion(), 
-                            getListDet_tareoweb());
+                            getListDet_tareoweb(),user.getIDUSUARIO());
                     if(mensaje!=null)
                         if(mensaje.trim().length()==15)
                             getDatoEdicion().setIdcabtareoweb(mensaje.trim());
                 }
                 else
-                    mensaje=getCabtareowebDao().grabar_fijo(2, getDatoEdicion(),getListDet_tareoweb());
+                    mensaje=getCabtareowebDao().grabar_fijo(2, getDatoEdicion(),getListDet_tareoweb(),user.getIDUSUARIO());
                 setMensaje(WebUtil.exitoRegistrar("Tareo Web Fijo", mensaje));
                 WebUtil.info(getMensaje());
                 setLvalidate(true);
@@ -1203,14 +1203,14 @@ public class Tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
 //                groupProgramation();
                 if(getDatoEdicion().getIdcabtareoweb()==null){
                     mensaje=getCabtareowebDao().grabar_fijo(1, getDatoEdicion(), 
-                            getListDet_tareoweb());
+                            getListDet_tareoweb(),user.getIDUSUARIO());
                     if(mensaje!=null)
                         if(mensaje.trim().length()==15){
                             getDatoEdicion().setIdcabtareoweb(mensaje.trim());
                             setLadd(2);
                         }
                 }else{
-                    mensaje=getCabtareowebDao().grabar_fijo(2, getDatoEdicion(),getListDet_tareoweb());
+                    mensaje=getCabtareowebDao().grabar_fijo(2, getDatoEdicion(),getListDet_tareoweb(),user.getIDUSUARIO());
                 }
 //                setMensaje(WebUtil.exitoRegistrar("Tareo Web", mensaje));
 //                WebUtil.info(getMensaje());

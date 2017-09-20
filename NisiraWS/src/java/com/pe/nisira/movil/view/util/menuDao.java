@@ -1030,7 +1030,7 @@ public class menuDao extends Conexion {
             cl.setString(3, idemprsa);
             rs = cl.executeQuery();
             while (rs.next()) {
-                Object[] s = new Object[10];
+                Object[] s = new Object[12];
                 s[0] = (boolean) (rs.getString("elegido")).equalsIgnoreCase("1") ? true : false;
                 s[1] = (rs.getInt("idcontenido"));
                 s[2] = (rs.getString("idempresa"));
@@ -1041,6 +1041,8 @@ public class menuDao extends Conexion {
                 s[7] = (boolean) (rs.getString("Grabar")).equalsIgnoreCase("1") ? true : false;
                 s[8] = (boolean) (rs.getString("Cerrar")).equalsIgnoreCase("1") ? true : false;
                 s[9] = (boolean) (rs.getString("Aprobar")).equalsIgnoreCase("1") ? true : false;
+                s[10] = (boolean) (rs.getString("Visualizar")).equalsIgnoreCase("1") ? true : false;
+                s[11] = (boolean) (rs.getString("Activar")).equalsIgnoreCase("1") ? true : false;
                 l.add(s);
             }
         } finally {
@@ -1588,6 +1590,8 @@ public class menuDao extends Conexion {
                 ax.setGrabar(ls[7].toString().equalsIgnoreCase("true") ? 1 : 0);
                 ax.setCerrar(ls[8].toString().equalsIgnoreCase("true") ? 1 : 0);
                 ax.setAprobar(ls[9].toString().equalsIgnoreCase("true") ? 1 : 0);
+                ax.setVisualizar(ls[10].toString().equalsIgnoreCase("true") ? 1 : 0);
+                ax.setActivar(ls[11].toString().equalsIgnoreCase("true") ? 1 : 0);
                 l.add(ax);
             }
         }
@@ -1610,5 +1614,23 @@ public class menuDao extends Conexion {
             cerrar(cn, pr, rs);
         }
         return t;
+    }
+    public int buscar_privilegio_activar_usuario(String idusuario, String url) throws Exception {
+        int priv=0;
+        try {
+
+            String sql = "web_buscar_privilegio_menua_activar";
+            cn = obtenerConexionJTDS();
+            cl = cn.prepareCall("{CALL " + sql + "(?,?)}");
+            cl.setString(1, url);
+            cl.setString(2, idusuario);
+            rs = cl.executeQuery();
+            while (rs.next()) {
+                priv = (rs.getInt("activar"));
+            }
+        } finally {
+            cerrar(cn, cl, rs);
+        }
+        return priv;
     }
 }

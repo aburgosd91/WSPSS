@@ -202,16 +202,28 @@ public class Det_tareoweb implements Serializable {
         private Clieprov selectPersonal;
         @XStreamOmitField
         private Consumidor selectConsumidor;
+        @XStreamOmitField
         private String ciddocumento;
+        @XStreamOmitField
         private String cserie;
+        @XStreamOmitField
         private String cnumero;
+        @XStreamOmitField
         private Date cfecha;
+        @XStreamOmitField
         private String cidresponsable;
+        @XStreamOmitField
         private String cresponsable;
+        @XStreamOmitField
         private String cidusuario;
+        @XStreamOmitField
         private String cusuario;
+        @XStreamOmitField
         private String cidestado;
+        @XStreamOmitField
         private String cestado;
+        @XStreamOmitField
+        private Boolean chabilitado;
         /* Sets & Gets */
 	public void setIdempresa(String idempresa) {
 		this.idempresa = idempresa;
@@ -1179,5 +1191,19 @@ public class Det_tareoweb implements Serializable {
      */
     public void setCestado(String cestado) {
         this.cestado = cestado;
+    }
+
+    /**
+     * @return the chabilitado
+     */
+    public Boolean getChabilitado() {
+        return chabilitado;
+    }
+
+    /**
+     * @param chabilitado the chabilitado to set
+     */
+    public void setChabilitado(Boolean chabilitado) {
+        this.chabilitado = chabilitado;
     }
 }
