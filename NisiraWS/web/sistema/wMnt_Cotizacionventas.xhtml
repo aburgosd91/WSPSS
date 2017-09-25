@@ -467,6 +467,15 @@
                     </div>
                 </div>
             </p:panelGrid>
+            <p:confirmDialog id="dialogAprobar" header="..:: Documento N° #{cotizacionventasAction.datoSeleccionado.serie} -
+                             #{cotizacionventasAction.datoSeleccionado.numero} está aprobado ::.."  
+                      message="Desea Activar(PE) el documento?" 
+                      widgetVar="dialogAprobar" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Yes" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
+                                 action="#{cotizacionventasAction.activarDocumento()}" />
+                <p:commandButton value="No" styleClass="ui-confirmdialog-no" icon="ui-icon-close" 
+                                 onclick="PF('dialogAprobar').hide()" />
+            </p:confirmDialog>
             <p:growl id="growl" life="4000" showDetail="false"  />
             <cmp:mDialogElimina_lst id="cmpDialog" bean="#{cotizacionventasAction}" ventana="MNT" />
         </h:form>

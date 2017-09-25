@@ -93,21 +93,53 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
 
     @Override
     public String buscarFiltro(int tipo) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            this.mensaje = "";
+            SimpleDateFormat  f = new SimpleDateFormat("yyyy-MM-dd");
+            String f_ini = f.format(getDesde());
+            String f_fin = f.format(getHasta());
+            f_ini = f_ini.replace("-", "");
+            f_fin = f_fin.replace("-", "");
+            setListaDatos(memoDao.lstMemorandum(user.getIDEMPRESA(), "003",f_ini,f_fin));
+        } catch (Exception e) {
+            mensaje = WebUtil.mensajeError();
+            WebUtil.error(mensaje);
+        }
+//        RequestContext.getCurrentInstance().update("datos");
+        RequestContext.getCurrentInstance().update("datos:tbl");
+        if(tipo == 2)
+            lista_accion_filtro("wLst_Memorandum_Install_GRD");
+        return "";
     }
 
     @Override
     public void buscarTodo() {
         try {
-            Gson gson = new Gson();
-            setListaDatos(memoDao.lstMemorandum(user.getIDEMPRESA(), "003"));
-            RequestContext.getCurrentInstance().update("datos");
-            RequestContext.getCurrentInstance().update("datos:tbl");
-        } catch (NisiraORMException ex) {
-            this.setMensaje(ex.toString());
-        }
+            buscar_filtrofecha();
+        } catch (Exception ex) {
+            Logger.getLogger(CotizacionesAction.class.getName()).log(Level.SEVERE, null, ex);
+        }  
     }
-
+    public void buscar_filtrofecha() {
+        try {
+            this.mensaje = "";
+            SimpleDateFormat  f = new SimpleDateFormat("yyyy-MM-dd");
+            String f_ini = f.format(getDesde());
+            String f_fin = f.format(getHasta());
+            f_ini = f_ini.replace("-", "");
+            f_fin = f_fin.replace("-", "");
+            setListaDatos(memoDao.lstMemorandum(user.getIDEMPRESA(), "003",f_ini,f_fin));
+            //   filtrar();
+            RequestContext.getCurrentInstance().update("datos");
+//            RequestContext.getCurrentInstance().execute("javascript:location.reload()");
+        } catch (Exception e) {
+            mensaje = WebUtil.mensajeError();
+            WebUtil.error(mensaje);
+        }
+//        RequestContext.getCurrentInstance().update("datos");
+        RequestContext.getCurrentInstance().update("datos:tbl");
+        return;
+    }
     public void findDetaller() throws NisiraORMException {
         if (getDatoEdicion().getIdcotizacionv() != null) {
             Gson gson = new Gson();
@@ -480,6 +512,9 @@ public class MemorandumInstaCRDAction extends AbstactListAction<Memorandum_insta
                 lstDcot = dcotDao.getListDCotizacionWeb(user.getIDEMPRESA(), slcCoti.getIdcotizacionv());
                 getDatoEdicion().setIdcotizacionv(slcCoti.getIdcotizacionv());
                 getDatoEdicion().setFecha_inst(slcCoti.getFecha());
+                getDatoEdicion().setContacto(slcCoti.getContacto());
+                getDatoEdicion().setEmail(slcCoti.getContacto_email());
+                getDatoEdicion().setTelefono(slcCoti.getTelefono());
                 RequestContext.getCurrentInstance().update("datos");
             } else {
                 setMensaje("Esta Cotizacion ya ha sido Utilizda.");

@@ -26,19 +26,21 @@
                                     <p:calendar value="#{memorandumInstaCMTAction.slcCoti.fecha}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="true"/>
                                     <p:outputLabel  value="Fecha de Instalacion"/>
                                     <p:calendar  value="#{memorandumInstaCMTAction.datoEdicion.fecha_inst}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="#{!memorandumInstaCMTAction.edicion}"/>
-                                    <p:outputLabel value="Direccion de Servicio"/>
+                                    <p:outputLabel value="Direccion Fiscal"/>
                                     <p:inputText size="60" value="#{memorandumInstaCMTAction.slcCoti.lugar_entrega}" readonly="true"/>
+                                    <p:outputLabel value="Direccion de Servicio"/>
+                                    <p:inputText size="60" value="#{memorandumInstaCMTAction.datoEdicion.direccion1}"  disabled="#{!memorandumInstaCMTAction.edicion}"/>
                                     <p:outputLabel value="Contacto"/>
-                                    <p:inputText value="#{memorandumInstaCMTAction.slcCoti.contacto}" readonly="true"/>
+                                    <p:inputText value="#{memorandumInstaCMTAction.datoEdicion.contacto}"  disabled="#{!memorandumInstaCMTAction.edicion}"/>
                                     <p:outputLabel  value="Email"/>
-                                    <p:inputText value="#{memorandumInstaCMTAction.slcCoti.contacto_email}" readonly="true"/>
+                                    <p:inputText value="#{memorandumInstaCMTAction.datoEdicion.email}"  disabled="#{!memorandumInstaCMTAction.edicion}"/>
                                     <p:outputLabel  value="Telefono"/>
-                                    <p:inputText size="40" value="#{memorandumInstaCMTAction.slcCoti.telefono}" readonly="true"/>
+                                    <p:inputText size="40" value="#{memorandumInstaCMTAction.datoEdicion.telefono}"  disabled="#{!memorandumInstaCMTAction.edicion}"/>
                                 </p:panelGrid>
                             </div>
                             <div class="ui-grid-col-6">
                                 <p:panelGrid columns="4" columnClasses="no-border,no-border,no-border,no-border">
-                                    <p:outputLabel value="Empresa"/>
+                                    <p:outputLabel value="Cliente"/>
                                     <p:inputText size="11" value="#{memorandumInstaCMTAction.slcCoti.idclieprov}" readonly="true"/>
                                     <p:inputText size="40" value="#{memorandumInstaCMTAction.slcCoti.razon_social}" readonly="true"/>
                                     <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{memorandumInstaCMTAction.verCntCotizacionVenta()}" disabled="#{!memorandumInstaCMTAction.edicion}"  icon="ui-icon-search">
@@ -55,7 +57,7 @@
                                 </p:panelGrid>
                                 <p:panelGrid columns="2" columnClasses="no-border,no-border">
                                     <p:outputLabel value="Tipo de Servicio"/>
-                                    <p:inputText  value="#{memorandumInstaCMTAction.slcCoti.tipo_servicio}" readonly="true"/>
+                                    <p:inputText  value="#{memorandumInstaCMTAction.slcCoti.tipo_servicio}" readonly="true" size="50"/>
                                     <p:outputLabel value="Hora de Instalacion"/>
                                     <p:calendar  value="#{memorandumInstaCMTAction.datoEdicion.horaInsta}" mask="99:99" pattern="HH:mm" timeOnly="true"  />
                                     <p:outputLabel  value="Duracion de Contrato"/>
@@ -107,7 +109,7 @@
                         </p:fieldset>
                     </div>
                     <div class="ui-grid-row">
-                        <p:fieldset legend="Detalle del Pedido" style="width: 100%" >
+                        <p:fieldset legend="Detalle Cotización" style="width: 100%" >
                             <p:dataTable id="lstdcotizacionventas" 
                                          var="lstdcotizacionventas" 
                                          value="#{memorandumInstaCMTAction.lstDcot}" 
@@ -124,6 +126,12 @@
                                         <h:outputText value="Cantidad"/>
                                     </f:facet>
                                     <h:outputText  value="#{lstdcotizacionventas.cantidad}"/>
+                                </p:column>
+                                <p:column style="width:3%;" filterBy="#{lstdcotizacionventas.codoperativo}" filterMatchMode="contains" sortBy="#{lstdcotizacionventas.codoperativo}">
+                                    <f:facet name="header">
+                                        <h:outputText value="Cod Ope."/>
+                                    </f:facet>
+                                    <h:outputText value="#{lstdcotizacionventas.codoperativo}"/>
                                 </p:column>
                                 <p:column style="width:10%;" filterBy="#{lstdcotizacionventas.descripcion}" filterMatchMode="contains" sortBy="#{lstdcotizacionventas.descripcion}">
                                     <f:facet name="header">
@@ -198,9 +206,9 @@
                                 <p:outputLabel value="Salario"/>
                                 <p:inputNumber size="10" decimalPlaces="2"   value="#{memorandumInstaCMTAction.datoEdicion.salario}" disabled="#{!memorandumInstaCMTAction.edicion}"/>
                                 <p:outputLabel value="Condiciones Comerciales"/>
-                                <p:inputText  value="#{memorandumInstaCMTAction.datoEdicion.condiciones_comerciales}"  readonly="true"/>
+                                <p:inputText  value="#{memorandumInstaCMTAction.datoEdicion.condiciones_comerciales}" size="100"  disabled="#{!memorandumInstaCMTAction.edicion}"/>
                                 <p:outputLabel value="Observaciones"/>
-                                <p:inputTextarea cols="40" rows="5" maxlength="200"  value="#{memorandumInstaCMTAction.datoEdicion.observaciones}" disabled="#{!memorandumInstaCMTAction.edicion}"/>
+                                <p:inputTextarea cols="100" rows="5" maxlength="200"  value="#{memorandumInstaCMTAction.datoEdicion.observaciones}" disabled="#{!memorandumInstaCMTAction.edicion}"/>
                             </p:panelGrid>
                         </p:fieldset>
                     </div>

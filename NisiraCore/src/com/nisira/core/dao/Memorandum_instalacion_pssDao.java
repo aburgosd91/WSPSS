@@ -31,11 +31,12 @@ public class Memorandum_instalacion_pssDao extends BaseDao<Memorandum_instalacio
         }
     }
 
-    public List<Memorandum_instalacion_pss> lstMemorandum(String idempresa, String idtipo) throws NisiraORMException {
+    public List<Memorandum_instalacion_pss> lstMemorandum(String idempresa, String idtipo,
+            String fechainicio,String fechafin) throws NisiraORMException {
         List<Memorandum_instalacion_pss> memo = new ArrayList<Memorandum_instalacion_pss>();
         try {
             ResultSet rs = null;
-            rs = execProcedure("GETMEMORANDUM_INSTALACION_PSS", idempresa, idtipo);
+            rs = execProcedure("GETMEMORANDUM_INSTALACION_PSS", idempresa, idtipo,fechainicio,fechafin);
             while (rs.next()) {
                 Memorandum_instalacion_pss me = new Memorandum_instalacion_pss();
                 me.setIdemrpesa(rs.getString("IDEMRPESA"));
@@ -51,6 +52,10 @@ public class Memorandum_instalacion_pssDao extends BaseDao<Memorandum_instalacio
                 me.setObservaciones(rs.getString("OBSERVACIONES"));
                 me.setIdusuario(rs.getString("IDUSUARIO"));
                 me.setRazon_social(rs.getString("RAZON_SOCIAL") != null ? rs.getString("RAZON_SOCIAL").trim() : "");
+                me.setDireccion1(rs.getString("DIRECCION1") != null ? rs.getString("DIRECCION1").trim() : "");
+                me.setContacto(rs.getString("CONTACTO") != null ? rs.getString("CONTACTO").trim() : "");
+                me.setEmail(rs.getString("EMAIL") != null ? rs.getString("EMAIL").trim() : "");
+                me.setTelefono(rs.getString("TELEFONO") != null ? rs.getString("TELEFONO").trim() : "");
                 memo.add(me);
             }
         } catch (Exception ex) {
@@ -76,7 +81,6 @@ public class Memorandum_instalacion_pssDao extends BaseDao<Memorandum_instalacio
     public String grabarMemo(String idempresa, String idords, Memorandum_instalacion_pss memo) throws NisiraORMException {
         String mensaje = "";
         try {
-
             String xmlNot = "";
             String xml = "<?xml version='1.0' encoding='ISO-8859-1' ?>";
             XStream xStream = new XStream();

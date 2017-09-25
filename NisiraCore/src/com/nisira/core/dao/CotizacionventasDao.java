@@ -484,6 +484,24 @@ public class CotizacionventasDao extends BaseDao<Cotizacionventas> {
             }
             return mensaje;
         }
+        public String cambioEstado(int tipo,List<Cotizacionventas> listCotizacionventas) throws Exception {
+            String mensaje="";
+            String xmlNot = "";
+            String xml = "<?xml version='1.0' encoding='ISO-8859-1' ?>";
+            XStream xStream = new XStream();
+            xStream.processAnnotations(Cotizacionventas.class);
+            xmlNot = xml + xStream.toXML(listCotizacionventas);
+            ResultSet rs = null;
+            rs = execProcedure("SP_COTIZACIONVENTAS_UPDATE_ESTADO",
+                    tipo,
+                    xmlNot
+            );
+            while (rs.next()) {
+                mensaje = rs.getString("mensaje");
+                break;
+            }
+            return mensaje;
+        }
         public NSRResultSet getConsultaRepote(String IDEMPRESA, String IDCOTIZACIONV) throws NisiraORMException{
             ResultSet rs = null;
             rs = execProcedure("GETCOTIZACION_REPORTE_TMPSS",IDEMPRESA,IDCOTIZACIONV);

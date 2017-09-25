@@ -65,6 +65,7 @@ import com.pe.nisira.movil.view.util.EnviarDocumentos;
 import com.pe.nisira.movil.view.util.ManejadorFechas;
 import com.pe.nisira.movil.view.util.NSRDataSource;
 import com.pe.nisira.movil.view.util.WebUtil;
+import com.pe.nisira.movil.view.util.menuDao;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
 import java.io.File;
 import java.io.IOException;
@@ -486,7 +487,48 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
     }
     @Override
     public void aprobar() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            if(getDatoSeleccionado() != null){
+                if(getDatoSeleccionado().getIdestado().trim().equals("AN")){
+                    this.mensaje = "Cotización se encuentra ANULADA";
+                    WebUtil.error(getMensaje());
+                    RequestContext.getCurrentInstance().update("datos:growl");
+                }else if(getDatoSeleccionado().getIdestado().trim().equals("AP")){
+                    //List<Privilegio_global_pss> lst_= privilegio_global_pssDao.listarPorUsuario(user.getIDUSUARIO());
+                    int privilegio = (new menuDao()).buscar_privilegio_activar_usuario(user.getIDUSUARIO(),getLst_name());
+                    if(privilegio==1)
+                        RequestContext.getCurrentInstance().execute("PF('dialogAprobar').show()");
+                    else{
+                        this.mensaje = "Cotización Venta se encuentra APROBADA";
+                        WebUtil.error(getMensaje());
+                        RequestContext.getCurrentInstance().update("datos:growl");                        
+                    }
+                }else{
+                    List lst = new ArrayList<>();
+                    lst.add(getDatoSeleccionado());
+                    this.mensaje = getCotizacionventasDao().cambioEstado(1,lst);
+                    setMensaje(WebUtil.exitoRegistrar("Cotización Venta", mensaje));
+                    WebUtil.info(getMensaje());
+                    buscarFiltro(2);
+                }
+            }
+        }catch (Exception ex) {
+            Logger.getLogger(Ordenserviciocliente_cierreAction.class.getName()).log(Level.SEVERE, null, ex);
+            WebUtil.MensajeError(ex.getMessage());
+        }
+    }
+    public void activarDocumento() {
+        try {
+            List lst = new ArrayList<>();
+            lst.add(getDatoSeleccionado());
+            this.mensaje = getCotizacionventasDao().cambioEstado(3,lst);
+            setMensaje(WebUtil.exitoRegistrar("Cotización Venta", mensaje));
+            WebUtil.info(getMensaje());
+            buscarFiltro(2);
+        } catch (Exception ex) {
+            Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, null, ex);
+            WebUtil.MensajeError(ex.getMessage());
+        }
     }
     public void envioCorreo(){
         try {

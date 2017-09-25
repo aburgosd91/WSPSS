@@ -9,9 +9,8 @@
     </ui:define>
     <ui:define name="body">          
         <h:form id="datos">
-            #{memorandumInstaCMTAction.buscarTodo()}  
             <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
-                <cmp:barra_lst bean="#{memorandumInstaCMTAction}" mostrar_opciones="false"/>
+                <cmp:barra_lst bean="#{memorandumInstaCMTAction}"  mostrar_opciones="false" cfgfiltro="true"/>
                 <p:dataTable id="tbl" var="lstMemo" value="#{memorandumInstaCMTAction.listaDatos}" filteredValue="#{memorandumInstaCMTAction.filtroDatos}" widgetVar="lstMemo" 
                              paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
                              paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{memorandumInstaCMTAction.datoSeleccionado}" rowKey="#{lstMemo.idcotizacionv}" resizableColumns="true">
@@ -44,7 +43,9 @@
                         <f:facet name="header">
                             <h:outputText value="Fehca Inst" />
                         </f:facet>
-                        <h:outputText value="#{lstMemo.fecha_inst}"/>
+                        <h:outputText value="#{lstMemo.fecha_inst}">
+                            <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                        </h:outputText>
                     </p:column>
                     <p:column style="width:15%;" filterBy="#{lstMemo.salario}" filterMatchMode="contains" sortBy="#{lstMemo.salario}">
                         <f:facet name="header">

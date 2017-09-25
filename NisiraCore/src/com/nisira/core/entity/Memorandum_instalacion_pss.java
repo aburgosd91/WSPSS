@@ -52,7 +52,18 @@ public class Memorandum_instalacion_pss implements Serializable{
 	@Columna
         @XStreamAlias("idusuario")
 	private String idusuario;
-        
+        @Columna
+        @XStreamAlias("direccion1")
+	private String direccion1;
+        @Columna
+        @XStreamAlias("contacto")
+	private String contacto;
+        @Columna
+        @XStreamAlias("email")
+	private String email;
+        @Columna
+        @XStreamAlias("telefono")
+	private String telefono;
         @XStreamOmitField
         private String razon_social;
         @XStreamOmitField
@@ -181,6 +192,62 @@ public class Memorandum_instalacion_pss implements Serializable{
 
     public void setRazon_social(String razon_social) {
         this.razon_social = razon_social;
+    }
+
+    /**
+     * @return the direccion1
+     */
+    public String getDireccion1() {
+        return direccion1;
+    }
+
+    /**
+     * @param direccion1 the direccion1 to set
+     */
+    public void setDireccion1(String direccion1) {
+        this.direccion1 = direccion1;
+    }
+
+    /**
+     * @return the contacto
+     */
+    public String getContacto() {
+        return contacto;
+    }
+
+    /**
+     * @param contacto the contacto to set
+     */
+    public void setContacto(String contacto) {
+        this.contacto = contacto;
+    }
+
+    /**
+     * @return the email
+     */
+    public String getEmail() {
+        return email;
+    }
+
+    /**
+     * @param email the email to set
+     */
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    /**
+     * @return the telefono
+     */
+    public String getTelefono() {
+        return telefono;
+    }
+
+    /**
+     * @param telefono the telefono to set
+     */
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
     }
 
 }
