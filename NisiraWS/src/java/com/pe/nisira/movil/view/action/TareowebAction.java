@@ -1072,7 +1072,10 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
                 validacion+="\n\tFecha Registro no asignado";
             if(obj.getFechafinregistro()==null)
                 validacion+="\n\tFecha Fin no asignado";
-            
+            if(WebUtil.isnull(obj.getCargo(),"").toLowerCase().contains("chofer")){
+                if(WebUtil.isnull(obj.getIdvehiculo(),"").trim().equals(""))
+                   validacion+="\n\tVehículo no asignado"; 
+            }
             if(!validacion.equals("")){
                 flag = false;
                 this.mensaje="Servicio N°:"+obj.getItem()+" - "+obj.getIddocumento()+"-"+obj.getSerie()+"-"+obj.getNumero()+" ("+obj.getFecha_osc()+")"+" "+obj.getRazon()+"-"+obj.getRuc()+validacion;

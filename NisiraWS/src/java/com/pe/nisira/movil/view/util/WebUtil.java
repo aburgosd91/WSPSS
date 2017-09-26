@@ -661,11 +661,11 @@ public class WebUtil {
         else
             return value;
     }
+    public static Date getDateIni(){
+        Date day = new Date((new Date()).getYear(), (new Date()).getMonth(), 1);
+        return day;
+    }
     public static void main(String[] args) {
-//        System.out.println("Hora :"+convertStringTimeFloat("24:00"));
-//        System.out.println("Hora :"+convertStringTimeFloat("__:__"));
-//        System.out.println("Hora :"+convertStringTimeFloat("00:00"));
-        System.out.println("Hora :"+convertStringTimeFloat("00:01"));
-        System.out.println("Hora :"+convertStringTimeFloat("23:59"));
+        System.out.println(getDateIni().toLocaleString()); 
     }
 }

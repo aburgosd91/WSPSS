@@ -44,6 +44,14 @@
                         <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
                     </h:outputText>
                 </p:column>
+                <p:column style="white-space: nowrap; width: 80px;padding: 3px;" filterBy="#{listOrdenServicioCliente.fechacierre}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.fechacierre}">
+                    <f:facet name="header">
+                        <h:outputText value="F.Cierre" />
+                    </f:facet>
+                    <h:outputText value="#{listOrdenServicioCliente.fechacierre}">
+                        <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                    </h:outputText>
+                </p:column>
                 <p:column headerText="Tareo" style="white-space: nowrap; width: 150px;padding: 3px;" filterBy="#{listOrdenServicioCliente.serietareo}" filterMatchMode="contains" sortBy="#{listOrdenServicioCliente.serietareo}">
                     <h:outputText value="#{listOrdenServicioCliente.serietareo}" />
                 </p:column>

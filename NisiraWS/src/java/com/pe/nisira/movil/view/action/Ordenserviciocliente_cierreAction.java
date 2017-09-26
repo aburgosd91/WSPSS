@@ -886,7 +886,7 @@ public class Ordenserviciocliente_cierreAction extends AbstactListAction<Ordense
                     WebUtil.MensajeError(this.mensaje);
                 }
                 if(!siCerrar.isEmpty()){
-                    this.mensaje = getOrdenservicioclienteDao().cierreMasivo(1,siCerrar);
+                    this.mensaje = getOrdenservicioclienteDao().cierreMasivo(1,siCerrar,user.getIDUSUARIO());
                     setMensaje(WebUtil.exitoRegistrar("Orden Servicio ", mensaje));
                     WebUtil.info(getMensaje());
                     setSelectListOrdenserviciocliente(new ArrayList<>());

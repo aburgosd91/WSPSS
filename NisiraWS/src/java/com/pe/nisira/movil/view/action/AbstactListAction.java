@@ -212,7 +212,7 @@ public abstract class AbstactListAction<T> {
             }
         }
         /********************* FECHA ********************/
-        desde=new Date();
+        desde=WebUtil.getDateIni();
         hasta=new Date();
         setRestricted(new Date());
         doVerFiltro(1);

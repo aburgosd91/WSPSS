@@ -74,6 +74,9 @@ public class Ordenserviciocliente implements Serializable{
         @Columna
         @XStreamAlias("CONTACTO")
 	private String contacto;
+        @Columna
+        @XStreamAlias("FECHACIERRE")
+	private Date fechacierre;
         private String operario;
         private String operario2;
         private String idcotizacionv;
@@ -393,5 +396,19 @@ public class Ordenserviciocliente implements Serializable{
      */
     public void setSerietareo(String serietareo) {
         this.serietareo = serietareo;
+    }
+
+    /**
+     * @return the fechacierre
+     */
+    public Date getFechacierre() {
+        return fechacierre;
+    }
+
+    /**
+     * @param fechacierre the fechacierre to set
+     */
+    public void setFechacierre(Date fechacierre) {
+        this.fechacierre = fechacierre;
     }
 }

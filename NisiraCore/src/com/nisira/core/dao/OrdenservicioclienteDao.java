@@ -234,12 +234,13 @@ public class OrdenservicioclienteDao extends BaseDao<Ordenserviciocliente> {
                 ordenserviciocliente.setContacto(rs.getString("CONTACTO")!=null?rs.getString("CONTACTO").trim():"");
                 ordenserviciocliente.setIdtareo(rs.getString("IDTAREO")!=null?rs.getString("IDTAREO").trim():"");
                 ordenserviciocliente.setSerietareo(rs.getString("SERIETAREO")!=null?rs.getString("SERIETAREO").trim():"");
+                ordenserviciocliente.setFechacierre(rs.getDate("FECHACIERRE"));
                 lista.add(ordenserviciocliente); 
             }
             return lista;
         }
         
-        public String cierreMasivo(int tipo,List<Ordenserviciocliente> listOrdenservicio) throws Exception {
+        public String cierreMasivo(int tipo,List<Ordenserviciocliente> listOrdenservicio,String idusuario) throws Exception {
             String mensaje="";
             String xmlNot = "";
             String xml = "<?xml version='1.0' encoding='ISO-8859-1' ?>";
@@ -249,7 +250,8 @@ public class OrdenservicioclienteDao extends BaseDao<Ordenserviciocliente> {
             ResultSet rs = null;
             rs = execProcedure("SP_ORDENSERVICIOCLIENTE_UPDATE_ESTADO",
                     tipo,
-                    xmlNot
+                    xmlNot,
+                    idusuario
             );
             while (rs.next()) {
                 mensaje = rs.getString("mensaje");

@@ -569,7 +569,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                         if(msj.trim().equals("")){
                             lst = new ArrayList<>();
                             lst.add(getDatoSeleccionado());
-                            this.mensaje = getOrdenservicioclienteDao().cierreMasivo(1,lst);
+                            this.mensaje = getOrdenservicioclienteDao().cierreMasivo(1,lst,user.getIDUSUARIO());
                             setMensaje(WebUtil.exitoRegistrar("Orden Servicio ", mensaje));
                             WebUtil.info(getMensaje());
                             setSelectListOrdenserviciocliente(new ArrayList<>());
@@ -585,7 +585,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                 }else if(getDatoSeleccionado().getTipo_servicio().trim().equals("F")){
                     lst = new ArrayList<>();
                     lst.add(getDatoSeleccionado());
-                    this.mensaje = getOrdenservicioclienteDao().cierreMasivo(1,lst);
+                    this.mensaje = getOrdenservicioclienteDao().cierreMasivo(1,lst,user.getIDUSUARIO());
                     setMensaje(WebUtil.exitoRegistrar("Orden Servicio ", mensaje));
                     WebUtil.info(getMensaje());
                     setSelectListOrdenserviciocliente(new ArrayList<>());
@@ -606,7 +606,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                         if(msj.trim().equals("")){
                             lst = new ArrayList<>();
                             lst.add(getDatoEdicion());
-                            this.mensaje = getOrdenservicioclienteDao().cierreMasivo(1,lst);
+                            this.mensaje = getOrdenservicioclienteDao().cierreMasivo(1,lst,user.getIDUSUARIO());
                             setMensaje(WebUtil.exitoRegistrar("Orden Servicio ", mensaje));
                             WebUtil.info(getMensaje());
                             setSelectListOrdenserviciocliente(new ArrayList<>());
@@ -622,7 +622,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                 }else if(getDatoEdicion().getTipo_servicio().trim().equals("F")){
                     lst = new ArrayList<>();
                     lst.add(getDatoEdicion());
-                    this.mensaje = getOrdenservicioclienteDao().cierreMasivo(1,lst);
+                    this.mensaje = getOrdenservicioclienteDao().cierreMasivo(1,lst,user.getIDUSUARIO());
                     setMensaje(WebUtil.exitoRegistrar("Orden Servicio ", mensaje));
                     WebUtil.info(getMensaje());
                     setSelectListOrdenserviciocliente(new ArrayList<>());
@@ -642,7 +642,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
         try {
             List lst = new ArrayList<>();
             lst.add(getDatoSeleccionado());
-            this.mensaje = getOrdenservicioclienteDao().cierreMasivo(4,lst);
+            this.mensaje = getOrdenservicioclienteDao().cierreMasivo(4,lst,user.getIDUSUARIO());
             setMensaje(WebUtil.exitoRegistrar("Orden Servicio ", mensaje));
             WebUtil.info(getMensaje());
             setSelectListOrdenserviciocliente(new ArrayList<>());

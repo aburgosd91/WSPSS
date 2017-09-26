@@ -62,8 +62,12 @@
                             <div class="ui-grid-col-6">
                                 <p:panelGrid  columns="2" columnClasses="no-border, no-border" >
                                     <p:outputLabel value="Fecha" escape="false"/>
-                                    <p:panelGrid  columns="3" columnClasses="no-border, no-border, no-border" >
-                                        <p:calendar id="button1" value="#{ordenservicioclienteAction.datoEdicion.fecha}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="#{!ordenservicioclienteAction.edicion}">
+                                    <p:panelGrid  columns="5" columnClasses="no-border, no-border,no-border, no-border, no-border" >
+                                        <p:calendar id="button1" value="#{ordenservicioclienteAction.datoEdicion.fecha}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="#{!ordenservicioclienteAction.edicion}" size="10">
+                                            <!--<p:ajax event="dateSelect" listener="{planventaAction.updateCampañas}" update="lstCampaña"/>-->
+                                        </p:calendar>
+                                        <p:outputLabel value="F. Cierre" escape="false"/>
+                                        <p:calendar id="button2" value="#{ordenservicioclienteAction.datoEdicion.fechacierre}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="true" size="10">
                                             <!--<p:ajax event="dateSelect" listener="{planventaAction.updateCampañas}" update="lstCampaña"/>-->
                                         </p:calendar>
                                         <p:outputLabel for="estado"  value="Estado:" />
