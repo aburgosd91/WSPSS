@@ -191,4 +191,28 @@ public class Dpersonal_servicioDao extends BaseDao<Dpersonal_servicio> {
         }
         return lista;
         }
+          public ArrayList<Dpersonal_servicio> listar_DPersonal_Servicio_Free(String idusuario) throws NisiraORMException,Exception {
+            ArrayList<Dpersonal_servicio> lista = new ArrayList<Dpersonal_servicio>();
+            ResultSet rs = null;
+            rs = execProcedure("SP_PSS_GET_DPERSONALSERVICIO_FREE",idusuario);
+            while (rs.next()) {
+                Dpersonal_servicio dpersonal_servicio = new Dpersonal_servicio();                
+                dpersonal_servicio.setIdempresa(rs.getString("IDEMPRESA").trim());
+                dpersonal_servicio.setIdordenservicio(rs.getString("IDORDENSERVICIO")!=null?rs.getString("IDORDENSERVICIO").trim():"");
+                dpersonal_servicio.setItem_dordenservicio(rs.getString("ITEM_DORDENSERVICIO")!=null?rs.getString("ITEM_DORDENSERVICIO").trim():"");
+                dpersonal_servicio.setItem2(rs.getString("ITEM2")!=null?rs.getString("ITEM2").trim():"");
+                dpersonal_servicio.setItem(rs.getString("ITEM")!=null?rs.getString("ITEM").trim():"");
+                dpersonal_servicio.setHora_req(rs.getFloat("HORA_REQ"));
+                dpersonal_servicio.setHora_llegada(rs.getFloat("HORA_LLEGADA"));
+                dpersonal_servicio.setHora_inicio_serv(rs.getFloat("HORA_INICIO_SERV"));
+                dpersonal_servicio.setHora_fin_serv(rs.getFloat("HORA_FIN_SERV"));
+                dpersonal_servicio.setHora_liberacion(rs.getFloat("HORA_LIBERACION"));
+                dpersonal_servicio.setIdcargo(rs.getString("IDCARGO")!=null?rs.getString("IDCARGO").trim():"");
+                dpersonal_servicio.setFecharegistro(rs.getDate("FECHAREGISTRO"));
+                dpersonal_servicio.setFechafinregistro(rs.getDate("FECHAFINREGISTRO"));
+                lista.add(dpersonal_servicio); 
+            }
+            return lista;
+        }        
+
 }

@@ -157,5 +157,36 @@ public class Personal_servicioDao extends BaseDao<Personal_servicio> {
         }
         return lista;
         }
+         public ArrayList<Personal_servicio> listarPersonal_Servicio_Free(String idusuario) throws NisiraORMException,Exception {
+            ArrayList<Personal_servicio> lista = new ArrayList<Personal_servicio>();
+            ResultSet rs = null;
+            rs = execProcedure("SP_PSS_GET_PERSONALSERVICIO_FREE",idusuario);
+            while (rs.next()) {
+                Personal_servicio personal_servicio = new Personal_servicio();                
+                personal_servicio.setIdempresa(rs.getString("IDEMPRESA").trim());
+                personal_servicio.setIdordenservicio(rs.getString("IDORDENSERVICIO")!=null?rs.getString("IDORDENSERVICIO").trim():"");
+                personal_servicio.setItem(rs.getString("ITEM")!=null?rs.getString("ITEM").trim():"");
+                personal_servicio.setItem2(rs.getString("ITEM2")!=null?rs.getString("ITEM2").trim():"");
+                personal_servicio.setIdpersonal(rs.getString("IDPERSONAL")!=null?rs.getString("IDPERSONAL").trim():"");
+                personal_servicio.setDni(rs.getString("DNI")!=null?rs.getString("DNI").trim():"");
+                personal_servicio.setNombres(rs.getString("NOMBRES")!=null?rs.getString("NOMBRES").trim():"");
+                personal_servicio.setFechaoperacion(rs.getDate("FECHAOPERACION"));
+                personal_servicio.setIdcargo(rs.getString("IDCARGO")!=null?rs.getString("IDCARGO").trim():"");
+                personal_servicio.setFechafin(rs.getDate("FECHAFIN"));
+                personal_servicio.setChecklist(rs.getString("CHECKLIST")!=null?rs.getString("CHECKLIST").trim():"");
+                personal_servicio.setIdvehiculo(rs.getString("IDVEHICULO")!=null?rs.getString("IDVEHICULO").trim():"");
+                personal_servicio.setNrocontenedor(rs.getString("NROCONTENEDOR")!=null?rs.getString("NROCONTENEDOR").trim():"");
+                personal_servicio.setNroprecinto(rs.getString("NROPRECINTO")!=null?rs.getString("NROPRECINTO").trim():"");
+                personal_servicio.setNro_oservicio(rs.getString("NRO_OSERVICIO")!=null?rs.getString("NRO_OSERVICIO").trim():"");
+                personal_servicio.setPlaca_cliente(rs.getString("PLACA_CLIENTE")!=null?rs.getString("PLACA_CLIENTE").trim():"");
+                personal_servicio.setConductor_cliente(rs.getString("CONDUCTOR_CLIENTE")!=null?rs.getString("CONDUCTOR_CLIENTE").trim():"");
+                personal_servicio.setBrevete_cliente(rs.getString("BREVETE_CLIENTE")!=null?rs.getString("BREVETE_CLIENTE").trim():"");                
+                personal_servicio.setDescripcion_vehiculo(rs.getString("DESCRIPCION_VEHICULO")!=null?rs.getString("DESCRIPCION_VEHICULO").trim():"");
+                personal_servicio.setDescripcion_cargo(rs.getString("DESCRIPCION_CARGO")!=null?rs.getString("DESCRIPCION_CARGO").trim():"");
+                lista.add(personal_servicio);                 
+            }
+            return lista;
+        }        
+
 
 }

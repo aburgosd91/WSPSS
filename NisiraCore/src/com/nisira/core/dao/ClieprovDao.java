@@ -460,4 +460,36 @@ public class ClieprovDao extends BaseDao<Clieprov> {
                 }
             return clieprov;
         }
+        /***************** LISTAR OPERARIOS FILTRADOS POR APELLIDO PATERNO 4 CARACTERES *****************/
+        public ArrayList<Clieprov> listarClieProvFree_PorEmpresa(String idempresa, String appaterno) throws NisiraORMException {
+            ArrayList<Clieprov> lista = new ArrayList<Clieprov>();
+        try 
+        {
+            ResultSet rs = null;
+            rs = execProcedure("GETCLIEPROV_PERSONAL_MOVIL_TMPSS_FILTER",idempresa,appaterno);
+            while (rs.next()) {
+                Clieprov clieprov = new Clieprov();
+                clieprov.setIdbasedatos(rs.getString("IDBASEDATOS").trim());
+                clieprov.setIdempresa(rs.getString("IDEMPRESA").trim());
+                clieprov.setIdclieprov(rs.getString("IDCLIEPROV").trim());
+                clieprov.setTipo_clieprov(rs.getString("TIPO_CLIEPROV")!=null?rs.getString("TIPO_CLIEPROV").trim():"");
+                clieprov.setTipopersona(rs.getString("TIPOPERSONA")!=null?rs.getString("TIPOPERSONA").trim():"");
+                clieprov.setApellidopaterno(rs.getString("APELLIDOPATERNO")!=null?rs.getString("APELLIDOPATERNO").trim():"");
+                clieprov.setApellidomaterno(rs.getString("APELLIDOMATERNO")!=null?rs.getString("APELLIDOMATERNO").trim():"");
+                clieprov.setNombres(rs.getString("NOMBRES")!=null?rs.getString("NOMBRES").trim():"");
+                clieprov.setDni(rs.getString("DNI")!=null?rs.getString("DNI").trim():"");
+                clieprov.setRazonsocial(rs.getString("RAZON_SOCIAL")!=null?rs.getString("RAZON_SOCIAL").trim():"");
+                clieprov.setRuc(rs.getString("RUC")!=null?rs.getString("RUC").trim():"");
+                clieprov.setDireccion(rs.getString("DIRECCION")!=null?rs.getString("DIRECCION").trim():"");
+                clieprov.setEstado(rs.getDouble("ESTADO"));
+                clieprov.setIdgrupoclieprov(rs.getString("IDGRUPOCLIEPROV")!=null?rs.getString("IDGRUPOCLIEPROV").trim():"");
+                lista.add(clieprov);                             
+                
+            }
+        } catch(Exception ex) {
+            ex.printStackTrace();
+        }
+        return lista;
+        }
+        /****************************************************/
 }

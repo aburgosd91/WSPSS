@@ -133,4 +133,34 @@ public class DordenservicioclienteDao extends BaseDao<Dordenserviciocliente> {
         }
         return lista;
         }
+    public ArrayList<Dordenserviciocliente> listarDordenServicioClientePendiente(String idusuario) throws NisiraORMException,Exception {
+            ArrayList<Dordenserviciocliente> lista = new ArrayList<Dordenserviciocliente>();
+            ResultSet rs = null;
+            rs = execProcedure("SP_PSS_GET_DORDENSERVICIOCLIENTE_PENDIENTE",idusuario);
+            while (rs.next()) {
+                Dordenserviciocliente dordenserviciocliente = new Dordenserviciocliente();                
+                dordenserviciocliente.setIdempresa(rs.getString("IDEMPRESA").trim());
+                dordenserviciocliente.setIdordenservicio(rs.getString("IDORDENSERVICIO")!=null?rs.getString("IDORDENSERVICIO").trim():"");
+                dordenserviciocliente.setItem(rs.getString("ITEM")!=null?rs.getString("ITEM").trim():"");
+                dordenserviciocliente.setIdvehiculo(rs.getString("IDVEHICULO")!=null?rs.getString("IDVEHICULO").trim():"");
+                dordenserviciocliente.setPlaca_cliente(rs.getString("PLACA_CLIENTE")!=null?rs.getString("PLACA_CLIENTE").trim():"");
+                dordenserviciocliente.setHora_req(rs.getFloat("HORA_REQ"));
+                dordenserviciocliente.setFecha_fin_servicio(rs.getDate("FECHA_FIN_SERVICIO"));                
+                dordenserviciocliente.setFechacreacion(rs.getDate("FECHACREACION"));
+                dordenserviciocliente.setIdreferencia(rs.getString("IDREFERENCIA")!=null?rs.getString("IDREFERENCIA").trim():"");
+                dordenserviciocliente.setItemreferencia(rs.getString("ITEMREFERENCIA")!=null?rs.getString("ITEMREFERENCIA").trim():"");
+                dordenserviciocliente.setIdservicio(rs.getString("IDSERVICIO")!=null?rs.getString("IDSERVICIO").trim():"");
+                dordenserviciocliente.setConductor_cliente(rs.getString("CONDUCTOR_CLIENTE")!=null?rs.getString("CONDUCTOR_CLIENTE").trim():"");
+                dordenserviciocliente.setGlosa(rs.getString("GLOSA")!=null?rs.getString("GLOSA").trim():"");
+                dordenserviciocliente.setHora_rc(rs.getFloat("HORA_RC"));
+                dordenserviciocliente.setCodoperaciones(rs.getString("CODOPERACIONES")!=null?rs.getString("CODOPERACIONES").trim():"");
+                dordenserviciocliente.setIdruta_ec(rs.getString("IDRUTA_EC")!=null?rs.getString("IDRUTA_EC").trim():"");
+                //dordenserviciocliente.setIdconsumidor(rs.getString("IDCONSUMIDOR")!=null?rs.getString("IDCONSUMIDOR").trim():"");
+                dordenserviciocliente.setDescripcion_vehiculo(rs.getString("DESCRIPCION_VEHICULO")!=null?rs.getString("DESCRIPCION_VEHICULO").trim():"");                
+                dordenserviciocliente.setDescripcion_servicio(rs.getString("DESCRIPCION_SERVICIO")!=null?rs.getString("DESCRIPCION_SERVICIO").trim():"");
+                lista.add(dordenserviciocliente); 
+            }
+            return lista;
+        }
+
 }

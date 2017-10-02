@@ -441,4 +441,42 @@ public class OrdenservicioclienteDao extends BaseDao<Ordenserviciocliente> {
             }
         return mensaje;
     }
+       
+      
+        public ArrayList<Ordenserviciocliente> listarOrdenServicioPendiente(String idusuario) throws NisiraORMException,Exception {
+            ArrayList<Ordenserviciocliente> lista = new ArrayList<Ordenserviciocliente>();
+            ResultSet rs = null;
+            rs = execProcedure("SP_PSS_GET_ORDENSERVICIOCLIENTE_PENDIENTE",idusuario);
+            while (rs.next()) {
+                Ordenserviciocliente ordenserviciocliente = new Ordenserviciocliente();                
+                ordenserviciocliente.setIdempresa(rs.getString("IDEMPRESA").trim());
+                ordenserviciocliente.setIdordenservicio(rs.getString("IDORDENSERVICIO")!=null?rs.getString("IDORDENSERVICIO").trim():"");
+                ordenserviciocliente.setIddocumento(rs.getString("IDDOCUMENTO")!=null?rs.getString("IDDOCUMENTO").trim():"");
+                ordenserviciocliente.setSerie(rs.getString("SERIE")!=null?rs.getString("SERIE").trim():"");
+                ordenserviciocliente.setNumero(rs.getString("NUMERO")!=null?rs.getString("NUMERO").trim():"");
+                ordenserviciocliente.setNromanual(rs.getString("NROMANUAL")!=null?rs.getString("NROMANUAL").trim():"");
+                ordenserviciocliente.setIdclieprov(rs.getString("IDCLIEPROV")!=null?rs.getString("IDCLIEPROV").trim():"");
+                ordenserviciocliente.setFecha(rs.getDate("FECHA"));
+                ordenserviciocliente.setTipo_servicio(rs.getString("TIPO_SERVICIO")!=null?rs.getString("TIPO_SERVICIO").trim():"");
+                ordenserviciocliente.setAmbito_servicio(rs.getString("AMBITO_SERVICIO")!=null?rs.getString("AMBITO_SERVICIO").trim():"");
+                ordenserviciocliente.setIdestado(rs.getString("IDESTADO")!=null?rs.getString("IDESTADO").trim():"");
+                ordenserviciocliente.setSincroniza(rs.getString("SINCRONIZA")!=null?rs.getString("SINCRONIZA").trim():"");
+                ordenserviciocliente.setFechacreacion(rs.getDate("FECHACREACION"));
+                ordenserviciocliente.setNrocontenedor(rs.getString("NROCONTENEDOR")!=null?rs.getString("NROCONTENEDOR").trim():"");
+                ordenserviciocliente.setNroprecinto(rs.getString("NROPRECINTO")!=null?rs.getString("NROPRECINTO").trim():"");
+                ordenserviciocliente.setNro_oservicio(rs.getString("NRO_OSERVICIO")!=null?rs.getString("NRO_OSERVICIO").trim():"");
+                ordenserviciocliente.setIdmotivo(rs.getString("IDMOTIVO")!=null?rs.getString("IDMOTIVO").trim():"");
+                ordenserviciocliente.setGlosa(rs.getString("GLOSA")!=null?rs.getString("GLOSA").trim():"");
+                ordenserviciocliente.setIdoperario(rs.getString("IDOPERARIO")!=null?rs.getString("IDOPERARIO").trim():"");
+                ordenserviciocliente.setIdoperario2(rs.getString("IDOPERARIO2")!=null?rs.getString("IDOPERARIO2").trim():"");                
+                ordenserviciocliente.setOperario2(rs.getString("contacto")!=null?rs.getString("contacto").trim():"");
+                ordenserviciocliente.setRazonsocial(rs.getString("RAZONSOCIAL")!=null?rs.getString("RAZONSOCIAL").trim():"");
+                ordenserviciocliente.setEstado(rs.getString("ESTADO")!=null?rs.getString("ESTADO").trim():"");
+                ordenserviciocliente.setOperario(rs.getString("OPERARIO")!=null?rs.getString("OPERARIO").trim():"");
+                ordenserviciocliente.setOperario2(rs.getString("OPERARIO2")!=null?rs.getString("OPERARIO2").trim():"");
+                lista.add(ordenserviciocliente); 
+            }
+            return lista;
+        }        
+        
 }

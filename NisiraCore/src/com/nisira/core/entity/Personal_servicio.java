@@ -68,6 +68,12 @@ public class Personal_servicio implements Serializable{
         @Columna
         @XStreamAlias("BREVETE_CLIENTE")
 	private String brevete_cliente;
+        @Columna
+        @XStreamAlias("DESCRIPCION_VEHICULO")
+        private String descripcion_vehiculo;
+        @Columna
+        @XStreamAlias("DESCRIPCION_CARGO")
+        private String descripcion_cargo;  
         private String vehiculo;
         private String cargo;
 
@@ -315,4 +321,21 @@ public class Personal_servicio implements Serializable{
     public void setBrevete_cliente(String brevete_cliente) {
         this.brevete_cliente = brevete_cliente;
     }
+
+    public String getDescripcion_vehiculo() {
+        return descripcion_vehiculo;
+    }
+
+    public void setDescripcion_vehiculo(String descripcion_vehiculo) {
+        this.descripcion_vehiculo = descripcion_vehiculo;
+    }
+
+    public String getDescripcion_cargo() {
+        return descripcion_cargo;
+    }
+
+    public void setDescripcion_cargo(String descripcion_cargo) {
+        this.descripcion_cargo = descripcion_cargo;
+    }
+    
 }

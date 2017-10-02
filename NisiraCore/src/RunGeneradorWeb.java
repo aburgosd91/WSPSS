@@ -16,11 +16,11 @@ import com.nisira.generator.FrmGeneraEntidades;
 public class RunGeneradorWeb {
     public static void main(String[] args) {
 		EConexion e = new EConexion();
-		e.BASEDATOS = "PSS_SQLITE";
+		e.BASEDATOS = "PSSTEST";
 		e.CLAVE = "amadeus2010";
 		e.INSTANCIA = "";
 		e.USUARIO = "sa";
-		e.SERVIDOR = "ABURGOS";
+		e.SERVIDOR = "EQUIPONISIRA";
 		e.TIPO = "MSSQL";
                 CoreUtil.conexiones.put("default", e);
 		new com.nisira.generator.FrmGeneraEntidades(e.TIPO, e.BASEDATOS).setVisible(true);

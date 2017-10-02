@@ -874,11 +874,11 @@ public class RunGenerador {
             RunGenerador rgen = new RunGenerador(RunGenerador.RAIZ_NETBEANS,PAQUETEBASE,RunGenerador.JAVA);
             // ********************************************INICIO CONEXION*******************************************************
             EConexion e = new EConexion();
-            e.BASEDATOS = "PSS_SQLITE";
+            e.BASEDATOS = "PSSTEST";
             e.CLAVE = "amadeus2010";
             e.INSTANCIA = "";
             e.USUARIO = "sa";
-            e.SERVIDOR = "ABURGOS";
+            e.SERVIDOR = "EQUIPONISIRA";
             e.TIPO = "MSSQL";
             CoreUtil.conexiones.put("default", e);
             // ********************************************FIN CONEXION*******************************************************
