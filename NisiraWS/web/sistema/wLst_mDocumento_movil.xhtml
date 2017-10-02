@@ -1,0 +1,39 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">
+            #{mDocumento_movilAction.buscarTodo()}  
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">             
+                <cmp:barra_lst bean="#{mDocumento_movilAction}" mostrar_opciones="false" />
+                <p:dataTable id="tbl" var="listDoc" value="#{mDocumento_movilAction.listaDatos}" filteredValue="#{mDocumento_movilAction.filtroDatos}" widgetVar="listUsuario"   paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                             paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{mDocumento_movilAction.datoSeleccionado}" rowKey="#{listDoc.iddocumento}" resizableColumns="true">
+                    <f:facet name="header">
+                        #{mDocumento_movilAction.tituloHead}
+                    </f:facet>
+                    <p:column headerText="Código Empresa" style="width:30%;" filterBy="#{listDoc.idempresa}" filterMatchMode="contains" sortBy="#{listDoc.idempresa}">
+                        <h:outputText value="#{listDoc.idempresa}" />
+                    </p:column>
+                    <p:column headerText="Código Documento" style="width:30%;" filterBy="#{listDoc.iddocumento}" filterMatchMode="contains" sortBy="#{listDoc.iddocumento}">
+                        <h:outputText value="#{listDoc.iddocumento}" />
+                    </p:column>
+                    <p:column headerText="Descripción" style="width:30%;" filterBy="#{listDoc.descripcion}" filterMatchMode="contains" sortBy="#{listDoc.descripcion}">
+                        <h:outputText value="#{listDoc.descripcion}" />
+                    </p:column>
+                    <p:column headerText="Estado" style="width:30%;" filterBy="#{listDoc.estado}" filterMatchMode="contains" sortBy="#{listDoc.estado}">
+                        <h:outputText value="#{listDoc.estado}" />
+                    </p:column>
+                </p:dataTable>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{mDocumento_movilAction}" ventana="LST" />
+        </h:form>
+    </ui:define>
+</ui:composition>
