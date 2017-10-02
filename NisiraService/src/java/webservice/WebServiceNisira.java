@@ -962,7 +962,7 @@ public class WebServiceNisira{
         return result;
     }
     
-    @WebMethod(operationName = "METHOD_ASCENT_ORDENLIQUIDACIONGASTO")
+     @WebMethod(operationName = "METHOD_ASCENT_ORDENLIQUIDACIONGASTO")
     public String METHOD_ASCENT_ORDENLIQUIDACIONGASTO(@WebParam(name = "type") String type,
             @WebParam(name = "lista1") String lista1,@WebParam(name = "lista2") String lista2,
             @WebParam(name = "user") String user){
@@ -1002,4 +1002,223 @@ public class WebServiceNisira{
         }
         return result;
     }
+    
+    @WebMethod(operationName = "METHOD_LIST_ORDEN_SERVICIO_PENDIENTE")
+    public String METHOD_LIST_ORDEN_SERVICIO_PENDIENTE(@WebParam(name = "type") String type,
+            @WebParam(name = "user") String user){
+        String result=null;
+        
+        try {
+            
+            String conexion = WebMethodNisira.cargarBaseDatos();
+            setConexion(conexion);
+           OrdenservicioclienteDao ordenservicioclienteDao = new OrdenservicioclienteDao();
+            List<Ordenserviciocliente> list = ordenservicioclienteDao.listarOrdenServicioPendiente(user);
+            if(list !=null){
+                if(type.trim().equals("JSON")){
+                    result = WebUtil.objectGson(list.size(),list);
+                }
+                if(type.trim().equals("XML")){
+                    try {
+                        result = WebUtil.objectXml("com.nisira.core.entity.Ordenserviciocliente", list);
+                    } catch (ClassNotFoundException ex) {
+                        Logger.getLogger(WebServiceNisira.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+            else
+            {
+                result = "ERROR";
+            }
+            
+        } catch (NisiraORMException  ex) {
+            Logger.getLogger(WebServiceNisira.class.getName()).log(Level.SEVERE, null, ex);
+            result = "ERROR :"+ex.getMessage();
+        } catch (Exception ex) {
+            Logger.getLogger(WebServiceNisira.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
+    }
+    
+    @WebMethod(operationName = "METHOD_LIST_DORDEN_SERVICIO_PENDIENTE")
+    public String METHOD_LIST_DORDEN_SERVICIO_PENDIENTE(@WebParam(name = "type") String type,
+            @WebParam(name = "user") String user){
+        String result=null;
+        
+        try {
+            
+            String conexion = WebMethodNisira.cargarBaseDatos();
+            setConexion(conexion);
+           DordenservicioclienteDao dordenservicioclienteDao = new DordenservicioclienteDao();
+            List<Dordenserviciocliente> list = dordenservicioclienteDao.listarDordenServicioClientePendiente(user);
+            if(list !=null){
+                if(type.trim().equals("JSON")){
+                    result = WebUtil.objectGson(list.size(),list);
+                }
+                if(type.trim().equals("XML")){
+                    try {
+                        result = WebUtil.objectXml("com.nisira.core.entity.Dordenserviciocliente", list);
+                    } catch (ClassNotFoundException ex) {
+                        Logger.getLogger(WebServiceNisira.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+            else
+            {
+                result = "ERROR";
+            }
+            
+        } catch (NisiraORMException  ex) {
+            Logger.getLogger(WebServiceNisira.class.getName()).log(Level.SEVERE, null, ex);
+            result = "ERROR :"+ex.getMessage();
+        } catch (Exception ex) {
+            Logger.getLogger(WebServiceNisira.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
+    }
+    
+    @WebMethod(operationName = "METHOD_LIST_PERSONAL_SERVICIO_FREE")
+    public String METHOD_LIST_PERSONAL_SERVICIO_FREE(@WebParam(name = "type") String type,@WebParam(name = "user") String user){
+        String result=null;
+        
+        try {
+            
+            String conexion = WebMethodNisira.cargarBaseDatos();
+            setConexion(conexion);
+           Personal_servicioDao personal_servicioDao = new Personal_servicioDao();
+            List<Personal_servicio> list = personal_servicioDao.listarPersonal_Servicio_Free(user);
+            if(list !=null){
+                if(type.trim().equals("JSON")){
+                    result = WebUtil.objectGson(list.size(),list);
+                }
+                if(type.trim().equals("XML")){
+                    try {
+                        result = WebUtil.objectXml("com.nisira.core.entity.Personal_servicio", list);
+                    } catch (ClassNotFoundException ex) {
+                        Logger.getLogger(WebServiceNisira.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+            else
+            {
+                result = "ERROR";
+            }
+            
+        } catch (NisiraORMException  ex) {
+            Logger.getLogger(WebServiceNisira.class.getName()).log(Level.SEVERE, null, ex);
+            result = "ERROR :"+ex.getMessage();
+        } catch (Exception ex) {
+            Logger.getLogger(WebServiceNisira.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
+    }
+    
+    @WebMethod(operationName = "METHOD_LIST_DPERSONALSERVICIO_FREE")
+    public String METHOD_LIST_DPERSONAL_SERVICIO_FREE(@WebParam(name = "type") String type,@WebParam(name = "user") String user){
+        String result=null;
+        
+        try {
+            
+            String conexion = WebMethodNisira.cargarBaseDatos();
+            setConexion(conexion);
+            Dpersonal_servicioDao dpersonal_sercicioDao = new Dpersonal_servicioDao();
+            List<Dpersonal_servicio> list = dpersonal_sercicioDao.listar_DPersonal_Servicio_Free(user);
+            if(list !=null){
+                if(type.trim().equals("JSON")){
+                    result = WebUtil.objectGson(list.size(),list);
+                }
+                if(type.trim().equals("XML")){
+                    try {
+                        result = WebUtil.objectXml("com.nisira.core.entity.Dpersonal_servicio", list);
+                    } catch (ClassNotFoundException ex) {
+                        Logger.getLogger(WebServiceNisira.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+            else
+            {
+                result = "ERROR";
+            }
+            
+        } catch (NisiraORMException  ex) {
+            Logger.getLogger(WebServiceNisira.class.getName()).log(Level.SEVERE, null, ex);
+            result = "ERROR :"+ex.getMessage();
+        } catch (Exception ex) {
+            Logger.getLogger(WebServiceNisira.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
+    }    
+    
+    
+    @WebMethod(operationName = "METHOD_LIST_CLIEPROV_FREE")
+    public String METHOD_LIST_CLIEPROV_FREE(@WebParam(name = "type") String type,@WebParam(name="filter") String filter){
+        String result=null;
+        try {
+            String conexion = WebMethodNisira.cargarBaseDatos();
+            setConexion(conexion);
+            ArrayList<String> lista_solution=com.nisira.core.util.CoreUtil.valoresBase();/*Obtener Datos de solution.ini*/
+            String idempresa = lista_solution.get(5);
+            ConstantesBD.setIDEMPRESA(idempresa);
+            ClieprovDao clieprovdao =new ClieprovDao();
+            List<Clieprov> list= clieprovdao.listarClieProvFree_PorEmpresa(idempresa,filter);//filter == apellidopaterno
+            if(list !=null){
+                if(type.trim().equals("JSON")){
+                    result = WebUtil.objectGson(list.size(),list);
+                }
+                if(type.trim().equals("XML")){
+                    try {
+                        result = WebUtil.objectXml("com.nisira.core.entity.Clieprov", list);
+                        
+                    } catch (ClassNotFoundException ex) {
+                        Logger.getLogger(WebServiceNisira.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+            else
+            {
+                result = "ERROR";
+            }
+            
+        } catch (NisiraORMException  ex) {
+            Logger.getLogger(WebServiceNisira.class.getName()).log(Level.SEVERE, null, ex);
+            result = "ERROR :"+ex.getMessage();
+        }
+        return result;
+    }
+    
+     @WebMethod(operationName = "METHOD_LIST_DOCUMENTOS_MOVIL")
+    public String METHOD_LIST_DOCUMENTOS_MOVIL(@WebParam(name = "type") String type){
+        String result=null;
+        try {
+            String conexion = WebMethodNisira.cargarBaseDatos();
+            setConexion(conexion);
+            ArrayList<String> lista_solution=com.nisira.core.util.CoreUtil.valoresBase();/*Obtener Datos de solution.ini*/            
+            String idempresa = lista_solution.get(5);
+            ConstantesBD.setIDEMPRESA(idempresa);
+            Documento_movilDao documento_movildao =new Documento_movilDao();
+            List<Documento_movil> list= documento_movildao.listarPorEmpresaService(idempresa);
+            if(list !=null){
+                if(type.trim().equals("JSON")){
+                    result = WebUtil.objectGson(list.size(),list);
+                }
+                if(type.trim().equals("XML")){
+                    try {
+                        result = WebUtil.objectXml("com.nisira.core.entity.Documento_movil", list);
+                    } catch (ClassNotFoundException ex) {
+                        Logger.getLogger(WebServiceNisira.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+            else
+            {
+                result = "ERROR";
+            }
+            
+        } catch (NisiraORMException  ex) {
+            Logger.getLogger(WebServiceNisira.class.getName()).log(Level.SEVERE, null, ex);
+            result = "ERROR :"+ex.getMessage();
+        }
+        return result;
+    }
+
 }
