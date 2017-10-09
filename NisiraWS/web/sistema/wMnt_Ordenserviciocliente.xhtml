@@ -34,12 +34,12 @@
                                     </p:panelGrid>
                                     <p:outputLabel for="motivo_orden"  value="Motivo:" />
                                     <h:panelGrid cellpadding="0" cellspacing="0" columns="3">
-                                        <p:selectOneMenu id="motivo_orden" value="#{ordenservicioclienteAction.datoEdicion.idmotivo}"  disabled="#{!ordenservicioclienteAction.edicion}" >    
+                                        <p:selectOneMenu id="motivo_orden" value="#{ordenservicioclienteAction.datoEdicion.idmotivo}"  disabled="#{!ordenservicioclienteAction.edicion or (ordenservicioclienteAction.ladd eq 1?false:true)}" >    
                                             <p:ajax listener="#{ordenservicioclienteAction.onMotivoOrdenservicio()}"/>
                                             <f:selectItems value="#{ordenservicioclienteAction.listMotivoproduccion}" var="motivo" itemLabel="#{motivo.descripcion}" itemValue="#{motivo.idmotivo}" />
                                         </p:selectOneMenu>
                                         <p:outputLabel for="tiposervicio"  value="Tipo Servicio:" />
-                                        <p:selectOneMenu id="tiposervicio" value="#{ordenservicioclienteAction.datoEdicion.tipo_servicio}"  disabled="#{!ordenservicioclienteAction.edicion}">
+                                        <p:selectOneMenu id="tiposervicio" value="#{ordenservicioclienteAction.datoEdicion.tipo_servicio}"  disabled="#{!ordenservicioclienteAction.edicion   or (ordenservicioclienteAction.ladd eq 1?false:true)}">
                                             <p:ajax listener="#{ordenservicioclienteAction.onTiposervicio()}"/>
                                             <f:selectItem itemLabel="Especial" itemValue="E"/>
                                             <f:selectItem itemLabel="Fijo" itemValue="F"/>
@@ -67,7 +67,7 @@
                                             <!--<p:ajax event="dateSelect" listener="{planventaAction.updateCampañas}" update="lstCampaña"/>-->
                                         </p:calendar>
                                         <p:outputLabel value="F. Cierre" escape="false"/>
-                                        <p:calendar id="button2" value="#{ordenservicioclienteAction.datoEdicion.fechacierre}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="true" size="10">
+                                        <p:calendar id="button2" value="#{ordenservicioclienteAction.datoEdicion.fechacierre}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="#{!ordenservicioclienteAction.edicion}" size="10">
                                             <!--<p:ajax event="dateSelect" listener="{planventaAction.updateCampañas}" update="lstCampaña"/>-->
                                         </p:calendar>
                                         <p:outputLabel for="estado"  value="Estado:" />
@@ -78,7 +78,7 @@
                                     <p:outputLabel value="Cliente:" escape="false" />
                                     <h:panelGrid id="cntClie" cellpadding="0" cellspacing="0" columns="3">
                                         <p:commandButton id="btnbuscarcliente" styleClass="boton_buscar" ajax="true" actionListener="#{ordenservicioclienteAction.verCntClieprov}" 
-                                                         disabled="#{ordenservicioclienteAction.fclieprov}"  icon="ui-icon-search">
+                                                         disabled="#{ordenservicioclienteAction.fclieprov  or (ordenservicioclienteAction.ladd eq 1?false:true)}"  icon="ui-icon-search">
                                             <p:ajax event="dialogReturn" listener="#{ordenservicioclienteAction.valorClieprov}" update="cntClie"/>
                                         </p:commandButton>
                                         <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{ordenservicioclienteAction.datoEdicion.idclieprov}" disabled="#{!ordenservicioclienteAction.edicion}"/>
@@ -140,7 +140,7 @@
                                     <p:outputLabel value="Operario:" escape="false" />
                                     <h:panelGrid id="cntPersonalOperario2" cellpadding="0" cellspacing="0" columns="3">
                                         <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{ordenservicioclienteAction.verCntClieprovPersonalOperador()}" 
-                                                         disabled="#{!ordenservicioclienteAction.edicion}"  icon="ui-icon-search">
+                                                         disabled="true"  icon="ui-icon-search">
                                             <p:ajax event="dialogReturn" listener="#{ordenservicioclienteAction.valorOperario2}" update="cntPersonalOperario2"/>
                                         </p:commandButton>
                                         <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{ordenservicioclienteAction.datoEdicion.idoperario2}"/>
@@ -721,7 +721,9 @@
             </p:dialog>
             <p:dialog header="#{ordenservicioclienteAction.cabercerDet_tareoweb.ciddocumento}-#{ordenservicioclienteAction.cabercerDet_tareoweb.cserie}-#{ordenservicioclienteAction.cabercerDet_tareoweb.cnumero}" id="detalleTareoDialog" widgetVar="detalleTareoDialog" modal="true"  maximizable="true" showEffect="fade" hideEffect="fade" closable="true" resizable="false">
                 <p:outputPanel style="text-align:center;">
-                    <p:panelGrid  columns="8" columnClasses="label,value">
+                    <p:panelGrid  columns="9" columnClasses="label,value">
+                        <p:commandButton value="Eliminar" ajax="true" image="ui-icon-eliminar" actionListener="#{ordenservicioclienteAction.eliminarTareoOrdenservicio()}" disabled="#{(ordenservicioclienteAction.datoEdicion.idestado eq 'PE'?false:true)}">
+                        </p:commandButton>
                         <h:outputText value="Estado:" />
                         <h:outputText value="(#{ordenservicioclienteAction.cabercerDet_tareoweb.cestado})" /> 
                         <h:outputText value="Fecha:" />

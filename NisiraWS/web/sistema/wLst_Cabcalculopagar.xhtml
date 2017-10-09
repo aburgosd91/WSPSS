@@ -1,0 +1,74 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">            
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
+                <cmp:barra_lst bean="#{cabcalculopagarAction}" mostrar_opciones="false" cfgfiltro="true"/>
+                <p:dataTable  id="tbl" var="listCabcalculopagar" value="#{cabcalculopagarAction.listaDatos}" filteredValue="#{cabcalculopagarAction.filtroDatos}"  widgetVar="listCabcalculopagar" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                              paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" 
+                              selection="#{cabcalculopagarAction.datoSeleccionado}" 
+                              rowKey="#{listCabcalculopagar.idcabcalculopagar}"
+                              resizableColumns="true">
+                    <f:facet name="header">
+                        <h:outputText value="#{cabcalculopagarAction.tituloHead}" />   
+                    </f:facet>
+                    <p:column headerText="Doc" style="width:5%;" filterBy="#{listCabcalculopagar.iddocumento}" filterMatchMode="contains" sortBy="#{listCabcalculopagar.iddocumento}">
+                        <h:outputText value="#{listCabcalculopagar.iddocumento}" />
+                    </p:column>
+                    <p:column headerText="Serie" style="width:8%;" filterBy="#{listCabcalculopagar.serie}" filterMatchMode="contains" sortBy="#{listCabcalculopagar.serie}">
+                        <h:outputText value="#{listCabcalculopagar.serie}" />
+                    </p:column>
+                    <p:column headerText="Número" style="width:10%;" filterBy="#{listCabcalculopagar.numero}" filterMatchMode="contains" sortBy="#{listCabcalculopagar.numero}">
+                        <h:outputText value="#{listCabcalculopagar.numero}" />
+                    </p:column>
+                    <p:column headerText="Responsable" style="width:30%;" filterBy="#{listCabcalculopagar.usuario}" filterMatchMode="contains" sortBy="#{listCabcalculopagar.usuario}">
+                        <h:outputText value="#{listCabcalculopagar.usuario}" />
+                    </p:column>
+                    <p:column headerText="Sucursal" style="width:30%;" filterBy="#{listCabcalculopagar.sucursal}" filterMatchMode="contains" sortBy="#{listCabcalculopagar.sucursal}">
+                        <h:outputText value="#{listCabcalculopagar.sucursal}" />
+                    </p:column>
+                    <p:column style="width:10%;" filterBy="#{listCabcalculopagar.finicio}" filterMatchMode="contains" sortBy="#{listCabcalculopagar.finicio}">
+                        <f:facet name="header">
+                            <h:outputText value="F.Inicio" />
+                        </f:facet>
+                        <h:outputText value="#{listCabcalculopagar.finicio}">
+                            <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column style="width:10%;" filterBy="#{listCabcalculopagar.ffin}" filterMatchMode="contains" sortBy="#{listCabcalculopagar.ffin}">
+                        <f:facet name="header">
+                            <h:outputText value="F.Fin" />
+                        </f:facet>
+                        <h:outputText value="#{listCabcalculopagar.ffin}">
+                            <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column style="width:10%;" filterBy="#{listCabcalculopagar.fecha}" filterMatchMode="contains" sortBy="#{listCabcalculopagar.fecha}">
+                        <f:facet name="header">
+                            <h:outputText value="Fecha" />
+                        </f:facet>
+                        <h:outputText value="#{listCabcalculopagar.fecha}">
+                            <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Tipo" style="width:10%;" filterBy="#{listCabcalculopagar.tipo}" filterMatchMode="contains" sortBy="#{listCabcalculopagar.tipo}">
+                        <h:outputText value="#{listCabcalculopagar.tipo}" />
+                    </p:column>
+                    <p:column headerText="Estado" style="width:30%;" filterBy="#{listCabcalculopagar.estado}" filterMatchMode="contains" sortBy="#{listCabcalculopagar.estado}">
+                        <h:outputText value="#{listCabcalculopagar.estado}" />
+                    </p:column>
+                </p:dataTable>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{cabcalculopagarAction}" ventana="LST" />
+        </h:form>
+    </ui:define>    
+</ui:composition>

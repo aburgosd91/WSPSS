@@ -91,11 +91,13 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -194,13 +196,19 @@ public class Mod_tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
     private String type_formato_rpt;
     private Float scosto;
     private Date filtroFecha;
+    private Date finicio;
+    private Date ffin;
     private Date restricDate;
+    private String numdia;
     public Mod_tareoweb_fijoAction() {
         try {
             /*********************************ENTITY*******************************************/
             user = (UsuarioBean) WebUtil.getObjetoSesion(Constantes.SESION_USUARIO);
             mensaje = "";
             filtroFecha = new Date();
+            finicio=WebUtil.getDateIni();
+            ffin=new Date();
+            numdia = generarDiaid(filtroFecha);
             btn_asignar_personal = true;
             num_repetir = 1;
             /********************************* LISTAS *******************************************/
@@ -241,6 +249,7 @@ public class Mod_tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
             mesNombreDisenio = WebUtil.strMonths[(new Date()).getMonth()];
             
             /********************************** CONFIGURACIÓN - SERVIDOR ***********************/
+            
             listDocumentos=docDao.getCabtareoweb(user.getIDEMPRESA());
             listNumemisor=numemisorDao.listarPorDocWeb(user.getIDEMPRESA(), listDocumentos.get(0).getIddocumento());
             numero=listNumemisor.get(0).getNumero();
@@ -259,6 +268,7 @@ public class Mod_tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
         try {
             if(filtroFecha!=null){
                 /* VERIFICAR CABECERA TAREO CREADO */
+                numdia = generarDiaid(filtroFecha);
                 SimpleDateFormat  f = new SimpleDateFormat("yyyy-MM-dd");
                 String f_filtro = f.format(filtroFecha);
                 f_filtro = f_filtro.replace("-", "");
@@ -600,6 +610,45 @@ public class Mod_tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
         }
         RequestContext.getCurrentInstance().update("datos:dlgAddItemTareo");
         RequestContext.getCurrentInstance().execute("PF('dlgAddItemTareo').show()");
+    }
+    public void openDialogRecalcular(){
+        finicio=WebUtil.getDateIni();
+        ffin=new Date();
+        RequestContext.getCurrentInstance().update("datos:dlgRecalcular");
+        RequestContext.getCurrentInstance().execute("PF('dlgRecalcular').show()");
+    }
+    public void procesarCalculo(){
+        try {
+            if(finicio == null) {
+                WebUtil.MensajeAdvertencia("Ingrese Fecha Desde");
+                RequestContext.getCurrentInstance().update("datos:growl");
+            }else if(ffin == null){
+                WebUtil.MensajeAdvertencia("Ingrese Fecha Hasta");
+                RequestContext.getCurrentInstance().update("datos:growl");
+            }else if(finicio.after(ffin)){
+                WebUtil.MensajeAdvertencia("Rango de fechas incorrecto");
+                RequestContext.getCurrentInstance().update("datos:growl");
+            }
+            else{
+                /*DATOS INICIALES*/
+                SimpleDateFormat  f = new SimpleDateFormat("yyyy-MM-dd");
+                String f_ini = f.format(finicio);
+                String f_fin = f.format(ffin);
+                f_ini = f_ini.replace("-", "");
+                f_fin = f_fin.replace("-", "");
+                mensaje=cabtareowebDao.recalcularProcesos(user.getIDEMPRESA(),f_ini,f_fin,user.getIDUSUARIO());
+                if(mensaje!=null){
+                    WebUtil.MensajeAlerta("Cálculo exitoso");
+                    RequestContext.getCurrentInstance().update("datos:growl");
+                    RequestContext.getCurrentInstance().execute("PF('dlgRecalcular').hide()");
+                }
+            }
+        } catch (Exception ex) {
+            setMensaje(ex.getMessage() + "\n" + ex.getLocalizedMessage());
+            Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, null, ex);
+            WebUtil.fatal(mensaje);
+            RequestContext.getCurrentInstance().update("datos:growl");
+        }
     }
     public void asignacionPersonal_servicio(){
         if(selectClieprovPersonal!=null){
@@ -1179,6 +1228,14 @@ public class Mod_tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
         }
         return t;
     }
+    public static String generarDiaid(Date fecha){
+        Calendar c = WebUtil.convertDateCalendar(fecha);
+        int ndia = c.get(Calendar.DAY_OF_WEEK)==1?7:c.get(Calendar.DAY_OF_WEEK)-1;
+        // EEE gives short day names, EEEE would be full length.
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEEEEEEEEEEE", Locale.US); 
+        String asWeek = "("+WebUtil.idGeneradoDos(ndia)+")"+WebUtil.convertDayOfSpanish(dateFormat.format(fecha));
+        return asWeek;
+    }
     /**
      * @return the mensaje
      */
@@ -1541,6 +1598,48 @@ public class Mod_tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
      */
     public void setListTipo_asistencia(List<Tipo_asistencia> listTipo_asistencia) {
         this.listTipo_asistencia = listTipo_asistencia;
+    }
+
+    /**
+     * @return the numdia
+     */
+    public String getNumdia() {
+        return numdia;
+    }
+
+    /**
+     * @param numdia the numdia to set
+     */
+    public void setNumdia(String numdia) {
+        this.numdia = numdia;
+    }
+
+    /**
+     * @return the finicio
+     */
+    public Date getFinicio() {
+        return finicio;
+    }
+
+    /**
+     * @param finicio the finicio to set
+     */
+    public void setFinicio(Date finicio) {
+        this.finicio = finicio;
+    }
+
+    /**
+     * @return the ffin
+     */
+    public Date getFfin() {
+        return ffin;
+    }
+
+    /**
+     * @param ffin the ffin to set
+     */
+    public void setFfin(Date ffin) {
+        this.ffin = ffin;
     }
 
 }

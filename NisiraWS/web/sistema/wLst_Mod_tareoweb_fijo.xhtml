@@ -16,7 +16,7 @@
                 </f:facet>
             </p:toolbar>
             <br/>
-            <p:panelGrid columns="5" style="border: 0px solid ;font-size: 11px !important;padding: 0px !important" id="panelHeader" styleClass="ui-noborder">
+            <p:panelGrid columns="6" style="border: 0px solid ;font-size: 11px !important;padding: 0px !important" id="panelHeader" styleClass="ui-noborder">
                 <p:outputLabel value="Operador:" escape="false" />
                 <h:panelGrid cellpadding="0" cellspacing="0" columns="2">
                     <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{mod_tareoweb_fijoAction.user.IDUSUARIO}"/>
@@ -25,6 +25,7 @@
                 <h:outputLabel value="Fecha:" />
                 <p:calendar id="fhoy" value="#{mod_tareoweb_fijoAction.filtroFecha}" pattern="dd/MM/yyyy" mask="true" maxdate="#{mod_tareoweb_fijoAction.restricted}"/>
                 <p:commandButton value="Buscar/Actualizar" ajax="true" image="ui-icon-ver" actionListener="#{mod_tareoweb_fijoAction.actionBotonFiltro()}"/>
+                <p:outputLabel style="text-decoration: #000;font-weight: bold" value="#{mod_tareoweb_fijoAction.numdia}"/>
             </p:panelGrid>
             <br/>
             <p:toolbar id="tb" style="font-size: 11px;">
@@ -35,6 +36,7 @@
                        <p:commandButton value="Agregar Item" ajax="true" image="ui-icon-nuevo" actionListener="#{mod_tareoweb_fijoAction.openDialogAddItemTareo()}" />
                        <p:commandButton value="Refrescar" ajax="true" image="ui-icon-reload" actionListener="#{mod_tareoweb_fijoAction.onRefresh()}" rendered="false"/>
                        <p:commandButton value="Generar" ajax="true" image="ui-icon-reload" actionListener="#{mod_tareoweb_fijoAction.generarCalendario()}"  disabled="#{!mod_tareoweb_fijoAction.edicion}" rendered="false"/>
+                       <p:commandButton value="Recalcular" ajax="true" image="ui-icon-reload" actionListener="#{mod_tareoweb_fijoAction.openDialogRecalcular()}"/>
                        <p:commandButton value="Exportar" ajax="false" image="ui-icon-excel">
                            <p:dataExporter type="xls" target="datos:listDet_tareoweb" fileName="Tareo_Fijo_#{mod_tareoweb_fijoAction.datoEdicion.iddocumento}-#{mod_tareoweb_fijoAction.datoEdicion.serie}-#{mod_tareoweb_fijoAction.datoEdicion.numero}"
                                 postProcessor="#{mod_tareoweb_fijoAction.postProcessXLS}"/>
@@ -325,7 +327,30 @@
                     </p:toolbar>  
                 </p:panelGrid>                      
             </p:dialog>
-            
+            <p:dialog id="dlgRecalcular" header="..:: Ajuste de Tareo Fijo ::." widgetVar="dlgRecalcular" modal="true" showEffect="popup" closable="false">
+                <p:panelGrid columns="1" columnClasses="no-border">
+                    <p:outputLabel value="Rango Fecha [Desde - Hasta]: " />
+                    <p:panelGrid columns="2" columnClasses="no-border, no-border">
+                        <p:calendar id="finicio" value="#{mod_tareoweb_fijoAction.finicio}" pattern="dd/MM/yyyy" 
+                                    mask="true" maxdate="#{mod_tareoweb_fijoAction.restricted}"/>
+                        <p:calendar id="ffin" value="#{mod_tareoweb_fijoAction.ffin}" pattern="dd/MM/yyyy" 
+                                    mask="true" maxdate="#{mod_tareoweb_fijoAction.restricted}"/>
+                    </p:panelGrid>
+                    <h:outputLabel value="*Elimina el detalle de tareos que se encuentren en el rago de fecha[Desde - Hasta] y considera:." style="color: rgb(37, 42, 84);font-size: 12px;"/>
+                    <h:outputLabel value=" - Fecha de Orden de servicio -> registros con fecha menor, los elimina" style="color: rgb(37, 42, 84);font-size: 12px;"/>
+                    <h:outputLabel value=" - Fecha de Cierre de servicio -> registros con fecha mayor, los elimina" style="color: rgb(37, 42, 84);font-size: 12px;"/>
+                    <h:outputLabel value=" - Rango de Dias según Estr.Costo -> registros que no corresponden al día de tareo según estructura, los elimina" style="color: rgb(37, 42, 84);font-size: 12px;"/>
+                    <br/>
+                    <p:toolbar>
+                        <f:facet name="right">
+                            <p:commandButton value="Grabar" ajax="true" actionListener="#{mod_tareoweb_fijoAction.procesarCalculo()}" image="ui-icon-grabar">
+                                <p:confirm header="Confirmación" message="Se eliminara registros de tareo, desea continuar?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:commandButton value="Cancelar" process="@this"  image="ui-icon-cancelar" onclick="PF('dlgRecalcular').hide()" />
+                        </f:facet>
+                    </p:toolbar>  
+                </p:panelGrid>                      
+            </p:dialog>
             <p:dialog id="id_dlgDetalleAsistencia" header="..:: Asistencia de Servicio ::." widgetVar="dlgDetalleAsistencia" modal="true" showEffect="popup" closable="false">
                 <p:panelGrid columns="1" columnClasses="no-border">
                     <p:panelGrid columns="2" columnClasses="no-border, no-border">

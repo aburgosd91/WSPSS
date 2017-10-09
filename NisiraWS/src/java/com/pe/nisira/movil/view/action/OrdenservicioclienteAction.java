@@ -412,6 +412,16 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
             RequestContext.getCurrentInstance().update("datos:growl");
             return false;
         }
+        if (getDatoEdicion().getGlosa().isEmpty() & WebUtil.isnull(getDatoEdicion().getTipo_servicio(), "").trim().equals("E")) {
+            WebUtil.MensajeAdvertencia("Ingresar Glosa de Documento");
+            RequestContext.getCurrentInstance().update("datos:growl");
+            //return false;
+        }
+        if (getDatoEdicion().getContacto().isEmpty() & WebUtil.isnull(getDatoEdicion().getTipo_servicio(), "").trim().equals("E")) {
+            WebUtil.MensajeAdvertencia("Ingresar Contacto");
+            RequestContext.getCurrentInstance().update("datos:growl");
+            //return false;
+        }
         if (!this.fdocreferencia & getListDocreferencia().size() == 0) {
             WebUtil.MensajeAdvertencia("Ingrese Documento referencia");
             RequestContext.getCurrentInstance().update("datos:growl");
@@ -427,6 +437,22 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
             RequestContext.getCurrentInstance().update("datos:growl");
             return false;
         }
+//        if (getLstdordenserviciocliente().size() > 0 & WebUtil.isnull(getDatoEdicion().getTipo_servicio(), "").trim().equals("E")) {
+//            String msj ="";
+//            boolean fl = false;
+//            for(Dordenserviciocliente dos:getLstdordenserviciocliente()){
+//                if(dos.getGlosa().isEmpty()){
+//                    msj+="("+dos.getItem()+") - "+" Cod:"+dos.getCodoperaciones().trim()+
+//                            " Horas:"+dos.getHora_rc()+" Ruta:"+dos.getRuta_viaje()+" - Asignar Glosa";
+//                    fl=true;
+//                }
+//            }
+//            if(fl){
+//                WebUtil.MensajeAdvertencia(msj);
+//                RequestContext.getCurrentInstance().update("datos:growl");
+//                return false;
+//            }
+//        }
         return true;
     }
     @Override
@@ -449,12 +475,13 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                 setMensaje(WebUtil.exitoRegistrar("Orden Servicio ", mensaje));
                 WebUtil.info(getMensaje());
                 setLvalidate(true);
-                RequestContext.getCurrentInstance().update("datos");
             }
         } catch (Exception ex) {
             setMensaje(ex.getMessage() + "\n" + ex.getLocalizedMessage());
             Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, null, ex);
             WebUtil.fatal(mensaje);
+            RequestContext.getCurrentInstance().update("datos:growl");
+            setLvalidate(false);
         }
         
     }
@@ -566,7 +593,14 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                             getDatoSeleccionado().getIdordenservicio());
                     if(!lisPers.isEmpty()){
                         String msj = verificacionOrdenservicioDetalle_cerrado(lisPers);
-                        if(msj.trim().equals("")){
+                        if(getDatoSeleccionado().getGlosa().isEmpty()){
+                           this.mensaje = "Documento no se puede cerrar.\n"+"Documento sin glosa";
+                            WebUtil.MensajeError(this.mensaje); 
+                        }else if(getDatoSeleccionado().getContacto().isEmpty()){
+                           this.mensaje = "Documento no se puede cerrar.\n"+"Documento sin contacto";
+                            WebUtil.MensajeError(this.mensaje); 
+                        }
+                        else if(msj.trim().equals("")){
                             lst = new ArrayList<>();
                             lst.add(getDatoSeleccionado());
                             this.mensaje = getOrdenservicioclienteDao().cierreMasivo(1,lst,user.getIDUSUARIO());
@@ -675,6 +709,29 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
         return msj;
     }
     /************** CONFIGURACIÓN *******************/
+    public void eliminarTareoOrdenservicio(){
+        try {
+            if(!WebUtil.isnull(getDatoEdicion().getTipo_servicio(), "").trim().equals("E")) {
+                WebUtil.MensajeAdvertencia("Opción habilitada para Tipo [ESPECIAL]");
+                RequestContext.getCurrentInstance().update("datos:growl");
+            }else if(cabercerDet_tareoweb == null) {
+                WebUtil.MensajeAdvertencia("No existe tareo asociado");
+                RequestContext.getCurrentInstance().update("datos:growl");
+            }else{
+                mensaje=getOrdenservicioclienteDao().eliminarRegistroTareo(getDatoEdicion(),user.getIDUSUARIO());
+                setMensaje(WebUtil.exitoEliminar("Registro en Tareo ["+getDatoEdicion().getSerietareo()+"]", mensaje));
+                WebUtil.info(getMensaje());
+                RequestContext.getCurrentInstance().execute("PF('detalleTareoDialog').hide()");
+                RequestContext.getCurrentInstance().update("datos:growl");
+            } 
+        } catch (Exception ex) {
+            setMensaje(ex.getMessage() + "\n" + ex.getLocalizedMessage());
+            Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, null, ex);
+            WebUtil.fatal(mensaje);
+            RequestContext.getCurrentInstance().update("datos:growl");
+            setLvalidate(false);
+        }
+    }
     public void onSPTabChange(TabChangeEvent event) 
     {   
         tabView = (TabView) event.getComponent();
@@ -709,8 +766,8 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                     fproducto = false;
                     botonNuevoDOrdenservicio = false;
                     botonEliminarDOrdenservicio=false;
-                    botonNuevoPersonal_servicio = false;
-                    botonEliminarPersonal_servicio = false;
+                    botonNuevoPersonal_servicio = true;
+                    botonEliminarPersonal_servicio = true;
                     fmotivo_rc = false;
                 }else if(motivo.getEs_cotizacion()==0 && motivo.getEs_requerimiento()==1 && motivo.getEs_ingpersonal()==0){
                     fmotivo_rc = true;
@@ -749,8 +806,8 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                     botonNuevoDOrdenservicio = false;
                     botonEliminarDOrdenservicio=false;
                     
-                    botonNuevoPersonal_servicio = false;
-                    botonEliminarPersonal_servicio = false;
+                    botonNuevoPersonal_servicio = true;
+                    botonEliminarPersonal_servicio = true;
                 }
             }
         } catch (NisiraORMException ex) {
@@ -1282,6 +1339,10 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                 RequestContext.getCurrentInstance().update("datos:growl");
             }else if(dordenserviciocliente.getIdreferencia()==null || dordenserviciocliente.getItemreferencia()==null){
                 this.mensaje="No existe estructura";
+                WebUtil.error(mensaje);
+                RequestContext.getCurrentInstance().update("datos:growl");
+            }else if(WebUtil.isnull(dordenserviciocliente.getGlosa(),"").trim().equals("")  & WebUtil.isnull(getDatoEdicion().getTipo_servicio(), "").trim().equals("E")){
+                this.mensaje="Ingresar Glosa";
                 WebUtil.error(mensaje);
                 RequestContext.getCurrentInstance().update("datos:growl");
             }else{
