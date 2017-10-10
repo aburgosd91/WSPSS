@@ -478,5 +478,20 @@ public class OrdenservicioclienteDao extends BaseDao<Ordenserviciocliente> {
             }
             return lista;
         }        
-        
+        public String eliminarRegistroTareo(Ordenserviciocliente ob,String idusuario) throws Exception {
+            String mensaje="";
+            try {
+                ResultSet rs = null;
+                rs = execProcedure("SP_ORDENSERVICIOCLIENTE_DROP_TAREO",
+                        ob.getIdempresa(),ob.getIdordenservicio(),idusuario,ob.getIdestado()
+                );
+                while (rs.next()) {
+                    mensaje = rs.getString("mensaje");
+                    break;
+                }
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
+            return mensaje;
+        }
 }

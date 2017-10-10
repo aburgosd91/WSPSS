@@ -192,6 +192,20 @@ public class CabtareowebDao extends BaseDao<Cabtareoweb> {
 
         return mensaje;
     }
+    public String recalcularProcesos(String idempresa,String finicio,String ffin,String idusuario) throws Exception {
+            String mensaje="";
+            ResultSet rs = null;
+            rs = execProcedure("RECALCULAR_TAREO_FIJO",
+                    idempresa,
+                    idusuario
+            );
+            while (rs.next()) {
+                mensaje = rs.getString("mensaje");
+                break;
+            }
+
+        return mensaje;
+    }
     public String grabar_provincial(int tipo,Cabtareoweb ob,List<Det_tareoweb> listDet_tareoweb,String idusuario) throws Exception {
             String mensaje="";
             String xmlNot = "";
