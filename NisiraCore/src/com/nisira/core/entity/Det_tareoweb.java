@@ -173,6 +173,9 @@ public class Det_tareoweb implements Serializable {
         @Columna
         @XStreamAlias("IDCONCEPTOTAREO")
         private String idconceptotareo;
+        @Columna
+        @XStreamAlias("CODOPERACIONES")
+        private String codoperaciones;
         private String conceptotareo;
         private Date fecha_osc;
         private String vehiculo;
@@ -194,7 +197,6 @@ public class Det_tareoweb implements Serializable {
         private boolean exige_glosa;
         private String color;
         private List<Object[]> tareo;
-        private String codoperaciones;
         private String rutaservicios;
         
         /*adicional*/

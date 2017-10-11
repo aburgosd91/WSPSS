@@ -29,12 +29,11 @@
                     <p:column headerText="Número" style="width:10%;" filterBy="#{listCabtareoweb.numero}" filterMatchMode="contains" sortBy="#{listCabtareoweb.numero}">
                         <h:outputText value="#{listCabtareoweb.numero}" />
                     </p:column>
-                    <p:column headerText="Responsable" style="width:30%;" filterBy="#{listCabtareoweb.responsable}" filterMatchMode="contains" sortBy="#{listCabtareoweb.responsable}">
-                        <h:outputText value="#{listCabtareoweb.responsable}" />
+                    <p:column headerText="Creado por" style="width:30%;" filterBy="#{listCabtareoweb.usuario}" filterMatchMode="contains" sortBy="#{listCabtareoweb.usuario}">
+                        <h:outputText value="#{listCabtareoweb.usuario}" />
                     </p:column>
                     <p:column headerText="Sucursal" style="width:30%;" filterBy="#{listCabtareoweb.sucursal}" filterMatchMode="contains" sortBy="#{listCabtareoweb.sucursal}">
-                        <h:outputText value="#{listCabtareoweb.sucursal}" />
-                    </p:column>
+                        <h:outputText value="#{listCabtareoweb.sucursal}" />                   </p:column>
                     <p:column style="width:20%;" filterBy="#{listCabtareoweb.fecha}" filterMatchMode="contains" sortBy="#{listCabtareoweb.fecha}">
                         <f:facet name="header">
                             <h:outputText value="Fecha" />

@@ -385,8 +385,28 @@
                         <h:outputText value="#{mod_tareoweb_fijoAction.selectDet_tareoweb.shora_req}" />
                         <h:outputText value="Tipo Asistencia" />
                         <h:outputText value="#{mod_tareoweb_fijoAction.selectDet_tareoweb.asistencia}" style="background-color:#{mod_tareoweb_fijoAction.selectDet_tareoweb.color}"/>
+                        <h:outputText value="Estructura_Costos" />
+                        <h:outputText value="#{mod_tareoweb_fijoAction.selectDet_tareoweb.idreferencia}" style="background-color:#{mod_tareoweb_fijoAction.selectDet_tareoweb.color}"/>
+                        <h:outputText value="Item_EC" />
+                        <h:outputText value="#{mod_tareoweb_fijoAction.selectDet_tareoweb.itemreferencia}" style="background-color:#{mod_tareoweb_fijoAction.selectDet_tareoweb.color}"/>
+                        <h:outputText value="Hora E.C" />
+                        <h:outputText value="#{mod_tareoweb_fijoAction.selectDet_tareoweb.hora_rc}" style="background-color:#{mod_tareoweb_fijoAction.selectDet_tareoweb.color}"/>
+                        <h:outputText value="Cod.Operación" />
+                        <h:outputText value="#{mod_tareoweb_fijoAction.selectDet_tareoweb.codoperaciones}" style="background-color:#{mod_tareoweb_fijoAction.selectDet_tareoweb.color}"/>
+                        <h:outputText value="Cod.Ruta E.C." />
+                        <h:outputText value="#{mod_tareoweb_fijoAction.selectDet_tareoweb.idruta_ec}" style="background-color:#{mod_tareoweb_fijoAction.selectDet_tareoweb.color}"/>
+                        <p:outputLabel value="Rango - Dias:" />
+                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{mod_tareoweb_fijoAction.onFormularioEstructuraCostosProductoDiasRango}" icon="ui-icon-search">
+                        </p:commandButton>
                     </p:panelGrid>
                 </p:outputPanel>
+            </p:dialog>
+            <p:dialog id="dlgEstructura_costos_producto_diasrango" header="..:: Dias - Rango Servicio ::." widgetVar="dlgEstructura_costos_producto_diasrango" modal="true" showEffect="popup" closable="true">
+                <p:dataList value="#{mod_tareoweb_fijoAction.listEstructura_costos_producto_diasrango}" var="diasrango" type="definition">
+                    <p:selectBooleanCheckbox value="#{diasrango.seleccion}" />
+                    <h:outputText value="#{diasrango.dia}" style="display:inline-block"/>
+                </p:dataList>
+                <br/>
             </p:dialog>
             <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
                 <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
@@ -400,8 +420,6 @@
                 </textarea>    
                 <br/>                        
             </p:dialog>
-            
-            
             <p:growl id="growl" life="4000" showDetail="false"  />
             <cmp:mDialogElimina_lst id="cmpDialog" bean="#{mod_tareoweb_fijoAction}" ventana="LST" />
         </h:form>

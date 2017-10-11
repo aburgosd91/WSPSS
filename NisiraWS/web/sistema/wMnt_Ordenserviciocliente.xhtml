@@ -161,7 +161,7 @@
                                     <p:commandButton value="Editar" ajax="true" image="ui-icon-edit" actionListener="#{ordenservicioclienteAction.editarDordenserviciocliente()}" disabled="#{ordenservicioclienteAction.botonEditarDOrdenservicio or !ordenservicioclienteAction.edicion}"/> 
                                     <p:commandButton value="Eliminar" ajax="true" image="ui-icon-eliminar" actionListener="#{ordenservicioclienteAction.eliminarDordenserviciocliente()}" disabled="#{ordenservicioclienteAction.botonEliminarDOrdenservicio or !ordenservicioclienteAction.edicion}"/>
                                 </f:facet>
-                                <p:column style="width:10%;" filterBy="#{lstdordenserviciocliente.item}" filterMatchMode="contains" sortBy="#{lstdordenserviciocliente.item}">
+                                <p:column style="width:5%;" filterBy="#{lstdordenserviciocliente.item}" filterMatchMode="contains" sortBy="#{lstdordenserviciocliente.item}">
                                     <f:facet name="header">
                                         <h:outputText value="N°"/>
                                     </f:facet>
@@ -185,7 +185,7 @@
                                     </f:facet>
                                     <h:outputText value="#{lstdordenserviciocliente.hora_rc}"/>
                                 </p:column>
-                                <p:column style="width:10%;" filterBy="#{lstdordenserviciocliente.placa_cliente}" filterMatchMode="contains" sortBy="#{lstdordenserviciocliente.placa_cliente}">
+                                <p:column style="width:10%;" filterBy="#{lstdordenserviciocliente.placa_cliente}" filterMatchMode="contains" sortBy="#{lstdordenserviciocliente.placa_cliente}" rendered="false">
                                     <f:facet name="header" >
                                         <h:outputText value="Placa Cliente" />
                                     </f:facet>
@@ -199,7 +199,25 @@
                                         <f:convertDateTime type="both" pattern="HH:mm a" timeZone="America/Lima" />
                                     </h:outputText>
                                 </p:column>
-                                <p:column style="width:20%;" filterBy="#{lstdordenserviciocliente.fecha_fin_servicio}" filterMatchMode="contains" sortBy="#{lstdordenserviciocliente.fecha_fin_servicio}">
+                                <p:column style="width:5%;" filterBy="#{lstdordenserviciocliente.idreferencia}" filterMatchMode="contains" sortBy="#{lstdordenserviciocliente.idreferencia}">
+                                    <f:facet name="header" >
+                                        <h:outputText value="Estru.Cost." />
+                                    </f:facet>
+                                    <h:outputText value="#{lstdordenserviciocliente.idreferencia}"/>
+                                </p:column>
+                                <p:column style="width:5%;" filterBy="#{lstdordenserviciocliente.itemreferencia}" filterMatchMode="contains" sortBy="#{lstdordenserviciocliente.itemreferencia}">
+                                    <f:facet name="header" >
+                                        <h:outputText value="Item.Ref." />
+                                    </f:facet>
+                                    <h:outputText value="#{lstdordenserviciocliente.itemreferencia}"/>
+                                </p:column>
+                                <p:column style="width:5%;" filterBy="#{lstdordenserviciocliente.idruta_ec}" filterMatchMode="contains" sortBy="#{lstdordenserviciocliente.idruta_ec}">
+                                    <f:facet name="header" >
+                                        <h:outputText value="Cod.Ruta.EC" />
+                                    </f:facet>
+                                    <h:outputText value="#{lstdordenserviciocliente.idruta_ec}"/>
+                                </p:column>
+                                <p:column style="width:20%;" filterBy="#{lstdordenserviciocliente.fecha_fin_servicio}" filterMatchMode="contains" sortBy="#{lstdordenserviciocliente.fecha_fin_servicio}" rendered="false">
                                     <f:facet name="header">
                                         <h:outputText value="F.Fin" />
                                     </f:facet>

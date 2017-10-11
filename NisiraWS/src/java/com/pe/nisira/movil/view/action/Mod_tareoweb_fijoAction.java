@@ -24,6 +24,7 @@ import com.nisira.core.dao.Dpersonal_servicioDao;
 import com.nisira.core.dao.EmisorDao;
 import com.nisira.core.dao.EstadosDao;
 import com.nisira.core.dao.Estructura_costos_mano_obra_cotizacionventasDao;
+import com.nisira.core.dao.Estructura_costos_producto_diasrangoDao;
 import com.nisira.core.dao.ImpuestoDao;
 import com.nisira.core.dao.MonedaDao;
 import com.nisira.core.dao.MonedasDao;
@@ -57,6 +58,7 @@ import com.nisira.core.entity.Documentos;
 import com.nisira.core.entity.Dpersonal_servicio;
 import com.nisira.core.entity.Estados;
 import com.nisira.core.entity.Estructura_costos_mano_obra_cotizacionventas;
+import com.nisira.core.entity.Estructura_costos_producto_diasrango;
 import com.nisira.core.entity.Geopoint;
 import com.nisira.core.entity.Gmap;
 import com.nisira.core.entity.Impuesto;
@@ -152,6 +154,7 @@ public class Mod_tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
     private List<ComboEspecial> listComboEspecial;
     private List<ComboEspecial> listComboEspecialDetalle;
     private List<Clieprov> listPersonal;
+    private List<Estructura_costos_producto_diasrango> listEstructura_costos_producto_diasrango;
     /*************************************DAO***************************************/
     private DocumentosDao documentoDao;
     private Det_tareowebDao det_tareoweb_verificationDao; 
@@ -170,6 +173,7 @@ public class Mod_tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
     private Det_tareowebDao tareoWebDao;
     private ConsumidorDao consumidorDao;
     private ClieprovDao clieprovDao;
+    private Estructura_costos_producto_diasrangoDao estructura_costos_producto_diasrangoDao;
     /*************************************ENTITY***************************************/
     private UsuarioBean user;
     private String mensaje;
@@ -240,6 +244,7 @@ public class Mod_tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
             concepto_tareoDao = new Concepto_tareoDao();
             clieprovDao = new ClieprovDao();
             consumidorDao = new ConsumidorDao();
+            estructura_costos_producto_diasrangoDao = new Estructura_costos_producto_diasrangoDao();
             /**********************************CONTROLADOR*************************************/
             listDocumentos = documentoDao.listarPorEmpresaWeb(user.getIDEMPRESA());
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy");
@@ -1236,6 +1241,23 @@ public class Mod_tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
         String asWeek = "("+WebUtil.idGeneradoDos(ndia)+")"+WebUtil.convertDayOfSpanish(dateFormat.format(fecha));
         return asWeek;
     }
+    /****************************** ESTRUCTURA COSTOS PRODUCTO DIAS X RANGO******************************/
+    public void onFormularioEstructuraCostosProductoDiasRango(){
+        try {
+            if(selectDet_tareoweb!=null){
+                setListEstructura_costos_producto_diasrango(estructura_costos_producto_diasrangoDao.listarPorEmpresaWeb(selectDet_tareoweb.getIdempresa(),
+                        selectDet_tareoweb.getIdreferencia(), selectDet_tareoweb.getIdservicio(), selectDet_tareoweb.getItemreferencia(),
+                        selectDet_tareoweb.getHora_rc(), selectDet_tareoweb.getCodoperaciones(), selectDet_tareoweb.getIdruta_ec()));
+                RequestContext.getCurrentInstance().update("datos:dlgEstructura_costos_producto_diasrango");
+                RequestContext.getCurrentInstance().execute("PF('dlgEstructura_costos_producto_diasrango').show()");
+            }
+        } catch (NisiraORMException ex) {
+            Logger.getLogger(EstructuraCostosRecursoAction.class.getName()).log(Level.SEVERE, null, ex);
+            mensaje = ex.getMessage();
+            WebUtil.error(mensaje);
+            RequestContext.getCurrentInstance().update("datos:growl");
+        }
+    }
     /**
      * @return the mensaje
      */
@@ -1640,6 +1662,20 @@ public class Mod_tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
      */
     public void setFfin(Date ffin) {
         this.ffin = ffin;
+    }
+
+    /**
+     * @return the listEstructura_costos_producto_diasrango
+     */
+    public List<Estructura_costos_producto_diasrango> getListEstructura_costos_producto_diasrango() {
+        return listEstructura_costos_producto_diasrango;
+    }
+
+    /**
+     * @param listEstructura_costos_producto_diasrango the listEstructura_costos_producto_diasrango to set
+     */
+    public void setListEstructura_costos_producto_diasrango(List<Estructura_costos_producto_diasrango> listEstructura_costos_producto_diasrango) {
+        this.listEstructura_costos_producto_diasrango = listEstructura_costos_producto_diasrango;
     }
 
 }

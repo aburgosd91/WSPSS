@@ -197,6 +197,8 @@ public class CabtareowebDao extends BaseDao<Cabtareoweb> {
             ResultSet rs = null;
             rs = execProcedure("RECALCULAR_TAREO_FIJO",
                     idempresa,
+                    finicio,
+                    ffin,
                     idusuario
             );
             while (rs.next()) {
