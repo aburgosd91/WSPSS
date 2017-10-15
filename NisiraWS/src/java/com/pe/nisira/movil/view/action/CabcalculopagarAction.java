@@ -216,10 +216,11 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
             listEstado = estadosDao.listarPorEmpresaWeb(user.getIDEMPRESA(),null);
             /********************************** CONFIGURACIÓN - SERVIDOR ***********************/
             idtiposervicio = "ESPECIAL";
+            actualiza_ventana("wMnt_Cabcalculopagar");
         }catch (Exception ex) {
+            System.out.println(ex);
             Logger.getLogger(CabcalculopagarAction.class.getName()).log(Level.SEVERE, null, ex);
         }
-        actualiza_ventana("wMnt_Cabcalculopagar");
     }
     public void onCellEdit(CellEditEvent event) {
         Object newValue = event.getNewValue();

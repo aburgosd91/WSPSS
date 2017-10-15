@@ -66,7 +66,6 @@ public class DetcalculopagarDao extends BaseDao<Detcalculopagar> {
                 detcalculopagar.setDnumero(rs.getString("DNUMERO")!=null?rs.getString("DNUMERO").trim():"");
                 detcalculopagar.setAmbito_servicio(rs.getString("DAMBITO_SERVICIO_DES")!=null?rs.getString("DAMBITO_SERVICIO_DES").trim():"");
                 detcalculopagar.setIdambito_servicio(rs.getString("DAMBITO_SERVICIO")!=null?rs.getString("DAMBITO_SERVICIO").trim():"");
-                detcalculopagar.setAmbito_servicio(rs.getString("DAMBITO_SERVICIO")!=null?rs.getString("DAMBITO_SERVICIO").trim():"");
                 detcalculopagar.setDfecha_osc(rs.getDate("DFECHA_OSC"));
                 detcalculopagar.setDfecharegistro(rs.getDate("DFECHAREGISTRO"));
                 detcalculopagar.setDfechafinregistro(rs.getDate("DFECHAFINREGISTRO"));
@@ -209,7 +208,8 @@ public class DetcalculopagarDao extends BaseDao<Detcalculopagar> {
                 detcalculopagar.setDiddocumento(rs.getString("DIDDOCUMENTO")!=null?rs.getString("DIDDOCUMENTO").trim():"");
                 detcalculopagar.setDserie(rs.getString("DSERIE")!=null?rs.getString("DSERIE").trim():"");
                 detcalculopagar.setDnumero(rs.getString("DNUMERO")!=null?rs.getString("DNUMERO").trim():"");
-                detcalculopagar.setAmbito_servicio(rs.getString("DAMBITO_SERVICIO")!=null?rs.getString("DAMBITO_SERVICIO").trim():"");
+                detcalculopagar.setAmbito_servicio(rs.getString("AMBITO_SERVICIO")!=null?rs.getString("AMBITO_SERVICIO").trim():"");
+                detcalculopagar.setIdambito_servicio(rs.getString("IDAMBITO_SERVICIO")!=null?rs.getString("IDAMBITO_SERVICIO").trim():"");
                 detcalculopagar.setDfecha_osc(rs.getDate("DFECHA_OSC"));
                 detcalculopagar.setDfecharegistro(rs.getDate("DFECHAREGISTRO"));
                 detcalculopagar.setDfechafinregistro(rs.getDate("DFECHAFINREGISTRO"));

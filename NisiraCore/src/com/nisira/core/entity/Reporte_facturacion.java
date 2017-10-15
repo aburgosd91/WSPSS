@@ -203,6 +203,18 @@ public class Reporte_facturacion  implements Serializable {
     @XStreamAlias("ESPLANILLA")
     @Columna
     private Integer esplanilla;
+    @XStreamAlias("IDAMBITO_SERVICIO")
+    @Columna
+    private String idambito_servicio;
+    @XStreamAlias("AMBITO_SERVICIO")
+    @Columna
+    private String ambito_servicio;
+    @XStreamAlias("ORIGENCALLAO")
+    @Columna
+    private int origencallao;
+    @XStreamAlias("NSERVICIOS_DIA")
+    @Columna
+    private Integer nservicios_dia;
     private Integer item;
     private String cuenta;
     private String tipodetraccion_descripcion;
@@ -1381,5 +1393,61 @@ public class Reporte_facturacion  implements Serializable {
      */
     public void setEsplanilla(Integer esplanilla) {
         this.esplanilla = esplanilla;
+    }
+
+    /**
+     * @return the idambito_servicio
+     */
+    public String getIdambito_servicio() {
+        return idambito_servicio;
+    }
+
+    /**
+     * @param idambito_servicio the idambito_servicio to set
+     */
+    public void setIdambito_servicio(String idambito_servicio) {
+        this.idambito_servicio = idambito_servicio;
+    }
+
+    /**
+     * @return the ambito_servicio
+     */
+    public String getAmbito_servicio() {
+        return ambito_servicio;
+    }
+
+    /**
+     * @param ambito_servicio the ambito_servicio to set
+     */
+    public void setAmbito_servicio(String ambito_servicio) {
+        this.ambito_servicio = ambito_servicio;
+    }
+
+    /**
+     * @return the origencallao
+     */
+    public int getOrigencallao() {
+        return origencallao;
+    }
+
+    /**
+     * @param origencallao the origencallao to set
+     */
+    public void setOrigencallao(int origencallao) {
+        this.origencallao = origencallao;
+    }
+
+    /**
+     * @return the nservicios_dia
+     */
+    public Integer getNservicios_dia() {
+        return nservicios_dia;
+    }
+
+    /**
+     * @param nservicios_dia the nservicios_dia to set
+     */
+    public void setNservicios_dia(Integer nservicios_dia) {
+        this.nservicios_dia = nservicios_dia;
     }
 }

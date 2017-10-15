@@ -298,7 +298,9 @@ public class OrdenservicioclienteDao extends BaseDao<Ordenserviciocliente> {
                 reporte_facturacion.setDiddocumento(rs.getString("DIDDOCUMENTO")!=null?rs.getString("DIDDOCUMENTO").trim():"");
                 reporte_facturacion.setDserie(rs.getString("DSERIE")!=null?rs.getString("DSERIE").trim():"");
                 reporte_facturacion.setDnumero(rs.getString("DNUMERO")!=null?rs.getString("DNUMERO").trim():"");
-                reporte_facturacion.setDambito_servicio(rs.getString("DAMBITO_SERVICIO")!=null?rs.getString("DAMBITO_SERVICIO").trim():"");
+                reporte_facturacion.setDambito_servicio(rs.getString("DAMBITO_SERVICIO_DES")!=null?rs.getString("DAMBITO_SERVICIO_DES").trim():"");
+                reporte_facturacion.setAmbito_servicio(rs.getString("DAMBITO_SERVICIO_DES")!=null?rs.getString("DAMBITO_SERVICIO_DES").trim():"");
+                reporte_facturacion.setIdambito_servicio(rs.getString("DAMBITO_SERVICIO")!=null?rs.getString("DAMBITO_SERVICIO").trim():"");
                 reporte_facturacion.setDfecha_osc(rs.getDate("DFECHA_OSC"));
                 reporte_facturacion.setDfecharegistro(rs.getDate("DFECHAREGISTRO"));
                 reporte_facturacion.setDfechafinregistro(rs.getDate("DFECHAFINREGISTRO"));

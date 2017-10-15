@@ -1,0 +1,584 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:cmp="http://xmlns.jcp.org/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">
+            #{cabcalculopagarAction.findetalle()}
+            <cmp:barra_mnt bean="#{cabcalculopagarAction}"/>
+            <p:panelGrid columns="1" style="width:98%; text-align: left" columnClasses="no-border">
+                <f:facet name="header">
+                    <p:outputLabel value="#{cabcalculopagarAction.tituloHead}"/>
+                </f:facet>
+                <div class="ui-grid">
+                    <div class="ui-grid-row">
+                        <p:fieldset legend="Datos" style="width: 100%" toggleable="true" toggleSpeed="500">
+                            <p:panelGrid  columns="8" columnClasses="no-border,no-border,no-border,no-border,no-border,no-border,no-border,no-border" style="width: 100%">
+                                <p:outputLabel value="Punto Emisión"/>
+                                <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{cabcalculopagarAction.datoEdicion.idemisor}" disabled="true"/>
+                                <p:inputText size="50" readonly="true" value="#{cabcalculopagarAction.datoEdicion.emisor}" disabled="true"/>
+
+                                <p:outputLabel value="Periódo"/>
+                                <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{cabcalculopagarAction.datoEdicion.periodo}" disabled="true"/>
+                                <p:inputText size="10" readonly="true" value="#{cabcalculopagarAction.datoEdicion.mes}" disabled="true"/>
+                            </p:panelGrid>
+                            <div class="ui-grid-col-6">
+                                <p:panelGrid  columns="2" columnClasses="no-border, no-border" style="width: 100%">
+                                    <p:outputLabel value="Documentos"/>
+                                    <p:panelGrid  columns="3" columnClasses="no-border, no-border,no-border" style="margin-left: -10px;">
+                                        <p:selectOneMenu id="cboiddoc" value="#{cabcalculopagarAction.datoEdicion.iddocumento}" style="width:200px" disabled="#{!cabcalculopagarAction.edicion}">
+                                            <p:ajax listener="#{cabcalculopagarAction.oncDocChange}" update="cboserie num" />
+                                            <f:selectItems value="#{cabcalculopagarAction.listDocumentos_cab}" var="iddocs" itemLabel="#{iddocs.descripcion}" itemValue="#{iddocs.iddocumento}"/>
+                                        </p:selectOneMenu>
+                                        <p:selectOneMenu id="cboserie" value="#{cabcalculopagarAction.datoEdicion.serie}" style="width:70px" disabled="#{!cabcalculopagarAction.edicion}">
+                                            <f:selectItems value="#{cabcalculopagarAction.listNumemisor}" var="nume" itemLabel="#{nume.serie}" itemValue="#{nume.serie}"/>
+                                        </p:selectOneMenu>
+                                        <p:inputText id="num" style="width: 90px !important" value="#{cabcalculopagarAction.datoEdicion.numero}" disabled="#{!cabcalculopagarAction.edicion}"  readonly="true"/>
+                                    </p:panelGrid>
+                                    <p:outputLabel value="Sucursal"/>
+                                    <p:panelGrid  columns="2" columnClasses="no-border, no-border" >
+                                        <p:inputText  style="text-align: left;margin-left: 0px;" size="15" readonly="true"  value="#{cabcalculopagarAction.datoEdicion.idsucursal}" disabled="#{!cabcalculopagarAction.edicion}"/>
+                                        <p:inputText size="50" readonly="true" value="#{cabcalculopagarAction.datoEdicion.sucursal}" disabled="#{!cabcalculopagarAction.edicion}"/>
+                                    </p:panelGrid>
+                                    <p:outputLabel for="tiposervicio"  value="Tipo Servicio:" />
+                                    <p:selectOneMenu id="tiposervicio" value="#{cabcalculopagarAction.datoEdicion.tipo}">    
+                                        <f:selectItem itemLabel="ESPECIAL" itemValue="ESPECIAL" />
+                                        <f:selectItem itemLabel="FIJO" itemValue="FIJO" />
+                                    </p:selectOneMenu>
+                                    <p:outputLabel value="Creado Por:" escape="false" />
+                                    <h:panelGrid cellpadding="0" cellspacing="0" columns="2">
+                                        <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{cabcalculopagarAction.datoEdicion.idusuario}"/>
+                                        <p:inputText size="50" readonly="true" value="#{cabcalculopagarAction.datoEdicion.usuario}"/>
+                                    </h:panelGrid>
+                                </p:panelGrid>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <p:panelGrid  columns="2" columnClasses="no-border, no-border" >
+                                    <p:outputLabel value="Fecha" escape="false"/>
+                                    <p:panelGrid  columns="3" columnClasses="no-border, no-border, no-border" >
+                                        <p:calendar id="button1" value="#{cabcalculopagarAction.datoEdicion.fecha}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="#{!cabcalculopagarAction.edicion}">
+                                            <!--<p:ajax event="dateSelect" listener="{planventaAction.updateCampañas}" update="lstCampaña"/>-->
+                                        </p:calendar>
+                                        <p:outputLabel for="estado"  value="Estado:" />
+                                        <p:selectOneMenu id="estado" value="#{cabcalculopagarAction.datoEdicion.idestado}"  disabled="true" style="font-weight: bold">    
+                                            <f:selectItems value="#{cabcalculopagarAction.listEstado}" var="tipoEstado" itemLabel="#{tipoEstado.descripcion}" itemValue="#{tipoEstado.idestado}" />
+                                        </p:selectOneMenu>
+                                    </p:panelGrid>                                    
+                                    <p:outputLabel value="Almacen" escape="false"/>
+                                    <p:selectOneMenu id="idalmacen" value="#{cabcalculopagarAction.datoEdicion.idalmacen}" style="width:380px" disabled="#{!cabcalculopagarAction.edicion}">
+                                        <f:selectItems value="#{cabcalculopagarAction.listAlmacenes}" var="almacen" itemLabel="#{almacen.descripcion}" itemValue="#{almacen.idalmacen}"/>
+                                    </p:selectOneMenu>
+                                    <p:outputLabel value="Desde" escape="false"/>
+                                    <p:panelGrid  columns="3" columnClasses="no-border, no-border, no-border" >
+                                        <p:calendar id="btn1" value="#{cabcalculopagarAction.datoEdicion.finicio}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="#{!cabcalculopagarAction.edicion}">
+                                            <!--<p:ajax event="dateSelect" listener="{planventaAction.updateCampañas}" update="lstCampaña"/>-->
+                                        </p:calendar>
+                                        <p:outputLabel value="Hasta" escape="false"/>
+                                        <p:calendar id="btn2" value="#{cabcalculopagarAction.datoEdicion.ffin}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="#{!cabcalculopagarAction.edicion}">
+                                            <!--<p:ajax event="dateSelect" listener="{planventaAction.updateCampañas}" update="lstCampaña"/>-->
+                                        </p:calendar>
+                                    </p:panelGrid> 
+                                </p:panelGrid>
+                            </div> 
+                        </p:fieldset> 
+                    </div>
+                </div>
+            </p:panelGrid>
+            <p:toolbar id="tb" style="font-size: 11px;">
+                <f:facet name="left">
+                    <h:panelGrid  id="comandos" cellpadding="0" cellspacing="0"  columns="5">
+                       <p:commandButton value="Refrescar" ajax="true" image="ui-icon-reload" actionListener="#{cabcalculopagarAction.onRefresh()}"/>
+                       <p:commandButton value="Información" ajax="true" image="ui-icon-search" onclick="PF('dlg_leyenda').show()"/>
+                       <p:commandButton value="Generar" ajax="true" image="ui-icon-reload" actionListener="#{cabcalculopagarAction.getFindetalleCalculo()}"  disabled="#{!cabcalculopagarAction.edicion}"/>
+                       <p:commandButton value="Exportar" ajax="false" image="ui-icon-excel">
+                           <p:dataExporter type="xls" target="datos:tbl" fileName="Tareo_Fijo_#{cabcalculopagarAction.datoEdicion.iddocumento}-#{cabcalculopagarAction.datoEdicion.serie}-#{cabcalculopagarAction.datoEdicion.numero}"
+                                postProcessor="#{cabcalculopagarAction.downFormatExcelEspecial}"/>
+                        </p:commandButton>
+                    </h:panelGrid>
+                </f:facet>
+            </p:toolbar>
+            <p:sticky target="tb" />
+            <p:dataTable style="font-size: 11px;" var="lst_rpt" value="#{cabcalculopagarAction.listDetcalculopagar}"
+                    widgetVar="lst_rpt"  id="tbl" 
+                    scrollable="true" scrollWidth="99%"
+                   selection="#{cabcalculopagarAction.selectDetcalculopagar}" 
+                   selectionMode="single" rowKey="#{lst_rpt.item}"  
+                   resizableColumns="true" editable="true" editMode="cell" 
+                   rows="25"
+                   paginator="true"
+                   paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                   rowsPerPageTemplate="25,35,50,70,100">
+                <p:ajax event="cellEdit" listener="#{cabcalculopagarAction.onCellEdit}" update="tbl"/>
+                 <f:facet name="header">
+                     Provisión Documentos x Pagar (#{cabcalculopagarAction.listDetcalculopagar.size()}) - #{cabcalculopagarAction.fechaDMY(cabcalculopagarAction.desde)} - #{cabcalculopagarAction.fechaDMY(cabcalculopagarAction.hasta)}
+                 </f:facet>
+                
+                <p:column headerText="N°" sortBy="#{lst_rpt.item}" style="white-space: nowrap; width: 20px;padding: 3px;text-align: center">
+                    <h:outputText value="#{lst_rpt.item}"/>
+                </p:column>
+                <p:column headerText="IdClieprov" filterBy="#{lst_rpt.idclieprov}" filterMatchMode="contains" sortBy="#{lst_rpt.idclieprov}" style="white-space: nowrap; width: 70px;padding: 3px;text-align: center">
+                    <h:outputText value="#{lst_rpt.idclieprov}"/>
+                </p:column>
+                <p:column headerText="Razon social" filterBy="#{lst_rpt.razon_social}" filterMatchMode="contains" sortBy="#{lst_rpt.razon_social}" style="white-space: nowrap; width: 200px;padding: 3px;text-align: left">
+                    <h:outputText value="#{lst_rpt.razon_social}"/>
+                </p:column>
+                 <p:column headerText="Doc." filterBy="#{lst_rpt.iddocumento}" filterMatchMode="contains" sortBy="#{lst_rpt.iddocumento}"  style="white-space: nowrap; width: 30px;padding: 3px;text-align: center">
+                    <p:cellEditor >
+                        <f:facet name="output">
+                            <h:outputText value="#{lst_rpt.iddocumento}"/>
+                        </f:facet>
+                        <f:facet name="input" >
+                            <p:autoComplete size="80" id="iddocumento" value="#{lst_rpt.selectDocumentos}" maxResults="10" completeMethod="#{cabcalculopagarAction.completeDocumentos}"
+                                            var="documento" itemLabel="#{documento.iddocumento} #{documento.descripcion}" itemValue="#{documento}" converter="documentoConverter" forceSelection="true">
+                                <p:column style="width:10%">
+                                    <h:outputText value="#{documento.iddocumento}" />
+                                 </p:column>
+                                 <p:column style="width:90%">
+                                     <h:outputText value="#{documento.descripcion}" />
+                                 </p:column>
+                            </p:autoComplete>
+                        </f:facet>
+                    </p:cellEditor>
+                 </p:column>
+                 <p:column headerText="Serie" filterBy="#{lst_rpt.serie}" filterMatchMode="contains" sortBy="#{lst_rpt.serie}" style="white-space: nowrap; width: 38px;padding: 3px;text-align: center">
+                    <p:cellEditor>
+                       <f:facet name="output"><h:outputText value="#{lst_rpt.serie}"/></f:facet>
+                       <f:facet name="input">
+                            <p:inputMask style="font-size:10px;" maxlength="4" id="dserie" mask="" value="#{lst_rpt.serie}"/>
+                       </f:facet>
+                   </p:cellEditor>
+                 </p:column>
+                 <p:column headerText="Número" filterBy="#{lst_rpt.numero}" filterMatchMode="contains" sortBy="#{lst_rpt.numero}" 
+                            style="white-space: nowrap; width: 48px;padding: 3px;text-align: center">
+                     <p:cellEditor>
+                        <f:facet name="output">
+                           <h:outputText value="#{lst_rpt.numero}"/> 
+                        </f:facet>
+                        <f:facet name="input">
+                           <p:inputMask style="font-size:10px;" maxlength="7" id="fnumero" mask="" value="#{lst_rpt.numero}"/>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column id="fecha" headerText="Fecha" filterBy="#{tareowebAction.fechaDMY(lst_rpt.fecha)}" filterMatchMode="contains" sortBy="#{lst_rpt.fecha}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
+                    <p:cellEditor >
+                       <f:facet name="output">
+                            <h:outputText value="#{lst_rpt.fecha}">
+                               <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                            </h:outputText>
+                       </f:facet>
+                       <f:facet name="input">
+                           <p:calendar style="font-size:10px;" value="#{lst_rpt.fecha}" pattern="dd-MM-yyyy" mask="true" />
+                       </f:facet>
+                   </p:cellEditor>
+                </p:column>
+                <p:column id="fecha_operacion" headerText="Fecha Operación" filterBy="#{cabcalculopagarAction.fechaDMY(lst_rpt.fechaoperacion)}" filterMatchMode="contains" sortBy="#{lst_rpt.fechaoperacion}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
+                    <p:cellEditor >
+                       <f:facet name="output">
+                            <h:outputText value="#{lst_rpt.fechaoperacion}">
+                               <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                            </h:outputText>
+                       </f:facet>
+                       <f:facet name="input">
+                           <p:calendar style="font-size:10px;" value="#{lst_rpt.fechaoperacion}" pattern="dd-MM-yyyy" mask="true" />
+                       </f:facet>
+                   </p:cellEditor>
+                </p:column>
+                <p:column id="vencimiento" headerText="Vencimiento" filterBy="#{cabcalculopagarAction.fechaDMY(lst_rpt.vencimiento)}" filterMatchMode="contains" sortBy="#{lst_rpt.vencimiento}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
+                    <p:cellEditor >
+                       <f:facet name="output">
+                            <h:outputText value="#{lst_rpt.vencimiento}">
+                               <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                            </h:outputText>
+                       </f:facet>
+                       <f:facet name="input">
+                           <p:calendar style="font-size:10px;" value="#{lst_rpt.vencimiento}" pattern="dd-MM-yyyy" mask="true" />
+                       </f:facet>
+                   </p:cellEditor>
+                </p:column>
+                <p:column headerText="Idmoneda" filterBy="#{lst_rpt.idmoneda}" filterMatchMode="contains" sortBy="#{lst_rpt.idmoneda}"  style="white-space: nowrap; width: 25px;padding: 3px;text-align: left">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{lst_rpt.idmoneda}" /></f:facet>
+                       <f:facet name="input">
+                           <h:selectOneMenu value="#{lst_rpt.idmoneda}" style="width:100%">
+                               <f:selectItems value="#{cabcalculopagarAction.listMoneda}" var="mon" itemLabel="#{mon.nombre_corto}" itemValue="#{mon.idmoneda}" />
+                           </h:selectOneMenu>
+                       </f:facet>
+                   </p:cellEditor>
+               </p:column>
+                <p:column headerText="Idcuenta" filterBy="#{lst_rpt.idcuenta}" filterMatchMode="contains" sortBy="#{lst_rpt.idcuenta}" style="white-space: nowrap; width: 60px;padding: 3px;text-align: left">
+                    <p:cellEditor >
+                        <f:facet name="output">
+                            <h:outputText value="#{lst_rpt.idcuenta}"/>
+                        </f:facet>
+                        <f:facet name="input" >
+                            <p:autoComplete size="80" id="planctas" value="#{lst_rpt.selectCuenta}" maxResults="10" completeMethod="#{cabcalculopagarAction.completePlanctas}"
+                                            var="planctas" itemLabel="#{planctas.idcuenta}" itemValue="#{planctas}" converter="planctasConverter" forceSelection="true">
+                                <p:column style="width:10%">
+                                    <h:outputText value="#{planctas.idcuenta}" />
+                                 </p:column>
+                                 <p:column style="width:50%">
+                                     <h:outputText value="#{planctas.descripcion}" />
+                                 </p:column>
+                                <p:column style="width:40%">
+                                     <h:outputText value="#{planctas.descreqv}" />
+                                 </p:column>
+                            </p:autoComplete>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="Idccosto" filterBy="#{lst_rpt.idccosto}" filterMatchMode="contains" sortBy="#{lst_rpt.idccosto}" style="white-space: nowrap; width: 60px;padding: 3px;text-align: left">
+                    <p:cellEditor >
+                        <f:facet name="output">
+                            <h:outputText value="#{lst_rpt.idccosto}"/>
+                        </f:facet>
+                        <f:facet name="input" >
+                            <p:autoComplete size="80" id="ccosto" value="#{lst_rpt.selectConsumidor}" maxResults="10" completeMethod="#{cabcalculopagarAction.completeConsumidor}"
+                                            var="ccosto" itemLabel="#{ccosto.idccosto}" itemValue="#{ccosto}" converter="consumidorConverter" forceSelection="true">
+                                <p:column style="width:10%">
+                                    <h:outputText value="#{ccosto.idccosto}" />
+                                 </p:column>
+                                 <p:column style="width:90%">
+                                     <h:outputText value="#{ccosto.descripcion}" />
+                                 </p:column>
+                            </p:autoComplete>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="Concepto" filterBy="#{lst_rpt.concepto}" filterMatchMode="contains" sortBy="#{lst_rpt.concepto}" style="white-space: nowrap; width: 250px;padding: 3px;text-align: left">
+                    <h:outputText value="#{lst_rpt.concepto}"/>
+                </p:column>
+                <p:column headerText="Idregimen" filterBy="#{lst_rpt.idregimen}" filterMatchMode="contains" sortBy="#{lst_rpt.idregimen}"  style="white-space: nowrap; width: 60px;padding: 3px;text-align: left">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{lst_rpt.idregimen}" /></f:facet>
+                       <f:facet name="input">
+                           <h:selectOneMenu value="#{lst_rpt.idregimen}" style="width:100%">
+                               <f:selectItems value="#{cabcalculopagarAction.listTiporegimen}" var="tr" itemLabel="#{tr.idregimen}-#{tr.descripcion}" itemValue="#{tr.idregimen}" />
+                           </h:selectOneMenu>
+                       </f:facet>
+                   </p:cellEditor>
+               </p:column>
+                
+                <p:column headerText="Afecto" filterBy="#{lst_rpt.afecto}" filterMatchMode="contains" sortBy="#{lst_rpt.afecto}"  style="white-space: nowrap; width: 60px;padding: 3px;text-align: left">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{lst_rpt.afecto}">
+                                <f:convertNumber pattern="#0.00" />
+                            </h:outputText>
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:inputNumber value="#{lst_rpt.afecto}" decimalPlaces="2">
+                            </p:inputNumber>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="Inafecto" filterBy="#{lst_rpt.inafecto}" filterMatchMode="contains" sortBy="#{lst_rpt.inafecto}"  style="white-space: nowrap; width: 60px;padding: 3px;text-align: left">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{lst_rpt.inafecto}">
+                                <f:convertNumber pattern="#0.00" />
+                            </h:outputText>
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:inputNumber value="#{lst_rpt.inafecto}" decimalPlaces="2">
+                            </p:inputNumber>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="Idimpuesto" filterBy="#{lst_rpt.idimpuesto}" filterMatchMode="contains" sortBy="#{lst_rpt.idimpuesto}" style="white-space: nowrap; width: 60px;padding: 3px;text-align: left">
+                    <p:cellEditor>
+                       <f:facet name="output"><h:outputText value="#{lst_rpt.idimpuesto}" /></f:facet>
+                       <f:facet name="input">
+                           <h:selectOneMenu value="#{lst_rpt.idimpuesto}" style="width:100%">
+                               <f:selectItem itemLabel="-" itemValue="000" />
+                               <f:selectItems value="#{cabcalculopagarAction.listImpuesto}" var="imp" itemLabel="#{imp.idimpuesto} #{imp.desc_corta} - #{imp.descripcion}" itemValue="#{imp.idimpuesto}" />
+                           </h:selectOneMenu>
+                       </f:facet>
+                   </p:cellEditor>
+               </p:column>
+                <p:column headerText="Impuesto" filterBy="#{lst_rpt.impuesto}" filterMatchMode="contains" sortBy="#{lst_rpt.impuesto}"  style="white-space: nowrap; width: 60px;padding: 3px;text-align: left">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{lst_rpt.impuesto}">
+                                <f:convertNumber pattern="#0.00" />
+                            </h:outputText>
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:inputNumber value="#{lst_rpt.impuesto}" decimalPlaces="2">
+                            </p:inputNumber>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="Total" filterBy="#{lst_rpt.total}" filterMatchMode="contains" sortBy="#{lst_rpt.total}"  style="white-space: nowrap; width: 60px;padding: 3px;text-align: left">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{lst_rpt.total}">
+                                <f:convertNumber pattern="#0.00" />
+                            </h:outputText>
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:inputNumber value="#{lst_rpt.total}" decimalPlaces="2">
+                            </p:inputNumber>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="tiene detracción" filterBy="#{lst_rpt.esdetraccion}" filterMatchMode="contains" sortBy="#{lst_rpt.esdetraccion}"  style="white-space: nowrap; width: 60px;padding: 3px;text-align: left">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{lst_rpt.esdetraccion}" /></f:facet>
+                       <f:facet name="input">
+                           <h:selectOneMenu value="#{lst_rpt.esdetraccion}" style="width:100%">
+                               <f:selectItem itemLabel="Si" itemValue="1"/>
+                               <f:selectItem itemLabel="No" itemValue="0"/>
+                           </h:selectOneMenu>
+                       </f:facet>
+                   </p:cellEditor>
+               </p:column>
+                <p:column headerText="tipo de detracción" filterBy=" #{lst_rpt.idtipodetra} #{lst_rpt.tipodetraccion_descripcion}" filterMatchMode="contains" sortBy="#{lst_rpt.idtipodetra} #{lst_rpt.tipodetraccion_descripcion}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: left">
+                    <p:cellEditor >
+                        <f:facet name="output">
+                            <h:outputText value="(#{lst_rpt.idtipodetra})#{lst_rpt.tipodetraccion_descripcion}"/>
+                        </f:facet>
+                        <f:facet name="input" >
+                            <p:autoComplete size="80" id="tipodetraccion" value="#{lst_rpt.selectTipodetraccion}" maxResults="10" completeMethod="#{cabcalculopagarAction.completeTipodetraccion}"
+                                            var="tipodetraccion" itemLabel="#{tipodetraccion.idtipodetra}" itemValue="#{tipodetraccion}" converter="tipodetraccionConverter" forceSelection="true">
+                                <p:column style="width:10%">
+                                    <h:outputText value="#{tipodetraccion.idtipodetra}" />
+                                 </p:column>
+                                 <p:column style="width:90%">
+                                     <h:outputText value="#{tipodetraccion.nombre_corto}" />
+                                 </p:column>
+                            </p:autoComplete>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="tasa de detracción" filterBy="#{lst_rpt.tasa}" filterMatchMode="contains" sortBy="#{lst_rpt.tasa}"  style="white-space: nowrap; width: 60px;padding: 3px;text-align: left">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{lst_rpt.tasa}">
+                                <f:convertNumber pattern="#0.00" />
+                            </h:outputText>
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:inputNumber value="#{lst_rpt.tasa}" decimalPlaces="2">
+                            </p:inputNumber>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="Planilla?" filterBy="#{lst_rpt.esplanilla}" sortBy="#{lst_rpt.esplanilla}" style="white-space: nowrap; width: 30px;padding: 3px;text-align: center">
+                    <h:outputText value="#{lst_rpt.esplanilla}"/>
+                </p:column>
+             </p:dataTable> 
+            <p:contextMenu for="tbl">
+                <p:menuitem value="Replicar" icon="ui-icon-copy" actionListener="#{cabcalculopagarAction.replicarItem()}"/>
+                <p:menuitem value="Ver Detalle" update="detalleTareoDialog" icon="ui-icon-ver" actionListener="#{cabcalculopagarAction.visualizar_calculo()}"/>
+                <p:menuitem value="Ver Cálculo" update="detalleCalculoDialog" icon="ui-icon-search" oncomplete="PF('detalleCalculoDialog').show()" rendered="false"/>
+            </p:contextMenu>
+            <p:dialog header="#{cabcalculopagarAction.selectDetcalculopagar.idclieprov} - #{cabcalculopagarAction.selectDetcalculopagar.razon_social}" id="detalleTareoDialog" widgetVar="detalleTareoDialog" modal="true"  maximizable="true" showEffect="fade" hideEffect="fade" closable="true" resizable="false">
+                <p:commandButton value="Excel" ajax="false" image="ui-icon-excel">
+                    <p:dataExporter type="xls" target="listDetcalculopagarPersonal" fileName="#{cabcalculopagarAction.selectDetcalculopagar.idclieprov} #{cabcalculopagarAction.selectDetcalculopagar.razon_social}" />
+                </p:commandButton>
+                <p:dataTable id="listDetcalculopagarPersonal" var="listDetcalculopagarPersonal" 
+                             value="#{cabcalculopagarAction.listDetcalculopagarPersonal}" 
+                    widgetVar="listDetcalculopagarPersonal" scrollable="true" scrollWidth="660"
+                    style="margin-bottom:20px;font-size: 11px;width:100%;" 
+                    selectionMode="single" 
+                    frozenColumns="6" 
+                    selection="#{cabcalculopagarAction.selectDetcalculopagar_detalle}"
+                    rowKey="#{listDetcalculopagarPersonal.item}">
+                    <f:facet name="header">
+                        ..:: Detalle Tareo ::..  (Total:#{cabcalculopagarAction.listDetcalculopagarPersonal.size()})
+                    </f:facet>
+                    <p:column filterBy="#{listDetcalculopagarPersonal.diddocumento}" filterMatchMode="contains" sortBy="#{listDetcalculopagarPersonal.diddocumento}" style="white-space: nowrap; width: 8px;padding: 3px;text-align: center">
+                       <f:facet name="header">
+                           <h:outputText value="Doc."/>
+                       </f:facet>
+                       <h:outputText value="#{listDetcalculopagarPersonal.diddocumento}"/>
+                    </p:column>
+                    <p:column filterBy="#{listDetcalculopagarPersonal.dserie}" filterMatchMode="contains" sortBy="#{listDetcalculopagarPersonal.dserie}" style="white-space: nowrap; width: 10px;padding: 3px;text-align: center">
+                       <f:facet name="header">
+                           <h:outputText value="Serie"/>
+                       </f:facet>
+                       <h:outputText value="#{listDetcalculopagarPersonal.dserie}"/>
+                    </p:column>
+                    <p:column filterBy="#{listDetcalculopagarPersonal.dnumero}" filterMatchMode="contains" sortBy="#{listDetcalculopagarPersonal.dnumero}" style="white-space: nowrap; width: 13px;padding: 3px;text-align: center">
+                       <f:facet name="header">
+                           <h:outputText value="Número"/>
+                       </f:facet>
+                       <h:outputText value="#{listDetcalculopagarPersonal.dnumero}"/>
+                    </p:column>
+                    <p:column style="white-space: nowrap; width: 10px;padding: 3px;" filterBy="#{cabcalculopagarAction.fechaDMY(listDetcalculopagarPersonal.dfecha_osc)}" filterMatchMode="contains" sortBy="#{listDetcalculopagarPersonal.dfecha_osc}">
+                        <f:facet name="header">
+                            <h:outputText value="Fecha" />
+                        </f:facet>
+                        <h:outputText value="#{listDetcalculopagarPersonal.dfecha_osc}">
+                            <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column filterBy="#{listDetcalculopagarPersonal.idcliente} #{listDetcalculopagarPersonal.dcliente}" filterMatchMode="contains" sortBy="#{listDetcalculopagarPersonal.ruc} #{listDetcalculopagarPersonal.razon}" style="white-space: nowrap; width: 50px;padding: 3px;text-align: left">
+                       <f:facet name="header">
+                           <h:outputText value="Cliente"/>
+                       </f:facet>
+                       <h:outputText value="#{listDetcalculopagarPersonal.idcliente} - #{listDetcalculopagarPersonal.dcliente}"/>
+                    </p:column>
+                    <p:column filterBy="#{listDetcalculopagarPersonal.didcargo} #{listDetcalculopagarPersonal.cargo}" filterMatchMode="contains" sortBy="#{listDetcalculopagarPersonal.didcargo} #{listDetcalculopagarPersonal.cargo}" style="white-space: nowrap; width: 50px;padding: 3px;text-align: left">
+                       <f:facet name="header">
+                           <h:outputText value="Cargo"/>
+                       </f:facet>
+                       <h:outputText value="#{listDetcalculopagarPersonal.didcargo} #{listDetcalculopagarPersonal.cargo}"/>
+                    </p:column>
+                    <p:column filterBy="#{listDetcalculopagarPersonal.dcodoperaciones_ec}" filterMatchMode="contains" sortBy="#{listDetcalculopagarPersonal.dcodoperaciones_ec}" style="white-space: nowrap; width: 40px;padding: 3px;text-align: left">
+                       <f:facet name="header">
+                           <h:outputText value="Cod.Ope."/>
+                       </f:facet>
+                       <h:outputText value="#{listDetcalculopagarPersonal.dcodoperaciones_ec}"/>
+                    </p:column>
+                    <p:column filterBy="#{listDetcalculopagarPersonal.rutaservicio}" filterMatchMode="contains" sortBy="#{listDetcalculopagarPersonal.rutaservicio}" style="white-space: nowrap; width: 250px;padding: 3px;text-align: left">
+                       <f:facet name="header">
+                           <h:outputText value="Ruta Ser."/>
+                       </f:facet>
+                       <h:outputText value="#{listDetcalculopagarPersonal.rutaservicio}"/>
+                    </p:column>
+                    <p:column id="fecharegistro" headerText="Fecha Registro" filterBy="#{cabcalculopagarAction.fechaDMY(listDetcalculopagarPersonal.dfecharegistro)}" filterMatchMode="contains" sortBy="#{listDetcalculopagarPersonal.dfecharegistro}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
+                        <h:outputText value="#{listDetcalculopagarPersonal.dfecharegistro}">
+                            <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                         </h:outputText>
+                    </p:column>
+                    <p:column headerText="Hora Inicio" filterBy="#{listDetcalculopagarPersonal.dhi_s}" filterMatchMode="contains" sortBy="#{listDetcalculopagarPersonal.dhi_s}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
+                        <h:outputText value="#{listDetcalculopagarPersonal.dhi_s}">
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Hora Fin" filterBy="#{listDetcalculopagarPersonal.dhf_s}" filterMatchMode="contains" sortBy="#{listDetcalculopagarPersonal.dhf_s}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
+                        <h:outputText value="#{listDetcalculopagarPersonal.dhf_s}">
+                        </h:outputText>
+                    </p:column>
+                    <p:column id="fechafinregistro" headerText="Fecha Fin" filterBy="#{cabcalculopagarAction.fechaDMY(listDetcalculopagarPersonal.dfechafinregistro)}" filterMatchMode="contains" sortBy="#{listDetcalculopagarPersonal.dfechafinregistro}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
+                        <h:outputText value="#{listDetcalculopagarPersonal.dfechafinregistro}">
+                            <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                         </h:outputText>
+                    </p:column>
+                    <p:column headerText="Horas Servicio" filterBy="#{listDetcalculopagarPersonal.dhs_s}" filterMatchMode="contains" sortBy="#{listDetcalculopagarPersonal.dhs_s}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
+                        <h:outputText value="#{listDetcalculopagarPersonal.dhs_s}">
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Horas E.C." filterBy="#{listDetcalculopagarPersonal.dhbase}" filterMatchMode="contains" sortBy="#{listDetcalculopagarPersonal.dhbase}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
+                        <h:outputText value="#{listDetcalculopagarPersonal.dhbase}">
+                            <f:convertNumber pattern="#0.00" locale="en-US"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="H.Adicional" filterBy="#{listDetcalculopagarPersonal.dhadicional}" filterMatchMode="contains" sortBy="#{listDetcalculopagarPersonal.dhadicional}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
+                        <h:outputText value="#{listDetcalculopagarPersonal.dhadicional}">
+                            <f:convertNumber pattern="#0.00" locale="en-US"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Costo R.H." filterBy="#{listDetcalculopagarPersonal.dcosto_rh}" filterMatchMode="contains" sortBy="#{listDetcalculopagarPersonal.dcosto_rh}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
+                        <h:outputText value="#{listDetcalculopagarPersonal.dcosto_rh}">
+                            <f:convertNumber pattern="#0.00" locale="en-US"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Costo H.Adic." filterBy="#{listDetcalculopagarPersonal.dhcosto_adicional}" filterMatchMode="contains" sortBy="#{listDetcalculopagarPersonal.dhcosto_adicional}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
+                        <h:outputText value="#{listDetcalculopagarPersonal.dhcosto_adicional}">
+                            <f:convertNumber pattern="#0.00" locale="en-US"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Costo Bono" filterBy="#{listDetcalculopagarPersonal.dcosto_bono}" filterMatchMode="contains" sortBy="#{listDetcalculopagarPersonal.dcosto_bono}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
+                        <h:outputText value="#{listDetcalculopagarPersonal.dcosto_bono}">
+                            <f:convertNumber pattern="#0.00" locale="en-US"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Costo Total" filterBy="#{listDetcalculopagarPersonal.tcosto}" filterMatchMode="contains" sortBy="#{listDetcalculopagarPersonal.tcosto}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
+                        <h:outputText value="#{listDetcalculopagarPersonal.tcosto}">
+                            <f:convertNumber pattern="#0.00" locale="en-US"/>
+                        </h:outputText>
+                    </p:column>
+               </p:dataTable>
+                <p:toolbar>
+                    <f:facet name="right">
+                        <p:outputLabel value="Total:" />
+                        <p:inputNumber id="tsubtotal" value="#{cabcalculopagarAction.scosto}" decimalPlaces="2" readonly="true" style="text-align: right;" symbol="S/." />
+                    </f:facet>
+                </p:toolbar>
+                <p:contextMenu for="listDetcalculopagarPersonal">
+                    <p:menuitem value="Ver Detalle" update="detalleTareoCalculoDialog" icon="ui-icon-ver" actionListener="#{cabcalculopagarAction.detalleTareoCalculo()}"/>
+                </p:contextMenu>
+            </p:dialog>
+            
+            <p:dialog header="#{cabcalculopagarAction.selectDetcalculopagar_detalle.didordenservicio} - 
+                      #{cabcalculopagarAction.selectDetcalculopagar_detalle.dserie} - #{cabcalculopagarAction.selectDetcalculopagar_detalle.dnumero}
+                      / #{cabcalculopagarAction.selectDetcalculopagar_detalle.idcliente} #{cabcalculopagarAction.selectDetcalculopagar_detalle.dcliente}" 
+                      id="detalleTareoCalculoDialog" widgetVar="detalleTareoCalculoDialog" modal="true"  maximizable="true" showEffect="fade" hideEffect="fade" closable="true" resizable="false">
+                <p:outputPanel>
+                    <p:panelGrid  columns="2" columnClasses="label,value">
+                        <h:outputText style="text-align: left;font-weight: bold" value="HORA REQ:" />
+                        <h:outputText value="#{cabcalculopagarAction.selectDetcalculopagar_detalle.shora_req} | 
+                                      #{cabcalculopagarAction.selectDetcalculopagar_detalle.dhora_req}">
+                        </h:outputText> 
+                        <h:outputText style="text-align: left;font-weight: bold" value="HORA LLEGADA:" />
+                        <h:outputText value="#{cabcalculopagarAction.selectDetcalculopagar_detalle.shora_llegada} | 
+                                      #{cabcalculopagarAction.selectDetcalculopagar_detalle.dhora_llegada}">
+                        </h:outputText> 
+                        <h:outputText style="text-align: left;font-weight: bold" value="HORA INICIO" />
+                        <h:outputText value="#{cabcalculopagarAction.selectDetcalculopagar_detalle.shora_inicio_serv} | 
+                                      #{cabcalculopagarAction.selectDetcalculopagar_detalle.dhora_inicio_serv}">
+                        </h:outputText> 
+                        <h:outputText style="text-align: left;font-weight: bold" value="HORA FIN" />
+                        <h:outputText value="#{cabcalculopagarAction.selectDetcalculopagar_detalle.shora_fin_serv} | 
+                                      #{cabcalculopagarAction.selectDetcalculopagar_detalle.dhora_fin_serv}">
+                        </h:outputText> 
+                        <h:outputText style="text-align: left;font-weight: bold" value="HORA LIBERACIÓN" />
+                        <h:outputText value="#{cabcalculopagarAction.selectDetcalculopagar_detalle.shora_liberacion} | 
+                                      #{cabcalculopagarAction.selectDetcalculopagar_detalle.dhora_liberacion}">
+                        </h:outputText> 
+                        <h:outputText style="text-align: left;font-weight: bold" value="Fecha - Orden Servicio:"/>
+                        <h:outputText value="#{cabcalculopagarAction.fechaDMY(cabcalculopagarAction.selectDetcalculopagar_detalle.dfecha_osc)}" />
+                    </p:panelGrid>
+                </p:outputPanel>
+            </p:dialog>
+            <p:dialog header="" id="dlg_leyenda" widgetVar="dlg_leyenda" modal="true" showEffect="fade" closable="true">
+                <p:outputPanel>
+                    <p:panelGrid  columns="2" columnClasses="label,value">
+                        <h:outputText style="text-align: left;font-weight: bold" value="HORA INICIO SERVICIO" />
+                        <h:outputText value="HI">
+                        </h:outputText> 
+                        <h:outputText style="text-align: left;font-weight: bold" value="HORA FIN SERVICIO" />
+                        <h:outputText value="HF">
+                        </h:outputText> 
+                        <h:outputText style="text-align: left;font-weight: bold" value="CÁLCULO DE HORAS  DE SERVICIO" />
+                        <h:outputText value="HS">
+                        </h:outputText> 
+                        <h:outputText style="text-align: left;font-weight: bold" value="HORA BASE/FUNCIÓN" />
+                        <h:outputText value="HBASE">
+                        </h:outputText> 
+                        <h:outputText style="text-align: left;font-weight: bold" value="HORAS ADICIONALES TRABAJADAS, [HS - HBASE]" />
+                        <h:outputText value="HADICIONAL">
+                        </h:outputText> 
+                        <h:outputText style="text-align: left;font-weight: bold" value="COSTO POR RANGO DE HORA [00:00 - 06:00]/[06:01 - 06:00]" />
+                        <h:outputText value="COSTO_RH">
+                        </h:outputText> 
+                        <h:outputText style="text-align: left;font-weight: bold" value="COSTO POR HORAS ADICIONALES" />
+                        <h:outputText value="HCOSTO_ADICIONAL">
+                        </h:outputText>
+                        <h:outputText style="text-align: left;font-weight: bold" value="COSTO POR BONO(Chofer)-(Resguardo)RUTAS CON DESTINO(Lurin, Punta Hermosa, 
+                                      Villa El Salvador, Santa Clara, Huachipa, Ate,etc)" />
+                        <h:outputText value="COSTO_BONO">
+                        </h:outputText>
+                    </p:panelGrid>
+                </p:outputPanel>
+            </p:dialog>
+            <br/>
+            <p:dialog id="dlg_text" header="..:: Aprobación N° #{cabcalculopagarAction.datoEdicion.serie} -
+                      #{cabcalculopagarAction.datoEdicion.numero} ::.." 
+                      widgetVar="dlg_text" modal="true" showEffect="popup" maximizable="true" closable="true" height="410px" width="600px">
+                <textarea style="width:99%;height:95%;" readonly="true">
+                    #{cabcalculopagarAction.log_consola}
+                </textarea>    
+                <br/>                        
+            </p:dialog>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{cabcalculopagarAction}" ventana="MNT" />
+        </h:form>
+    </ui:define>    
+</ui:composition>
