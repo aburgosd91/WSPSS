@@ -619,6 +619,13 @@ public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidac
 //        }
         return true;
     }
+    
+    public String fechaDMY(Date fecha){
+        if(fecha!=null)
+            return WebUtil.fechaDMY(fecha, 7);
+        else
+            return "";
+    }
     public UsuarioBean getUser() {
         return user;
     }

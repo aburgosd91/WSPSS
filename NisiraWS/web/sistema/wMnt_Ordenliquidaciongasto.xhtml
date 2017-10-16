@@ -119,6 +119,14 @@
                                     </f:facet>
                                     <h:outputText value="#{lstdordenliquidaciongasto.numero}" />
                                 </p:column>
+                                <p:column style="white-space: nowrap; width: 80px;padding: 3px;" filterBy="#{ordenliquidaciongastoAction.fechaDMY(lstdordenliquidaciongasto.fecha)}" filterMatchMode="contains" sortBy="#{lstdordenliquidaciongasto.fecha}">
+                                    <f:facet name="header">
+                                        <h:outputText value="Fecha" />
+                                    </f:facet>
+                                    <h:outputText value="#{lstdordenliquidaciongasto.fecha}">
+                                        <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                                    </h:outputText>
+                                </p:column>
                                 <p:column style="width:20%;" filterBy="#{lstdordenliquidaciongasto.afecto}" filterMatchMode="contains" sortBy="#{lstdordenliquidaciongasto.afecto}">
                                     <f:facet name="header" >
                                         <h:outputText value="Afecto" />
@@ -149,14 +157,7 @@
                                     </f:facet>
                                     <h:outputText value="#{lstdordenliquidaciongasto.glosa}" />
                                 </p:column>
-                                <p:column style="width:20%;" filterBy="#{lstdordenliquidaciongasto.fecha}" filterMatchMode="contains" sortBy="#{lstdordenliquidaciongasto.fecha}">
-                                    <f:facet name="header">
-                                        <h:outputText value="Fecha" />
-                                    </f:facet>
-                                    <h:outputText value="#{lstdordenliquidaciongasto.fecha}">
-                                        <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
-                                    </h:outputText>
-                                </p:column>
+                                
                                 <p:column style="width:20%;" filterBy="#{lstdordenliquidaciongasto.importe}" filterMatchMode="contains" sortBy="#{lstdordenliquidaciongasto.importe}">
                                     <f:facet name="header" >
                                         <h:outputText value="Total" />
@@ -216,7 +217,10 @@
                                                  onkeypress="if (event.which  lt; 48 || event.which  gt; 57) return false;">
                                         <p:ajax event="valueChange" immediate="true" process="@this"/>
                                     </p:inputText>
-
+                                    
+                                    <p:outputLabel for="dfecha" value="Fecha:"/>
+                                    <p:calendar id="dfecha" value="#{ordenliquidaciongastoAction.dordenliquidaciongasto.fecha}" pattern="dd-MM-yyyy" mask="true"/>
+                                    
                                     <p:outputLabel for="base" value="Afecto:" />
                                     <p:inputNumber id="base" value="#{ordenliquidaciongastoAction.dordenliquidaciongasto.afecto}" disabled="#{ordenliquidaciongastoAction.dordenliquidaciongasto.iddocumento=='FAC'?false:true}">
                                         <p:ajax event="blur" listener="#{ordenliquidaciongastoAction.afectoCalc()}" update="impuesto,importe"/>
@@ -235,7 +239,7 @@
 
                                     <p:outputLabel for="importe" value="Total:"/>
                                     <p:inputNumber id="importe" value="#{ordenliquidaciongastoAction.dordenliquidaciongasto.importe}" readonly="true"/>
-
+                                    
                                     <p:outputLabel for="dglosa" value="Glosa:" />
                                     <p:inputTextarea id="dglosa" rows="2" cols="40" value="#{ordenliquidaciongastoAction.dordenliquidaciongasto.glosa}" />
                                 </p:panelGrid>
