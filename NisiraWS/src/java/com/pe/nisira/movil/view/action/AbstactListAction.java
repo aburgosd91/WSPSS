@@ -37,6 +37,7 @@ import net.sf.jasperreports.engine.export.oasis.JROdtExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.view.JasperViewer;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.primefaces.context.RequestContext;
 
 /**
@@ -300,7 +301,10 @@ public abstract class AbstactListAction<T> {
         aprobar();
         this.ladd = 0;
     }
-    public void downFormatExcelEspecial(Object document){}
+    public void downFormatExcelEspecial(Object document){
+        HSSFWorkbook objWB = (HSSFWorkbook) document;
+        
+    }
     public boolean isBarraVista() {
         return this.ladd == 0;
     }

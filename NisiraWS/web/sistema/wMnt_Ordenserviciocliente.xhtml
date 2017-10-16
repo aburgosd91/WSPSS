@@ -85,7 +85,7 @@
                                         <p:inputText size="50" readonly="true" value="#{ordenservicioclienteAction.datoEdicion.razonsocial}" disabled="#{!ordenservicioclienteAction.edicion}"/>
                                     </h:panelGrid>
                                     <p:outputLabel value="Doc. Referencia:" />
-                                    <p:panelGrid  columns="4" columnClasses="no-border, no-border,no-border,no-border" style="margin-left: -10px;">
+                                    <p:panelGrid  columns="5" columnClasses="no-border, no-border,no-border,no-border,no-border" style="margin-left: -10px;">
                                         <p:commandButton id="btnbuscardocreferencia" styleClass="boton_buscar" ajax="true" actionListener="#{ordenservicioclienteAction.verCntDocReferencia()}" 
                                                     disabled="#{ordenservicioclienteAction.fdocreferencia or !ordenservicioclienteAction.edicion}"  icon="ui-icon-search">
                                         </p:commandButton>
@@ -94,6 +94,11 @@
                                             <f:selectItems value="#{ordenservicioclienteAction.listAmbito_pago}" var="ambito" itemLabel="#{ambito.descripcion}" itemValue="#{ambito.codigo}" />
                                         </p:selectOneMenu>
                                         <p:commandButton id="btnTareo" value="Tareo" ajax="true" image="ui-icon-ver" actionListener="#{ordenservicioclienteAction.visualizar_tareo()}" />
+                                        <p:commandButton value="Reporte" ajax="false" image="ui-icon-excel">
+                                            <p:dataExporter type="xls" target="lstdordenserviciocliente" 
+                                                            fileName="#{ordenservicioclienteAction.datoEdicion.idclieprov}_#{ordenservicioclienteAction.datoEdicion.razonsocial.replace(' ','_')}"  
+                                                             postProcessor="#{ordenservicioclienteAction.downFormatExcelEspecial}"/>
+                                        </p:commandButton>
                                     </p:panelGrid>
                                     <p:outputLabel value="" />
                                     <p:dataTable id="tabledocreferencia" widgetVar="docreferencia" 
