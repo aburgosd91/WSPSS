@@ -165,6 +165,9 @@ public class DetcalculopagarDao extends BaseDao<Detcalculopagar> {
                 detcalculopagar.setEsplanilla(rs.getInt("ESPLANILLA"));
                 detcalculopagar.setOrigencallao(rs.getInt("ORIGENCALLAO"));
                 detcalculopagar.setNservicios_dia(rs.getInt("NSERVICIOS_DIA"));
+                detcalculopagar.setTiene_suspension(rs.getInt("TIENE_SUSPENSION"));
+                detcalculopagar.setUsuario_sol(rs.getString("USUARIO_SOL")!=null?rs.getString("USUARIO_SOL").trim():"");
+                detcalculopagar.setClave_sol(rs.getString("CLAVE_SOL")!=null?rs.getString("CLAVE_SOL").trim():"");
                 lista.add(detcalculopagar); 
             }
             return lista;
@@ -307,6 +310,9 @@ public class DetcalculopagarDao extends BaseDao<Detcalculopagar> {
                 detcalculopagar.setCargo(rs.getString("DCARGO")!=null?rs.getString("DCARGO").trim():"");
                 detcalculopagar.setRutaservicio(rs.getString("RUTASERVICIOS")!=null?rs.getString("RUTASERVICIOS").trim():"");
                 detcalculopagar.setEsplanilla(rs.getInt("ESPLANILLA"));
+                detcalculopagar.setTiene_suspension(rs.getInt("TIENE_SUSPENSION"));
+                detcalculopagar.setUsuario_sol(rs.getString("USUARIO_SOL")!=null?rs.getString("USUARIO_SOL").trim():"");
+                detcalculopagar.setClave_sol(rs.getString("CLAVE_SOL")!=null?rs.getString("CLAVE_SOL").trim():"");
                 lista.add(detcalculopagar); 
             }
             return lista;

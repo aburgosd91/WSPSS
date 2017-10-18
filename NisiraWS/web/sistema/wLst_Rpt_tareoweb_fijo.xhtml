@@ -14,10 +14,15 @@
             <p:panel  style="border: 0px solid ;font-size: 11px !important;padding: 0px !important" id="panelReporte">
                 <p:dataTable style="font-size: 11px;" id="tbl" var="lst_rpt" value="#{rpt_tareoweb_fijoAction.rpt_result.data}"
                              widgetVar="lst_rpt"
-                          scrollable="true" scrollWidth="99%"
+                          scrollable="true" scrollWidth="98%"
                           selection="#{rpt_tareoweb_fijoAction.selectRpt}" 
                           resizableColumns="true"
-                          rowIndexVar="rownum">
+                          rowIndexVar="rownum"
+                          rows="10"
+                          paginatorPosition="top" 
+                            paginator="true"
+                            paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                            rowsPerPageTemplate="10,15,25,35,50,70,100">
                     <f:facet name="header">
                         Tareo Fijo #{rpt_tareoweb_fijoAction.fechaDMY(rpt_tareoweb_fijoAction.desde)} - #{rpt_tareoweb_fijoAction.fechaDMY(rpt_tareoweb_fijoAction.hasta)}
                     </f:facet>

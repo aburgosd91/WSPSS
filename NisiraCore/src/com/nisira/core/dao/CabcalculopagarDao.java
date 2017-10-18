@@ -4,6 +4,8 @@ import com.nisira.core.BaseDao;
 import com.nisira.core.entity.Cabcalculopagar;
 import com.nisira.core.NisiraORMException;
 import com.nisira.core.entity.Detcalculopagar;
+import com.nisira.core.util.CoreUtil;
+import com.nisira.utils.nisiracore.Constantes;
 import com.thoughtworks.xstream.XStream;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -27,7 +29,7 @@ public class CabcalculopagarDao extends BaseDao<Cabcalculopagar> {
 	}
         public ArrayList<Cabcalculopagar> listarPorEmpresaWebFiltroFecha(String idempresa,String fechainicio,String fechafin) throws NisiraORMException,Exception {
             ArrayList<Cabcalculopagar> lista = new ArrayList<Cabcalculopagar>();
-
+            String periodo_="";    
             ResultSet rs = null;
             rs = execProcedure("GETCABCALCULOPAGAR_TMPSS",idempresa,fechainicio,fechafin);
             while (rs.next()) {
@@ -41,8 +43,11 @@ public class CabcalculopagarDao extends BaseDao<Cabcalculopagar> {
                 cabcalculopagar.setSerie(rs.getString("SERIE")!=null?rs.getString("SERIE").trim():"");
                 cabcalculopagar.setNumero(rs.getString("NUMERO")!=null?rs.getString("NUMERO").trim():"");
                 cabcalculopagar.setPeriodo(rs.getString("PERIODO")!=null?rs.getString("PERIODO").trim():"");
+                periodo_ =cabcalculopagar.getPeriodo()==null?"":cabcalculopagar.getPeriodo();
+                if(periodo_.length()>0)
+                    cabcalculopagar.setMes(CoreUtil.strMonths[Integer.parseInt(periodo_.substring(4,5))]);
                 cabcalculopagar.setFecha(rs.getDate("FECHA"));
-                cabcalculopagar.setIdestado(rs.getString("IDESTADO")!=null?rs.getString("IDESTADO").trim():"");;
+                cabcalculopagar.setIdestado(rs.getString("IDESTADO")!=null?rs.getString("IDESTADO").trim():"");
                 cabcalculopagar.setSucursal(rs.getString("SUCURSAL")!=null?rs.getString("SUCURSAL").trim():"");
                 cabcalculopagar.setAlmacen(rs.getString("ALMACEN")!=null?rs.getString("ALMACEN").trim():"");
                 cabcalculopagar.setEstado(rs.getString("ESTADO")!=null?rs.getString("ESTADO").trim():"");
@@ -94,8 +99,17 @@ public class CabcalculopagarDao extends BaseDao<Cabcalculopagar> {
             xmlDetcalculopagar = xml + xStream.toXML(listDetcalculopagar);
             
             ResultSet rs = null;
-            rs = execProcedure("SP_ORDENSERVICIOCLIENTE_TAREOWEB",
-                    ob.getIdempresa(),ob.getIdcabcalculopagar(),xmlDetcalculopagar,idusuario
+            rs = execProcedure("cobrarpagardoc_grabarprovision_importacion_web",
+                    ob.getIdempresa(),
+                    ob.getIdemisor(),
+                    CoreUtil.fechaDMY(ob.getFecha(),9),//periodo
+                    "",//idoperacion
+                    "",//idtipomov
+                    ob.getIdsucursal(),
+                    xmlDetcalculopagar,
+                    idusuario,
+                    "",//maquina
+                    ob.getIdcabcalculopagar()
             );
             while (rs.next()) {
                 mensaje = rs.getString("mensaje");

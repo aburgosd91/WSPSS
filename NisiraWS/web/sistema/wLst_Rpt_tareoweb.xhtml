@@ -34,10 +34,15 @@
                 </p:panelGrid>  
                 <p:dataTable style="font-size: 11px;" id="tbl" var="lst_rpt" value="#{rpt_tareowebAction.rpt_result.data}"
                              widgetVar="lst_rpt"
-                          scrollable="true" scrollWidth="99%"
+                          scrollable="true" scrollWidth="98%"
                           selection="#{rpt_tareowebAction.selectRpt}" 
                           resizableColumns="true"
-                          rowIndexVar="rownum">
+                          rowIndexVar="rownum"
+                          rows="10"
+                          paginatorPosition="top" 
+                            paginator="true"
+                            paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                            rowsPerPageTemplate="10,15,25,35,50,70,100">
                     <f:facet name="header">
                         Tareo Especial#{rpt_tareowebAction.fechaDMY(rpt_tareowebAction.desde)} - #{rpt_tareowebAction.fechaDMY(rpt_tareowebAction.hasta)}
                     </f:facet>

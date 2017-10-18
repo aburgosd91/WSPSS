@@ -4,6 +4,7 @@ import com.nisira.annotation.ClavePrimaria;
 import com.nisira.annotation.Columna;
 import com.nisira.annotation.Tabla;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -217,30 +218,59 @@ public class Detcalculopagar  implements Serializable{
         @XStreamAlias("NSERVICIOS_DIA")
         @Columna
         private Integer nservicios_dia;
+        @XStreamAlias("TIENE_SUSPENSION")
+        @Columna
+        private Integer tiene_suspension;
+        @XStreamAlias("USUARIO_SOL")
+        @Columna
+        private String usuario_sol;
+        @XStreamAlias("CLAVE_SOL")
+        @Columna
+        private String clave_sol;
+        @XStreamAlias("CONCEPTO")
         private String concepto;
+        @XStreamOmitField
         private String cuenta;
+        @XStreamOmitField
         private String tipodetraccion_descripcion;
+        @XStreamOmitField
         private Planctas selectCuenta;
+        @XStreamOmitField
         private Consumidor selectConsumidor;
+        @XStreamOmitField
         private Tipodetraccion selectTipodetraccion;
+        @XStreamOmitField
         private Documentos selectDocumentos;
+        @XStreamOmitField
         private List<Numemisor> lstNumemisor;
         /*DATOS ADICIONALES - CALCULO*/
+        @XStreamOmitField
         private String dhi_s;
+        @XStreamOmitField
         private String dhf_s;
+        @XStreamOmitField
         private String dhs_s;
+        @XStreamOmitField
         private String dhbase_s;
+        @XStreamOmitField
         private String dhadicional_s;
+        @XStreamOmitField
         private String cargo;
         /*DATOS ADICIONALES - TAREO*/
+        @XStreamOmitField
         private String shora_req;
+        @XStreamOmitField
         private String shora_llegada;
+        @XStreamOmitField
         private String shora_inicio_serv;
+        @XStreamOmitField
         private String shora_fin_serv;
+        @XStreamOmitField
         private String shora_liberacion;
-
+        @XStreamOmitField
         private int resta_base;
-
+        @XStreamOmitField
+        private float pimpuesto;
 	/* Sets & Gets */
 	public void setIdempresa(String idempresa) {
 		this.idempresa = idempresa;
@@ -1110,6 +1140,62 @@ public class Detcalculopagar  implements Serializable{
      */
     public void setNservicios_dia(Integer nservicios_dia) {
         this.nservicios_dia = nservicios_dia;
+    }
+
+    /**
+     * @return the tiene_suspension
+     */
+    public Integer getTiene_suspension() {
+        return tiene_suspension;
+    }
+
+    /**
+     * @param tiene_suspension the tiene_suspension to set
+     */
+    public void setTiene_suspension(Integer tiene_suspension) {
+        this.tiene_suspension = tiene_suspension;
+    }
+
+    /**
+     * @return the usuario_sol
+     */
+    public String getUsuario_sol() {
+        return usuario_sol;
+    }
+
+    /**
+     * @param usuario_sol the usuario_sol to set
+     */
+    public void setUsuario_sol(String usuario_sol) {
+        this.usuario_sol = usuario_sol;
+    }
+
+    /**
+     * @return the clave_sol
+     */
+    public String getClave_sol() {
+        return clave_sol;
+    }
+
+    /**
+     * @param clave_sol the clave_sol to set
+     */
+    public void setClave_sol(String clave_sol) {
+        this.clave_sol = clave_sol;
+    }
+
+    /**
+     * @return the pimpuesto
+     */
+    public float getPimpuesto() {
+        return pimpuesto;
+    }
+
+    /**
+     * @param pimpuesto the pimpuesto to set
+     */
+    public void setPimpuesto(float pimpuesto) {
+        this.pimpuesto = pimpuesto;
     }
 
 }

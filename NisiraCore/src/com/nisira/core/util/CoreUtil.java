@@ -144,6 +144,22 @@ public final class CoreUtil {
         }
         
     }
+    public static String fechaDMY(Date fecha, int tipo){
+        String forma="";
+        switch(tipo){
+            case 1:forma="dd-MM-yyyy";break;
+            case 2:forma="dd/MM/yy";break;
+            case 3:forma="dd-MM-yy:HH:mm:SS Z";break;
+            case 4:forma="yyyy-MM-dd HH:mm:ss";break;
+            case 5:forma="yyyyMMdd";break;
+            case 6:forma="dd MM yy";break;
+            case 7:forma="dd/MM/yyyy";break;
+            case 8:forma="dd-MM";break;
+            case 9:forma="yyyyMM";break;
+        }
+        SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(forma);
+        return DATE_FORMAT.format(fecha);
+    }
     public static String XmlToString(String clase,Object objecto) throws ClassNotFoundException{
         Class oClase =  Class.forName(clase);
         String xml="<?xml version='1.0' encoding='ISO-8859-1' ?>";

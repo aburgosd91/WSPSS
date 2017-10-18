@@ -134,6 +134,7 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
     private List<Documentos> listDocumentos_cab;
     private List<Det_tareoweb> listDet_tareo_verificacion;
     private List<Detcalculopagar> listDetcalculopagarTotal;
+    private List<Detcalculopagar> listDetcalculopagar_verification;
     private List<Detcalculopagar> listDetcalculopagarPersonal;
     private List<Numemisor> listNumemisor;
     private List<Almacenes> listAlmacenes;
@@ -163,6 +164,8 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
     private Detcalculopagar selectDetcalculopagar_detalle; 
     private Det_tareoweb cabercerDet_tareoweb;
     /************************************* CONTROLES *****************************************/
+    private static final String renta4="003";
+    private boolean habilitar_numerico;
     private ArrayList<String> lista_solution;
     private String type_formato_rpt;
     private Float scosto;
@@ -201,6 +204,7 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
             alamcenesDao = new AlmacenesDao();
             estadosDao = new EstadosDao();
             /**********************************CONTROLADOR*************************************/
+            habilitar_numerico=true;
             log_consola = "";
             lista_solution=CoreUtil.valoresBase();
             listWtiposervicio = wtiposervicioDao.listarPorEmpresaWeb(user.getIDEMPRESA());
@@ -413,6 +417,8 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
             
             String emisor= emisorDao.getPorClavePrimariaWeb(user.getIDEMPRESA(), getDatoEdicion().getIdemisor()).getDescripcion();
             getDatoEdicion().setEmisor(emisor);
+            getDatoEdicion().setPeriodo(WebUtil.fechaDMY(getDatoEdicion().getFecha(), 9));
+            getDatoEdicion().setMes(WebUtil.strMonths[Integer.parseInt(WebUtil.fechaDMY(getDatoEdicion().getFecha(),10))-1]);
             String sucursal = sucursalDao.getPorEmpresaSucursal(user.getIDEMPRESA(),Constantes.IDSUCURSALGENERAL).getDescripcion();
             getDatoEdicion().setSucursal(sucursal);
             if(!listAlmacenes.isEmpty())
@@ -505,7 +511,101 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
     
     @Override
     public void aprobar() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            if(getDatoEdicion().getIdcabcalculopagar()==null){
+                this.mensaje = "Documento no registrado";
+                WebUtil.MensajeAdvertencia(this.mensaje );
+            }
+            else if(verificar_aprobacion()){
+                mensaje=getCabcalculopagarDao().aprobarCalculoPagar(getDatoEdicion(),listDetcalculopagar_verification,user.getIDUSUARIO());
+                if(mensaje!=null)
+                    if(mensaje.trim().length()==15)
+                        getDatoEdicion().setIdcabcalculopagar(mensaje.trim());
+                WebUtil.info("Se aprobó el documento :"+getDatoEdicion().getIddocumento()+"-"+
+                        getDatoEdicion().getSerie()+"-"+getDatoEdicion().getNumero()+" ("+getMensaje()+")");
+                setLvalidate(true);
+                RequestContext.getCurrentInstance().update("datos");
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(TareowebAction.class.getName()).log(Level.SEVERE, null, ex);
+            setMensaje(ex.getMessage());
+            WebUtil.error(getMensaje());
+            RequestContext.getCurrentInstance().update("datos:growl");
+        }
+    }
+    @Override
+    public void mostrarLog_txt(String contenido){
+        if(contenido!=null){
+            if(!contenido.trim().equals("")){
+                log_consola = contenido;
+                RequestContext.getCurrentInstance().update("datos:dlg_text");
+                RequestContext.getCurrentInstance().execute("PF('dlg_text').show()");
+            }
+        }
+    }
+    public boolean verificar_aprobacion() throws IOException{
+        boolean flag = true;
+        String validacion ="";
+        String httpcontenido="";
+        setListDetcalculopagar_verification(new ArrayList<>());
+        for(int i=0;i<listDetcalculopagarTotal.size();i++){
+            Detcalculopagar obj = listDetcalculopagarTotal.get(i);
+            validacion ="";
+            if(obj.getIdclieprov()==null){
+                validacion+="\n\t<Personal> no asignado";
+            }else if(obj.getIdclieprov().trim().equals("")){
+                validacion+="\n\t<Personal> no asignado";  
+            }
+            if(obj.getIddocumento()==null){
+                validacion+="\n\t<Documento> no asignado";
+            }else if(obj.getIddocumento().trim().equals("")){
+                validacion+="\n\t<Documento> no asignado";  
+            }
+            if(obj.getSerie()==null){
+                validacion+="\n\t<Serie> no asignado";
+            }else if(obj.getSerie().trim().equals("")){
+                validacion+="\n\t<Serie> no asignado";  
+            }
+            if(obj.getNumero()==null){
+                validacion+="\n\t<Número> no asignado";
+            }else if(obj.getNumero().trim().equals("")){
+                validacion+="\n\t<Número> no asignado";  
+            }
+            if(obj.getFecha()==null)
+                validacion+="\n\tFecha no asignado";
+            if(obj.getFechaoperacion()==null)
+                validacion+="\n\tFecha Operación no asignado";
+            if(obj.getVencimiento()==null)
+                validacion+="\n\tVencimiento no asignado";
+            if(obj.getNumero()==null){
+                validacion+="\n\t<Número> no asignado";
+            }else if(obj.getNumero().trim().equals("")){
+                validacion+="\n\t<Número> no asignado";  
+            }
+            if(obj.getIdcuenta()==null){
+                validacion+="\n\t<Cuenta> no asignado";
+            }else if(obj.getIdcuenta().trim().equals("")){
+                validacion+="\n\t<Cuenta> no asignado";  
+            }
+            if(obj.getIdccosto()==null){
+                validacion+="\n\t<Centro Costo> no asignado";
+            }else if(obj.getIdccosto().trim().equals("")){
+                validacion+="\n\t<Centro Costo> no asignado";  
+            }
+            if(!validacion.equals("")){
+                flag = false;
+                this.mensaje="\nFila N°:"+obj.getItem()+" - "+obj.getIdclieprov()+"-"+obj.getRazon_social()+" "+obj.getIddocumento()+"-"+obj.getSerie()+"-"+obj.getNumero()+" ("+obj.getFecha()+")" + validacion;
+                httpcontenido+="\n"+this.mensaje;
+            }else{
+                listDetcalculopagar_verification.add(obj);
+            }
+        }
+        log_consola = null;
+        if(!httpcontenido.trim().equals("")){
+            httpcontenido="*****************DETALLE OBSERVADO*******************"+httpcontenido;
+            mostrarLog_txt(httpcontenido);
+        }
+        return flag;
     }
     public boolean esVistaValida() {
         if(getListDetcalculopagar().size() == 0) {
@@ -655,6 +755,9 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                     newObj.setTipodetraccion_descripcion(result1.getTipodetraccion_descripcion());
                     newObj.setTasa(result1.getTasa());
                     newObj.setEsplanilla(result1.getEsplanilla());
+                    newObj.setTiene_suspension(result1.getTiene_suspension());
+                    newObj.setUsuario_sol(result1.getUsuario_sol());
+                    newObj.setClave_sol(result1.getClave_sol());
                     /**** Calcular ****/
                     if(newObj.getIdregimen().toString().trim().equals("01")){
                         newObj.setAfecto(newObj.getTcosto());
@@ -673,11 +776,12 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                         newObj.setResta_base(object[0].intValue());
                         Float imp = object[1];
                         Float imp_dec =  imp/100;
+                        newObj.setPimpuesto(imp_dec);
                         newObj.setIdimpuesto(newObj.getIdimpuesto().toString());
                         if(newObj.getIdregimen().trim().equals("01")){
-                            newObj.setImpuesto(newObj.getAfecto()*imp_dec);
+                            newObj.setImpuesto(newObj.getAfecto()*newObj.getPimpuesto());
                         }else if(newObj.getIdregimen().trim().equals("03")){
-                            newObj.setImpuesto(newObj.getInafecto()*imp_dec);
+                            newObj.setImpuesto(newObj.getInafecto()*newObj.getPimpuesto());
                         }
                     }
                     newObj.setTotal(newObj.getAfecto()+newObj.getInafecto()+(newObj.getImpuesto()*(newObj.getResta_base()==1?-1:1)));
@@ -693,6 +797,68 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                 for(int i=1;i<=listDetcalculopagar.size();i++){
                     listDetcalculopagar.get(cnum).setItem(i);
                     cnum++;
+                }
+                /*Evaluar Total >1500.00 , aplicar renta de 4ta*/
+                Detcalculopagar dt;
+                for(int i=0;i<listDetcalculopagar.size();i++){
+                    dt = listDetcalculopagar.get(i);
+                    if(dt.getTotal().floatValue()>1500.0f && dt.getTiene_suspension()==0){
+                        dt.setIdimpuesto(renta4);
+                        Float[] object = impuestoDao.getImpuesto(user.getIDEMPRESA(), dt.getIdimpuesto().toString()); 
+                        dt.setResta_base(object[0].intValue());
+                        Float imp = object[1];
+                        Float imp_dec =  imp/100;
+                        dt.setPimpuesto(imp_dec);
+                        dt.setIdimpuesto(dt.getIdimpuesto().toString());
+                        if(dt.getIdregimen().trim().equals("01")){
+                            dt.setImpuesto(dt.getAfecto()*dt.getPimpuesto());
+                        }else if(dt.getIdregimen().trim().equals("03")){
+                            dt.setImpuesto(dt.getInafecto()*dt.getPimpuesto());
+                        }
+                        dt.setTotal(dt.getAfecto()+dt.getInafecto()+(dt.getImpuesto()*(dt.getResta_base()==1?-1:1)));
+                        listDetcalculopagar.set(i, dt);
+                        /************** Recalcular *************/
+                        for(int j=0;j<listDetcalculopagarTotal.size();j++){
+                            if(listDetcalculopagarTotal.get(j).getIdclieprov().trim().equals(dt.getIdclieprov().trim())){
+                                listDetcalculopagarTotal.get(j).setIddocumento(dt.getIddocumento());
+                                listDetcalculopagarTotal.get(j).setSerie(dt.getSerie());
+                                listDetcalculopagarTotal.get(j).setIdmoneda(dt.getIdmoneda());
+                                listDetcalculopagarTotal.get(j).setIdcuenta(dt.getIdcuenta());
+                                listDetcalculopagarTotal.get(j).setCuenta(dt.getCuenta());
+                                listDetcalculopagarTotal.get(j).setIdccosto(dt.getIdccosto());
+                                listDetcalculopagarTotal.get(j).setConcepto(dt.getConcepto());
+                                listDetcalculopagarTotal.get(j).setIdregimen(dt.getIdregimen());
+                                listDetcalculopagarTotal.get(j).setIdimpuesto(dt.getIdimpuesto());
+                                listDetcalculopagarTotal.get(j).setTipodetraccion_descripcion(dt.getTipodetraccion_descripcion());
+                                listDetcalculopagarTotal.get(j).setTipodetraccion_descripcion(dt.getTipodetraccion_descripcion());
+                                listDetcalculopagarTotal.get(j).setTasa(dt.getTasa());
+                                /**** Calcular ****/
+                                if(listDetcalculopagarTotal.get(j).getIdregimen().toString().trim().equals("01")){
+                                    listDetcalculopagarTotal.get(j).setAfecto(listDetcalculopagarTotal.get(i).getTcosto());
+                                    listDetcalculopagarTotal.get(j).setInafecto(0.0f);
+                                }else if(listDetcalculopagarTotal.get(j).getIdregimen().toString().trim().equals("02")){
+
+                                }else if(listDetcalculopagarTotal.get(j).getIdregimen().toString().trim().equals("03")){
+                                    listDetcalculopagarTotal.get(j).setAfecto(0.0f);
+                                    listDetcalculopagarTotal.get(j).setInafecto(listDetcalculopagarTotal.get(j).getTcosto());
+                                }
+                                if(listDetcalculopagarTotal.get(j).getIdimpuesto()==null){
+                                    listDetcalculopagarTotal.get(j).setIdimpuesto("000");
+                                    listDetcalculopagarTotal.get(j).setImpuesto(0.0f);
+                                }else{
+                                    listDetcalculopagarTotal.get(j).setResta_base(dt.getResta_base());
+                                    listDetcalculopagarTotal.get(j).setIdimpuesto(listDetcalculopagarTotal.get(j).getIdimpuesto().toString());
+                                    if(listDetcalculopagarTotal.get(j).getIdregimen().trim().equals("01")){
+                                        listDetcalculopagarTotal.get(j).setImpuesto(listDetcalculopagarTotal.get(j).getAfecto()*dt.getPimpuesto());
+                                    }else if(listDetcalculopagarTotal.get(j).getIdregimen().trim().equals("03")){
+                                        listDetcalculopagarTotal.get(j).setImpuesto(listDetcalculopagarTotal.get(j).getInafecto()*dt.getPimpuesto());
+                                    }
+                                }
+                                listDetcalculopagarTotal.get(j).setTotal(listDetcalculopagarTotal.get(j).getAfecto()+listDetcalculopagarTotal.get(j).getInafecto()+
+                                        (listDetcalculopagarTotal.get(j).getImpuesto()*(listDetcalculopagarTotal.get(j).getResta_base()==1?-1:1)));
+                            }
+                        }
+                    }
                 }
             }
             cargarCuentasDetraccionDocumentos();
@@ -747,6 +913,9 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                     newObj.setTipodetraccion_descripcion(result1.getTipodetraccion_descripcion());
                     newObj.setTasa(result1.getTasa());
                     newObj.setEsplanilla(result1.getEsplanilla());
+                    newObj.setTiene_suspension(result1.getTiene_suspension());
+                    newObj.setUsuario_sol(result1.getUsuario_sol());
+                    newObj.setClave_sol(result1.getClave_sol());
                     /**** Calcular ****/
                     if(newObj.getIdregimen().toString().trim().equals("01")){
                         newObj.setAfecto(newObj.getTcosto());
@@ -835,6 +1004,9 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                 newObj.setTipodetraccion_descripcion(result1.getTipodetraccion_descripcion());
                 newObj.setTasa(result1.getTasa());
                 newObj.setEsplanilla(result1.getEsplanilla());
+                newObj.setTiene_suspension(result1.getTiene_suspension());
+                newObj.setUsuario_sol(result1.getUsuario_sol());
+                newObj.setClave_sol(result1.getClave_sol());
                 /**** Calcular ****/
                 if(newObj.getIdregimen().toString().trim().equals("01")){
                     newObj.setAfecto(newObj.getTcosto());
@@ -915,19 +1087,29 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
             /************************ REPLICAR TOTALES *************************/
             for(int i=0;i<listDetcalculopagar.size();i++){
                 Detcalculopagar dtw = listDetcalculopagar.get(i);
-                dtw.setIddocumento(selectDetcalculopagar.getIddocumento());
-                dtw.setSelectDocumentos(selectDetcalculopagar.getSelectDocumentos());
-                dtw.setSerie(selectDetcalculopagar.getSerie());
+                if(WebUtil.isnull(dtw.getIddocumento(), "").trim().equals("")){
+                    dtw.setIddocumento(selectDetcalculopagar.getIddocumento());
+                    dtw.setSelectDocumentos(selectDetcalculopagar.getSelectDocumentos());
+                }
+                if(WebUtil.isnull(dtw.getSerie(), "").trim().equals("")){
+                    dtw.setSerie(selectDetcalculopagar.getSerie());
+                }
                 dtw.setIdmoneda(selectDetcalculopagar.getIdmoneda());
-                dtw.setIdcuenta(selectDetcalculopagar.getIdcuenta());
-                dtw.setCuenta(selectDetcalculopagar.getCuenta());
-                dtw.setSelectCuenta(selectDetcalculopagar.getSelectCuenta());
-                dtw.setIdccosto(selectDetcalculopagar.getIdccosto());
-                dtw.setSelectConsumidor(selectDetcalculopagar.getSelectConsumidor());
-                dtw.setConcepto(selectDetcalculopagar.getConcepto());
+                if(WebUtil.isnull(dtw.getIdcuenta(), "").trim().equals("")){
+                    dtw.setIdcuenta(selectDetcalculopagar.getIdcuenta());
+                    dtw.setCuenta(selectDetcalculopagar.getCuenta());
+                    dtw.setSelectCuenta(selectDetcalculopagar.getSelectCuenta());
+                }
+                if(WebUtil.isnull(dtw.getIdccosto(), "").trim().equals("")){
+                    dtw.setIdccosto(selectDetcalculopagar.getIdccosto());
+                    dtw.setSelectConsumidor(selectDetcalculopagar.getSelectConsumidor());
+                    dtw.setConcepto(selectDetcalculopagar.getConcepto());
+                }
                 dtw.setIdregimen(selectDetcalculopagar.getIdregimen());
-                dtw.setIdimpuesto(selectDetcalculopagar.getIdimpuesto());
-                dtw.setTipodetraccion_descripcion(selectDetcalculopagar.getTipodetraccion_descripcion());
+                if(WebUtil.isnull(dtw.getIdimpuesto(), "000").trim().equals("000")){
+                    dtw.setIdimpuesto(selectDetcalculopagar.getIdimpuesto());
+                }
+                dtw.setEsdetraccion(selectDetcalculopagar.getEsdetraccion());
                 dtw.setTipodetraccion_descripcion(selectDetcalculopagar.getTipodetraccion_descripcion());
                 dtw.setSelectTipodetraccion(selectDetcalculopagar.getSelectTipodetraccion());
                 dtw.setTasa(selectDetcalculopagar.getTasa());
@@ -966,6 +1148,7 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                         dtw_detallado.setTipodetraccion_descripcion(dtw.getTipodetraccion_descripcion());
                         dtw_detallado.setSelectTipodetraccion(dtw.getSelectTipodetraccion());
                         dtw_detallado.setTasa(dtw.getTasa());
+                        dtw_detallado.setEsdetraccion(dtw.getEsdetraccion());
                         if(dtw_detallado.getIdregimen().trim().equals("01")){
                             dtw_detallado.setAfecto(dtw_detallado.getTcosto());
                             dtw_detallado.setInafecto(0.0f);
@@ -1737,15 +1920,12 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                             listDetcalculopagarTotal.get(i).setIdimpuesto("000");
                             listDetcalculopagarTotal.get(i).setImpuesto(0.0f);
                         }else{
-                            Float[] array = impuestoDao.getImpuesto(user.getIDEMPRESA(), listDetcalculopagarTotal.get(i).getIdimpuesto().toString());
-                            Float imp = array[1];
-                            Float imp_dec =  imp/100;
-                            listDetcalculopagarTotal.get(i).setResta_base(array[0].intValue());
+                            listDetcalculopagarTotal.get(i).setResta_base(cb.getResta_base());
                             listDetcalculopagarTotal.get(i).setIdimpuesto(listDetcalculopagarTotal.get(i).getIdimpuesto().toString());
                             if(listDetcalculopagarTotal.get(i).getIdregimen().trim().equals("01")){
-                                listDetcalculopagarTotal.get(i).setImpuesto(listDetcalculopagarTotal.get(i).getAfecto()*imp_dec);
+                                listDetcalculopagarTotal.get(i).setImpuesto(listDetcalculopagarTotal.get(i).getAfecto()*cb.getPimpuesto());
                             }else if(listDetcalculopagarTotal.get(i).getIdregimen().trim().equals("03")){
-                                listDetcalculopagarTotal.get(i).setImpuesto(listDetcalculopagarTotal.get(i).getInafecto()*imp_dec);
+                                listDetcalculopagarTotal.get(i).setImpuesto(listDetcalculopagarTotal.get(i).getInafecto()*cb.getPimpuesto());
                             }
                         }
                         listDetcalculopagarTotal.get(i).setTotal(listDetcalculopagarTotal.get(i).getAfecto()+listDetcalculopagarTotal.get(i).getInafecto()+
@@ -2292,6 +2472,34 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
      */
     public void setListDocumentos_cab(List<Documentos> listDocumentos_cab) {
         this.listDocumentos_cab = listDocumentos_cab;
+    }
+
+    /**
+     * @return the listDetcalculopagar_verification
+     */
+    public List<Detcalculopagar> getListDetcalculopagar_verification() {
+        return listDetcalculopagar_verification;
+    }
+
+    /**
+     * @param listDetcalculopagar_verification the listDetcalculopagar_verification to set
+     */
+    public void setListDetcalculopagar_verification(List<Detcalculopagar> listDetcalculopagar_verification) {
+        this.listDetcalculopagar_verification = listDetcalculopagar_verification;
+    }
+
+    /**
+     * @return the habilitar_numerico
+     */
+    public boolean getHabilitar_numerico() {
+        return habilitar_numerico;
+    }
+
+    /**
+     * @param habilitar_numerico the habilitar_numerico to set
+     */
+    public void setHabilitar_numerico(boolean habilitar_numerico) {
+        this.habilitar_numerico = habilitar_numerico;
     }
 
 }
