@@ -233,6 +233,21 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
         if(event.getColumn().getHeaderText()!=null){
             String colHead = event.getColumn().getHeaderText().trim();
             switch(colHead){
+                case "Fecha":
+                    if(newValue!=null){
+                        Date fecha = (Date)(newValue);
+                        entity.setFecha(fecha);
+                    };break;
+                case "Fecha Operación":
+                    if(newValue!=null){
+                        Date fecha = (Date)(newValue);
+                        entity.setFechaoperacion(fecha);
+                    };break;
+                case "Vencimiento":
+                    if(newValue!=null){
+                        Date fecha = (Date)(newValue);
+                        entity.setVencimiento(fecha);
+                    };break;
                 case "Idcuenta":
                     if(newValue==null){
                         entity.setIdcuenta("");
@@ -244,11 +259,12 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                     };break;
                 case "tipo de detracción":
                     if(newValue==null){
+                        entity.setIdtipodetra("");
                         entity.setTipodetraccion_descripcion("");
-                        entity.setTipodetraccion_descripcion("");
+                        entity.setTasa(0.0f);
                     }else{
                         Tipodetraccion ob = (Tipodetraccion)newValue;
-                        entity.setTipodetraccion_descripcion(ob.getIdtipodetra());
+                        entity.setIdtipodetra(ob.getIdtipodetra());
                         entity.setTipodetraccion_descripcion(ob.getDescripcion());
                         entity.setTasa(ob.getTasa());
                     };break;
@@ -326,6 +342,10 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                     if(entity.getIdclieprov().trim().equals(dtw_detallado.getIdclieprov())){
                         dtw_detallado.setIddocumento(entity.getIddocumento());
                         dtw_detallado.setSerie(entity.getSerie());
+                        dtw_detallado.setNumero(entity.getNumero());
+                        dtw_detallado.setFecha(entity.getFecha());
+                        dtw_detallado.setFechaoperacion(entity.getFechaoperacion());
+                        dtw_detallado.setVencimiento(entity.getVencimiento());
                         dtw_detallado.setIdmoneda(entity.getIdmoneda());
                         dtw_detallado.setIdcuenta(entity.getIdcuenta());
                         dtw_detallado.setCuenta(entity.getCuenta());
@@ -335,7 +355,7 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                         dtw_detallado.setConcepto(entity.getConcepto());
                         dtw_detallado.setIdregimen(entity.getIdregimen());
                         dtw_detallado.setIdimpuesto(entity.getIdimpuesto());
-                        dtw_detallado.setTipodetraccion_descripcion(entity.getTipodetraccion_descripcion());
+                        dtw_detallado.setIdtipodetra(entity.getIdtipodetra());
                         dtw_detallado.setTipodetraccion_descripcion(entity.getTipodetraccion_descripcion());
                         dtw_detallado.setSelectTipodetraccion(entity.getSelectTipodetraccion());
                         dtw_detallado.setTasa(entity.getTasa());
@@ -357,9 +377,9 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                     } 
                     listDetcalculopagarTotal.set(j, dtw_detallado);
                 }
+                grabar_local();
             }
-        }
-            
+        }  
         RequestContext.getCurrentInstance().update("datos:tbl");
     }
     public boolean replazarCampo(Detcalculopagar ob,int item){
@@ -446,6 +466,8 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                 }
                 else
                     mensaje=getCabcalculopagarDao().grabar(2, getDatoEdicion(),getListDetcalculopagarTotal(),user.getIDUSUARIO());
+                setMensaje(WebUtil.exitoRegistrar("Cálculo x Pagar - "+getDatoEdicion().getTipo(), mensaje));
+                WebUtil.info(getMensaje());
                 setLvalidate(true);
 //                setLvalidate(true);
 //                RequestContext.getCurrentInstance().update("datos");
@@ -515,7 +537,13 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
             if(getDatoEdicion().getIdcabcalculopagar()==null){
                 this.mensaje = "Documento no registrado";
                 WebUtil.MensajeAdvertencia(this.mensaje );
+                RequestContext.getCurrentInstance().update("datos:growl");
             }
+//            else if(!getDatoEdicion().getIdestado().trim().equals("PE")){
+//                this.mensaje = "Documento se encuentra en estado <"+getDatoEdicion().getEstado()+">";
+//                WebUtil.MensajeAdvertencia(this.mensaje );
+//                RequestContext.getCurrentInstance().update("datos:growl");
+//            }
             else if(verificar_aprobacion()){
                 mensaje=getCabcalculopagarDao().aprobarCalculoPagar(getDatoEdicion(),listDetcalculopagar_verification,user.getIDUSUARIO());
                 if(mensaje!=null)
@@ -637,9 +665,9 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                     }
                     if(temp.getTipodetraccion_descripcion()!=null){
                         if(!temp.getTipodetraccion_descripcion().trim().equals("")){
-                            tdet = tipodetraccionDao.getTipodetraccion_idtipodetraccion(temp.getTipodetraccion_descripcion());
+                            tdet = tipodetraccionDao.getTipodetraccion_idtipodetraccion(temp.getIdtipodetra());
                             temp.setTipodetraccion_descripcion(tdet.getDescripcion());
-                            temp.setTipodetraccion_descripcion(tdet.getIdtipodetra());
+                            temp.setIdtipodetra(tdet.getIdtipodetra());
                             temp.setTasa(tdet.getTasa());
                             temp.setSelectTipodetraccion(tdet);
                         }
@@ -752,6 +780,7 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                     newObj.setTcosto(dato.sum);
                     newObj.setIdimpuesto(result1.getIdimpuesto());
                     newObj.setEsdetraccion(result1.getEsdetraccion());
+                    newObj.setIdtipodetra(result1.getIdtipodetra());
                     newObj.setTipodetraccion_descripcion(result1.getTipodetraccion_descripcion());
                     newObj.setTasa(result1.getTasa());
                     newObj.setEsplanilla(result1.getEsplanilla());
@@ -829,7 +858,7 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                                 listDetcalculopagarTotal.get(j).setConcepto(dt.getConcepto());
                                 listDetcalculopagarTotal.get(j).setIdregimen(dt.getIdregimen());
                                 listDetcalculopagarTotal.get(j).setIdimpuesto(dt.getIdimpuesto());
-                                listDetcalculopagarTotal.get(j).setTipodetraccion_descripcion(dt.getTipodetraccion_descripcion());
+                                listDetcalculopagarTotal.get(j).setIdtipodetra(dt.getIdtipodetra());
                                 listDetcalculopagarTotal.get(j).setTipodetraccion_descripcion(dt.getTipodetraccion_descripcion());
                                 listDetcalculopagarTotal.get(j).setTasa(dt.getTasa());
                                 /**** Calcular ****/
@@ -910,6 +939,7 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                     newObj.setTcosto(dato.sum);
                     newObj.setIdimpuesto(result1.getIdimpuesto());
                     newObj.setEsdetraccion(result1.getEsdetraccion());
+                    newObj.setIdtipodetra(result1.getIdtipodetra());
                     newObj.setTipodetraccion_descripcion(result1.getTipodetraccion_descripcion());
                     newObj.setTasa(result1.getTasa());
                     newObj.setEsplanilla(result1.getEsplanilla());
@@ -1001,6 +1031,7 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                 newObj.setTcosto(dato.sum);
                 newObj.setIdimpuesto(result1.getIdimpuesto());
                 newObj.setEsdetraccion(result1.getEsdetraccion());
+                newObj.setIdtipodetra(result1.getIdtipodetra());
                 newObj.setTipodetraccion_descripcion(result1.getTipodetraccion_descripcion());
                 newObj.setTasa(result1.getTasa());
                 newObj.setEsplanilla(result1.getEsplanilla());
@@ -1084,6 +1115,7 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
     }
     public void replicarItem(){
         if(selectDetcalculopagar!=null){
+            Date fecha;
             /************************ REPLICAR TOTALES *************************/
             for(int i=0;i<listDetcalculopagar.size();i++){
                 Detcalculopagar dtw = listDetcalculopagar.get(i);
@@ -1093,6 +1125,18 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                 }
                 if(WebUtil.isnull(dtw.getSerie(), "").trim().equals("")){
                     dtw.setSerie(selectDetcalculopagar.getSerie());
+                }
+                if(dtw.getFecha()==null){
+                    fecha = new Date(selectDetcalculopagar.getFecha().getTime());
+                    dtw.setFecha(fecha);
+                }
+                if(dtw.getFechaoperacion()==null){
+                    fecha = new Date(selectDetcalculopagar.getFechaoperacion().getTime());
+                    dtw.setFechaoperacion(fecha);
+                }
+                if(dtw.getVencimiento()==null){
+                    fecha = new Date(selectDetcalculopagar.getVencimiento().getTime());
+                    dtw.setVencimiento(fecha);
                 }
                 dtw.setIdmoneda(selectDetcalculopagar.getIdmoneda());
                 if(WebUtil.isnull(dtw.getIdcuenta(), "").trim().equals("")){
@@ -1110,6 +1154,7 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                     dtw.setIdimpuesto(selectDetcalculopagar.getIdimpuesto());
                 }
                 dtw.setEsdetraccion(selectDetcalculopagar.getEsdetraccion());
+                dtw.setIdtipodetra(selectDetcalculopagar.getIdtipodetra());
                 dtw.setTipodetraccion_descripcion(selectDetcalculopagar.getTipodetraccion_descripcion());
                 dtw.setSelectTipodetraccion(selectDetcalculopagar.getSelectTipodetraccion());
                 dtw.setTasa(selectDetcalculopagar.getTasa());
@@ -1135,6 +1180,9 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                     if(dtw.getIdclieprov().trim().equals(dtw_detallado.getIdclieprov())){
                         dtw_detallado.setIddocumento(dtw.getIddocumento());
                         dtw_detallado.setSerie(dtw.getSerie());
+                        dtw_detallado.setFecha(dtw.getFecha());
+                        dtw_detallado.setFechaoperacion(dtw.getFechaoperacion());
+                        dtw_detallado.setVencimiento(dtw.getVencimiento());
                         dtw_detallado.setIdmoneda(dtw.getIdmoneda());
                         dtw_detallado.setIdcuenta(dtw.getIdcuenta());
                         dtw_detallado.setCuenta(dtw.getCuenta());
@@ -1144,7 +1192,7 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                         dtw_detallado.setConcepto(dtw.getConcepto());
                         dtw_detallado.setIdregimen(dtw.getIdregimen());
                         dtw_detallado.setIdimpuesto(dtw.getIdimpuesto());
-                        dtw_detallado.setTipodetraccion_descripcion(dtw.getTipodetraccion_descripcion());
+                        dtw_detallado.setIdtipodetra(dtw.getIdtipodetra());
                         dtw_detallado.setTipodetraccion_descripcion(dtw.getTipodetraccion_descripcion());
                         dtw_detallado.setSelectTipodetraccion(dtw.getSelectTipodetraccion());
                         dtw_detallado.setTasa(dtw.getTasa());
@@ -1903,7 +1951,7 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                         listDetcalculopagarTotal.get(i).setConcepto(cb.getConcepto());
                         listDetcalculopagarTotal.get(i).setIdregimen(cb.getIdregimen());
                         listDetcalculopagarTotal.get(i).setIdimpuesto(cb.getIdimpuesto());
-                        listDetcalculopagarTotal.get(i).setTipodetraccion_descripcion(cb.getTipodetraccion_descripcion());
+                        listDetcalculopagarTotal.get(i).setIdtipodetra(cb.getIdtipodetra());
                         listDetcalculopagarTotal.get(i).setTipodetraccion_descripcion(cb.getTipodetraccion_descripcion());
                         listDetcalculopagarTotal.get(i).setTasa(cb.getTasa());
                         /**** Calcular ****/

@@ -94,9 +94,9 @@ public class CabcalculopagarDao extends BaseDao<Cabcalculopagar> {
             String mensaje="";
             String xml = "<?xml version='1.0' encoding='ISO-8859-1' ?>";
             String xmlDetcalculopagar = "";
-            XStream xStream = new XStream();
-            xStream.processAnnotations(Detcalculopagar.class);
-            xmlDetcalculopagar = xml + xStream.toXML(listDetcalculopagar);
+//            XStream xStream = new XStream();
+//            xStream.processAnnotations(Detcalculopagar.class);
+//            xmlDetcalculopagar = xml + xStream.toXML(listDetcalculopagar);
             
             ResultSet rs = null;
             rs = execProcedure("cobrarpagardoc_grabarprovision_importacion_web",

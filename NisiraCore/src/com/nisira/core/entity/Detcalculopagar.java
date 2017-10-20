@@ -231,7 +231,6 @@ public class Detcalculopagar  implements Serializable{
         private String concepto;
         @XStreamOmitField
         private String cuenta;
-        @XStreamOmitField
         private String tipodetraccion_descripcion;
         @XStreamOmitField
         private Planctas selectCuenta;

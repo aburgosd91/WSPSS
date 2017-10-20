@@ -245,7 +245,7 @@ public class CabtareowebDao extends BaseDao<Cabtareoweb> {
             xmlDet_tareoweb = xml + xStream.toXML(listDet_tareoweb);
             
             ResultSet rs = null;
-            rs = execProcedure("cobrarpagardoc_grabarprovision_importacion_web",
+            rs = execProcedure("SP_ORDENSERVICIOCLIENTE_TAREOWEB",
                     ob.getIdempresa(),ob.getIdcabtareoweb(),xmlDet_tareoweb,idusuario
             );
             while (rs.next()) {
