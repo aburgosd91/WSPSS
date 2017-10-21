@@ -229,6 +229,8 @@ public class Detcalculopagar  implements Serializable{
         private String clave_sol;
         @XStreamAlias("CONCEPTO")
         private String concepto;
+        @XStreamAlias("IDTIPOMOV")
+        private String idtipomov;
         @XStreamOmitField
         private String cuenta;
         private String tipodetraccion_descripcion;
@@ -1195,6 +1197,20 @@ public class Detcalculopagar  implements Serializable{
      */
     public void setPimpuesto(float pimpuesto) {
         this.pimpuesto = pimpuesto;
+    }
+
+    /**
+     * @return the idtipomov
+     */
+    public String getIdtipomov() {
+        return idtipomov;
+    }
+
+    /**
+     * @param idtipomov the idtipomov to set
+     */
+    public void setIdtipomov(String idtipomov) {
+        this.idtipomov = idtipomov;
     }
 
 }

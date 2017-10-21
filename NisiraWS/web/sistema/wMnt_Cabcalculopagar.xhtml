@@ -252,6 +252,17 @@
                 <p:column headerText="Concepto" filterBy="#{lst_rpt.concepto}" filterMatchMode="contains" sortBy="#{lst_rpt.concepto}" style="white-space: nowrap; width: 250px;padding: 3px;text-align: left">
                     <h:outputText value="#{lst_rpt.concepto}"/>
                 </p:column>
+                <p:column headerText="Idtipomov" filterBy="#{lst_rpt.idtipomov}" filterMatchMode="contains" sortBy="#{lst_rpt.idtipomov}"  style="white-space: nowrap; width: 60px;padding: 3px;text-align: left">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{lst_rpt.idtipomov}" /></f:facet>
+                       <f:facet name="input">
+                           <h:selectOneMenu value="#{lst_rpt.idtipomov}" style="width:100%">
+                               <f:selectItem itemLabel="--" itemValue="" />
+                               <f:selectItems value="#{cabcalculopagarAction.listOperaciones}" var="tr" itemLabel="#{tr.idoperacion}-#{tr.descripcion}" itemValue="#{tr.idoperacion}" />
+                           </h:selectOneMenu>
+                       </f:facet>
+                   </p:cellEditor>
+               </p:column>
                 <p:column headerText="Idregimen" filterBy="#{lst_rpt.idregimen}" filterMatchMode="contains" sortBy="#{lst_rpt.idregimen}"  style="white-space: nowrap; width: 60px;padding: 3px;text-align: left">
                     <p:cellEditor>
                         <f:facet name="output"><h:outputText value="#{lst_rpt.idregimen}" /></f:facet>
@@ -262,7 +273,6 @@
                        </f:facet>
                    </p:cellEditor>
                </p:column>
-                
                 <p:column headerText="Afecto" filterBy="#{lst_rpt.afecto}" filterMatchMode="contains" sortBy="#{lst_rpt.afecto}"  style="white-space: nowrap; width: 60px;padding: 3px;text-align: left">
                     <p:cellEditor>
                         <f:facet name="output">

@@ -30,6 +30,7 @@ import com.nisira.core.dao.MonedasDao;
 import com.nisira.core.dao.MotivosproduccionDao;
 import com.nisira.core.dao.NSRResultSet;
 import com.nisira.core.dao.NumemisorDao;
+import com.nisira.core.dao.OperacionesDao;
 import com.nisira.core.dao.Personal_servicioDao;
 import com.nisira.core.dao.PlanctasDao;
 import com.nisira.core.dao.Ruta_serviciosDao;
@@ -64,6 +65,7 @@ import com.nisira.core.entity.Personal_servicio;
 import com.nisira.core.entity.Planctas;
 import com.nisira.core.entity.Producto;
 import com.nisira.core.entity.Detcalculopagar;
+import com.nisira.core.entity.Operaciones;
 import com.nisira.core.entity.Ruta;
 import com.nisira.core.entity.Ruta_servicios;
 import com.nisira.core.entity.Rutas;
@@ -139,6 +141,7 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
     private List<Numemisor> listNumemisor;
     private List<Almacenes> listAlmacenes;
     private List<Estados> listEstado;
+    private List<Operaciones> listOperaciones;
     /*************************************DAO***************************************/
     private CabcalculopagarDao cabcalculopagarDao;
     private DetcalculopagarDao detcalculopagarDao;
@@ -156,6 +159,7 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
     private SucursalesDao sucursalDao;
     private AlmacenesDao alamcenesDao;
     private EstadosDao estadosDao;
+    private OperacionesDao operacionesDao;
     /*************************************ENTITY***************************************/
     private UsuarioBean user;
     private String mensaje;
@@ -203,6 +207,7 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
             sucursalDao = new SucursalesDao();
             alamcenesDao = new AlmacenesDao();
             estadosDao = new EstadosDao();
+            operacionesDao = new OperacionesDao();
             /**********************************CONTROLADOR*************************************/
             habilitar_numerico=true;
             log_consola = "";
@@ -218,6 +223,7 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
             listConsumidor = consumidorDao.listarPorEmpresaWeb(user.getIDEMPRESA());
             listAlmacenes = alamcenesDao.getPorEmpresaSucursal(user.getIDEMPRESA(),Constantes.getIDSUCURSALGENERAL());
             listEstado = estadosDao.listarPorEmpresaWeb(user.getIDEMPRESA(),null);
+            listOperaciones = operacionesDao.lstOperacionesEmpresa();
             /********************************** CONFIGURACIÓN - SERVIDOR ***********************/
             idtiposervicio = "ESPECIAL";
             actualiza_ventana("wMnt_Cabcalculopagar");
@@ -2548,6 +2554,34 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
      */
     public void setHabilitar_numerico(boolean habilitar_numerico) {
         this.habilitar_numerico = habilitar_numerico;
+    }
+
+    /**
+     * @return the listOperaciones
+     */
+    public List<Operaciones> getListOperaciones() {
+        return listOperaciones;
+    }
+
+    /**
+     * @param listOperaciones the listOperaciones to set
+     */
+    public void setListOperaciones(List<Operaciones> listOperaciones) {
+        this.listOperaciones = listOperaciones;
+    }
+
+    /**
+     * @return the operacionesDao
+     */
+    public OperacionesDao getOperacionesDao() {
+        return operacionesDao;
+    }
+
+    /**
+     * @param operacionesDao the operacionesDao to set
+     */
+    public void setOperacionesDao(OperacionesDao operacionesDao) {
+        this.operacionesDao = operacionesDao;
     }
 
 }
