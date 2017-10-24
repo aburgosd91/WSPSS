@@ -68,4 +68,24 @@ public class ImpuestoDao extends BaseDao<Impuesto> {
         array[1] = result;
         return array;
     }
+    public List<Dimpuesto> getArrayDImpuesto(String idempresa){
+        List<Dimpuesto> listDimpuestos = new ArrayList<>();
+        try {
+            ResultSet rs = null;
+            rs = execProcedure("GETIMPUESTO_LISTADO", idempresa);
+            Dimpuesto dimpuesto;
+            while (rs.next()) {
+                dimpuesto = new Dimpuesto();
+                dimpuesto.setIdempresa(rs.getString("IDEMPRESA"));
+                dimpuesto.setIdimpuesto(rs.getString("IDIMPUESTO"));
+                dimpuesto.setFecha_imp(rs.getDate("FECHA_IMP"));
+                dimpuesto.setValor(rs.getFloat("VALOR"));
+                dimpuesto.setResta_base(rs.getInt("RESTA_BASE"));
+                listDimpuestos.add(dimpuesto);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return listDimpuestos;
+    }
 }

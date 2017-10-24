@@ -65,6 +65,7 @@ import com.nisira.core.entity.Personal_servicio;
 import com.nisira.core.entity.Planctas;
 import com.nisira.core.entity.Producto;
 import com.nisira.core.entity.Detcalculopagar;
+import com.nisira.core.entity.Dimpuesto;
 import com.nisira.core.entity.Operaciones;
 import com.nisira.core.entity.Ruta;
 import com.nisira.core.entity.Ruta_servicios;
@@ -142,6 +143,7 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
     private List<Almacenes> listAlmacenes;
     private List<Estados> listEstado;
     private List<Operaciones> listOperaciones;
+    private List<Dimpuesto> listDimpuesto;
     /*************************************DAO***************************************/
     private CabcalculopagarDao cabcalculopagarDao;
     private DetcalculopagarDao detcalculopagarDao;
@@ -189,6 +191,7 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
             listDocumentos =  new ArrayList<>();
             listConsumidor =  new ArrayList<>();
             listEstado = new ArrayList<>();
+            listDimpuesto = new ArrayList<>();
             /*********************************DAO**********************************************/
             ordenservicioclienteDao = new OrdenservicioclienteDao();
             wtiposervicioDao = new WtiposervicioDao();
@@ -224,6 +227,7 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
             listAlmacenes = alamcenesDao.getPorEmpresaSucursal(user.getIDEMPRESA(),Constantes.getIDSUCURSALGENERAL());
             listEstado = estadosDao.listarPorEmpresaWeb(user.getIDEMPRESA(),null);
             listOperaciones = operacionesDao.lstOperacionesEmpresa();
+            listDimpuesto = impuestoDao.getArrayDImpuesto(user.getIDEMPRESA());
             /********************************** CONFIGURACIÓN - SERVIDOR ***********************/
             idtiposervicio = "ESPECIAL";
             actualiza_ventana("wMnt_Cabcalculopagar");
@@ -326,11 +330,13 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                         entity.setIdimpuesto("000");
                         entity.setImpuesto(0.0f);
                     }else{
-                        Float[] valores = impuestoDao.getImpuesto(user.getIDEMPRESA(), newValue.toString());
-                        Float imp = valores[1];
-                        entity.setResta_base(valores[0].intValue());
+                        Dimpuesto dimpuesto = buscarImpuesto(entity.getIdimpuesto());
+                        //Float[] valores = impuestoDao.getImpuesto(user.getIDEMPRESA(), newValue.toString());
+                        Float imp = dimpuesto.getValor();
+                        entity.setResta_base(dimpuesto.getResta_base());
                         Float imp_dec =  imp/100;
                         entity.setIdimpuesto(newValue.toString());
+                        entity.setPimpuesto(imp_dec);
                         if(entity.getIdregimen().trim().equals("01")){
                             entity.setImpuesto(entity.getAfecto()*imp_dec);
                         }else if(entity.getIdregimen().trim().equals("03")){
@@ -341,6 +347,8 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
             }
             /*CALCULO DE TOTAL*/
             entity.setTotal(entity.getAfecto()+entity.getInafecto()+(entity.getImpuesto()* (entity.getResta_base()==1?-1:1)));
+            Date fecha_local;
+            Dimpuesto dimpuesto;
             if(replazarCampo(entity,pos)){
                 /************************ REPLICAR DETALLADOS *************************/
                 for(int j = 0;j<listDetcalculopagarTotal.size();j++){
@@ -349,9 +357,12 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                         dtw_detallado.setIddocumento(entity.getIddocumento());
                         dtw_detallado.setSerie(entity.getSerie());
                         dtw_detallado.setNumero(entity.getNumero());
-                        dtw_detallado.setFecha(entity.getFecha());
-                        dtw_detallado.setFechaoperacion(entity.getFechaoperacion());
-                        dtw_detallado.setVencimiento(entity.getVencimiento());
+                        fecha_local = new Date(entity.getFecha().getTime());
+                        dtw_detallado.setFecha(fecha_local);
+                        fecha_local = new Date(entity.getFechaoperacion().getTime());
+                        dtw_detallado.setFechaoperacion(fecha_local);
+                        fecha_local = new Date(entity.getVencimiento().getTime());
+                        dtw_detallado.setVencimiento(fecha_local);
                         dtw_detallado.setIdmoneda(entity.getIdmoneda());
                         dtw_detallado.setIdcuenta(entity.getIdcuenta());
                         dtw_detallado.setCuenta(entity.getCuenta());
@@ -359,6 +370,7 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                         dtw_detallado.setIdccosto(entity.getIdccosto());
                         dtw_detallado.setSelectConsumidor(entity.getSelectConsumidor());
                         dtw_detallado.setConcepto(entity.getConcepto());
+                        dtw_detallado.setIdtipomov(entity.getIdtipomov());
                         dtw_detallado.setIdregimen(entity.getIdregimen());
                         dtw_detallado.setIdimpuesto(entity.getIdimpuesto());
                         dtw_detallado.setIdtipodetra(entity.getIdtipodetra());
@@ -366,18 +378,18 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                         dtw_detallado.setSelectTipodetraccion(entity.getSelectTipodetraccion());
                         dtw_detallado.setTasa(entity.getTasa());
                         /*CALCULAR IMPORTES*/
-                        Float[] array = impuestoDao.getImpuesto(user.getIDEMPRESA(), entity.getIdimpuesto());
-                        Float imp = array[1];
-                        dtw_detallado.setResta_base(array[0].intValue());
-                        Float imp_dec =  imp/100;
+                        //Float[] array = impuestoDao.getImpuesto(user.getIDEMPRESA(), entity.getIdimpuesto());
+                        //dimpuesto = buscarImpuesto(entity.getIdimpuesto());
+                        dtw_detallado.setResta_base(entity.getResta_base());
+                        //Float imp_dec =  dimpuesto.getValor()/100;
                         if(dtw_detallado.getIdregimen().trim().equals("01")){
                             dtw_detallado.setAfecto(dtw_detallado.getTcosto());
                             dtw_detallado.setInafecto(0.0f);
-                            dtw_detallado.setImpuesto(dtw_detallado.getAfecto()*imp_dec);
+                            dtw_detallado.setImpuesto(dtw_detallado.getAfecto()*entity.getPimpuesto());
                         }else if(dtw_detallado.getIdregimen().trim().equals("03")){
                             dtw_detallado.setInafecto(entity.getTcosto());
                             dtw_detallado.setAfecto(0.0f);
-                            dtw_detallado.setImpuesto(entity.getInafecto()*imp_dec);
+                            dtw_detallado.setImpuesto(entity.getInafecto()*entity.getPimpuesto());
                         }
                         dtw_detallado.setTotal(dtw_detallado.getAfecto()+dtw_detallado.getInafecto()+(dtw_detallado.getImpuesto()*(dtw_detallado.getResta_base()==1?-1:1)));
                     } 
@@ -414,12 +426,12 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
         /*********************************ENTITY*******************************************/
         user = (UsuarioBean) WebUtil.getObjetoSesion(Constantes.SESION_USUARIO);
         listDetcalculopagar = new ArrayList<>();
-        
+        impuestoDao = new ImpuestoDao();
+        listDimpuesto = impuestoDao.getArrayDImpuesto(user.getIDEMPRESA());
         setMensaje("");
         actualiza_ventana("wMnt_Cabcalculopagar");
         return "";
     }
-
     @Override
     public void nuevo() {
         try {
@@ -576,6 +588,23 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                 RequestContext.getCurrentInstance().execute("PF('dlg_text').show()");
             }
         }
+    }
+    public Dimpuesto buscarImpuesto(String idimpuesto){
+        Dimpuesto obj=null;
+        if(!WebUtil.isnull(idimpuesto, "").trim().equals("")){
+            for(Dimpuesto imp : listDimpuesto){
+                if(imp.getIdimpuesto().equals(idimpuesto)){
+                    obj = imp;
+                    break;
+                } 
+            }
+        }
+        if(obj == null){
+            obj = new Dimpuesto();
+            obj.setResta_base(0);
+            obj.setValor(0.0f);
+        }
+        return obj;
     }
     public boolean verificar_aprobacion() throws IOException{
         boolean flag = true;
@@ -793,6 +822,7 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                     newObj.setTiene_suspension(result1.getTiene_suspension());
                     newObj.setUsuario_sol(result1.getUsuario_sol());
                     newObj.setClave_sol(result1.getClave_sol());
+                    newObj.setIdtipomov(result1.getIdtipomov());
                     /**** Calcular ****/
                     if(newObj.getIdregimen().toString().trim().equals("01")){
                         newObj.setAfecto(newObj.getTcosto());
@@ -807,9 +837,10 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                         newObj.setIdimpuesto("000");
                         newObj.setImpuesto(0.0f);
                     }else{
-                        Float[] object = impuestoDao.getImpuesto(user.getIDEMPRESA(), newObj.getIdimpuesto().toString()); 
-                        newObj.setResta_base(object[0].intValue());
-                        Float imp = object[1];
+                        Dimpuesto dimpuesto = buscarImpuesto(newObj.getIdimpuesto().toString());
+                        //Float[] object = impuestoDao.getImpuesto(user.getIDEMPRESA(), newObj.getIdimpuesto().toString()); 
+                        newObj.setResta_base(dimpuesto.getResta_base());
+                        Float imp = dimpuesto.getValor();
                         Float imp_dec =  imp/100;
                         newObj.setPimpuesto(imp_dec);
                         newObj.setIdimpuesto(newObj.getIdimpuesto().toString());
@@ -839,9 +870,10 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                     dt = listDetcalculopagar.get(i);
                     if(dt.getTotal().floatValue()>1500.0f && dt.getTiene_suspension()==0){
                         dt.setIdimpuesto(renta4);
-                        Float[] object = impuestoDao.getImpuesto(user.getIDEMPRESA(), dt.getIdimpuesto().toString()); 
-                        dt.setResta_base(object[0].intValue());
-                        Float imp = object[1];
+                        Dimpuesto dimpuesto = buscarImpuesto(dt.getIdimpuesto().toString());
+                        //Float[] object = impuestoDao.getImpuesto(user.getIDEMPRESA(), dt.getIdimpuesto().toString()); 
+                        dt.setResta_base(dimpuesto.getResta_base());
+                        Float imp = dimpuesto.getValor();
                         Float imp_dec =  imp/100;
                         dt.setPimpuesto(imp_dec);
                         dt.setIdimpuesto(dt.getIdimpuesto().toString());
@@ -952,6 +984,7 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                     newObj.setTiene_suspension(result1.getTiene_suspension());
                     newObj.setUsuario_sol(result1.getUsuario_sol());
                     newObj.setClave_sol(result1.getClave_sol());
+                    newObj.setIdtipomov(result1.getIdtipomov());
                     /**** Calcular ****/
                     if(newObj.getIdregimen().toString().trim().equals("01")){
                         newObj.setAfecto(newObj.getTcosto());
@@ -966,9 +999,10 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                         newObj.setIdimpuesto("000");
                         newObj.setImpuesto(0.0f);
                     }else{
-                        Float[] object = impuestoDao.getImpuesto(user.getIDEMPRESA(), newObj.getIdimpuesto().toString()); 
-                        newObj.setResta_base(object[0].intValue());
-                        Float imp = object[1];
+                        Dimpuesto dimpuesto = buscarImpuesto(newObj.getIdimpuesto());
+                        //Float[] object = impuestoDao.getImpuesto(user.getIDEMPRESA(), newObj.getIdimpuesto().toString()); 
+                        newObj.setResta_base(dimpuesto.getResta_base());
+                        Float imp = dimpuesto.getValor();
                         Float imp_dec =  imp/100;
                         newObj.setIdimpuesto(newObj.getIdimpuesto().toString());
                         if(newObj.getIdregimen().trim().equals("01")){
@@ -1164,10 +1198,12 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                 dtw.setTipodetraccion_descripcion(selectDetcalculopagar.getTipodetraccion_descripcion());
                 dtw.setSelectTipodetraccion(selectDetcalculopagar.getSelectTipodetraccion());
                 dtw.setTasa(selectDetcalculopagar.getTasa());
+                dtw.setIdtipomov(selectDetcalculopagar.getIdtipomov());
                 /*CALCULAR IMPORTES*/
-                Float[] array = impuestoDao.getImpuesto(user.getIDEMPRESA(), dtw.getIdimpuesto());
-                Float imp = array[1];
-                dtw.setResta_base(array[0].intValue());
+                Dimpuesto dimpuesto = buscarImpuesto(dtw.getIdimpuesto());
+                //Float[] array = impuestoDao.getImpuesto(user.getIDEMPRESA(), dtw.getIdimpuesto());
+                Float imp = dimpuesto.getValor();
+                dtw.setResta_base(dimpuesto.getResta_base());
                 Float imp_dec =  imp/100;
                 if(dtw.getIdregimen().trim().equals("01")){
                     dtw.setAfecto(dtw.getTcosto());
@@ -1202,6 +1238,7 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                         dtw_detallado.setTipodetraccion_descripcion(dtw.getTipodetraccion_descripcion());
                         dtw_detallado.setSelectTipodetraccion(dtw.getSelectTipodetraccion());
                         dtw_detallado.setTasa(dtw.getTasa());
+                        dtw_detallado.setIdtipomov(dtw.getIdtipomov());
                         dtw_detallado.setEsdetraccion(dtw.getEsdetraccion());
                         if(dtw_detallado.getIdregimen().trim().equals("01")){
                             dtw_detallado.setAfecto(dtw_detallado.getTcosto());
@@ -2582,6 +2619,20 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
      */
     public void setOperacionesDao(OperacionesDao operacionesDao) {
         this.operacionesDao = operacionesDao;
+    }
+
+    /**
+     * @return the listDimpuesto
+     */
+    public List<Dimpuesto> getListDimpuesto() {
+        return listDimpuesto;
+    }
+
+    /**
+     * @param listDimpuesto the listDimpuesto to set
+     */
+    public void setListDimpuesto(List<Dimpuesto> listDimpuesto) {
+        this.listDimpuesto = listDimpuesto;
     }
 
 }

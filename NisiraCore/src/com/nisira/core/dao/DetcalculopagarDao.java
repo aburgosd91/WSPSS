@@ -313,6 +313,7 @@ public class DetcalculopagarDao extends BaseDao<Detcalculopagar> {
                 detcalculopagar.setTiene_suspension(rs.getInt("TIENE_SUSPENSION"));
                 detcalculopagar.setUsuario_sol(rs.getString("USUARIO_SOL")!=null?rs.getString("USUARIO_SOL").trim():"");
                 detcalculopagar.setClave_sol(rs.getString("CLAVE_SOL")!=null?rs.getString("CLAVE_SOL").trim():"");
+                detcalculopagar.setIdtipomov(rs.getString("IDTIPOMOV")!=null?rs.getString("IDTIPOMOV").trim():"");
                 lista.add(detcalculopagar); 
             }
             return lista;

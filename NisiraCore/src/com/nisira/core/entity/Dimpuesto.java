@@ -20,7 +20,9 @@ public class Dimpuesto {
 	private Date fecha_imp;
 	@Columna
 	private Float valor;
-
+        @Columna
+	private Integer resta_base;
+        
 	@CampoRelacionado({@RelacionTabla(campo="IDEMPRESA",campoRelacionado="IDEMPRESA"), @RelacionTabla(campo="IDIMPUESTO",campoRelacionado="IDIMPUESTO")})
 	private Impuesto impuesto_fk_dimpuesto_impuesto;
 
@@ -68,6 +70,20 @@ public class Dimpuesto {
 	public Impuesto getImpuesto_fk_dimpuesto_impuesto() {
 		return this.impuesto_fk_dimpuesto_impuesto;
 	}
+
+    /**
+     * @return the resta_base
+     */
+    public Integer getResta_base() {
+        return resta_base;
+    }
+
+    /**
+     * @param resta_base the resta_base to set
+     */
+    public void setResta_base(Integer resta_base) {
+        this.resta_base = resta_base;
+    }
 
 
 }
