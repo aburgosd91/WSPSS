@@ -109,7 +109,7 @@ import org.primefaces.event.TabChangeEvent;
  *
  * @author aburgos
  */
-@ManagedBean(name = "rpt_tareoweb_facturacion_formatoAction")
+@ManagedBean(name = "rpt_ordenserviciocliente_formatoAction")
 @SessionScoped
 public class Rpt_ordenserviciocliente_formatoAction extends AbstactListAction<Ordenserviciocliente> {
     /*************************************ArrayList***************************************/
