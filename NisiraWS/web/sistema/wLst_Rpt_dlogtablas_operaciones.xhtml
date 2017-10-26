@@ -1,0 +1,115 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">
+            <cmp:barra_lst bean="#{rpt_dlogtablas_operacionesAction}" mostrar_opciones="false" cfgfiltro="true"/>
+            <p:panel  style="border: 0px solid ;font-size: 11px !important;padding: 0px !important" id="panelReporte">
+                <p:panelGrid  columns="4" columnClasses="no-border, no-border,no-border,no-border" >
+                    <p:panelGrid columns="2" columnClasses="no-border, no-border">
+                        <p:outputLabel value="Usuario: "/>
+                        <p:selectOneMenu id="usr" value="#{rpt_dlogtablas_operacionesAction.slc_usuario}" filter="true" filterMatchMode="contains">  
+                            <f:selectItem itemLabel="Seleccione Usuario" itemValue=""/> 
+                            <f:selectItems value="#{rpt_dlogtablas_operacionesAction.listUsuario}" var="est" itemValue="#{est.idusuario}" itemLabel="#{est.usr_nombres}"/>
+                        </p:selectOneMenu> 
+                    </p:panelGrid>
+                    <h:panelGrid id="cntProcesos" cellpadding="0" cellspacing="0" columns="2">
+                        <p:outputLabel value="Procesos:" escape="false" />
+                        <p:selectOneMenu id="ventana" value="#{rpt_dlogtablas_operacionesAction.slc_config_ventana_filtro_web}" filter="true" filterMatchMode="contains">  
+                            <f:selectItem itemLabel="Seleccione Proceso" itemValue="0"/> 
+                            <f:selectItems value="#{rpt_dlogtablas_operacionesAction.listVentana}" var="ven" itemValue="#{ven.id}" itemLabel="#{ven.descripcion}"/>
+                        </p:selectOneMenu>
+                    </h:panelGrid>
+                </p:panelGrid>  
+                <p:dataTable var="lst_rpt" value="#{rpt_dlogtablas_operacionesAction.listaDatos}"
+                    widgetVar="lst_rpt" id="tbl" 
+                    scrollable="true" scrollWidth="99%" paginatorPosition="top" 
+                    selection="#{rpt_dlogtablas_operacionesAction.datoSeleccionado}" 
+                    selectionMode="single" rowKey="#{lst_rpt.idlog}"
+                    style="border: 0px solid ;font-size: 11px !important;padding: 0px !important" 
+                    resizableColumns="true"
+                    rows="25"
+                    paginator="true" 
+                    paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                    rowsPerPageTemplate="10,25,35,50,70,100">
+                 <f:facet name="header">
+                     Documentos (#{rpt_dlogtablas_operacionesAction.listaDatos.size()}) - #{rpt_dlogtablas_operacionesAction.fechaDMY(rpt_dlogtablas_operacionesAction.desde)} - #{rpt_dlogtablas_operacionesAction.fechaDMY(rpt_dlogtablas_operacionesAction.hasta)}
+                 </f:facet>
+                <p:column headerText="N°" sortBy="#{lst_rpt.num}" style="white-space: nowrap; width: 20px;padding: 3px;text-align: center">
+                    <h:outputText value="#{lst_rpt.num}"/>
+                </p:column>
+                <p:column headerText="Cod.Usuario" filterBy="#{lst_rpt.idusuario}" filterMatchMode="contains" sortBy="#{lst_rpt.idusuario}" style="white-space: nowrap; width: 80px;padding: 3px;text-align: center">
+                    <h:outputText value="#{lst_rpt.idusuario}"/>
+                </p:column>
+                <p:column headerText="Proceso" filterBy="#{lst_rpt.cproceso}" filterMatchMode="contains" sortBy="#{lst_rpt.cproceso}" style="white-space: nowrap; width: 180px;padding: 3px;text-align: left">
+                    <h:outputText value="#{lst_rpt.cproceso}"/>
+                </p:column>
+                <p:column headerText="Evento" filterBy="#{lst_rpt.evento}" filterMatchMode="contains" sortBy="#{lst_rpt.evento}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: left">
+                    <h:outputText value="#{lst_rpt.evento}"/>
+                </p:column>
+                <p:column id="fecha" headerText="Fecha" filterBy="#{rpt_dlogtablas_operacionesAction.fechaDMY(lst_rpt.fechacreacion)}" filterMatchMode="contains" sortBy="#{rpt_dlogtablas_operacionesAction.fechaDMY(lst_rpt.fechacreacion)}" style="white-space: nowrap; width: 80px;padding: 3px;text-align: center">
+                    <h:outputText value="#{lst_rpt.fechacreacion}">
+                        <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                    </h:outputText>
+                </p:column>
+                <p:column id="hora" headerText="Hora" filterBy="#{lst_rpt.hora}" filterMatchMode="contains" sortBy="#{lst_rpt.hora}" style="white-space: nowrap; width: 80px;padding: 3px;text-align: center">
+                    <h:outputText value="#{lst_rpt.hora}">
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="Doc." filterBy="#{lst_rpt.ciddoc}" filterMatchMode="contains" sortBy="#{lst_rpt.ciddoc}"  style="white-space: nowrap; width: 30px;padding: 3px;text-align: center">
+                    <h:outputText value="#{lst_rpt.ciddoc}"/>
+                </p:column>
+                <p:column headerText="Serie" filterBy="#{lst_rpt.cserie}" filterMatchMode="contains" sortBy="#{lst_rpt.cserie}" style="white-space: nowrap; width: 38px;padding: 3px;text-align: center">
+                    <h:outputText value="#{lst_rpt.cserie}"/>
+                </p:column>
+                 <p:column headerText="Número" filterBy="#{lst_rpt.cnumero}" filterMatchMode="contains" sortBy="#{lst_rpt.cnumero}" style="white-space: nowrap; width: 48px;padding: 3px;text-align: center">
+                    <h:outputText value="#{lst_rpt.cnumero}"/> 
+                </p:column>
+                <p:column headerText="Campo" filterBy="#{lst_rpt.idcampo}" filterMatchMode="contains" sortBy="#{lst_rpt.idcampo}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: left">
+                    <h:outputText value="#{lst_rpt.idcampo}"/>
+                </p:column>
+                <p:column headerText="V.Anterior" filterBy="#{lst_rpt.valoranterior}" filterMatchMode="contains" sortBy="#{lst_rpt.valoranterior}" style="white-space: nowrap; width: 250px;padding: 3px;text-align: left">
+                    <h:outputText value="#{lst_rpt.valoranterior}"/>
+                </p:column>
+                <p:column headerText="V.Actual" filterBy="#{lst_rpt.valoractual}" filterMatchMode="contains" sortBy="#{lst_rpt.valoractual}" style="white-space: nowrap; width: 250px;padding: 3px;text-align: left">
+                    <h:outputText value="#{lst_rpt.valoractual}"/>
+                </p:column>
+                <p:column headerText="Tabla" filterBy="#{lst_rpt.tabla}" filterMatchMode="contains" sortBy="#{lst_rpt.tabla}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: left">
+                    <h:outputText value="#{lst_rpt.tabla}"/>
+                </p:column>
+                <p:column headerText="Cod.Tabla" filterBy="#{lst_rpt.idtabla}" filterMatchMode="contains" sortBy="#{lst_rpt.idtabla}" style="white-space: nowrap; width: 150px;padding: 3px;text-align: left">
+                    <h:outputText value="#{lst_rpt.idtabla}"/>
+                </p:column>   
+                <p:column headerText="Campo Clave" filterBy="#{lst_rpt.campoclave}" filterMatchMode="contains" sortBy="#{lst_rpt.campoclave}" style="white-space: nowrap; width: 250px;padding: 3px;text-align: left">
+                    <h:outputText value="#{lst_rpt.campoclave}"/>
+                </p:column>
+                <p:column headerText="IdLog" filterBy="#{lst_rpt.idlog}" filterMatchMode="contains" sortBy="#{lst_rpt.idlog}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: left">
+                    <h:outputText value="#{lst_rpt.idlog}"/>
+                </p:column> 
+             </p:dataTable>
+            <p:contextMenu for="tbl">
+                <p:menuitem value="Ver Detalle" update="detalleTareoDialog" icon="ui-icon-ver" actionListener="#{rpt_dlogtablas_operacionesAction.visualizar_detallado()}"/>
+            </p:contextMenu>
+            <p:dialog header="Detalle" id="detalleTareoDialog" 
+                      widgetVar="detalleTareoDialog" modal="true" maximizable="true" 
+                      showEffect="fade" hideEffect="fade" closable="true" resizable="false">
+                <p:dataList id="detalles" value="#{rpt_dlogtablas_operacionesAction.detalles}" var="objeto" type="ordered">
+                    <f:facet name="header">
+                            Documento : #{rpt_dlogtablas_operacionesAction.datoSeleccionado.ciddoc}-#{rpt_dlogtablas_operacionesAction.datoSeleccionado.cserie}-#{rpt_dlogtablas_operacionesAction.datoSeleccionado.cnumero}
+                    </f:facet>
+                    [ #{objeto[0]} ] : Valor Nuevo [ #{objeto[1]} ] : Valor Antiguo [ #{objeto[2]} ]
+                </p:dataList>
+            </p:dialog>
+            </p:panel>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{rpt_dlogtablas_operacionesAction}" ventana="LST" />
+        </h:form>
+    </ui:define>    
+</ui:composition>

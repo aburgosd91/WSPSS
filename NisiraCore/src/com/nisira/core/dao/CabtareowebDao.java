@@ -135,7 +135,7 @@ public class CabtareowebDao extends BaseDao<Cabtareoweb> {
         }
         return lista;
     }
-    public String grabar(int tipo,Cabtareoweb ob,List<Det_tareoweb> listDet_tareoweb,String idusuario) throws Exception {
+    public String grabar(int tipo,Cabtareoweb ob,List<Det_tareoweb> listDet_tareoweb,String idusuario,List<LogTablas> lstLog) throws Exception {
             String mensaje="";
             String xmlNot = "";
             String xml = "<?xml version='1.0' encoding='ISO-8859-1' ?>";
@@ -147,7 +147,11 @@ public class CabtareowebDao extends BaseDao<Cabtareoweb> {
             xStream = new XStream();
             xStream.processAnnotations(Det_tareoweb.class);
             xmlDet_tareoweb = xml + xStream.toXML(listDet_tareoweb);
-            
+            /******************* DETALLES LOGTABLAS **********************/
+            String xmlLogTablas = "";
+            xStream = new XStream();
+            xStream.processAnnotations(LogTablas.class);
+            xmlLogTablas = xml + xStream.toXML(lstLog);
             ResultSet rs = null;
             rs = execProcedure("SP_TAREOWEB_GRABAR",
                     tipo,
@@ -155,7 +159,8 @@ public class CabtareowebDao extends BaseDao<Cabtareoweb> {
                     ob.getIddocumento(),ob.getSerie(),ob.getNumero(),
                     xmlNot,
                     xmlDet_tareoweb,
-                    idusuario
+                    idusuario,
+                    xmlLogTablas
             );
             while (rs.next()) {
                 mensaje = rs.getString("mensaje");
@@ -214,7 +219,7 @@ public class CabtareowebDao extends BaseDao<Cabtareoweb> {
 
         return mensaje;
     }
-    public String grabar_provincial(int tipo,Cabtareoweb ob,List<Det_tareoweb> listDet_tareoweb,String idusuario) throws Exception {
+    public String grabar_provincial(int tipo,Cabtareoweb ob,List<Det_tareoweb> listDet_tareoweb,String idusuario,List<LogTablas> lstLog) throws Exception {
             String mensaje="";
             String xmlNot = "";
             String xml = "<?xml version='1.0' encoding='ISO-8859-1' ?>";
@@ -226,14 +231,18 @@ public class CabtareowebDao extends BaseDao<Cabtareoweb> {
             xStream = new XStream();
             xStream.processAnnotations(Det_tareoweb.class);
             xmlDet_tareoweb = xml + xStream.toXML(listDet_tareoweb);
-            
+            /******************* DETALLES LOGTABLAS **********************/
+            String xmlLogTablas = "";
+            xStream = new XStream();
+            xStream.processAnnotations(LogTablas.class);
+            xmlLogTablas = xml + xStream.toXML(lstLog);
             ResultSet rs = null;
             rs = execProcedure("SP_TAREOWEB_PROVINCIAL_GRABAR",
                     tipo,
                     ob.getIdempresa(),ob.getIdcabtareoweb(),
                     ob.getIddocumento(),ob.getSerie(),ob.getNumero(),
                     xmlNot,
-                    xmlDet_tareoweb,idusuario
+                    xmlDet_tareoweb,idusuario,xmlLogTablas
             );
             while (rs.next()) {
                 mensaje = rs.getString("mensaje");

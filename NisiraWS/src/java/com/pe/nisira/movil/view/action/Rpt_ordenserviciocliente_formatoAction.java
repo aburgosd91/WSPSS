@@ -186,7 +186,7 @@ public class Rpt_ordenserviciocliente_formatoAction extends AbstactListAction<Or
         }catch (Exception ex) {
             Logger.getLogger(Rpt_ordenserviciocliente_formatoAction.class.getName()).log(Level.SEVERE, null, ex);
         }
-        actualiza_ventana("wLst_Rpt_tareoweb_facturacion_formato");
+        actualiza_ventana("wMnt_Rpt_tareoweb_facturacion_formato");
     }
     public void onCellEdit(CellEditEvent event) {
         Object newValue = event.getNewValue();
@@ -300,7 +300,7 @@ public class Rpt_ordenserviciocliente_formatoAction extends AbstactListAction<Or
         setMensaje("");
         /**********************************CONTROLADOR********************************/
         /**********************************CONFIGURACIÓN - SERVIDOR********************************/
-        actualiza_ventana("wMnt_Rpt_tareoweb_facturacion");
+        actualiza_ventana("wMnt_Rpt_tareoweb_facturacion_formato");
         return "";
     }
 

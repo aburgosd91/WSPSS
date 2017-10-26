@@ -228,6 +228,7 @@ public class WebUtil {
             case 8:forma="dd-MM";break;
             case 9:forma="yyyyMM";break;
             case 10:forma="MM";break;
+            case 11:forma="HH:mm:ss";break;
         }
         SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(forma);
         return DATE_FORMAT.format(fecha);

@@ -122,4 +122,25 @@ public class UsuarioDao extends BaseDao<Usuario> {
             }
             return user;
         }
+        public List<Usuario> getUsuarioActivos(String idempresa) throws NisiraORMException {
+            Usuario usuario=null;
+            List<Usuario> lst = new ArrayList<>();
+            try
+            {
+                ResultSet rs = null;
+                rs = execProcedure("GETUSUARIO_ACTIVO_TMPSS");
+                while (rs.next()) {
+                    usuario = new Usuario();
+                    usuario.setIdempresa(idempresa);
+                    usuario.setIdusuario(rs.getString("IDUSUARIO"));
+                    usuario.setUsr_nombres(rs.getString("USR_NOMBRES"));
+                    usuario.setIdclieprov(rs.getString("IDCLIEPROV"));
+                    usuario.setPassword(rs.getString("PASSWORD"));
+                    lst.add(usuario);
+                }
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
+            return lst;
+        }
 }
