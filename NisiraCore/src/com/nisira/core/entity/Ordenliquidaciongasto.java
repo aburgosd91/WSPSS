@@ -191,6 +191,7 @@ public class Ordenliquidaciongasto  implements Serializable{
         private String sucursal;
         private String emisor;
         private String mes;
+        private String area;
 	/* Sets & Gets */
 	public void setIdempresa(String idempresa) {
 		this.idempresa = idempresa;
@@ -742,6 +743,20 @@ public class Ordenliquidaciongasto  implements Serializable{
      */
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    /**
+     * @return the area
+     */
+    public String getArea() {
+        return area;
+    }
+
+    /**
+     * @param area the area to set
+     */
+    public void setArea(String area) {
+        this.area = area;
     }
 
 }

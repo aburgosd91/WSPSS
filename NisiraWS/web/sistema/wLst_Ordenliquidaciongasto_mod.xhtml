@@ -36,14 +36,19 @@
                 <p:column headerText="Documento" style="width:30%;" filterBy="#{listOrdenliquidaciongasto.iddocumento}-#{listOrdenliquidaciongasto.serie}-#{listOrdenliquidaciongasto.numero}" filterMatchMode="contains" sortBy="#{listOrdenliquidaciongasto.iddocumento}-#{listOrdenliquidaciongasto.serie}-#{listOrdenliquidaciongasto.numero}">
                     <h:outputText value="#{listOrdenliquidaciongasto.iddocumento}-#{listOrdenliquidaciongasto.serie}-#{listOrdenliquidaciongasto.numero}" />
                 </p:column>
-                <p:column headerText="Razón Social" style="width:40%;" filterBy="#{listOrdenliquidaciongasto.razonsocial}" filterMatchMode="contains" sortBy="#{listOrdenliquidaciongasto.razonsocial}">
+                <p:column headerText="Razón Social" style="width:35%;" filterBy="#{listOrdenliquidaciongasto.razonsocial}" filterMatchMode="contains" sortBy="#{listOrdenliquidaciongasto.razonsocial}">
                     <h:outputText value="#{listOrdenliquidaciongasto.razonsocial}" />
                 </p:column>
-                <p:column headerText="Moneda" style="width:10%;" filterBy="#{listOrdenliquidaciongasto.moneda}" filterMatchMode="contains" sortBy="#{listOrdenliquidaciongasto.moneda}">
+                <p:column headerText="Moneda" style="width:5%;" filterBy="#{listOrdenliquidaciongasto.moneda}" filterMatchMode="contains" sortBy="#{listOrdenliquidaciongasto.moneda}">
                     <h:outputText value="#{listOrdenliquidaciongasto.moneda}" />
                 </p:column>
                 <p:column headerText="Importe" style="width:10%;" filterBy="#{listOrdenliquidaciongasto.importe}" filterMatchMode="contains" sortBy="#{listOrdenliquidaciongasto.importe}">
-                    <h:outputText value="#{listOrdenliquidaciongasto.importe}" />
+                    <h:outputText value="#{listOrdenliquidaciongasto.importe}">
+                        <f:convertNumber pattern="#0.00" />
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="Glosa" style="width:20%;" filterBy="#{listOrdenliquidaciongasto.glosa}" filterMatchMode="contains" sortBy="#{listOrdenliquidaciongasto.glosa}">
+                    <h:outputText value="#{listOrdenliquidaciongasto.glosa}" />
                 </p:column>
             </p:dataTable>
             <p:growl id="growl" life="4000" showDetail="false"  />

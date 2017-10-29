@@ -4,6 +4,7 @@ import com.nisira.annotation.ClavePrimaria;
 import com.nisira.annotation.Columna;
 import com.nisira.annotation.Tabla;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import java.io.Serializable;
 import java.util.Date;
 @XStreamAlias("DORDENLIQUIDACIONGASTO")
@@ -120,10 +121,33 @@ public class Dordenliquidaciongasto implements Serializable,Cloneable{
         @XStreamAlias("IDLOTEPRODUCCION")
 	@Columna
 	private String idloteproduccion;
+        @XStreamOmitField
         private String documento;/*proveedor*/
+        @XStreamOmitField
         private String razonsocial/*razon social*/;
+        @XStreamOmitField
         private String conceptocuenta;
+        @XStreamOmitField
         private String destinoadquisicion;
+        @XStreamOmitField
+        private String concepto;
+        @XStreamOmitField
+        private String consumidor;
+        /*componentes de autocompletado*/
+        @XStreamOmitField
+        private Clieprov selectProveedor;
+        @XStreamOmitField
+        private Tipogasto SelectTipogasto;
+        @XStreamOmitField
+        private Documentos selectDocumentos;
+        @XStreamOmitField
+        private Consumidor selectConsumidor;
+        @XStreamOmitField
+        private Destinoadquisicion selectDestinoadquisicion;
+        @XStreamOmitField
+        private boolean habilitar_baseimponible;
+        @XStreamOmitField
+        private boolean habilitar_inafecto;
 	/* Sets & Gets */
 	public void setIdempresa(String idempresa) {
 		this.idempresa = idempresa;
@@ -476,6 +500,132 @@ public class Dordenliquidaciongasto implements Serializable,Cloneable{
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    /**
+     * @return the concepto
+     */
+    public String getConcepto() {
+        return concepto;
+    }
+
+    /**
+     * @param concepto the concepto to set
+     */
+    public void setConcepto(String concepto) {
+        this.concepto = concepto;
+    }
+
+    /**
+     * @return the selectProveedor
+     */
+    public Clieprov getSelectProveedor() {
+        return selectProveedor;
+    }
+
+    /**
+     * @param selectProveedor the selectProveedor to set
+     */
+    public void setSelectProveedor(Clieprov selectProveedor) {
+        this.selectProveedor = selectProveedor;
+    }
+
+    /**
+     * @return the SelectTipogasto
+     */
+    public Tipogasto getSelectTipogasto() {
+        return SelectTipogasto;
+    }
+
+    /**
+     * @param SelectTipogasto the SelectTipogasto to set
+     */
+    public void setSelectTipogasto(Tipogasto SelectTipogasto) {
+        this.SelectTipogasto = SelectTipogasto;
+    }
+
+    /**
+     * @return the selectDocumentos
+     */
+    public Documentos getSelectDocumentos() {
+        return selectDocumentos;
+    }
+
+    /**
+     * @param selectDocumentos the selectDocumentos to set
+     */
+    public void setSelectDocumentos(Documentos selectDocumentos) {
+        this.selectDocumentos = selectDocumentos;
+    }
+
+    /**
+     * @return the selectConsumidor
+     */
+    public Consumidor getSelectConsumidor() {
+        return selectConsumidor;
+    }
+
+    /**
+     * @param selectConsumidor the selectConsumidor to set
+     */
+    public void setSelectConsumidor(Consumidor selectConsumidor) {
+        this.selectConsumidor = selectConsumidor;
+    }
+
+    /**
+     * @return the consumidor
+     */
+    public String getConsumidor() {
+        return consumidor;
+    }
+
+    /**
+     * @param consumidor the consumidor to set
+     */
+    public void setConsumidor(String consumidor) {
+        this.consumidor = consumidor;
+    }
+
+    /**
+     * @return the selectDestinoadquisicion
+     */
+    public Destinoadquisicion getSelectDestinoadquisicion() {
+        return selectDestinoadquisicion;
+    }
+
+    /**
+     * @param selectDestinoadquisicion the selectDestinoadquisicion to set
+     */
+    public void setSelectDestinoadquisicion(Destinoadquisicion selectDestinoadquisicion) {
+        this.selectDestinoadquisicion = selectDestinoadquisicion;
+    }
+
+    /**
+     * @return the habilitar_baseimponible
+     */
+    public boolean isHabilitar_baseimponible() {
+        return habilitar_baseimponible;
+    }
+
+    /**
+     * @param habilitar_baseimponible the habilitar_baseimponible to set
+     */
+    public void setHabilitar_baseimponible(boolean habilitar_baseimponible) {
+        this.habilitar_baseimponible = habilitar_baseimponible;
+    }
+
+    /**
+     * @return the habilitar_inafecto
+     */
+    public boolean isHabilitar_inafecto() {
+        return habilitar_inafecto;
+    }
+
+    /**
+     * @param habilitar_inafecto the habilitar_inafecto to set
+     */
+    public void setHabilitar_inafecto(boolean habilitar_inafecto) {
+        this.habilitar_inafecto = habilitar_inafecto;
     }
     
 }

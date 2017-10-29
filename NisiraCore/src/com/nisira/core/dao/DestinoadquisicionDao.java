@@ -24,12 +24,12 @@ public class DestinoadquisicionDao extends BaseDao<Destinoadquisicion> {
 		}
 	}
         /*APP SERVICE*/
-        public ArrayList<Destinoadquisicion> listarPorEmpresaService(String iddestino) throws NisiraORMException {
+        public ArrayList<Destinoadquisicion> listarPorEmpresaService() throws NisiraORMException {
             ArrayList<Destinoadquisicion> lista = new ArrayList<Destinoadquisicion>();
         try
         {
             ResultSet rs = null;
-            rs = execProcedure("GETDESTINOADQUISICION_TMPSS",iddestino);
+            rs = execProcedure("GETDESTINOADQUISICION_TMPSS");
             while (rs.next()) {
                 Destinoadquisicion destino = new Destinoadquisicion();
                 destino.setIdbasedatos(rs.getString("IDBASEDATOS")!=null?rs.getString("IDBASEDATOS").trim():"");;
@@ -46,12 +46,33 @@ public class DestinoadquisicionDao extends BaseDao<Destinoadquisicion> {
         return lista;
         }
         /*APP WEB*/
-        public ArrayList<Destinoadquisicion> listarPorEmpresaWeb(String iddestino) throws NisiraORMException {
+        public ArrayList<Destinoadquisicion> listarPorEmpresaWeb() throws NisiraORMException {
             ArrayList<Destinoadquisicion> lista = new ArrayList<Destinoadquisicion>();
         try
         {
             ResultSet rs = null;
-            rs = execProcedure("GETDESTINOADQUISICION_TMPSS",iddestino);
+            rs = execProcedure("GETDESTINOADQUISICION_TMPSS");
+            while (rs.next()) {
+                Destinoadquisicion destino = new Destinoadquisicion();
+                destino.setIdbasedatos(rs.getString("IDBASEDATOS")!=null?rs.getString("IDBASEDATOS").trim():"");;
+                destino.setIddestino(rs.getString("IDDESTINO")!=null?rs.getString("IDDESTINO").trim():"");
+                destino.setDescripcion(rs.getString("DESCRIPCION")!=null?rs.getString("DESCRIPCION").trim():"");
+                destino.setEstado(rs.getFloat("ESTADO"));
+                destino.setSincroniza(rs.getString("SINCRONIZA")!=null?rs.getString("SINCRONIZA").trim():"");
+                destino.setFechacreacion(rs.getDate("FECHACREACION"));
+                lista.add(destino); 
+            }
+        } catch(Exception ex) {
+            ex.printStackTrace();
+        }
+        return lista;
+        }
+        public ArrayList<Destinoadquisicion> listarPorEmpresa_FiltroWeb(String iddestino) throws NisiraORMException {
+            ArrayList<Destinoadquisicion> lista = new ArrayList<Destinoadquisicion>();
+        try
+        {
+            ResultSet rs = null;
+            rs = execProcedure("GETDESTINOADQUISICION_FILTRO_TMPSS",iddestino);
             while (rs.next()) {
                 Destinoadquisicion destino = new Destinoadquisicion();
                 destino.setIdbasedatos(rs.getString("IDBASEDATOS")!=null?rs.getString("IDBASEDATOS").trim():"");;

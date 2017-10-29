@@ -31,7 +31,7 @@ public class CntDestinoadquisicionAction {
         DestinoadquisicionDao rd= new DestinoadquisicionDao();
         try {
             UsuarioBean u =(UsuarioBean) WebUtil.getObjetoSesion(Constantes.SESION_USUARIO);
-            setDatos(rd.listarPorEmpresaWeb(u.getIDEMPRESA()));
+            setDatos(rd.listarPorEmpresaWeb());
         } catch (Exception ex) {
             Logger.getLogger(CntDestinoadquisicionAction.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -29,7 +29,7 @@ public class DordenliquidaciongastoDao extends BaseDao<Dordenliquidaciongasto> {
         try
         {
             ResultSet rs = null;
-            rs = execProcedure("[GETDORDENLIQUIDACIONGASTO_TMPSS]",idempresa);
+            rs = execProcedure("[GETDORDENLIQUIDACIONGASTO_MOVIL_TMPSS]",idempresa);
             while (rs.next()) {
                 Dordenliquidaciongasto dordenserviciocliente = new Dordenliquidaciongasto();
                 dordenserviciocliente.setIdempresa(rs.getString("IDEMPRESA")!=null?rs.getString("IDEMPRESA").trim():"");
@@ -98,7 +98,18 @@ public class DordenliquidaciongastoDao extends BaseDao<Dordenliquidaciongasto> {
                 dordenserviciocliente.setTcmoneda(rs.getFloat("TCMONEDA"));
                 dordenserviciocliente.setTcambio(rs.getFloat("TCAMBIO"));
                 dordenserviciocliente.setIdregimen(rs.getString("IDREGIMEN")!=null?rs.getString("IDREGIMEN").trim():"");
-                
+                if(dordenserviciocliente.getIdregimen()!=null){
+                    if(dordenserviciocliente.getIdregimen().trim().equals("01")){
+                        dordenserviciocliente.setHabilitar_baseimponible(false);
+                        dordenserviciocliente.setHabilitar_inafecto(true);
+                    }else if(dordenserviciocliente.getIdregimen().trim().equals("02")){
+                        dordenserviciocliente.setHabilitar_baseimponible(false);
+                        dordenserviciocliente.setHabilitar_inafecto(false);
+                    }else if(dordenserviciocliente.getIdregimen().trim().equals("03")){
+                        dordenserviciocliente.setHabilitar_baseimponible(true);
+                        dordenserviciocliente.setHabilitar_inafecto(false);
+                    }
+                }
                 dordenserviciocliente.setAfecto(rs.getFloat("AFECTO"));
                 dordenserviciocliente.setInafecto(rs.getFloat("INAFECTO"));
                 dordenserviciocliente.setPimpuesto(rs.getFloat("PIMPUESTO"));

@@ -3,17 +3,16 @@ package com.nisira.core.entity;
 import com.nisira.annotation.ClavePrimaria;
 import com.nisira.annotation.Columna;
 import com.nisira.annotation.Tabla;
-import java.io.Serializable;
 import java.util.Date;
 
-@Tabla(nombre = "AREAS")
-public class Areas implements Serializable{
+@Tabla(nombre = "TIPOMOVIMIENTO")
+public class Tipomovimiento {
 	@ClavePrimaria
 	@Columna
 	private String idempresa;
 	@ClavePrimaria
 	@Columna
-	private String idarea;
+	private String idtipomov;
 	@Columna
 	private String descripcion;
 	@Columna
@@ -22,8 +21,6 @@ public class Areas implements Serializable{
 	private String sincroniza;
 	@Columna
 	private Date fechacreacion;
-	@Columna
-	private String idconsumidor;
 
 
 
@@ -36,12 +33,12 @@ public class Areas implements Serializable{
 		return this.idempresa;
 	}
 
-	public void setIdarea(String idarea) {
-		this.idarea = idarea;
+	public void setIdtipomov(String idtipomov) {
+		this.idtipomov = idtipomov;
 	}
 
-	public String getIdarea() {
-		return this.idarea;
+	public String getIdtipomov() {
+		return this.idtipomov;
 	}
 
 	public void setDescripcion(String descripcion) {
@@ -74,14 +71,6 @@ public class Areas implements Serializable{
 
 	public Date getFechacreacion() {
 		return this.fechacreacion;
-	}
-
-	public void setIdconsumidor(String idconsumidor) {
-		this.idconsumidor = idconsumidor;
-	}
-
-	public String getIdconsumidor() {
-		return this.idconsumidor;
 	}
 
 

@@ -216,6 +216,7 @@ public class OrdenliquidaciongastoDao extends BaseDao<Ordenliquidaciongasto> {
                 ordenliquidaciongasto.setMoneda(rs.getString("MONEDA")!=null?rs.getString("MONEDA").trim():"");
                 ordenliquidaciongasto.setSucursal(rs.getString("SUCURSAL")!=null?rs.getString("SUCURSAL").trim():"");
                 ordenliquidaciongasto.setEstado(rs.getString("ESTADO")!=null?rs.getString("ESTADO").trim():"");
+                ordenliquidaciongasto.setArea(rs.getString("AREA")!=null?rs.getString("AREA").trim():"");
                 lista.add(ordenliquidaciongasto); 
             }
         } catch(Exception ex) {
@@ -298,6 +299,20 @@ public class OrdenliquidaciongastoDao extends BaseDao<Ordenliquidaciongasto> {
             } catch(Exception ex) {
                 ex.printStackTrace();
             }
+        return mensaje;
+    }
+        public String aprobarOrdenliquidaciongasto(Ordenliquidaciongasto ob,
+                String idusuario) throws Exception {
+            String mensaje="";            
+            ResultSet rs = null;
+            rs = execProcedure("SP_ORDENLIQUIDACIONGASTO_APROBACION_TMPSS",
+                    ob.getIdempresa(),ob.getIdorden(),idusuario
+            );
+            while (rs.next()) {
+                mensaje = rs.getString("mensaje");
+                break;
+            }
+
         return mensaje;
     }
 }

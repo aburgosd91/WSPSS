@@ -45,4 +45,25 @@ public class TipogastoDao extends BaseDao<Tipogasto> {
         }
             return lista;
         }
+        public ArrayList<Tipogasto> listarPorEmpresa_Tipogasto_filtro(String idempresa,String idtipogasto) throws NisiraORMException {
+            ArrayList<Tipogasto> lista = new ArrayList<Tipogasto>();
+        try
+        {
+            ResultSet rs = null;
+            rs = execProcedure("GETTIPOGASTO_FILTRO_TMPSS",idempresa,idtipogasto);
+            while (rs.next()) {
+                Tipogasto tipogasto = new Tipogasto();
+                tipogasto.setIdempresa(rs.getString("IDEMPRESA").trim());
+                tipogasto.setIdtipogasto(rs.getString("IDTIPOGASTO")!=null?rs.getString("IDTIPOGASTO").trim():"");
+                tipogasto.setDescripcion(rs.getString("DESCRIPCION")!=null?rs.getString("DESCRIPCION").trim():"");
+                tipogasto.setIdcuenta(rs.getString("IDCUENTA")!=null?rs.getString("IDCUENTA").trim():"");
+                tipogasto.setFechacreacion(rs.getDate("FECHACREACION"));
+                tipogasto.setEstado(rs.getFloat("ESTADO"));
+                lista.add(tipogasto);        
+            }
+        } catch(Exception ex) {
+            ex.printStackTrace();
+        }
+            return lista;
+        }
 }

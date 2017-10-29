@@ -88,4 +88,24 @@ public class ImpuestoDao extends BaseDao<Impuesto> {
         }
         return listDimpuestos;
     }
+    public List<Dimpuesto> getDImpuesto_igv(String idempresa){
+        List<Dimpuesto> listDimpuestos = new ArrayList<>();
+        try {
+            ResultSet rs = null;
+            rs = execProcedure("GETIMPUESTO_IGV", idempresa);
+            Dimpuesto dimpuesto;
+            while (rs.next()) {
+                dimpuesto = new Dimpuesto();
+                dimpuesto.setIdempresa(rs.getString("IDEMPRESA"));
+                dimpuesto.setIdimpuesto(rs.getString("IDIMPUESTO"));
+                dimpuesto.setFecha_imp(rs.getDate("FECHA_IMP"));
+                dimpuesto.setValor(rs.getFloat("VALOR"));
+                dimpuesto.setResta_base(rs.getInt("RESTA_BASE"));
+                listDimpuestos.add(dimpuesto);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return listDimpuestos;
+    }
 }
