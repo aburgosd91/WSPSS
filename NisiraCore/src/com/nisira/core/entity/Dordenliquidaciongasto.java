@@ -143,6 +143,8 @@ public class Dordenliquidaciongasto implements Serializable,Cloneable{
         @XStreamOmitField
         private Consumidor selectConsumidor;
         @XStreamOmitField
+        private Concepto_cuenta selectConcepto_cuenta;
+        @XStreamOmitField
         private Destinoadquisicion selectDestinoadquisicion;
         @XStreamOmitField
         private boolean habilitar_baseimponible;
@@ -626,6 +628,20 @@ public class Dordenliquidaciongasto implements Serializable,Cloneable{
      */
     public void setHabilitar_inafecto(boolean habilitar_inafecto) {
         this.habilitar_inafecto = habilitar_inafecto;
+    }
+
+    /**
+     * @return the selectConcepto_cuenta
+     */
+    public Concepto_cuenta getSelectConcepto_cuenta() {
+        return selectConcepto_cuenta;
+    }
+
+    /**
+     * @param selectConcepto_cuenta the selectConcepto_cuenta to set
+     */
+    public void setSelectConcepto_cuenta(Concepto_cuenta selectConcepto_cuenta) {
+        this.selectConcepto_cuenta = selectConcepto_cuenta;
     }
     
 }

@@ -13,225 +13,472 @@ import java.util.Date;
  * @author alejndro zamora
  */
 public class RptFijos {
-
-    private String AMBITO;
-    private String SEDE;
-    private String IDDOCUMENTO;
-    private String SERIE;
-    private String NUMERO;
-    private String EMPRESA;
+    
+    private String TAREO;
+    private String FECHA_TAREO;
     private String RUC;
-    private String PUESTO;	
-    private String FECHA_SERVICIO;
-    private String SERVICIO;
-    private String HORA_REQ;
-    private String HORA_FIN;
+    private String EMPRESA;
+    private String PUESTO;
+    private String CARGO;	
+    private String DNI;
+    private String PERSONAL;
+    private String H_INICIO;
+    private String H_FIN;
     private String HORAS;
     private String FINICIO;
     private String FFIN;
-    private String DNI;
-    private String PERSONAL;
-    private String CARGO;
     private String ASISTENCIA;
     private String OBSERVACION;
-    private String codigoOP;
+    private String CODIGOOP;
+    private String DOC_SERVICIO;
+    private String SERIE_SERVICIO;
+    private String NUMERO_SERVICIO;
+    private String DOC_FECH_CREACION;
+    private String SERVICIO;
+    private String AMBITO;
+    private String SEDE;
+    private String CODIGO_EC;
+    private String ITEM_EC;
+    private String CODOPERACIONES_EC;
+    private String HORA_RC;
+    private String IDRUTA_EC;
     private Date finiD;
     private Date ffinD;
     private int fila;
     public RptFijos() {
     }
 
-    public String getAMBITO() {
-        return AMBITO;
+    /**
+     * @return the TAREO
+     */
+    public String getTAREO() {
+        return TAREO;
     }
 
-    public void setAMBITO(String AMBITO) {
-        this.AMBITO = AMBITO;
+    /**
+     * @param TAREO the TAREO to set
+     */
+    public void setTAREO(String TAREO) {
+        this.TAREO = TAREO;
     }
 
-    public String getSEDE() {
-        return SEDE;
+    /**
+     * @return the FECHA_TAREO
+     */
+    public String getFECHA_TAREO() {
+        return FECHA_TAREO;
     }
 
-    public void setSEDE(String SEDE) {
-        this.SEDE = SEDE;
+    /**
+     * @param FECHA_TAREO the FECHA_TAREO to set
+     */
+    public void setFECHA_TAREO(String FECHA_TAREO) {
+        this.FECHA_TAREO = FECHA_TAREO;
     }
 
-    public String getIDDOCUMENTO() {
-        return IDDOCUMENTO;
-    }
-
-    public void setIDDOCUMENTO(String IDDOCUMENTO) {
-        this.IDDOCUMENTO = IDDOCUMENTO;
-    }
-
-    public String getSERIE() {
-        return SERIE;
-    }
-
-    public void setSERIE(String SERIE) {
-        this.SERIE = SERIE;
-    }
-
-    public String getNUMERO() {
-        return NUMERO;
-    }
-
-    public void setNUMERO(String NUMERO) {
-        this.NUMERO = NUMERO;
-    }
-
-    public String getEMPRESA() {
-        return EMPRESA;
-    }
-
-    public void setEMPRESA(String EMPRESA) {
-        this.EMPRESA = EMPRESA;
-    }
-
+    /**
+     * @return the RUC
+     */
     public String getRUC() {
         return RUC;
     }
 
+    /**
+     * @param RUC the RUC to set
+     */
     public void setRUC(String RUC) {
         this.RUC = RUC;
     }
 
+    /**
+     * @return the EMPRESA
+     */
+    public String getEMPRESA() {
+        return EMPRESA;
+    }
+
+    /**
+     * @param EMPRESA the EMPRESA to set
+     */
+    public void setEMPRESA(String EMPRESA) {
+        this.EMPRESA = EMPRESA;
+    }
+
+    /**
+     * @return the PUESTO
+     */
     public String getPUESTO() {
         return PUESTO;
     }
 
+    /**
+     * @param PUESTO the PUESTO to set
+     */
     public void setPUESTO(String PUESTO) {
         this.PUESTO = PUESTO;
     }
 
-    public String getFECHA_SERVICIO() {
-        return FECHA_SERVICIO;
-    }
-
-    public void setFECHA_SERVICIO(String FECHA_SERVICIO) {
-        this.FECHA_SERVICIO = FECHA_SERVICIO;
-    }
-
-    public String getSERVICIO() {
-        return SERVICIO;
-    }
-
-    public void setSERVICIO(String SERVICIO) {
-        this.SERVICIO = SERVICIO;
-    }
-
-    public String getHORA_REQ() {
-        return HORA_REQ;
-    }
-
-    public void setHORA_REQ(String HORA_REQ) {
-        this.HORA_REQ = HORA_REQ;
-    }
-
-    public String getHORA_FIN() {
-        return HORA_FIN;
-    }
-
-    public void setHORA_FIN(String HORA_FIN) {
-        this.HORA_FIN = HORA_FIN;
-    }
-
-    public String getHORAS() {
-        return HORAS;
-    }
-
-    public void setHORAS(String HORAS) {
-        this.HORAS = HORAS;
-    }
-
-    public String getFINICIO() {
-        return FINICIO;
-    }
-
-    public void setFINICIO(String FINICIO) {
-        this.FINICIO = FINICIO;
-    }
-
-    public String getFFIN() {
-        return FFIN;
-    }
-
-    public void setFFIN(String FFIN) {
-        this.FFIN = FFIN;
-    }
-
-    public String getDNI() {
-        return DNI;
-    }
-
-    public void setDNI(String DNI) {
-        this.DNI = DNI;
-    }
-
-    public String getPERSONAL() {
-        return PERSONAL;
-    }
-
-    public void setPERSONAL(String PERSONAL) {
-        this.PERSONAL = PERSONAL;
-    }
-
+    /**
+     * @return the CARGO
+     */
     public String getCARGO() {
         return CARGO;
     }
 
+    /**
+     * @param CARGO the CARGO to set
+     */
     public void setCARGO(String CARGO) {
         this.CARGO = CARGO;
     }
 
+    /**
+     * @return the DNI
+     */
+    public String getDNI() {
+        return DNI;
+    }
+
+    /**
+     * @param DNI the DNI to set
+     */
+    public void setDNI(String DNI) {
+        this.DNI = DNI;
+    }
+
+    /**
+     * @return the PERSONAL
+     */
+    public String getPERSONAL() {
+        return PERSONAL;
+    }
+
+    /**
+     * @param PERSONAL the PERSONAL to set
+     */
+    public void setPERSONAL(String PERSONAL) {
+        this.PERSONAL = PERSONAL;
+    }
+
+    /**
+     * @return the H_INICIO
+     */
+    public String getH_INICIO() {
+        return H_INICIO;
+    }
+
+    /**
+     * @param H_INICIO the H_INICIO to set
+     */
+    public void setH_INICIO(String H_INICIO) {
+        this.H_INICIO = H_INICIO;
+    }
+
+    /**
+     * @return the H_FIN
+     */
+    public String getH_FIN() {
+        return H_FIN;
+    }
+
+    /**
+     * @param H_FIN the H_FIN to set
+     */
+    public void setH_FIN(String H_FIN) {
+        this.H_FIN = H_FIN;
+    }
+
+    /**
+     * @return the HORAS
+     */
+    public String getHORAS() {
+        return HORAS;
+    }
+
+    /**
+     * @param HORAS the HORAS to set
+     */
+    public void setHORAS(String HORAS) {
+        this.HORAS = HORAS;
+    }
+
+    /**
+     * @return the FINICIO
+     */
+    public String getFINICIO() {
+        return FINICIO;
+    }
+
+    /**
+     * @param FINICIO the FINICIO to set
+     */
+    public void setFINICIO(String FINICIO) {
+        this.FINICIO = FINICIO;
+    }
+
+    /**
+     * @return the FFIN
+     */
+    public String getFFIN() {
+        return FFIN;
+    }
+
+    /**
+     * @param FFIN the FFIN to set
+     */
+    public void setFFIN(String FFIN) {
+        this.FFIN = FFIN;
+    }
+
+    /**
+     * @return the ASISTENCIA
+     */
     public String getASISTENCIA() {
         return ASISTENCIA;
     }
 
+    /**
+     * @param ASISTENCIA the ASISTENCIA to set
+     */
     public void setASISTENCIA(String ASISTENCIA) {
         this.ASISTENCIA = ASISTENCIA;
     }
 
+    /**
+     * @return the OBSERVACION
+     */
     public String getOBSERVACION() {
         return OBSERVACION;
     }
 
+    /**
+     * @param OBSERVACION the OBSERVACION to set
+     */
     public void setOBSERVACION(String OBSERVACION) {
         this.OBSERVACION = OBSERVACION;
     }
 
-    public String getCodigoOP() {
-        return codigoOP;
+    /**
+     * @return the CODIGOOP
+     */
+    public String getCODIGOOP() {
+        return CODIGOOP;
     }
 
-    public void setCodigoOP(String codigoOP) {
-        this.codigoOP = codigoOP;
+    /**
+     * @param CODIGOOP the CODIGOOP to set
+     */
+    public void setCODIGOOP(String CODIGOOP) {
+        this.CODIGOOP = CODIGOOP;
     }
 
-    public int getFila() {
-        return fila;
+    /**
+     * @return the DOC_SERVICIO
+     */
+    public String getDOC_SERVICIO() {
+        return DOC_SERVICIO;
     }
 
-    public void setFila(int fila) {
-        this.fila = fila;
+    /**
+     * @param DOC_SERVICIO the DOC_SERVICIO to set
+     */
+    public void setDOC_SERVICIO(String DOC_SERVICIO) {
+        this.DOC_SERVICIO = DOC_SERVICIO;
     }
 
-    
+    /**
+     * @return the SERIE_SERVICIO
+     */
+    public String getSERIE_SERVICIO() {
+        return SERIE_SERVICIO;
+    }
+
+    /**
+     * @param SERIE_SERVICIO the SERIE_SERVICIO to set
+     */
+    public void setSERIE_SERVICIO(String SERIE_SERVICIO) {
+        this.SERIE_SERVICIO = SERIE_SERVICIO;
+    }
+
+    /**
+     * @return the NUMERO_SERVICIO
+     */
+    public String getNUMERO_SERVICIO() {
+        return NUMERO_SERVICIO;
+    }
+
+    /**
+     * @param NUMERO_SERVICIO the NUMERO_SERVICIO to set
+     */
+    public void setNUMERO_SERVICIO(String NUMERO_SERVICIO) {
+        this.NUMERO_SERVICIO = NUMERO_SERVICIO;
+    }
+
+    /**
+     * @return the DOC_FECH_CREACION
+     */
+    public String getDOC_FECH_CREACION() {
+        return DOC_FECH_CREACION;
+    }
+
+    /**
+     * @param DOC_FECH_CREACION the DOC_FECH_CREACION to set
+     */
+    public void setDOC_FECH_CREACION(String DOC_FECH_CREACION) {
+        this.DOC_FECH_CREACION = DOC_FECH_CREACION;
+    }
+
+    /**
+     * @return the SERVICIO
+     */
+    public String getSERVICIO() {
+        return SERVICIO;
+    }
+
+    /**
+     * @param SERVICIO the SERVICIO to set
+     */
+    public void setSERVICIO(String SERVICIO) {
+        this.SERVICIO = SERVICIO;
+    }
+
+    /**
+     * @return the AMBITO
+     */
+    public String getAMBITO() {
+        return AMBITO;
+    }
+
+    /**
+     * @param AMBITO the AMBITO to set
+     */
+    public void setAMBITO(String AMBITO) {
+        this.AMBITO = AMBITO;
+    }
+
+    /**
+     * @return the SEDE
+     */
+    public String getSEDE() {
+        return SEDE;
+    }
+
+    /**
+     * @param SEDE the SEDE to set
+     */
+    public void setSEDE(String SEDE) {
+        this.SEDE = SEDE;
+    }
+
+    /**
+     * @return the CODIGO_EC
+     */
+    public String getCODIGO_EC() {
+        return CODIGO_EC;
+    }
+
+    /**
+     * @param CODIGO_EC the CODIGO_EC to set
+     */
+    public void setCODIGO_EC(String CODIGO_EC) {
+        this.CODIGO_EC = CODIGO_EC;
+    }
+
+    /**
+     * @return the ITEM_EC
+     */
+    public String getITEM_EC() {
+        return ITEM_EC;
+    }
+
+    /**
+     * @param ITEM_EC the ITEM_EC to set
+     */
+    public void setITEM_EC(String ITEM_EC) {
+        this.ITEM_EC = ITEM_EC;
+    }
+
+    /**
+     * @return the CODOPERACIONES_EC
+     */
+    public String getCODOPERACIONES_EC() {
+        return CODOPERACIONES_EC;
+    }
+
+    /**
+     * @param CODOPERACIONES_EC the CODOPERACIONES_EC to set
+     */
+    public void setCODOPERACIONES_EC(String CODOPERACIONES_EC) {
+        this.CODOPERACIONES_EC = CODOPERACIONES_EC;
+    }
+
+    /**
+     * @return the HORA_RC
+     */
+    public String getHORA_RC() {
+        return HORA_RC;
+    }
+
+    /**
+     * @param HORA_RC the HORA_RC to set
+     */
+    public void setHORA_RC(String HORA_RC) {
+        this.HORA_RC = HORA_RC;
+    }
+
+    /**
+     * @return the IDRUTA_EC
+     */
+    public String getIDRUTA_EC() {
+        return IDRUTA_EC;
+    }
+
+    /**
+     * @param IDRUTA_EC the IDRUTA_EC to set
+     */
+    public void setIDRUTA_EC(String IDRUTA_EC) {
+        this.IDRUTA_EC = IDRUTA_EC;
+    }
+
+    /**
+     * @return the finiD
+     */
     public Date getFiniD() {
         return finiD;
     }
 
+    /**
+     * @param finiD the finiD to set
+     */
     public void setFiniD(Date finiD) {
         this.finiD = finiD;
     }
 
+    /**
+     * @return the ffinD
+     */
     public Date getFfinD() {
         return ffinD;
     }
 
+    /**
+     * @param ffinD the ffinD to set
+     */
     public void setFfinD(Date ffinD) {
         this.ffinD = ffinD;
     }
 
+    /**
+     * @return the fila
+     */
+    public int getFila() {
+        return fila;
+    }
+
+    /**
+     * @param fila the fila to set
+     */
+    public void setFila(int fila) {
+        this.fila = fila;
+    }
 }

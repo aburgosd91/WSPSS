@@ -84,7 +84,8 @@
                                 <p:panelGrid  columns="2" columnClasses="no-border, no-border" >
                                     <p:outputLabel value="Fecha" escape="false"/>
                                     <p:panelGrid  columns="3" columnClasses="no-border, no-border, no-border" >
-                                        <p:calendar id="button1" value="#{tareowebAction.datoEdicion.fecha}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="#{!tareowebAction.edicion}">
+                                        <p:calendar id="button1" value="#{tareowebAction.datoEdicion.fecha}" showOn="button" 
+                                                    pattern="dd/MM/yyyy" mask="true" disabled="#{!tareowebAction.edicion}" maxdate="#{tareowebAction.restricted}" >
                                             <!--<p:ajax event="dateSelect" listener="{planventaAction.updateCampañas}" update="lstCampaña"/>-->
                                         </p:calendar>
                                         <p:outputLabel for="estado"  value="Estado:" />

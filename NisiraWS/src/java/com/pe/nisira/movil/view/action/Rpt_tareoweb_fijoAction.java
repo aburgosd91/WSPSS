@@ -17,6 +17,8 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -197,7 +199,7 @@ public class Rpt_tareoweb_fijoAction extends AbstactListAction<Ordenservicioclie
             estiloCelda.setWrapText(true);
             estiloCelda.setFillForegroundColor((short) 22);
             estiloCelda.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
-//Filas           
+            /*Filas*/           
             HSSFFont fuenteFilas = objWB.createFont();
             fuenteFilas.setFontHeightInPoints((short) 8);
             fuenteFilas.setFontName("Calibre LIght");
@@ -217,26 +219,35 @@ public class Rpt_tareoweb_fijoAction extends AbstactListAction<Ordenservicioclie
                 celda.setCellStyle(estiloCelda);
                 celda.setCellType(HSSFCell.CELL_TYPE_STRING);
                 switch (i) {
-                    case 0:celda.setCellValue("AMBITO");break;
-                    case 1:celda.setCellValue("SEDE");break;
-                    case 2:celda.setCellValue("IDDOCUMENTO");break;
-                    case 3:celda.setCellValue("SERIE");break;
-                    case 4:celda.setCellValue("NUMERO");break;
-                    case 5:celda.setCellValue("EMPRESA");break;
-                    case 6:celda.setCellValue("RUC");break;
-                    case 7:celda.setCellValue("PUESTO");break;
-                    case 8:celda.setCellValue("FECHA_SERVICIO");break;
-                    case 9:celda.setCellValue("SERVICIO");break;
-                    case 10:celda.setCellValue("HORA_REQ");break;
-                    case 11:celda.setCellValue("HORA_FIN");break;
-                    case 12:celda.setCellValue("HORAS");break;
-                    case 13:celda.setCellValue("FINICIO");break;
-                    case 14:celda.setCellValue("FFIN"); break;
-                    case 15:celda.setCellValue("DNI");break;
-                    case 16:celda.setCellValue("PERSONAL");break;
-                    case 17:celda.setCellValue("CARGO");break;
-                    case 18:celda.setCellValue("ASISTENCIA"); break;
-                    case 19:celda.setCellValue("OBSERVACION");break;
+                    case 0:celda.setCellValue("TAREO");break;
+                    case 1:celda.setCellValue("FECHA_TAREO");break;
+                    case 2:celda.setCellValue("RUC");break;
+                    case 3:celda.setCellValue("EMPRESA");break;
+                    case 4:celda.setCellValue("PUESTO");break;
+                    case 5:celda.setCellValue("CARGO");break;
+                    case 6:celda.setCellValue("DNI");break;
+                    case 7:celda.setCellValue("PERSONAL");break;
+                    case 8:celda.setCellValue("H.INICIO");break;
+                    case 9:celda.setCellValue("H.FIN");break;
+                    case 10:celda.setCellValue("HORAS");break;
+                    case 11:celda.setCellValue("FINICIO"); break;
+                    case 12:celda.setCellValue("FFIN");break;
+                    case 13:celda.setCellValue("ASISTENCIA");break;
+                    case 14:celda.setCellValue("OBSERVACIÓN");break;
+                    case 15:celda.setCellValue("CODIGOOP"); break;
+                    case 16:celda.setCellValue("DOC_SERVICIO"); break;
+                    case 17:celda.setCellValue("SERIE_SERVICIO");break;
+                    case 18:celda.setCellValue("NUMERO_SERVICIO");break;
+                    case 19:celda.setCellValue("DOC.FECHA-CREACION");break;
+                    case 20:celda.setCellValue("DOC.FECHA-CIERRE");break;
+                    case 21:celda.setCellValue("SERVICIO");break;
+                    case 22:celda.setCellValue("AMBITO");break;
+                    case 23:celda.setCellValue("SEDE");break;
+                    case 24:celda.setCellValue("CODIGO_EC");break;
+                    case 25:celda.setCellValue("ITEM_EC");break;
+                    case 26:celda.setCellValue("CODOPERACIONES_EC");break;
+                    case 27:celda.setCellValue("HORA_RC");break;
+                    case 28:celda.setCellValue("IDRUTA_EC");break;
                 }
             }
             for (int row = 0; row < rpt_result.getData().size(); row++) {
@@ -252,105 +263,96 @@ public class Rpt_tareoweb_fijoAction extends AbstactListAction<Ordenservicioclie
                 sheet1.autoSizeColumn((short) as);
             }
             objWB.removeSheetAt(0);
-            Map<String, List<RptFijos>> porDoc = lrtp.stream().collect(Collectors.groupingBy(RptFijos::getCodigoOP));
-            Iterator i = porDoc.entrySet().iterator();
-            while (i.hasNext()) {
-                Map.Entry pair = (Map.Entry) i.next();
-                HSSFSheet sheetN = objWB.createSheet(pair.getKey().toString());
-                HSSFRow fila_cabeceraN = sheetN.createRow((short) 0);
-                HSSFCell celdaN;
-                ArrayList<RptFijos> list = (ArrayList) pair.getValue();
-                DateFormat df = new SimpleDateFormat("mm/dd/yyyy");
-                list.sort((d1,d2)->d1.getFiniD().compareTo(d2.getFiniD()));
-                int l = 1;
-                for(RptFijos t:list){
-                    t.setFila(l);
-                    l++;
+            
+            HSSFSheet sheetN = objWB.createSheet("REPORTE_FIJOS_DETALLADO");
+            HSSFRow fila_cabeceraN = sheetN.createRow((short) 0);
+            HSSFCell celdaN;
+            //lrtp.sort((d1,d2)->d1.getEMPRESA().compareTo(d2.getEMPRESA()));
+            /*ORDER BY*/
+            /*Collections.sort(lrtp, new Comparator<RptFijos>(){
+                public int compare(RptFijos p1, RptFijos p2){
+                  return p1.getEMPRESA().compareTo(p2.getEMPRESA());
                 }
-                Map<String, List<RptFijos>> nlist = list.stream().collect(Collectors.groupingBy(RptFijos::getDNI));
-                for (int in = 0; in < 17; in++) {
-                    celdaN = fila_cabeceraN.createCell(in);
-                    celdaN.setCellStyle(estiloCelda);
-                    celdaN.setCellType(HSSFCell.CELL_TYPE_STRING);
-                    switch (in) {
-                        case 0:celdaN.setCellValue("AMBITO");break;
-                        case 1:celdaN.setCellValue("SEDE");break;
-                        case 2:celdaN.setCellValue("IDDOCUMENTO");break;
-                        case 3:celdaN.setCellValue("SERIE");break;
-                        case 4:celdaN.setCellValue("NUMERO");break;
-                        case 5:celdaN.setCellValue("EMPRESA");break;
-                        case 6:celdaN.setCellValue("RUC");break;
-                        case 7:celdaN.setCellValue("PUESTO");break;
-                        case 8:celdaN.setCellValue("FECHA_SERVICIO");break;
-                        case 9:celdaN.setCellValue("SERVICIO");break;
-                        case 10:celdaN.setCellValue("HORA_REQ");break;
-                        case 11:celdaN.setCellValue("HORA_FIN");break;
-                        case 12:celdaN.setCellValue("HORAS");break;
-                        case 13:celdaN.setCellValue("FECHAS");break;
-                        case 14:celdaN.setCellValue("DNI");break;
-                        case 15:celdaN.setCellValue("PERSONAL");break;
-                        case 16:celdaN.setCellValue("CARGO");break;
-                    }
+            });*/
+            Map<String, List<RptFijos>> nlist = lrtp.stream().collect(Collectors.groupingBy(RptFijos::getDNI));
+            for (int in = 0; in < 12; in++) {
+                celdaN = fila_cabeceraN.createCell(in);
+                celdaN.setCellStyle(estiloCelda);
+                celdaN.setCellType(HSSFCell.CELL_TYPE_STRING);
+                switch (in) {
+                    case 0:celdaN.setCellValue("RUC");break;
+                    case 1:celdaN.setCellValue("EMPRESA");break;
+                    case 2:celdaN.setCellValue("PUESTO");break;
+                    case 3:celdaN.setCellValue("CARGO");break;
+                    case 4:celdaN.setCellValue("AMBITO");break;
+                    case 5:celdaN.setCellValue("DNI");break;
+                    case 6:celdaN.setCellValue("PERSONAL");break;
+                    case 7:celdaN.setCellValue("H.INICIO");break;
+                    case 8:celdaN.setCellValue("H.FIN");break;
+                    case 9:celdaN.setCellValue("F.INICIO"); break;
+                    case 10:celdaN.setCellValue("F.FIN"); break;
+                    case 11:celdaN.setCellValue("HORAS");break;
                 }
-                int colm = 16;
-                int head = 1;
-                for (RptFijos rp : list) {
-                    fila_cabeceraN = sheetN.getRow(0);
-                    celdaN = fila_cabeceraN.createCell(colm);
-                    celdaN.setCellStyle(estiloCelda);
-                    celdaN.setCellType(HSSFCell.CELL_TYPE_STRING);
-                    celdaN.setCellValue(head);
-                    colm++;
-                    head++;
-                }
-                Iterator nli = nlist.entrySet().iterator();
-                int row = 0;
-                while (nli.hasNext()) {
-                    Map.Entry intp = (Map.Entry) nli.next();
-                    fila_cabeceraN = sheetN.createRow(row+1);
-                    ArrayList<RptFijos> tlist = (ArrayList) intp.getValue();
-                    for (int in = 0; in < 17; in++) {
+            }
+            int colm = 12;
+            long diferenciaEn_ms = getHasta().getTime() - getDesde().getTime();
+            long dias = diferenciaEn_ms / (1000 * 60 * 60 * 24);
+            int linicio = Integer.parseInt(WebUtil.fechaDMY(getDesde(),12));
+            int lfin = Integer.parseInt(WebUtil.fechaDMY(getHasta(),12));
+            int head = linicio;
+            for (int i=linicio;i<=lfin;i++) {
+                fila_cabeceraN = sheetN.getRow(0);
+                celdaN = fila_cabeceraN.createCell(colm);
+                celdaN.setCellStyle(estiloCelda);
+                celdaN.setCellType(HSSFCell.CELL_TYPE_STRING);
+                celdaN.setCellValue(head);
+                colm++;
+                head++;
+            }
+            Iterator nli = nlist.entrySet().iterator();
+            int row = 0;
+            while (nli.hasNext()) {
+                Map.Entry intp = (Map.Entry) nli.next();
+                fila_cabeceraN = sheetN.createRow(row+1);
+                ArrayList<RptFijos> tlist = (ArrayList) intp.getValue();
+                for (int in = 0; in < 12; in++) {
                     celdaN = fila_cabeceraN.createCell(in);
                     celdaN.setCellStyle(estiloFila);                   
                     switch (in) {
-                        case 0:celdaN.setCellValue(tlist.get(0).getAMBITO());break;
-                        case 1:celdaN.setCellValue(tlist.get(0).getSEDE());break;
-                        case 2:celdaN.setCellValue(tlist.get(0).getIDDOCUMENTO());break;
-                        case 3:celdaN.setCellValue(tlist.get(0).getSERIE());break;
-                        case 4:celdaN.setCellValue(tlist.get(0).getNUMERO());break;
-                        case 5:celdaN.setCellValue(tlist.get(0).getEMPRESA());break;
-                        case 6:celdaN.setCellValue(tlist.get(0).getRUC());break;
-                        case 7:celdaN.setCellValue(tlist.get(0).getPUESTO());break;
-                        case 8:celdaN.setCellValue(tlist.get(0).getFECHA_SERVICIO());break;
-                        case 9:celdaN.setCellValue(tlist.get(0).getSERVICIO());break;
-                        case 10:celdaN.setCellValue(tlist.get(0).getHORA_REQ());break;
-                        case 11:celdaN.setCellValue(tlist.get(0).getHORA_FIN());break;
-                        case 12: celdaN.setCellValue(tlist.get(0).getHORAS());break;
-                        case 13:celdaN.setCellValue(tlist.get(0).getFINICIO() + "-" + tlist.get(tlist.size()-1).getFFIN());break;
-                        case 14:celdaN.setCellValue(tlist.get(0).getDNI());break;
-                        case 15:celdaN.setCellValue(tlist.get(0).getPERSONAL());break;
-                        case 16:celdaN.setCellValue(tlist.get(0).getCARGO());break;
+                            case 0:celdaN.setCellValue(tlist.get(0).getRUC());break;
+                            case 1:celdaN.setCellValue(tlist.get(0).getEMPRESA());break;
+                            case 2:celdaN.setCellValue(tlist.get(0).getPUESTO());break;
+                            case 3:celdaN.setCellValue(tlist.get(0).getCARGO());break;
+                            case 4:celdaN.setCellValue(tlist.get(0).getAMBITO());break;
+                            case 5:celdaN.setCellValue(tlist.get(0).getDNI());break;
+                            case 6:celdaN.setCellValue(tlist.get(0).getPERSONAL());break;
+                            case 7:celdaN.setCellValue(tlist.get(0).getH_INICIO());break;
+                            case 8:celdaN.setCellValue(tlist.get(0).getH_FIN());break;
+                            case 9:celdaN.setCellValue(tlist.get(0).getSERVICIO());break;
+                            case 10:celdaN.setCellValue(tlist.get(0).getFINICIO() + "-" + tlist.get(tlist.size()-1).getFFIN());break;
+                            case 11:celdaN.setCellValue(tlist.get(0).getHORAS());break;
                         }                    
-                    }                    
-                    int k = 1;
-                    for(int colw = 16;colw<colm;colw++){
-                        celdaN = fila_cabeceraN.createCell(colw);
-                        celdaN.setCellStyle(estiloFila);
-                        for (RptFijos rp : tlist) {
-                            if(rp.getFila() == k){
-                                celdaN.setCellValue(rp.getASISTENCIA());
-                                break;
+                }                    
+                int k = linicio;
+                for(int colw = 12;colw<colm;colw++){
+                    celdaN = fila_cabeceraN.createCell(colw);
+                    celdaN.setCellStyle(estiloFila);
+                    for (RptFijos rp : tlist) {
+                        for(RptFijos rp2 : lrtp){
+                            if(WebUtil.isnull(rp.getDNI(),"").trim().equals(WebUtil.isnull(rp2.getDNI(),""))){
+                                if(rp2.getFila() == k){
+                                    celdaN.setCellValue(rp2.getASISTENCIA());
+                                    break;
+                                }
                             }
                         }
-                        k++;
                     }
-                    
-                    row++;
+                    k++;
                 }
-                for (int as = 0; as < colm; as++) {
-                    sheetN.autoSizeColumn((short) as);
-                }
-                
+                row++;
+            }
+            for (int as = 0; as < colm; as++) {
+                sheetN.autoSizeColumn((short) as);
             }
         } catch (Exception ex) {
             Logger.getLogger(EstructuraCostosRecursoAction.class.getName()).log(Level.SEVERE, null, ex);
@@ -364,29 +366,28 @@ public class Rpt_tareoweb_fijoAction extends AbstactListAction<Ordenservicioclie
         for (Object[] o : rs.getData()) {
             try {
                 RptFijos rp = new RptFijos();
-                rp.setAMBITO(String.valueOf(o[0]));
-                rp.setSEDE(String.valueOf(o[1]));
-                rp.setIDDOCUMENTO(String.valueOf(o[2]));
-                rp.setSERIE(String.valueOf(o[3]));
-                rp.setNUMERO(String.valueOf(o[4]));
-                rp.setEMPRESA(String.valueOf(o[5]));
-                rp.setRUC(String.valueOf(o[6]));
-                rp.setPUESTO(String.valueOf(o[7]));
-                rp.setFECHA_SERVICIO(String.valueOf(o[8]));
-                rp.setSERVICIO(String.valueOf(o[9]));
-                rp.setHORA_REQ(String.valueOf(o[10]));
-                rp.setHORA_FIN(String.valueOf(o[11]));
-                rp.setHORAS(String.valueOf(o[12]));
-                rp.setFINICIO(String.valueOf(o[13]));
-                rp.setFFIN(String.valueOf(o[14]));
-                rp.setDNI(String.valueOf(o[15]));
-                rp.setPERSONAL(String.valueOf(o[16]));
-                rp.setCARGO(String.valueOf(o[17]));
-                rp.setASISTENCIA(String.valueOf(o[18]));
-                rp.setOBSERVACION(String.valueOf(o[19]));
+                rp.setRUC(String.valueOf(o[2]));
+                rp.setEMPRESA(String.valueOf(o[3]));
+                rp.setPUESTO(String.valueOf(o[4]));
+                rp.setCARGO(String.valueOf(o[5]));
+                rp.setDNI(String.valueOf(o[6]));
+                rp.setPERSONAL(String.valueOf(o[7]));
+                rp.setH_INICIO(String.valueOf(o[8]));
+                rp.setH_FIN(String.valueOf(o[9]));
+                rp.setHORAS(String.valueOf(o[10]));
+                rp.setFINICIO(String.valueOf(o[11])); 
+                rp.setFFIN(String.valueOf(o[12])); 
+                rp.setASISTENCIA(String.valueOf(o[13]));
+                rp.setCODIGOOP(String.valueOf(o[15]));
+                rp.setDOC_SERVICIO(String.valueOf(o[16]));
+                rp.setSERIE_SERVICIO(String.valueOf(o[17]));
+                rp.setNUMERO_SERVICIO(String.valueOf(o[18]));
+                rp.setSERVICIO(String.valueOf(o[21]));
+                rp.setAMBITO(String.valueOf(o[22]));
                 rp.setFiniD(df.parse(rp.getFINICIO()));
                 rp.setFfinD(df.parse(rp.getFFIN()));
-                rp.setCodigoOP(rp.getIDDOCUMENTO() + "-" + rp.getSERIE() + "-" + rp.getNUMERO());
+                rp.setCODIGOOP(rp.getCODIGOOP());
+                rp.setFila(Integer.parseInt(rp.getFINICIO().substring(0,2)));
                 lrtp.add(rp);
             } catch (ParseException ex) {
                 Logger.getLogger(Rpt_tareoweb_fijoAction.class.getName()).log(Level.SEVERE, null, ex);

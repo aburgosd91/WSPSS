@@ -8,6 +8,7 @@ package com.pe.nisira.movil.view.action;
 import com.nisira.core.EConexion;
 import com.nisira.core.NisiraORMException;
 import com.nisira.core.dao.ClieprovDao;
+import com.nisira.core.dao.Concepto_cuentaDao;
 import com.nisira.core.dao.ConsumidorDao;
 import com.nisira.core.dao.CotizacionventasDao;
 import com.nisira.core.dao.DestinoadquisicionDao;
@@ -40,6 +41,7 @@ import com.nisira.core.entity.Docreferencia;
 import com.nisira.core.entity.Ordenliquidaciongasto;
 import com.nisira.core.entity.Dordenliquidaciongasto;
 import com.nisira.core.entity.Documentos;
+import com.nisira.core.entity.Dordenserviciocliente;
 import com.nisira.core.entity.Estados;
 import com.nisira.core.entity.Geopoint;
 import com.nisira.core.entity.Gmap;
@@ -59,6 +61,8 @@ import com.pe.nisira.movil.view.bean.UsuarioBean;
 import com.pe.nisira.movil.view.util.Constantes;
 import com.pe.nisira.movil.view.util.WebUtil;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -103,6 +107,7 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
     private List<Destinoadquisicion> listDestinoadquisicion;
     private List<Dimpuesto> listDimpuesto;
     private List<Dordenliquidaciongasto> listDordenliquidaciongasto_verification;
+    private List<Concepto_cuenta> listConcepto_cuenta;
     /*************************************DAO***************************************/
     private OrdenliquidaciongastoDao ordenliquidaciongastoDao;
     private DordenliquidaciongastoDao dordenliquidaciongastoDao;
@@ -120,6 +125,7 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
     private ConsumidorDao consumidorDao;
     private DestinoadquisicionDao destinoadquisicionDao;
     private ImpuestoDao impuestoDao; 
+    private Concepto_cuentaDao conceptoCuentaDao;
     /*************************************ENTITY***************************************/
     private UsuarioBean user;
     private String numero;
@@ -128,10 +134,8 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
     private Clieprov selectClieprov;
     private Areas selectArea;
     private Consumidor selectConsumidor;
-    
     private Dordenliquidaciongasto dordenliquidaciongasto;
     private Dordenliquidaciongasto dordenliquidaciongasto_new;
-    
     private Dordenliquidaciongasto selectDordenliquidaciongasto;
     private Clieprov selectClieprovPersonal;
     private Concepto_cuenta selectConcepto_cuenta;
@@ -144,7 +148,9 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
     private String mesNombreDisenio;
     private boolean habilitar_baseimponible;
     private boolean habilitar_inafecto;
+    private boolean habilitar_proovedor;
     private String log_consola;
+    private int num_repetir_detalle;
     public Ordenliquidaciongasto_modAction() {
         try {
             /*********************************ENTITY*******************************************/
@@ -182,7 +188,7 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
             consumidorDao = new ConsumidorDao();
             destinoadquisicionDao = new DestinoadquisicionDao();
             impuestoDao = new ImpuestoDao();
-            
+            conceptoCuentaDao = new Concepto_cuentaDao();
             /**********************************CONTROLADOR********************************/
             botonEditarDOrdenliquidaciongasto=true;
             botonEliminarDOrdenliquidaciongasto=true;
@@ -202,6 +208,7 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
             listClieprov = clieprovDao.listarClienteProveedorAP_Web(user.getIDEMPRESA());
             listDestinoadquisicion = destinoadquisicionDao.listarPorEmpresaWeb();
             listDimpuesto = impuestoDao.getDImpuesto_igv(user.getIDEMPRESA());
+            listConcepto_cuenta = conceptoCuentaDao.listarPorEmpresaWeb(user.getIDEMPRESA());
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMM");
             periodoBase=dateFormat.format(new Date())+WebUtil.idGeneradoDos((new Date()).getMonth()+1);
             periodoDisenio=dateFormat.format(new Date());
@@ -226,11 +233,11 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
                             entity.setIdconcepto("");
                             entity.setConcepto("");
                         }else{
-                            Tipogasto ob = (Tipogasto)newValue;
-                            entity.setIdconcepto(ob.getIdtipogasto());
+                            Concepto_cuenta ob = (Concepto_cuenta)newValue;
+                            entity.setIdconcepto(ob.getIdconcepto());
                             entity.setConcepto(ob.getDescripcion());
                             entity.setIdcuenta(ob.getIdcuenta());
-                            entity.setSelectTipogasto(ob);
+                            entity.setSelectConcepto_cuenta(ob);
                         };break;
                     case "Proveedor":
                         if(newValue==null){
@@ -362,11 +369,16 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
         return flag;
     }
     public void actualizarTotal(){
-        Float total = 0.0f;
+        BigDecimal igv_calculado,afecto,inafecto,total = new BigDecimal(0.0f) ;
+        int ipos = 1;
         for(Dordenliquidaciongasto dl : lstdordenliquidaciongasto){
-            total += dl.getImporte();
+            dl.setItem(WebUtil.cerosIzquierdaString(ipos++, 3));
+            igv_calculado = (new BigDecimal(dl.getPimpuesto())).setScale(2, RoundingMode.HALF_UP);
+            afecto = (new BigDecimal(dl.getAfecto())).setScale(2, RoundingMode.HALF_UP);
+            inafecto = (new BigDecimal(dl.getInafecto())).setScale(2, RoundingMode.HALF_UP);
+            total = (total.add(igv_calculado).add(afecto).add(inafecto)).setScale(2, RoundingMode.HALF_UP);
         }
-        getDatoEdicion().setImporte(total);
+        getDatoEdicion().setImporte(total.floatValue());
         RequestContext.getCurrentInstance().update("datos:timporte");
         RequestContext.getCurrentInstance().update("datos:lstdordenliquidaciongasto");
     }
@@ -374,18 +386,19 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
         try{
             if(!lstdordenliquidaciongasto.isEmpty()){
                 Dordenliquidaciongasto temp;
-                Tipogasto tg;
+                Concepto_cuenta tg;
                 Documentos doc ;
                 Clieprov cl;
                 Destinoadquisicion da;
+                Consumidor cs;
                 for(int i=0;i<lstdordenliquidaciongasto.size();i++){
                     temp = lstdordenliquidaciongasto.get(i);
                     if(temp.getIdconcepto()!=null){
                         if(!temp.getIdconcepto().trim().equals("")){
-                            tg =  searchTipogasto_local(temp.getIdconcepto());
+                            tg =  searchConcepto_cuenta_local(temp.getIdconcepto());
                             temp.setIdcuenta(tg.getIdcuenta());
                             temp.setConcepto(tg.getDescripcion());
-                            temp.setSelectTipogasto(tg);
+                            temp.setSelectConcepto_cuenta(tg);
                         }
                     }
                     if(temp.getIdclieprov()!=null){
@@ -405,6 +418,12 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
                             temp.setSelectDocumentos(doc);
                         }
                     }
+                    if(temp.getIdconsumidor()!=null){
+                        if(!temp.getIdconsumidor().trim().equals("")){
+                            cs = searchConsumidor_local(temp.getIdconsumidor());
+                            temp.setSelectConsumidor(cs);
+                        }
+                    }
                     if(temp.getIddestino()!=null){
                         if(!temp.getIddestino().trim().equals("")){
                             da = searchDestinoadquisicion_local(temp.getIddestino());
@@ -417,6 +436,17 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
         } catch (Exception ex) {
             Logger.getLogger(TareowebAction.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    public Concepto_cuenta searchConcepto_cuenta_local(String idconcepto){
+        Concepto_cuenta tp = null;
+        if(idconcepto!=null){
+            for(Concepto_cuenta ob :listConcepto_cuenta){
+                if(ob.getIdconcepto().trim().equals(idconcepto.trim())){
+                    tp = ob;break;
+                }
+            }
+        }
+        return tp;
     }
     public Tipogasto searchTipogasto_local(String idconcepto){
         Tipogasto tp = null;
@@ -450,6 +480,17 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
             }
         }
         return cl;
+    }
+    public Consumidor searchConsumidor_local(String idconcumidor){
+        Consumidor cs = null;
+        if(idconcumidor!=null){
+            for(Consumidor ob :listConsumidor){
+                if(ob.getIdconsumidor().trim().equals(idconcumidor.trim())){
+                    cs = ob;break;
+                }
+            }
+        }
+        return cs;
     }
     public Destinoadquisicion searchDestinoadquisicion_local(String iddestino){
         Destinoadquisicion da = null;
@@ -519,7 +560,7 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
         getDatoEdicion().setImporte(0.0f);
         getDatoEdicion().setNumero(numero);
         if(!WebUtil.isnull(user.getIdcodigogeneral(), "").equals(""))
-            getDatoEdicion().setIdclieprov(WebUtil.cerosIzquierda(user.getIdcodigogeneral(),10));
+            getDatoEdicion().setIdclieprov(WebUtil.cerosIzquierda(user.getIdcodigogeneral(),11));
         else
             getDatoEdicion().setIdclieprov("");
         getDatoEdicion().setRazonsocial(user.getNombres());
@@ -822,17 +863,10 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
         Documentos doc = (Documentos) event.getObject();
         getDordenliquidaciongasto().setIddocumento(doc.getIddocumento());
         getDordenliquidaciongasto().setDocumento(doc.getDescripcion());
-        if(doc.getIddocumento().equalsIgnoreCase("FAC")){
-            getDordenliquidaciongasto().setPimpuesto((new ImpuestoDao()).getImpuesto(getDatoEdicion().getIdempresa(),"001")[1]);
-            getDordenliquidaciongasto().setInafecto(0f);
-            getDordenliquidaciongasto().setImporte(0f);
-        }else{
-            getDordenliquidaciongasto().setAfecto(0f);
-            getDordenliquidaciongasto().setPimpuesto(0f);
-            getDordenliquidaciongasto().setImpuesto(0f);
-            getDordenliquidaciongasto().setImporte(0f);
-        }
-        
+        getDordenliquidaciongasto().setAfecto(0.f);
+        getDordenliquidaciongasto().setInafecto(0.f);
+        getDordenliquidaciongasto().setPimpuesto(0.f);
+        getDordenliquidaciongasto().setImporte(0.f);        
     }
     public void valorClieprov(SelectEvent event) {
         this.selectClieprov = (Clieprov) event.getObject();
@@ -861,49 +895,76 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
         getDordenliquidaciongasto().setDestinoadquisicion(selectDestinoadquisicion.getDescripcion());
     }
     public boolean validarDetalle(){
-        if(dordenliquidaciongasto.getIdclieprov() == null ||dordenliquidaciongasto.getIdclieprov().equalsIgnoreCase("")){
+        if(WebUtil.isnull(dordenliquidaciongasto.getIdclieprov(), "").equals("")){
             WebUtil.MensajeAdvertencia("Ingrese Proveedor");
             return false;
         }
-        if(dordenliquidaciongasto.getSerie() == null ||dordenliquidaciongasto.getSerie().equalsIgnoreCase("")){
+        if( WebUtil.isnull(dordenliquidaciongasto.getIddocumento(), "").equals("")){
+            WebUtil.MensajeAdvertencia("Ingrese Documento");
+            return false;
+        }
+        if( WebUtil.isnull(dordenliquidaciongasto.getSerie(), "").equals("")){
             WebUtil.MensajeAdvertencia("Ingrese Serie del Documento");
             return false;
         }
-        if(dordenliquidaciongasto.getNumero()== null ||dordenliquidaciongasto.getNumero().equalsIgnoreCase("")){
-            WebUtil.MensajeAdvertencia("Ingrese Numero del Documento");
+        if(WebUtil.isnull(dordenliquidaciongasto.getNumero(), "").equals("")){
+            WebUtil.MensajeAdvertencia("Ingrese Número del Documento");
             return false;
         }
-        if(dordenliquidaciongasto.getIddocumento().equalsIgnoreCase("FAC")){
+        if(dordenliquidaciongasto.getIdregimen().equalsIgnoreCase("01")){
             if(dordenliquidaciongasto.getAfecto()== 0.0f){
                 WebUtil.MensajeAdvertencia("Ingrese Valor Afecto");
                 return false;
             }
-        }else{
+        }else if(dordenliquidaciongasto.getIdregimen().equalsIgnoreCase("03")){
             if(dordenliquidaciongasto.getInafecto()==  0.0f){
                 WebUtil.MensajeAdvertencia("Ingrese Valor Inafecto");
                 return false;
             }
         }
+        if(WebUtil.isnull(dordenliquidaciongasto.getIdconsumidor(), "").equalsIgnoreCase("")){
+            WebUtil.MensajeAdvertencia("Ingrese Consumidor");
+            return false;
+        }
         return true;
     }
     public void grabarDordenliquidaciongasto(){
-        if(validarDetalle()){
-            int pos=lstdordenliquidaciongasto.indexOf(selectDordenliquidaciongasto);
-            if(fdordenliquidaciongasto==1){
-               lstdordenliquidaciongasto.add(dordenliquidaciongasto); 
+        try {
+            String glosa_autogenerada="";
+            if(validarDetalle()){
+                Dordenliquidaciongasto dol = null;
+                for(int i=0;i<num_repetir_detalle;i++){
+                    dol = (Dordenliquidaciongasto)dordenliquidaciongasto.clone();
+                    dol.setItem(WebUtil.cerosIzquierdaString(i+1, 3));
+                    dol.setNumero(WebUtil.cerosIzquierdaString(i+1,7));
+                    dol.setConcepto(searchConcepto_cuenta_local(dol.getIdconcepto()).getDescripcion());
+                    dol.setDestinoadquisicion(searchDestinoadquisicion_local(dol.getIddestino()).getDescripcion());
+                    /****************************** Select ********************************/
+                    dol.setSelectConcepto_cuenta(searchConcepto_cuenta_local(dol.getIdconcepto()));
+                    dol.setSelectConsumidor(searchConsumidor_local(dol.getIdconsumidor()));
+                    dol.setSelectProveedor(searchClieprov_local(dol.getIdclieprov()));
+                    dol.setSelectDocumentos(searchDocumentos_local(dol.getIddocumento()));
+                    dol.setSelectDestinoadquisicion(searchDestinoadquisicion_local(dol.getIddestino()));
+                    /********************************************************************************************/
+                    glosa_autogenerada = WebUtil.isnull(dol.getConcepto(), "").toUpperCase()+" / "+
+                                WebUtil.isnull(dol.getIdconsumidor(), "").toUpperCase()+" / "+WebUtil.isnull(dol.getGlosa(), "").toUpperCase();
+                    dol.setGlosa(glosa_autogenerada);
+                    lstdordenliquidaciongasto.add(dol); 
+                }
+                actualizarTotal();
+//                lstdordenliquidaciongasto.forEach((ls) -> {
+//                    getDatoEdicion().setImporte(getDatoEdicion().getImporte()+ls.getImporte());
+//                });
+                RequestContext.getCurrentInstance().update("datos:lstdordenliquidaciongasto");
+                RequestContext.getCurrentInstance().update("datos:dlgnew_dordenliquidaciongasto");
+                RequestContext.getCurrentInstance().update("datos:timporte");
+                RequestContext.getCurrentInstance().execute("PF('dlgnew_dordenliquidaciongasto').hide()");
             }else{
-                lstdordenliquidaciongasto.set(pos, dordenliquidaciongasto);  
-            }
-            lstdordenliquidaciongasto.forEach((ls) -> {
-                getDatoEdicion().setImporte(getDatoEdicion().getImporte()+ls.getImporte());
-            });
-            RequestContext.getCurrentInstance().update("datos:lstdordenliquidaciongasto");
-            RequestContext.getCurrentInstance().update("datos:dlgnew_dordenliquidaciongasto");
-            RequestContext.getCurrentInstance().update("datos:timporte");
-            RequestContext.getCurrentInstance().execute("PF('dlgnew_dordenliquidaciongasto').hide()");
-        }else{
-            RequestContext.getCurrentInstance().update("datos:growl");
-        }        
+                RequestContext.getCurrentInstance().update("datos:growl");
+            }  
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(Ordenliquidaciongasto_modAction.class.getName()).log(Level.SEVERE, null, ex);
+        }     
     }
     public void addDordenliquidaciongasto() {
         try {
@@ -916,6 +977,11 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
             }else{
                 getDordenliquidaciongasto().setIdregimen(listTiporegimen.get(0).getIdregimen());
                 getDordenliquidaciongasto().setHabilitar_inafecto(true);
+            }
+            if(listTipomovimiento.isEmpty()){
+                getDordenliquidaciongasto().setIdtipomov("");
+            }else{
+                getDordenliquidaciongasto().setIdtipomov(listTipomovimiento.get(0).getIdtipomov());
             }
             getDordenliquidaciongasto().setAfecto(0.0f);
             getDordenliquidaciongasto().setInafecto(0.0f);
@@ -940,24 +1006,37 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
     }
     public void nuevoDordenliquidaciongasto() {
         try {
+            num_repetir_detalle = 1;
             setDordenliquidaciongasto(new Dordenliquidaciongasto());
             getDordenliquidaciongasto().setIdempresa(user.getIDEMPRESA());
             getDordenliquidaciongasto().setIdorden(getDatoEdicion().getIdorden());
             getDordenliquidaciongasto().setItem(agregarItemDordenservicio());
+            if(listTiporegimen.isEmpty()){
+                getDordenliquidaciongasto().setIdregimen("");
+            }else{
+                getDordenliquidaciongasto().setIdregimen(listTiporegimen.get(0).getIdregimen());
+                getDordenliquidaciongasto().setHabilitar_inafecto(true);
+            }
+            if(listTipomovimiento.isEmpty()){
+                getDordenliquidaciongasto().setIdtipomov("");
+            }else{
+                getDordenliquidaciongasto().setIdtipomov(listTipomovimiento.get(0).getIdtipomov());
+            }
             getDordenliquidaciongasto().setAfecto(0.0f);
             getDordenliquidaciongasto().setInafecto(0.0f);
+            if(listDimpuesto.isEmpty()){
+                getDordenliquidaciongasto().setImpuesto(0.0f);
+                getDordenliquidaciongasto().setPimpuesto(0.0f);
+            }else{
+                getDordenliquidaciongasto().setImpuesto(listDimpuesto.get(0).getValor());
+//                getDordenliquidaciongasto().setPimpuesto(0.0f);
+            }
             getDordenliquidaciongasto().setPimpuesto(0.0f);
-            getDordenliquidaciongasto().setImpuesto(0.0f);
             getDordenliquidaciongasto().setImporte(0.0f);
             getDordenliquidaciongasto().setIdmoneda(getDatoEdicion().getIdmoneda());
-            getDordenliquidaciongasto().setIdloteproduccion("0");/*CONTIENE IGV? (1)/(0)*/
-            this.check_igv = false;
-            getDordenliquidaciongasto().setFecha(getDatoEdicion().getFecharegistro());
-            listTipoGasto = tipogastoDao.listarPorEmpresa_Tipogasto(user.getIDEMPRESA());
-            fdordenliquidaciongasto = 1;
             RequestContext.getCurrentInstance().update("datos:dlgnew_dordenliquidaciongasto");
             RequestContext.getCurrentInstance().execute("PF('dlgnew_dordenliquidaciongasto').show()");
-        } catch (NisiraORMException ex) {
+        } catch(Exception ex){
             this.mensaje = ex.getMessage();
             WebUtil.error(this.mensaje);
             RequestContext.getCurrentInstance().update("datos:growl");
@@ -1015,13 +1094,12 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
         }
     }
     public void afectoCalc(){
-        dordenliquidaciongasto.setIdregimen("01");
-        dordenliquidaciongasto.setImpuesto(dordenliquidaciongasto.getAfecto() * (dordenliquidaciongasto.getPimpuesto()*0.01f));
-        dordenliquidaciongasto.setImporte(dordenliquidaciongasto.getAfecto()+dordenliquidaciongasto.getImpuesto());
+        Float imp_dec =  (dordenliquidaciongasto.getImpuesto()==null?0.0f:dordenliquidaciongasto.getImpuesto())/100;
+        dordenliquidaciongasto.setPimpuesto(dordenliquidaciongasto.getAfecto()*imp_dec);
+        dordenliquidaciongasto.setImporte(dordenliquidaciongasto.getAfecto()+dordenliquidaciongasto.getInafecto()+dordenliquidaciongasto.getPimpuesto());
     }
     public void inafectoCalc(){
-        dordenliquidaciongasto.setIdregimen("03");
-        dordenliquidaciongasto.setImporte(dordenliquidaciongasto.getInafecto());
+        dordenliquidaciongasto.setImporte(dordenliquidaciongasto.getAfecto()+dordenliquidaciongasto.getInafecto()+dordenliquidaciongasto.getPimpuesto());
     }
     public String agregarItemDordenservicio(){
         int dato = 1;
@@ -1073,7 +1151,9 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
         for (int i = 0; i < listClieprov.size(); i++) {
             Clieprov skin = listClieprov.get(i);
             if(skin.getIdclieprov().trim().toLowerCase().contains(query.trim().toLowerCase()) || 
-                    skin.getRuc().trim().toLowerCase().contains(query.trim().toLowerCase())) {
+                skin.getRuc().trim().toLowerCase().contains(query.trim().toLowerCase()) ||
+                skin.getRazonsocial().trim().toLowerCase().contains(query.trim().toLowerCase())
+               ) {
                 filteredCliente.add(skin);
             }
         }
@@ -1090,6 +1170,17 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
             }
         }
         return filteredDocumentos;
+    }
+    public List<Concepto_cuenta> completeConceptoCuenta(String query) {
+        List<Concepto_cuenta> filteredConcepto_cuenta= new ArrayList<Concepto_cuenta>(); 
+        for (int i = 0; i < listConcepto_cuenta.size(); i++) {
+            Concepto_cuenta skin = listConcepto_cuenta.get(i);
+            if(skin.getIdconcepto().trim().toLowerCase().contains(query.trim().toLowerCase()) || 
+                    skin.getDescripcion().trim().toLowerCase().contains(query.trim().toLowerCase())) {
+                filteredConcepto_cuenta.add(skin);
+            }
+        }
+        return filteredConcepto_cuenta;
     }
     public List<Tipogasto> completeConcepto(String query) {
         List<Tipogasto> filteredTipogasto = new ArrayList<Tipogasto>(); 
@@ -1151,6 +1242,149 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
             }
         }
     }
+    public void onDateSelect(SelectEvent event) {   
+        try {
+            Date fecha = (Date)(event.getObject());
+            Tcambio tc = tcambioDao.getPorFecha(WebUtil.fechaDMY(fecha, 5));
+            if(tc!=null)
+                getDatoEdicion().setTcambio(tc.getT_compra());
+            RequestContext.getCurrentInstance().update("datos:cctipocambio");
+//        FacesContext facesContext = FacesContext.getCurrentInstance();
+//        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+//        facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Date Selected", format.format(event.getObject())));
+        } catch (NisiraORMException ex) {
+            Logger.getLogger(Ordenliquidaciongasto_modAction.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public void onDateSelectMasivo(SelectEvent event) {   
+        try {
+            Date fecha = (Date)(event.getObject());
+            Tcambio tc = tcambioDao.getPorFecha(WebUtil.fechaDMY(fecha, 5));
+            if(tc!=null)
+                getDordenliquidaciongasto().setTcambio(tc.getT_compra());
+            RequestContext.getCurrentInstance().update("datos:dlgnew_dordenliquidaciongasto:ddtipocambio");
+        } catch (NisiraORMException ex) {
+            Logger.getLogger(Ordenliquidaciongasto_modAction.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public void verCntConsumidor() {
+        RequestContext.getCurrentInstance().openDialog("cntConsumidor", modalOptions, null);
+    }
+    public void valorConsumidor(SelectEvent event) {
+        Consumidor consumidor = (Consumidor) event.getObject();
+        getDordenliquidaciongasto().setIdconsumidor(consumidor.getIdconsumidor());
+        getDordenliquidaciongasto().setConsumidor(consumidor.getDescripcion());
+    }
+    public void replicarItem_dordenliquidaciongasto(){
+        if(selectDordenliquidaciongasto!=null){
+            for(int i=0;i<lstdordenliquidaciongasto.size();i++){
+                Dordenliquidaciongasto dtw = lstdordenliquidaciongasto.get(i);
+                if(
+                    selectDordenliquidaciongasto.getIdconcepto().trim().equals(dtw.getIddocumento().trim()) &&
+                    selectDordenliquidaciongasto.getIdclieprov().trim().equals(dtw.getIdclieprov().trim())    
+                  ){
+                    /******************/
+                    dtw.setConcepto(selectDordenliquidaciongasto.getConcepto());
+                    dtw.setSelectConcepto_cuenta(selectDordenliquidaciongasto.getSelectConcepto_cuenta());
+                    dtw.setRazonsocial(selectDordenliquidaciongasto.getRazonsocial());
+                    dtw.setSelectProveedor(selectDordenliquidaciongasto.getSelectProveedor());
+//                    dtw.setHora_llegada(selectDet_tareoweb.getHora_llegada());
+//                    dtw.setHora_inicio_serv(selectDet_tareoweb.getHora_inicio_serv());
+//                    dtw.setHora_liberacion(selectDet_tareoweb.getHora_liberacion());
+//                    dtw.setHora_fin_serv(selectDet_tareoweb.getHora_fin_serv());
+//                    Date finicio=null;Date ffin=null;
+//                    if(selectDet_tareoweb.getFecharegistro()!=null){
+//                        finicio = new Date(selectDet_tareoweb.getFecharegistro().getTime());
+//                    }
+//                    if(selectDet_tareoweb.getFechafinregistro()!=null){
+//                        ffin = new Date(selectDet_tareoweb.getFechafinregistro().getTime());
+//                    }
+//                    dtw.setFecharegistro(finicio);
+//                    dtw.setFechafinregistro(ffin);
+//                    /****************************************************************************/
+//                    dtw.setBrevete_cliente(selectDet_tareoweb.getBrevete_cliente());
+//                    dtw.setConductor_cliente(selectDet_tareoweb.getConductor_cliente());
+//                    dtw.setPlaca_cliente(selectDet_tareoweb.getPlaca_cliente());
+//                    dtw.setNro_oservicio(selectDet_tareoweb.getNro_oservicio());
+//                    dtw.setNrocontenedor(selectDet_tareoweb.getNrocontenedor());
+//                    dtw.setNroprecinto(selectDet_tareoweb.getNroprecinto());
+//                    listDet_tareoweb.set(i, dtw);
+                }
+            }
+            //RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
+            RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
+        }
+    }
+    public void deleteDordenliquidaciongasto_web(){
+        Dordenliquidaciongasto sl = selectDordenliquidaciongasto;
+        if(sl!=null){
+            lstdordenliquidaciongasto.remove(sl);
+            //RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
+            RequestContext.getCurrentInstance().update("datos:lstdordenliquidaciongasto");
+        }
+    }
+    public void deleteDordenliquidaciongasto_web_tipogasto(){
+        Dordenliquidaciongasto sl = selectDordenliquidaciongasto;
+        List<Dordenliquidaciongasto> lst_temp_delete = new ArrayList<>();
+        if(sl!=null){
+            for(Dordenliquidaciongasto o : lstdordenliquidaciongasto){
+                if(sl.getIdconcepto().trim().equals(o.getIdconcepto().trim())){
+                    lst_temp_delete.add(o);
+                }
+            }
+            lstdordenliquidaciongasto.removeAll(lst_temp_delete);
+            actualizarTotal();
+//            RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
+            RequestContext.getCurrentInstance().update("datos:lstdordenliquidaciongasto");
+        }
+    }
+    public void deleteDordenliquidaciongasto_web_proveedor(){
+        Dordenliquidaciongasto sl = selectDordenliquidaciongasto;
+        List<Dordenliquidaciongasto> lst_temp_delete = new ArrayList<>();
+        if(sl!=null){
+            for(Dordenliquidaciongasto o : lstdordenliquidaciongasto){
+                if(sl.getIdclieprov().trim().equals(o.getIdclieprov().trim())){
+                    lst_temp_delete.add(o);
+                }
+            }
+            lstdordenliquidaciongasto.removeAll(lst_temp_delete);
+            actualizarTotal();
+//            RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
+            RequestContext.getCurrentInstance().update("datos:lstdordenliquidaciongasto");
+        }
+    }
+    /***************** EVENTOS *********************/
+    public void onRegimen(){
+        if(getDordenliquidaciongasto().getIdregimen()!=null){
+            if(getDordenliquidaciongasto().getIdregimen().trim().equals("01")){
+                getDordenliquidaciongasto().setInafecto(0.0f);
+                Float imp_dec =  getDordenliquidaciongasto().getAfecto()/100;
+                getDordenliquidaciongasto().setPimpuesto(getDordenliquidaciongasto().getAfecto()*imp_dec);
+                getDordenliquidaciongasto().setHabilitar_baseimponible(false);
+                getDordenliquidaciongasto().setHabilitar_inafecto(true);
+            }else if(getDordenliquidaciongasto().getIdregimen().trim().equals("02")){
+                Float imp_dec =  getDordenliquidaciongasto().getAfecto()/100;
+                getDordenliquidaciongasto().setPimpuesto(getDordenliquidaciongasto().getAfecto()*imp_dec);
+                getDordenliquidaciongasto().setHabilitar_baseimponible(false);
+                getDordenliquidaciongasto().setHabilitar_inafecto(false);
+            }else if(getDordenliquidaciongasto().getIdregimen().trim().equals("03")){
+                getDordenliquidaciongasto().setAfecto(0.0f);
+                getDordenliquidaciongasto().setPimpuesto(0.0f);
+                getDordenliquidaciongasto().setHabilitar_baseimponible(true);
+                getDordenliquidaciongasto().setHabilitar_inafecto(false);
+            }
+            RequestContext.getCurrentInstance().update("datos:dlgnew_dordenliquidaciongasto:base");
+            RequestContext.getCurrentInstance().update("datos:dlgnew_dordenliquidaciongasto:inafecto");
+            RequestContext.getCurrentInstance().update("datos:dlgnew_dordenliquidaciongasto:impuesto");
+            RequestContext.getCurrentInstance().update("datos:dlgnew_dordenliquidaciongasto:importe");
+        }
+        else{
+            this.mensaje="Seleccionar Regimen";
+            WebUtil.error(mensaje);
+            RequestContext.getCurrentInstance().update("datos:growl");
+        }
+    }
+    
     public UsuarioBean getUser() {
         return user;
     }
@@ -1783,6 +2017,48 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
      */
     public void setDordenliquidaciongasto_new(Dordenliquidaciongasto dordenliquidaciongasto_new) {
         this.dordenliquidaciongasto_new = dordenliquidaciongasto_new;
+    }
+
+    /**
+     * @return the listConcepto_cuenta
+     */
+    public List<Concepto_cuenta> getListConcepto_cuenta() {
+        return listConcepto_cuenta;
+    }
+
+    /**
+     * @param listConcepto_cuenta the listConcepto_cuenta to set
+     */
+    public void setListConcepto_cuenta(List<Concepto_cuenta> listConcepto_cuenta) {
+        this.listConcepto_cuenta = listConcepto_cuenta;
+    }
+
+    /**
+     * @return the habilitar_proovedor
+     */
+    public boolean isHabilitar_proovedor() {
+        return habilitar_proovedor;
+    }
+
+    /**
+     * @param habilitar_proovedor the habilitar_proovedor to set
+     */
+    public void setHabilitar_proovedor(boolean habilitar_proovedor) {
+        this.habilitar_proovedor = habilitar_proovedor;
+    }
+
+    /**
+     * @return the num_repetir_detalle
+     */
+    public int getNum_repetir_detalle() {
+        return num_repetir_detalle;
+    }
+
+    /**
+     * @param num_repetir_detalle the num_repetir_detalle to set
+     */
+    public void setNum_repetir_detalle(int num_repetir_detalle) {
+        this.num_repetir_detalle = num_repetir_detalle;
     }
 
 }

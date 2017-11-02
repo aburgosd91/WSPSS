@@ -48,7 +48,7 @@
                                     </p:panelGrid>
                                     <p:outputLabel value="Responsable:" escape="false" />
                                     <h:panelGrid id="cntClie" cellpadding="0" cellspacing="0" columns="3">
-                                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{ordenliquidaciongasto_modAction.verCntClieprov}" disabled="#{!ordenliquidaciongasto_modAction.edicion}" 
+                                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{ordenliquidaciongasto_modAction.verCntClieprov}" disabled="#{!ordenliquidaciongasto_modAction.edicion or (ordenliquidaciongasto_modAction.ladd eq 1?false:true)}" 
                                                          icon="ui-icon-search">
                                             <p:ajax event="dialogReturn" listener="#{ordenliquidaciongasto_modAction.valorClieprov}" update="cntClie"/>
                                         </p:commandButton>
@@ -70,7 +70,8 @@
                                 <p:panelGrid  columns="2" columnClasses="no-border, no-border" >
                                     <p:outputLabel value="Fecha" escape="false"/>
                                     <p:panelGrid  columns="5" columnClasses="no-border, no-border, no-border, no-border, no-border" >
-                                        <p:calendar id="button1" value="#{ordenliquidaciongasto_modAction.datoEdicion.fecharegistro}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="#{!ordenliquidaciongasto_modAction.edicion}">
+                                        <p:calendar id="button1" value="#{ordenliquidaciongasto_modAction.datoEdicion.fecharegistro}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="#{!ordenliquidaciongasto_modAction.edicion or (ordenliquidaciongasto_modAction.ladd eq 1?false:true)}" maxdate="#{ordenliquidaciongasto_modAction.restricted}">
+                                            <p:ajax event="dateSelect" listener="#{ordenliquidaciongasto_modAction.onDateSelect}" update="cctipocambio" />
                                             <!--<p:ajax event="dateSelect" listener="{planventaAction.updateCampañas}" update="lstCampaña"/>-->
                                         </p:calendar>
                                         <p:outputLabel for="estado"  value="Estado:" />
@@ -78,7 +79,7 @@
                                             <f:selectItems value="#{ordenliquidaciongasto_modAction.listEstado}" var="tipoEstado" itemLabel="#{tipoEstado.descripcion}" itemValue="#{tipoEstado.idestado}" />
                                         </p:selectOneMenu>
                                         <p:outputLabel value="T.Cambio"/>
-                                        <p:inputNumber value="#{ordenliquidaciongasto_modAction.datoEdicion.tcambio}" decimalPlaces="4" readonly="true">
+                                        <p:inputNumber id="cctipocambio" value="#{ordenliquidaciongasto_modAction.datoEdicion.tcambio}" decimalPlaces="4" readonly="true">
                                         </p:inputNumber>
                                     </p:panelGrid>
                                     <p:outputLabel value="Sucursal"/>
@@ -95,15 +96,16 @@
                     <div class="ui-grid-row">
                         <p:fieldset legend="Detalle de Orden Servicio"  style="width: 100%">
                             <p:dataTable id="lstdordenliquidaciongasto" var="lstdordenliquidaciongasto" value="#{ordenliquidaciongasto_modAction.lstdordenliquidaciongasto}" widgetVar="lstdordenliquidaciongasto"
-                                         paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" 
+                                         paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" 
                                          paginator="true" paginatorPosition="top"  style="margin-bottom:20px" selectionMode="single" 
-                                         scrollable="true" scrollWidth="99%" rows="10" rowsPerPageTemplate="10,15,25,35,50,70,100" 
+                                         scrollable="true" scrollWidth="99%" rows="15" rowsPerPageTemplate="15,25,35,50,70,100,150,200" 
                                          editable="#{ordenliquidaciongasto_modAction.edicion}" editMode="cell" 
                                          selection="#{ordenliquidaciongasto_modAction.selectDordenliquidaciongasto}" rowKey="#{lstdordenliquidaciongasto.item}">
                                 <p:ajax event="cellEdit" listener="#{ordenliquidaciongasto_modAction.onCellEdit}" update="lstdordenliquidaciongasto"/>
                                 <f:facet name="{Comandos}">
                                     <p:commandButton value="Refrescar" ajax="true" image="ui-icon-reload" actionListener="#{ordenliquidaciongasto_modAction.onRefresh()}"/>
-                                    <p:commandButton value="Nuevo" ajax="true" image="ui-icon-nuevo" actionListener="#{ordenliquidaciongasto_modAction.addDordenliquidaciongasto()}" disabled="#{!ordenliquidaciongasto_modAction.edicion}"/>
+                                    <p:commandButton value="Agregar Masivo" ajax="true" image="ui-icon-nuevo" actionListener="#{ordenliquidaciongasto_modAction.nuevoDordenliquidaciongasto()}" disabled="#{!ordenliquidaciongasto_modAction.edicion}"/>
+                                    <p:commandButton value="Agregar" ajax="true" image="ui-icon-nuevo" actionListener="#{ordenliquidaciongasto_modAction.addDordenliquidaciongasto()}" disabled="#{!ordenliquidaciongasto_modAction.edicion}"/>
                                     <p:commandButton value="Eliminar" ajax="true" image="ui-icon-eliminar" actionListener="#{ordenliquidaciongasto_modAction.eliminarDordenliquidaciongasto()}" disabled="#{!ordenliquidaciongasto_modAction.edicion}"/>
                                 </f:facet>
                                 <p:column filterBy="#{lstdordenliquidaciongasto.item}" filterMatchMode="contains" sortBy="#{lstdordenliquidaciongasto.item}" style="white-space: nowrap; width: 30px;padding: 3px;text-align: left">
@@ -118,13 +120,13 @@
                                             <h:outputText value="#{lstdordenliquidaciongasto.idconcepto} #{lstdordenliquidaciongasto.concepto}"/>
                                         </f:facet>
                                         <f:facet name="input" >
-                                            <p:autoComplete size="80" id="idtipogasto" value="#{lstdordenliquidaciongasto.selectTipogasto}" maxResults="10" completeMethod="#{ordenliquidaciongasto_modAction.completeConcepto}"
-                                                            var="tipogasto" itemLabel="#{tipogasto.idtipogasto}" itemValue="#{tipogasto}" converter="tipogastoConverter" forceSelection="true" maxlength="11">
+                                            <p:autoComplete size="80" id="idconcepto_cuenta" value="#{lstdordenliquidaciongasto.selectConcepto_cuenta}" maxResults="10" completeMethod="#{ordenliquidaciongasto_modAction.completeConceptoCuenta}"
+                                                            var="conceptocuenta" itemLabel="#{conceptocuenta.idconcepto}" itemValue="#{conceptocuenta}" converter="concepto_cuentaConverter" forceSelection="true">
                                                 <p:column style="width:10%">
-                                                    <h:outputText value="#{tipogasto.idtipogasto}" />
+                                                    <h:outputText value="#{conceptocuenta.idconcepto}" />
                                                  </p:column>
                                                  <p:column style="width:90%">
-                                                     <h:outputText value="#{tipogasto.descripcion}" />
+                                                     <h:outputText value="#{conceptocuenta.descripcion}" />
                                                  </p:column>
                                             </p:autoComplete>
                                         </f:facet>
@@ -148,7 +150,7 @@
                                         </f:facet>
                                     </p:cellEditor>
                                 </p:column>
-                                <p:column id="item_tipomovimiento" headerText="Tipo Movim." filterBy="#{lstdordenliquidaciongasto.idtipomov}" filterMatchMode="contains" sortBy="#{lstdordenliquidaciongasto.idtipomov}"  style="white-space: nowrap; width: 60px;padding: 3px;text-align: left">
+                                <p:column id="item_tipomovimiento" headerText="Tipo Movim." filterBy="#{lstdordenliquidaciongasto.idtipomov}" filterMatchMode="contains" sortBy="#{lstdordenliquidaciongasto.idtipomov}"  style="white-space: nowrap; width: 60px;padding: 3px;text-align: left" rendered="false">
                                     <p:cellEditor>
                                         <f:facet name="output"><h:outputText value="#{lstdordenliquidaciongasto.idtipomov}" /></f:facet>
                                        <f:facet name="input">
@@ -204,7 +206,7 @@
                                             </h:outputText>
                                        </f:facet>
                                        <f:facet name="input">
-                                           <p:calendar style="font-size:10px;" value="#{lstdordenliquidaciongasto.fecha}" pattern="dd-MM-yyyy" mask="true" />
+                                           <p:calendar style="font-size:10px;" value="#{lstdordenliquidaciongasto.fecha}" pattern="dd-MM-yyyy" mask="true" maxdate="#{ordenliquidaciongasto_modAction.restricted}"/>
                                        </f:facet>
                                    </p:cellEditor>
                                 </p:column>
@@ -223,6 +225,24 @@
                                        </f:facet>
                                    </p:cellEditor>
                                </p:column>
+                                <p:column headerText="Consumidor" filterBy="#{lstdordenliquidaciongasto.idconsumidor}" filterMatchMode="contains" sortBy="#{lstdordenliquidaciongasto.idconsumidor}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: left">
+                                    <p:cellEditor >
+                                        <f:facet name="output">
+                                            <h:outputText value="#{lstdordenliquidaciongasto.idconsumidor}"/>
+                                        </f:facet>
+                                        <f:facet name="input" >
+                                            <p:autoComplete size="80" id="ccosto_" value="#{lstdordenliquidaciongasto.selectConsumidor}" maxResults="10" completeMethod="#{ordenliquidaciongasto_modAction.completeConsumidor}"
+                                                            var="cons" itemLabel="#{cons.idconsumidor} #{cons.descripcion}" itemValue="#{cons}" converter="consumidorConverter" forceSelection="true">
+                                                <p:column style="width:10%">
+                                                    <h:outputText value="#{cons.idconsumidor}" />
+                                                 </p:column>
+                                                 <p:column style="width:90%">
+                                                     <h:outputText value="#{cons.descripcion}" />
+                                                 </p:column>
+                                            </p:autoComplete>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
                                 <p:column id="item_regime" headerText="Régimen" filterBy="#{lstdordenliquidaciongasto.idregimen}" filterMatchMode="contains" sortBy="#{lstdordenliquidaciongasto.idregimen}"  style="white-space: nowrap; width: 60px;padding: 3px;text-align: left">
                                     <p:cellEditor>
                                         <f:facet name="output"><h:outputText value="#{lstdordenliquidaciongasto.idregimen}" /></f:facet>
@@ -302,24 +322,7 @@
                                         </f:facet>
                                     </p:cellEditor>
                                 </p:column>
-                                <p:column headerText="Consumidor" filterBy="#{lstdordenliquidaciongasto.idconsumidor}" filterMatchMode="contains" sortBy="#{lstdordenliquidaciongasto.idconsumidor}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: left">
-                                    <p:cellEditor >
-                                        <f:facet name="output">
-                                            <h:outputText value="#{lstdordenliquidaciongasto.idconsumidor}"/>
-                                        </f:facet>
-                                        <f:facet name="input" >
-                                            <p:autoComplete size="80" id="ccosto" value="#{lstdordenliquidaciongasto.selectConsumidor}" maxResults="10" completeMethod="#{cabcalculopagarAction.completeConsumidor}"
-                                                            var="consumidor" itemLabel="#{consumidor.idconsumidor} #{consumidor.descripcion}" itemValue="#{consumidor}" converter="consumidorConverter" forceSelection="true">
-                                                <p:column style="width:10%">
-                                                    <h:outputText value="#{consumidor.idconsumidor}" />
-                                                 </p:column>
-                                                 <p:column style="width:90%">
-                                                     <h:outputText value="#{consumidor.descripcion}" />
-                                                 </p:column>
-                                            </p:autoComplete>
-                                        </f:facet>
-                                    </p:cellEditor>
-                                </p:column>
+                                
                             </p:dataTable>  
                         </p:fieldset>
                         <p:toolbar>
@@ -333,6 +336,11 @@
             </p:panelGrid>
             <p:contextMenu for="lstdordenliquidaciongasto">
                 <p:menuitem value="Cliente No Registrado" icon="ui-icon-search" actionListener="#{ordenliquidaciongasto_modAction.openDialoClienteNuevo()}"/>
+                <p:menuitem value="Replicar" icon="ui-icon-copy" actionListener="#{ordenliquidaciongasto_modAction.replicarItem_dordenliquidaciongasto()}"/>
+                <p:menuitem value="Eliminar Tipo Gasto" update="lstdordenliquidaciongasto" icon="ui-icon-close" actionListener="#{ordenliquidaciongasto_modAction.deleteDordenliquidaciongasto_web_tipogasto()}">
+                </p:menuitem>
+                <p:menuitem value="Eliminar Proveedor" update="lstdordenliquidaciongasto" icon="ui-icon-close" actionListener="#{ordenliquidaciongasto_modAction.deleteDordenliquidaciongasto_web_proveedor()}">
+                </p:menuitem>
             </p:contextMenu>
             <p:dialog id="dlgClienteNuevo" header="..:: Registro Ruc - Cliente Nuevo ::." widgetVar="dlgClienteNuevo" modal="true" showEffect="popup" closable="false" width="400">
                 <p:panelGrid columns="1" columnClasses="no-border">
@@ -356,6 +364,123 @@
                     #{ordenliquidaciongasto_modAction.log_consola}
                 </textarea>    
                 <br/>                        
+            </p:dialog>
+            <p:dialog id="dlgnew_dordenliquidaciongasto" header="..::Detalle Masivo::." widgetVar="dlgnew_dordenliquidaciongasto" modal="true" showEffect="popup" closable="false">
+                <p:panelGrid columns="1" columnClasses="no-border">
+                    <p:panelGrid columns="2" columnClasses="no-border, no-border">
+                        <p:outputLabel value="Id: " />
+                        <p:panelGrid columns="5" columnClasses="no-border, no-border, no-border, no-border, no-border">
+                            <p:inputText size="3" disabled="true" value="#{ordenliquidaciongasto_modAction.dordenliquidaciongasto.idorden}" />
+                            <p:outputLabel  value="N°" />
+                            <p:inputText size="40"  disabled="true" value="#{ordenliquidaciongasto_modAction.dordenliquidaciongasto.item}" />
+                            <h:outputText value="Manual:" />
+                            <p:selectBooleanCheckbox value="#{ordenliquidaciongasto_modAction.habilitar_proovedor}">
+                                <p:ajax update="cntProveedor"/>
+                            </p:selectBooleanCheckbox>
+                        </p:panelGrid>
+                        <p:outputLabel value="Proveedor" escape="false" />
+                        <h:panelGrid id="cntProveedor" cellpadding="0" cellspacing="0" columns="3">
+                            <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{ordenliquidaciongasto_modAction.verCntClieprovDetalle}" 
+                                             disabled="#{!ordenliquidaciongasto_modAction.edicion}"  icon="ui-icon-search">
+                                <p:ajax event="dialogReturn" listener="#{ordenliquidaciongasto_modAction.valorClieprovDetalle}" update="cntProveedor"/>
+                            </p:commandButton>
+                            <p:inputText  style="text-align: left" size="11" readonly="#{!ordenliquidaciongasto_modAction.habilitar_proovedor}"  value="#{ordenliquidaciongasto_modAction.dordenliquidaciongasto.idclieprov}" disabled="#{!ordenliquidaciongasto_modAction.edicion}" maxlength="11"/>
+                            <p:inputText size="50" readonly="true" value="#{ordenliquidaciongasto_modAction.dordenliquidaciongasto.razonsocial}" disabled="#{!ordenliquidaciongasto_modAction.edicion}"/>
+                        </h:panelGrid>
+                        <p:outputLabel value="Concepto" escape="false" />
+                        <p:selectOneMenu id="idconcepto" value="#{ordenliquidaciongasto_modAction.dordenliquidaciongasto.idconcepto}" style="width: 350px;">    
+                            <f:selectItems value="#{ordenliquidaciongasto_modAction.listConcepto_cuenta}" var="tipogasto" itemLabel="#{tipogasto.descripcion}" itemValue="#{tipogasto.idconcepto}" />
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="Documento: " />
+                        <h:panelGrid id="cntDocumento" cellpadding="0" cellspacing="0" columns="3">
+                            <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{ordenliquidaciongasto_modAction.verCntDocumentoscodigosunat()}" 
+                                             disabled="#{!ordenliquidaciongasto_modAction.edicion}"  icon="ui-icon-search">
+                                <p:ajax event="dialogReturn" listener="#{ordenliquidaciongasto_modAction.valorDocumentoscodigosunat}" update="cntDocumento,impto,base,inafecto,impuesto,importe"/>
+                            </p:commandButton>
+                            <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{ordenliquidaciongasto_modAction.dordenliquidaciongasto.iddocumento}" disabled="#{!ordenliquidaciongasto_modAction.edicion}"/>
+                            <p:inputText size="50" readonly="true" value="#{ordenliquidaciongasto_modAction.dordenliquidaciongasto.documento}" disabled="#{!ordenliquidaciongasto_modAction.edicion}"/>
+                        </h:panelGrid>
+
+                        <p:outputLabel value="Serie: " />
+                        <h:panelGrid cellpadding="0" cellspacing="0" columns="3">
+                            <p:inputText id="dserie" maxlength="4" size="4"
+                                     value="#{ordenliquidaciongasto_modAction.dordenliquidaciongasto.serie}" 
+                                     onblur="javascript:this.value = ('0000' + this.value).slice(-4);">
+                                <p:ajax event="valueChange" immediate="true" process="@this"/>
+                            </p:inputText>
+
+                            <p:outputLabel for="dnumero" value="Número: " />
+                            <p:inputText id="dnumero" maxlength="7" size="7"
+                                         value="#{ordenliquidaciongasto_modAction.dordenliquidaciongasto.numero}" 
+                                         onblur="javascript:this.value = ('0000000' + this.value).slice(-7);" 
+                                         onkeypress="if (event.which  lt; 48 || event.which  gt; 57) return false;">
+                                <p:ajax event="valueChange" immediate="true" process="@this"/>
+                            </p:inputText>
+                        </h:panelGrid>
+                        <p:outputLabel for="dfecha" value="Fecha:"/>
+                        <h:panelGrid cellpadding="0" cellspacing="0" columns="3">
+                            <p:calendar id="dfecha" value="#{ordenliquidaciongasto_modAction.dordenliquidaciongasto.fecha}" pattern="dd-MM-yyyy" mask="true" maxdate="#{ordenliquidaciongasto_modAction.restricted}">
+                                <p:ajax event="dateSelect" listener="#{ordenliquidaciongasto_modAction.onDateSelectMasivo}" update="ddtipocambio" />
+                            </p:calendar>
+                            <p:outputLabel value="T.Cambio:"/>
+                            <p:inputNumber id="ddtipocambio" value="#{ordenliquidaciongasto_modAction.dordenliquidaciongasto.tcambio}" decimalPlaces="4" readonly="true">
+                            </p:inputNumber>
+                        </h:panelGrid>
+                        
+                        <p:outputLabel value="Consumidor" escape="false" />
+                        <h:panelGrid id="cntConsumidor" cellpadding="0" cellspacing="0" columns="3">
+                            <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{ordenliquidaciongasto_modAction.verCntConsumidor()}" icon="ui-icon-search">
+                                <p:ajax event="dialogReturn" listener="#{ordenliquidaciongasto_modAction.valorConsumidor}" update="cntConsumidor"/>
+                            </p:commandButton>
+                            <p:inputText  style="text-align: center" size="10" readonly="true"  value="#{ordenliquidaciongasto_modAction.dordenliquidaciongasto.idconsumidor}" />
+                            <p:inputText size="41" readonly="true" value="#{ordenliquidaciongasto_modAction.dordenliquidaciongasto.consumidor}" />
+                        </h:panelGrid>
+                        
+                        <p:outputLabel value="Régimen" escape="false" />
+                        <h:selectOneMenu value="#{ordenliquidaciongasto_modAction.dordenliquidaciongasto.idregimen}" style="width:100%">
+                            <p:ajax listener="#{ordenliquidaciongasto_modAction.onRegimen()}" update="base,inafecto"/>
+                            <f:selectItems value="#{ordenliquidaciongasto_modAction.listTiporegimen}" var="tr" itemLabel="#{tr.idregimen}-#{tr.descripcion}" itemValue="#{tr.idregimen}" />
+                        </h:selectOneMenu>
+                        
+                        <p:outputLabel for="base" value="Base Imponible:" />
+                        <p:inputNumber id="base" value="#{ordenliquidaciongasto_modAction.dordenliquidaciongasto.afecto}" disabled="#{ordenliquidaciongasto_modAction.dordenliquidaciongasto.habilitar_baseimponible}">
+                            <p:ajax event="blur" listener="#{ordenliquidaciongasto_modAction.afectoCalc()}" update="impuesto,importe"/>
+                        </p:inputNumber>
+
+                        <p:outputLabel for="inafecto" value="Inafecto:" />
+                        <p:inputNumber id="inafecto" value="#{ordenliquidaciongasto_modAction.dordenliquidaciongasto.inafecto}" disabled="#{ordenliquidaciongasto_modAction.dordenliquidaciongasto.habilitar_inafecto}">
+                            <p:ajax event="blur" listener="#{ordenliquidaciongasto_modAction.inafectoCalc()}" update="importe"/>
+                        </p:inputNumber>
+
+                        <p:outputLabel for="impto" value="%Impto:" />
+                        <p:inputNumber id="impto" value="#{ordenliquidaciongasto_modAction.dordenliquidaciongasto.impuesto}" readonly="true"/>
+
+                        <p:outputLabel for="impuesto" value="Impuesto:" />
+                        <p:inputNumber id="impuesto" value="#{ordenliquidaciongasto_modAction.dordenliquidaciongasto.pimpuesto}" readonly="true"/>
+
+                        <p:outputLabel for="importe" value="Total:"/>
+                        <p:inputNumber id="importe" value="#{ordenliquidaciongasto_modAction.dordenliquidaciongasto.importe}" readonly="true"/>
+                        
+                        <p:outputLabel value="Destino" escape="false" />
+                        <p:selectOneMenu value="#{ordenliquidaciongasto_modAction.dordenliquidaciongasto.iddestino}" style="width: 350px;">    
+                            <f:selectItems value="#{ordenliquidaciongasto_modAction.listDestinoadquisicion}" var="destino" itemLabel="#{destino.descripcion}" itemValue="#{destino.iddestino}" />
+                        </p:selectOneMenu>
+                        
+                        <p:outputLabel for="dglosa" value="Glosa:" />
+                        <p:inputTextarea id="dglosa" rows="2" cols="40" value="#{ordenliquidaciongasto_modAction.dordenliquidaciongasto.glosa}" />
+                        
+                        <p:outputLabel value="#Cantidad:" escape="false" />
+                        <p:spinner value="#{ordenliquidaciongasto_modAction.num_repetir_detalle}" min="1"/>
+                    </p:panelGrid>
+                    <br/>
+                    <p:toolbar>
+                        <f:facet name="right">
+                            <p:commandButton value="Grabar" ajax="true" actionListener="#{ordenliquidaciongasto_modAction.grabarDordenliquidaciongasto()}" image="ui-icon-grabar" update="datos:growl,"/>
+                            <p:commandButton value="Cancelar" process="@this"  image="ui-icon-cancelar" onclick="PF('dlgnew_dordenliquidaciongasto').hide()" />
+                        </f:facet>
+                    </p:toolbar>                          
+                </p:panelGrid>                      
             </p:dialog>
             <p:growl id="growl" life="4000" showDetail="false"  />
             <cmp:mDialogElimina_lst id="cmpDialog" bean="#{ordenliquidaciongasto_modAction}" ventana="MNT" />
