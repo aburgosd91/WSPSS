@@ -262,7 +262,7 @@ public class WebServiceNisira{
             String idempresa = lista_solution.get(5);
             ConstantesBD.setIDEMPRESA(idempresa);
             DestinoadquisicionDao destinoadquisicionDao =new DestinoadquisicionDao();
-            List<Destinoadquisicion> list= destinoadquisicionDao.listarPorEmpresaService(idempresa);
+            List<Destinoadquisicion> list= destinoadquisicionDao.listarPorEmpresaService();
             if(list !=null){
                 if(type.trim().equals("JSON")){
                     result = WebUtil.objectGson(list.size(),list);
