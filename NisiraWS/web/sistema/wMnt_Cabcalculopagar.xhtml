@@ -115,7 +115,7 @@
                    rowsPerPageTemplate="25,35,50,70,100">
                 <p:ajax event="cellEdit" listener="#{cabcalculopagarAction.onCellEdit}" update="tbl"/>
                  <f:facet name="header">
-                     Provisión Documentos x Pagar (#{cabcalculopagarAction.listDetcalculopagar.size()}) - #{cabcalculopagarAction.fechaDMY(cabcalculopagarAction.desde)} - #{cabcalculopagarAction.fechaDMY(cabcalculopagarAction.hasta)}
+                     Provisión Documentos x Pagar (#{cabcalculopagarAction.listDetcalculopagar.size()}) - #{cabcalculopagarAction.fechaDMY(cabcalculopagarAction.datoEdicion.finicio)} - #{cabcalculopagarAction.fechaDMY(cabcalculopagarAction.datoEdicion.ffin)}
                  </f:facet>
                 
                 <p:column headerText="N°" sortBy="#{lst_rpt.item}" style="white-space: nowrap; width: 20px;padding: 3px;text-align: center">

@@ -176,27 +176,60 @@ public class Det_tareoweb implements Serializable {
         @Columna
         @XStreamAlias("CODOPERACIONES")
         private String codoperaciones;
+        @XStreamAlias("INIFECHA") 
+	@Columna
+	private Date inifecha;
+        @XStreamAlias("ESINIMANUAL")
+        @Columna
+        private Integer esinimanual;
+	@XStreamAlias("INIHORA") 
+	@Columna
+	private Float inihora;
+        @XStreamOmitField
         private String conceptotareo;
+        @XStreamOmitField
         private Date fecha_osc;
+        @XStreamOmitField
         private String vehiculo;
+        @XStreamOmitField
         private String cargo;
+        @XStreamOmitField
         private String dni;
+        @XStreamOmitField
         private String personal;
+        @XStreamOmitField
         private String idservicio;
+        @XStreamOmitField
         private String servicio;
+        @XStreamOmitField
         private boolean habilitado;
+        @XStreamOmitField
+        private String Sinihora;
+        @XStreamOmitField
         private String Shora_req;
+        @XStreamOmitField
         private String Shora_llegada;
+        @XStreamOmitField
         private String Shora_inicio;
+        @XStreamOmitField
         private String Shora_fin;
-	private String Shora_liberacion;
+	@XStreamOmitField
+        private String Shora_liberacion;
+        @XStreamOmitField
         private String conductor_rpt;
+        @XStreamOmitField
         private String precinto_rpt;
+        @XStreamOmitField
         private String placa_cliente_rpt;
+        @XStreamOmitField
         private String asistencia;
+        @XStreamOmitField
         private boolean exige_glosa;
+        @XStreamOmitField
         private String color;
+        @XStreamOmitField
         private List<Object[]> tareo;
+        @XStreamOmitField
         private String rutaservicios;
         
         /*adicional*/
@@ -1207,5 +1240,61 @@ public class Det_tareoweb implements Serializable {
      */
     public void setChabilitado(Boolean chabilitado) {
         this.chabilitado = chabilitado;
+    }
+
+    /**
+     * @return the inifecha
+     */
+    public Date getInifecha() {
+        return inifecha;
+    }
+
+    /**
+     * @param inifecha the inifecha to set
+     */
+    public void setInifecha(Date inifecha) {
+        this.inifecha = inifecha;
+    }
+
+    /**
+     * @return the esinimanual
+     */
+    public Integer getEsinimanual() {
+        return esinimanual;
+    }
+
+    /**
+     * @param esinimanual the esinimanual to set
+     */
+    public void setEsinimanual(Integer esinimanual) {
+        this.esinimanual = esinimanual;
+    }
+
+    /**
+     * @return the inihora
+     */
+    public Float getInihora() {
+        return inihora;
+    }
+
+    /**
+     * @param inihora the inihora to set
+     */
+    public void setInihora(Float inihora) {
+        this.inihora = inihora;
+    }
+
+    /**
+     * @return the Sinihora
+     */
+    public String getSinihora() {
+        return Sinihora;
+    }
+
+    /**
+     * @param Sinihora the Sinihora to set
+     */
+    public void setSinihora(String Sinihora) {
+        this.Sinihora = Sinihora;
     }
 }

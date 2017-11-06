@@ -478,6 +478,7 @@
                 <p:menuitem value="Eliminar Doc.Servicio" update="listDet_tareoweb" icon="ui-icon-close" actionListener="#{tareowebAction.deleteDettareo_web_servicio()}">
                     <p:confirm header="Advertencia" message="Está seguro de eliminar registros?" icon="ui-icon-alert" />
                 </p:menuitem>
+                <p:menuitem value="Reg. Hora Inicio Manual" icon="ui-icon-search" actionListener="#{tareowebAction.openDialogHorainiciomanual()}" />
             </p:contextMenu>
             <p:dialog id="dlgasignar_personal" header="..::Asignar - Personal::." widgetVar="dlgasignar_personal" modal="true" showEffect="popup" closable="false">
                 <p:panelGrid columns="1" columnClasses="no-border">
@@ -630,6 +631,28 @@
                         <h:outputText value="#{tareowebAction.selectDet_tareoweb.asistencia}" style="color:#{tareowebAction.selectDet_tareoweb.color}"/>
                     </p:panelGrid>
                 </p:outputPanel>
+            </p:dialog>
+            <p:dialog id="dlgHorainiciomanual" header="..:: Hora de Inicio Manual ::." widgetVar="dlgHorainiciomanual" modal="true" showEffect="popup" closable="false">
+                <p:panelGrid columns="1" columnClasses="no-border">
+                    <p:panelGrid columns="2" columnClasses="no-border, no-border">
+                        <p:outputLabel value="Habilitar: "/>
+                        <p:selectBooleanCheckbox value="#{tareowebAction.biniciomanual}">
+                            <p:ajax update="fecham,horam"/>
+                        </p:selectBooleanCheckbox>
+                        <p:outputLabel value="Fecha: " />
+                        <p:calendar style="font-size:10px;" id="fecham" value="#{tareowebAction.tareoWeb.inifecha}" pattern="dd-MM-yyyy" mask="true" disabled="#{tareowebAction.biniciomanual}"/>
+                        <p:outputLabel value="Hora: " />
+                        <p:inputMask style="font-size:10px;" id="horam" mask="99:99" value="#{tareowebAction.tareoWeb.sinihora}" disabled="#{tareowebAction.biniciomanual}">
+                        </p:inputMask>
+                    </p:panelGrid>
+                    <br/>
+                    <p:toolbar>
+                        <f:facet name="right">
+                            <p:commandButton value="Grabar" ajax="true" actionListener="#{tareowebAction.AddHoraManualDet_tareoweb}" image="ui-icon-grabar"/>
+                            <p:commandButton value="Cancelar" process="@this"  image="ui-icon-cancelar" onclick="PF('dlgHorainiciomanual').hide()" />
+                        </f:facet>
+                    </p:toolbar>  
+                </p:panelGrid>                      
             </p:dialog>
             <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
                 <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />

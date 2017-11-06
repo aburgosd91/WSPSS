@@ -174,10 +174,12 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
     private int posSelect_det_tareoweb;
     private String log_consola;
     private LogTablas log;
+    private boolean biniciomanual;
     public TareowebAction(){
         try {
             /* CONTROLLER */
             user = (UsuarioBean) WebUtil.getObjetoSesion(Constantes.SESION_USUARIO);
+            biniciomanual = false;
             btn_asignar_personal = true;
             activarBotones = true;
             num_repetir = 1;
@@ -1126,6 +1128,17 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
             RequestContext.getCurrentInstance().execute("PF('dlgDetalleAsistencia').show()");
         }
     }
+    public void openDialogHorainiciomanual(){
+        if(selectDet_tareoweb!=null){
+            tareoWeb = selectDet_tareoweb;
+            if(tareoWeb.getEsinimanual()==1)
+                biniciomanual = true;
+            else
+                biniciomanual = false;
+            RequestContext.getCurrentInstance().update("datos:dlgHorainiciomanual");
+            RequestContext.getCurrentInstance().execute("PF('dlgHorainiciomanual').show()");
+        }
+    }
     public void AddGlosaDet_tareoweb(){
         if(selectDet_tareoweb!=null){
             if(this.glosa_local!=null)
@@ -1134,6 +1147,19 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
             RequestContext.getCurrentInstance().execute("PF('dlgDetalleAsistencia').hide()");
             //RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
             RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
+        }
+    }
+    public void AddHoraManualDet_tareoweb(){
+        int pos=-1;
+        if(tareoWeb!=null){
+            if(this.selectDet_tareoweb!=null)
+                pos = listDet_tareoweb.indexOf(selectDet_tareoweb);
+            if(pos!=-1){
+                tareoWeb.setEsinimanual(biniciomanual?1:0);
+                listDet_tareoweb.set(pos, tareoWeb);
+                RequestContext.getCurrentInstance().execute("PF('dlgHorainiciomanual').hide()");
+                RequestContext.getCurrentInstance().update("datos:dlgHorainiciomanual");
+            }
         }
     }
     public String agregarItemDet_tareoweb(List<Det_tareoweb> lst){
@@ -2314,6 +2340,20 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
      */
     public void setLog_consola(String log_consola) {
         this.log_consola = log_consola;
+    }
+
+    /**
+     * @return the biniciomanual
+     */
+    public boolean isBiniciomanual() {
+        return biniciomanual;
+    }
+
+    /**
+     * @param biniciomanual the biniciomanual to set
+     */
+    public void setBiniciomanual(boolean biniciomanual) {
+        this.biniciomanual = biniciomanual;
     }
 }
 
