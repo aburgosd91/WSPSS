@@ -2829,6 +2829,16 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
             RequestContext.getCurrentInstance().update("datos:growl");
             return false;
         }
+        if(WebUtil.isnull(getNewRutas().getOrigen(), "").equals("")){
+            WebUtil.MensajeAdvertencia("Ingresar Punto Origen");
+            RequestContext.getCurrentInstance().update("datos:growl");
+            return false;
+        }
+        if(WebUtil.isnull(getNewRutas().getDestino(), "").equals("")){
+            WebUtil.MensajeAdvertencia("Ingresar Punto Destino");
+            RequestContext.getCurrentInstance().update("datos:growl");
+            return false;
+        }
         ArrayList<Rutas> lst_ru = (new RutasDao()).filtroPorEmpresaDescripcionWeb(user.getIDEMPRESA(),getNewRutas().getDescripcion());
         if(!lst_ru.isEmpty()){
             WebUtil.MensajeAdvertencia("Existe ruta con la misma descripción");
