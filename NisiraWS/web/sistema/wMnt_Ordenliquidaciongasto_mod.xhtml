@@ -335,14 +335,14 @@
                 </div>
             </p:panelGrid>
             <p:contextMenu for="lstdordenliquidaciongasto">
-                <p:menuitem value="Cliente No Registrado" icon="ui-icon-search" actionListener="#{ordenliquidaciongasto_modAction.openDialoClienteNuevo()}"/>
+                <p:menuitem value="Proveedor No Registrado" icon="ui-icon-search" actionListener="#{ordenliquidaciongasto_modAction.openDialoClienteNuevo()}"/>
                 <p:menuitem value="Replicar" icon="ui-icon-copy" actionListener="#{ordenliquidaciongasto_modAction.replicarItem_dordenliquidaciongasto()}"/>
                 <p:menuitem value="Eliminar Tipo Gasto" update="lstdordenliquidaciongasto" icon="ui-icon-close" actionListener="#{ordenliquidaciongasto_modAction.deleteDordenliquidaciongasto_web_tipogasto()}">
                 </p:menuitem>
                 <p:menuitem value="Eliminar Proveedor" update="lstdordenliquidaciongasto" icon="ui-icon-close" actionListener="#{ordenliquidaciongasto_modAction.deleteDordenliquidaciongasto_web_proveedor()}">
                 </p:menuitem>
             </p:contextMenu>
-            <p:dialog id="dlgClienteNuevo" header="..:: Registro Ruc - Cliente Nuevo ::." widgetVar="dlgClienteNuevo" modal="true" showEffect="popup" closable="false" width="400">
+            <p:dialog id="dlgClienteNuevo" header="..:: Registro Ruc - Proveedor Nuevo ::." widgetVar="dlgClienteNuevo" modal="true" showEffect="popup" closable="false" width="400">
                 <p:panelGrid columns="1" columnClasses="no-border">
                     <p:panelGrid columns="2" columnClasses="no-border, no-border">
                         <p:outputLabel value="Ruc : " />

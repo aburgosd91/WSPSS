@@ -75,11 +75,11 @@
                                     </p:selectOneMenu>
                                     <p:outputLabel value="Desde" escape="false"/>
                                     <p:panelGrid  columns="3" columnClasses="no-border, no-border, no-border" >
-                                        <p:calendar id="btn1" value="#{cabcalculopagarAction.datoEdicion.finicio}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="#{!cabcalculopagarAction.edicion}">
+                                        <p:calendar id="btn1" value="#{cabcalculopagarAction.datoEdicion.finicio}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="#{!cabcalculopagarAction.edicion}" maxdate="#{cabcalculopagarAction.restricted}">
                                             <!--<p:ajax event="dateSelect" listener="{planventaAction.updateCampañas}" update="lstCampaña"/>-->
                                         </p:calendar>
                                         <p:outputLabel value="Hasta" escape="false"/>
-                                        <p:calendar id="btn2" value="#{cabcalculopagarAction.datoEdicion.ffin}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="#{!cabcalculopagarAction.edicion}">
+                                        <p:calendar id="btn2" value="#{cabcalculopagarAction.datoEdicion.ffin}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="#{!cabcalculopagarAction.edicion}" maxdate="#{cabcalculopagarAction.restricted}">
                                             <!--<p:ajax event="dateSelect" listener="{planventaAction.updateCampañas}" update="lstCampaña"/>-->
                                         </p:calendar>
                                     </p:panelGrid> 
@@ -160,7 +160,9 @@
                            <h:outputText value="#{lst_rpt.numero}"/> 
                         </f:facet>
                         <f:facet name="input">
-                           <p:inputMask style="font-size:10px;" maxlength="7" id="fnumero" mask="" value="#{lst_rpt.numero}"/>
+                            <p:inputMask style="font-size:10px;" maxlength="7" id="fnumero" mask="" value="#{lst_rpt.numero}">
+                                <p:keyFilter regEx="/[0-9_]/i"/>
+                            </p:inputMask>
                         </f:facet>
                     </p:cellEditor>
                 </p:column>
@@ -172,7 +174,7 @@
                             </h:outputText>
                        </f:facet>
                        <f:facet name="input">
-                           <p:calendar style="font-size:10px;" value="#{lst_rpt.fecha}" pattern="dd-MM-yyyy" mask="true" />
+                           <p:calendar style="font-size:10px;" value="#{lst_rpt.fecha}" pattern="dd-MM-yyyy" mask="true"  maxdate="#{cabcalculopagarAction.restricted}"/>
                        </f:facet>
                    </p:cellEditor>
                 </p:column>
@@ -184,7 +186,7 @@
                             </h:outputText>
                        </f:facet>
                        <f:facet name="input">
-                           <p:calendar style="font-size:10px;" value="#{lst_rpt.fechaoperacion}" pattern="dd-MM-yyyy" mask="true" />
+                           <p:calendar style="font-size:10px;" value="#{lst_rpt.fechaoperacion}" pattern="dd-MM-yyyy" mask="true"  maxdate="#{cabcalculopagarAction.restricted}"/>
                        </f:facet>
                    </p:cellEditor>
                 </p:column>
@@ -196,7 +198,7 @@
                             </h:outputText>
                        </f:facet>
                        <f:facet name="input">
-                           <p:calendar style="font-size:10px;" value="#{lst_rpt.vencimiento}" pattern="dd-MM-yyyy" mask="true" />
+                           <p:calendar style="font-size:10px;" value="#{lst_rpt.vencimiento}" pattern="dd-MM-yyyy" mask="true"  maxdate="#{cabcalculopagarAction.restricted}"/>
                        </f:facet>
                    </p:cellEditor>
                 </p:column>

@@ -1130,13 +1130,24 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
     }
     public void openDialogHorainiciomanual(){
         if(selectDet_tareoweb!=null){
-            tareoWeb = selectDet_tareoweb;
-            if(tareoWeb.getEsinimanual()==1)
-                biniciomanual = true;
-            else
-                biniciomanual = false;
-            RequestContext.getCurrentInstance().update("datos:dlgHorainiciomanual");
-            RequestContext.getCurrentInstance().execute("PF('dlgHorainiciomanual').show()");
+            if(selectDet_tareoweb.getFecharegistro()==null){
+                WebUtil.MensajeAdvertencia("Ingresar Fecha Registro");
+                RequestContext.getCurrentInstance().update("datos:growl");
+            }else if(selectDet_tareoweb.getFechafinregistro()==null){
+                WebUtil.MensajeAdvertencia("Ingresar Fecha Fin");
+                RequestContext.getCurrentInstance().update("datos:growl");
+            }else{
+                tareoWeb = selectDet_tareoweb;
+                if(tareoWeb.getEsinimanual()==1)
+                    biniciomanual = true;
+                else
+                    biniciomanual = false;
+                RequestContext.getCurrentInstance().update("datos:dlgHorainiciomanual");
+                RequestContext.getCurrentInstance().execute("PF('dlgHorainiciomanual').show()");
+            }
+        }else{
+            WebUtil.MensajeAdvertencia("Seleccionar Fila");
+            RequestContext.getCurrentInstance().update("datos:growl");
         }
     }
     public void AddGlosaDet_tareoweb(){
@@ -1149,16 +1160,105 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
             RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
         }
     }
+    public void CheckHoraManualDet_tareoweb(){
+        if(biniciomanual){
+            tareoWeb.setEsinimanual(biniciomanual?1:0);
+            tareoWeb.setInifecha(tareoWeb.getFecharegistro());
+        }else{
+            tareoWeb.setEsinimanual(biniciomanual?1:0);
+            tareoWeb.setInifecha(null);
+            tareoWeb.setInihora(null);
+            tareoWeb.setSinihora("");
+        }
+    }
     public void AddHoraManualDet_tareoweb(){
         int pos=-1;
         if(tareoWeb!=null){
-            if(this.selectDet_tareoweb!=null)
-                pos = listDet_tareoweb.indexOf(selectDet_tareoweb);
-            if(pos!=-1){
+            if(tareoWeb.getEsinimanual() == 1){
+                if(tareoWeb.getInifecha()==null){
+                    WebUtil.MensajeAdvertencia("Ingresar Fecha Manual");
+                    RequestContext.getCurrentInstance().update("datos:growl");
+                }else if(!WebUtil.validateTime(WebUtil.isnull(tareoWeb.getSinihora(), ""))){
+                    WebUtil.MensajeAdvertencia("Formato Hora Manual incorrecta");
+                    RequestContext.getCurrentInstance().update("datos:growl");  
+                }else{
+                    if(this.selectDet_tareoweb!=null)
+                        pos = listDet_tareoweb.indexOf(selectDet_tareoweb);
+                    else{
+                        WebUtil.MensajeAdvertencia("Fila no seleccionada");
+                        RequestContext.getCurrentInstance().update("datos:growl");
+                    }
+                    if(pos!=-1){
+                        tareoWeb.setEsinimanual(biniciomanual?1:0);
+                        tareoWeb.setInihora(WebUtil.convertStringTimeFloat(tareoWeb.getSinihora()));
+                        listDet_tareoweb.set(pos, tareoWeb);
+                        log = new LogTablas();
+                        log.setIddoc(tareoWeb.getIdcabtareoweb());
+                        log.setItems(
+                                WebUtil.isnull(tareoWeb.getIdordenservicio(), "")+"+"+
+                                WebUtil.isnull(tareoWeb.getItem_dordenservicio(), "")+"+"+
+                                WebUtil.isnull(tareoWeb.getItem2_personalservicio(), "")+"+"+
+                                WebUtil.isnull(tareoWeb.getItem_dpersonalservicio(), ""));
+                        log.setCampo("Esmanual+Fecha Manual+Hora Manual");
+                        log.setValor_new(
+                           String.valueOf(tareoWeb.getEsinimanual()==null?0:tareoWeb.getEsinimanual()) +
+                           WebUtil.isnull(tareoWeb.getInifecha()==null?"":WebUtil.fechaDMY(tareoWeb.getInifecha(), 2),"") +
+                           WebUtil.isnull(tareoWeb.getSinihora()==null?"":tareoWeb.getSinihora(),"")
+                        );
+                        log.setValor_old(
+                           String.valueOf(selectDet_tareoweb.getEsinimanual()==null?0:selectDet_tareoweb.getEsinimanual()) +
+                           WebUtil.isnull(selectDet_tareoweb.getInifecha()==null?"":WebUtil.fechaDMY(selectDet_tareoweb.getInifecha(), 2),"") +
+                           WebUtil.isnull(selectDet_tareoweb.getSinihora()==null?"":selectDet_tareoweb.getSinihora(),"")
+                        );
+                        if(log!=null)
+                            listLogtablas.add(log);
+                        RequestContext.getCurrentInstance().execute("PF('dlgHorainiciomanual').hide()");
+                        RequestContext.getCurrentInstance().update("datos:dlgHorainiciomanual");
+                        grabar_local();
+                    }
+                }    
+            }
+            else if(tareoWeb.getEsinimanual() == 0){
                 tareoWeb.setEsinimanual(biniciomanual?1:0);
-                listDet_tareoweb.set(pos, tareoWeb);
-                RequestContext.getCurrentInstance().execute("PF('dlgHorainiciomanual').hide()");
-                RequestContext.getCurrentInstance().update("datos:dlgHorainiciomanual");
+                tareoWeb.setInifecha(null);
+                tareoWeb.setInihora(null);
+                tareoWeb.setSinihora("");
+                if(this.selectDet_tareoweb!=null)
+                    pos = listDet_tareoweb.indexOf(selectDet_tareoweb);
+                else{
+                    WebUtil.MensajeAdvertencia("Fila no seleccionada");
+                    RequestContext.getCurrentInstance().update("datos:growl");
+                }
+                if(pos!=-1){
+                    tareoWeb.setEsinimanual(biniciomanual?1:0);
+                    listDet_tareoweb.set(pos, tareoWeb);
+                    RequestContext.getCurrentInstance().execute("PF('dlgHorainiciomanual').hide()");
+                    RequestContext.getCurrentInstance().update("datos:dlgHorainiciomanual");
+                    log = new LogTablas();
+                    log.setIddoc(tareoWeb.getIdcabtareoweb());
+                    log.setItems(
+                            WebUtil.isnull(tareoWeb.getIdordenservicio(), "")+"+"+
+                            WebUtil.isnull(tareoWeb.getItem_dordenservicio(), "")+"+"+
+                            WebUtil.isnull(tareoWeb.getItem2_personalservicio(), "")+"+"+
+                            WebUtil.isnull(tareoWeb.getItem_dpersonalservicio(), ""));
+                    log.setCampo("Esmanual+Fecha Manual+Hora Manual");
+                    log.setValor_new(
+                       String.valueOf(tareoWeb.getEsinimanual()==null?0:tareoWeb.getEsinimanual()) +
+                       WebUtil.isnull(tareoWeb.getInifecha()==null?"":WebUtil.fechaDMY(tareoWeb.getInifecha(), 2),"") +
+                       WebUtil.isnull(tareoWeb.getSinihora()==null?"":tareoWeb.getSinihora(),"")
+                    );
+                    log.setValor_old(
+                       String.valueOf(selectDet_tareoweb.getEsinimanual()==null?0:selectDet_tareoweb.getEsinimanual()) +
+                       WebUtil.isnull(selectDet_tareoweb.getInifecha()==null?"":WebUtil.fechaDMY(selectDet_tareoweb.getInifecha(), 2),"") +
+                       WebUtil.isnull(selectDet_tareoweb.getSinihora()==null?"":selectDet_tareoweb.getSinihora(),"")
+                    );
+                    if(log!=null)
+                        listLogtablas.add(log);
+                    grabar_local();
+                }
+            }else{
+                WebUtil.MensajeAdvertencia("Check manual no tiene valor");
+                RequestContext.getCurrentInstance().update("datos:growl");
             }
         }
     }
@@ -1234,7 +1334,7 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
                     dtw.setHora_inicio_serv(selectDet_tareoweb.getHora_inicio_serv());
                     dtw.setHora_liberacion(selectDet_tareoweb.getHora_liberacion());
                     dtw.setHora_fin_serv(selectDet_tareoweb.getHora_fin_serv());
-                    Date finicio=null;Date ffin=null;
+                    Date finicio=null;Date ffin=null;Date finicio_manual=null;
                     if(selectDet_tareoweb.getFecharegistro()!=null){
                         finicio = new Date(selectDet_tareoweb.getFecharegistro().getTime());
                     }
@@ -1250,6 +1350,13 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
                     dtw.setNro_oservicio(selectDet_tareoweb.getNro_oservicio());
                     dtw.setNrocontenedor(selectDet_tareoweb.getNrocontenedor());
                     dtw.setNroprecinto(selectDet_tareoweb.getNroprecinto());
+                    if(selectDet_tareoweb.getInifecha()!=null){
+                        finicio_manual = new Date(selectDet_tareoweb.getInifecha().getTime());
+                    }
+                    dtw.setEsinimanual(selectDet_tareoweb.getEsinimanual());
+                    dtw.setInifecha(finicio_manual);
+                    dtw.setInihora(selectDet_tareoweb.getInihora());
+                    dtw.setSinihora(selectDet_tareoweb.getSinihora());
                     listDet_tareoweb.set(i, dtw);
                 }
             }
@@ -1270,7 +1377,7 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
                     WebUtil.isnull(dtnew.getItem2_personalservicio(), "")+"+"+
                     WebUtil.isnull(dtnew.getItem_dpersonalservicio(), ""));
             log.setCampo("Hora Llegada+Hora Inicio+Hora liberacion+Hora Fin+Fecha Registro+Fecha Fin+Brevete Cliente+Conductor Cliente+Placa Cliente"
-                    + "+NroSerivio+Nrocontenedor+Nroprecinto");
+                    + "+NroSerivio+Nrocontenedor+Nroprecinto+EsIniManual+HoraManual");
             log.setValor_new(
                 WebUtil.isnull(dtnew.getShora_llegada(), "").trim()+"+"+
                 WebUtil.isnull(dtnew.getShora_inicio(), "").trim()+"+"+
@@ -1283,7 +1390,9 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
                 WebUtil.isnull(dtnew.getPlaca_cliente(), "").trim()+"+"+
                 WebUtil.isnull(dtnew.getNro_oservicio(), "").trim()+"+"+
                 WebUtil.isnull(dtnew.getNrocontenedor(), "").trim()+"+"+
-                WebUtil.isnull(dtnew.getNroprecinto(), "").trim()
+                WebUtil.isnull(dtnew.getNroprecinto(), "").trim()+"+"+
+                (dtnew.getEsinimanual().toString()).trim()+"+"+
+                WebUtil.isnull(dtnew.getSinihora(), "").trim()
             );
             log.setValor_old(
                 WebUtil.isnull(dtold.getShora_llegada(), "").trim()+"+"+
@@ -1297,7 +1406,9 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
                 WebUtil.isnull(dtold.getPlaca_cliente(), "").trim()+"+"+
                 WebUtil.isnull(dtold.getNro_oservicio(), "").trim()+"+"+
                 WebUtil.isnull(dtold.getNrocontenedor(), "").trim()+"+"+
-                WebUtil.isnull(dtold.getNroprecinto(), "").trim()
+                WebUtil.isnull(dtold.getNroprecinto(), "").trim()+"+"+
+                (dtnew.getEsinimanual().toString()).trim()+"+"+
+                WebUtil.isnull(dtnew.getSinihora(), "").trim()
             );
             listLogtablas.add(log);
         }
@@ -2356,32 +2467,3 @@ public class TareowebAction extends AbstactListAction<Cabtareoweb> {
         this.biniciomanual = biniciomanual;
     }
 }
-
-/*
-public void onCellEdit(RowEditEvent event) {
-        Det_tareoweb entity = ((Det_tareoweb)event.getObject());
-        int pos = listDet_tareoweb.indexOf(entity);
-
-        if(entity.getFhora_req()!=null)
-            entity.setHora_req(WebUtil.convertTimeDecimal(entity.getFhora_req()));
-        else
-            entity.setHora_req(0.0f);
-        if(entity.getFhora_inicio()!=null)
-            entity.setHora_inicio_serv(WebUtil.convertTimeDecimal(entity.getFhora_inicio()));
-        else
-            entity.setHora_inicio_serv(0.0f);
-        if(entity.getFhora_fin()!=null)
-            entity.setHora_fin_serv(WebUtil.convertTimeDecimal(entity.getFhora_fin()));
-        else
-            entity.setHora_fin_serv(0.0f);
-        if(entity.getFhora_llegada()!=null)
-            entity.setHora_llegada(WebUtil.convertTimeDecimal(entity.getFhora_llegada()));
-        else
-            entity.setHora_llegada(0.0f);
-        if(entity.getFhora_liberacion()!=null)
-            entity.setHora_liberacion(WebUtil.convertTimeDecimal(entity.getFhora_liberacion()));
-        else
-            entity.setHora_liberacion(0.0f);
-        listDet_tareoweb.set(pos, entity);
-    }
-*/

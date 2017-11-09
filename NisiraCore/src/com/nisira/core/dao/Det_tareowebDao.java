@@ -122,6 +122,16 @@ public class Det_tareowebDao extends BaseDao<Det_tareoweb> {
                 tareoweb.setCidestado(rs.getString("IDESTADO_DOC")!=null?rs.getString("IDESTADO_DOC").trim():"");
                 tareoweb.setCestado(rs.getString("DESCRIPCION_ESTADO_DOC")!=null?rs.getString("DESCRIPCION_ESTADO_DOC").trim():"");
                 tareoweb.setChabilitado(rs.getBoolean("HABILITADO"));
+                tareoweb.setEsinimanual(rs.getInt("ESINIMANUAL"));
+                if(rs.getObject("INIHORA")!=null){
+                    tareoweb.setInihora(((BigDecimal)rs.getObject("INIHORA")).floatValue());
+                    tareoweb.setSinihora(CoreUtil.convertTimeFloatString(tareoweb.getInihora()));
+                }else{
+                    tareoweb.setInihora(null);
+                    tareoweb.setSinihora("");
+                }
+                tareoweb.setInifecha(rs.getDate("INIFECHA"));
+                
                 lista.add(tareoweb); 
             }
 
@@ -224,6 +234,15 @@ public class Det_tareowebDao extends BaseDao<Det_tareoweb> {
                 tareoweb.setCidestado(rs.getString("IDESTADO_DOC")!=null?rs.getString("IDESTADO_DOC").trim():"");
                 tareoweb.setCestado(rs.getString("DESCRIPCION_ESTADO_DOC")!=null?rs.getString("DESCRIPCION_ESTADO_DOC").trim():"");
                 tareoweb.setChabilitado(rs.getBoolean("HABILITADO"));
+                tareoweb.setEsinimanual(rs.getInt("ESINIMANUAL"));
+                if(rs.getObject("INIHORA")!=null){
+                    tareoweb.setInihora(((BigDecimal)rs.getObject("INIHORA")).floatValue());
+                    tareoweb.setSinihora(CoreUtil.convertTimeFloatString(tareoweb.getInihora()));
+                }else{
+                    tareoweb.setInihora(null);
+                    tareoweb.setSinihora("");
+                }
+                tareoweb.setInifecha(rs.getDate("INIFECHA"));
                 lista.add(tareoweb); 
             }
 

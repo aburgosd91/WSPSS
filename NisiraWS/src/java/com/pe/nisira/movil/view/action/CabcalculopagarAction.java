@@ -262,28 +262,34 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                     if(newValue==null){
                         entity.setIdcuenta("");
                         entity.setCuenta("");
+                        entity.setSelectCuenta(null);
                     }else{
                         Planctas ob = (Planctas)newValue;
                         entity.setIdcuenta(ob.getIdcuenta());
                         entity.setCuenta(ob.getDescripcion());
+                        entity.setSelectCuenta(ob);
                     };break;
                 case "tipo de detracción":
                     if(newValue==null){
                         entity.setIdtipodetra("");
                         entity.setTipodetraccion_descripcion("");
                         entity.setTasa(0.0f);
+                        entity.setSelectTipodetraccion(null);
                     }else{
                         Tipodetraccion ob = (Tipodetraccion)newValue;
                         entity.setIdtipodetra(ob.getIdtipodetra());
                         entity.setTipodetraccion_descripcion(ob.getDescripcion());
                         entity.setTasa(ob.getTasa());
+                        entity.setSelectTipodetraccion(ob);
                     };break;
                 case "Doc.":
                     if(newValue==null){
                         entity.setIddocumento("");
+                        entity.setSelectDocumentos(null);
                     }else{
                         Documentos ob = (Documentos)newValue;
                         entity.setIddocumento(ob.getIddocumento());
+                        entity.setSelectDocumentos(ob);
                     };break;
                 case "Serie":
                     if(newValue==null){
@@ -303,11 +309,14 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                     ;break;
                 case "Idccosto":
                     if(newValue==null){
-                        entity.setNumero("");
+                        entity.setIdccosto("");
+                        entity.setConcepto("");
+                        entity.setSelectConsumidor(null);
                     }else{
                         Consumidor ob = (Consumidor)newValue;
                         entity.setIdccosto(ob.getIdccosto());
                         entity.setConcepto(ob.getDescripcion());
+                        entity.setSelectConsumidor(ob);
                     }
                     ;break;
                 case "Idregimen":
@@ -344,6 +353,7 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                         }
                     }
                     ;break;
+                
             }
             /*CALCULO DE TOTAL*/
             entity.setTotal(entity.getAfecto()+entity.getInafecto()+(entity.getImpuesto()* (entity.getResta_base()==1?-1:1)));
@@ -355,14 +365,21 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                     Detcalculopagar dtw_detallado=listDetcalculopagarTotal.get(j);
                     if(entity.getIdclieprov().trim().equals(dtw_detallado.getIdclieprov())){
                         dtw_detallado.setIddocumento(entity.getIddocumento());
+                        dtw_detallado.setSelectDocumentos(entity.getSelectDocumentos());
                         dtw_detallado.setSerie(entity.getSerie());
                         dtw_detallado.setNumero(entity.getNumero());
-                        fecha_local = new Date(entity.getFecha().getTime());
-                        dtw_detallado.setFecha(fecha_local);
-                        fecha_local = new Date(entity.getFechaoperacion().getTime());
-                        dtw_detallado.setFechaoperacion(fecha_local);
-                        fecha_local = new Date(entity.getVencimiento().getTime());
-                        dtw_detallado.setVencimiento(fecha_local);
+                        if(entity.getFecha()!=null){
+                            fecha_local = new Date(entity.getFecha().getTime());
+                            dtw_detallado.setFecha(fecha_local);
+                        }
+                        if(entity.getFechaoperacion()!=null){
+                            fecha_local = new Date(entity.getFechaoperacion().getTime());
+                            dtw_detallado.setFechaoperacion(fecha_local);
+                        }
+                        if(entity.getVencimiento()!=null){
+                            fecha_local = new Date(entity.getVencimiento().getTime());
+                            dtw_detallado.setVencimiento(fecha_local);
+                        }
                         dtw_detallado.setIdmoneda(entity.getIdmoneda());
                         dtw_detallado.setIdcuenta(entity.getIdcuenta());
                         dtw_detallado.setCuenta(entity.getCuenta());
@@ -557,11 +574,6 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                 WebUtil.MensajeAdvertencia(this.mensaje );
                 RequestContext.getCurrentInstance().update("datos:growl");
             }
-//            else if(!getDatoEdicion().getIdestado().trim().equals("PE")){
-//                this.mensaje = "Documento se encuentra en estado <"+getDatoEdicion().getEstado()+">";
-//                WebUtil.MensajeAdvertencia(this.mensaje );
-//                RequestContext.getCurrentInstance().update("datos:growl");
-//            }
             else if(verificar_aprobacion()){
                 mensaje=getCabcalculopagarDao().aprobarCalculoPagar(getDatoEdicion(),listDetcalculopagar_verification,user.getIDUSUARIO());
                 if(mensaje!=null)
@@ -611,8 +623,8 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
         String validacion ="";
         String httpcontenido="";
         setListDetcalculopagar_verification(new ArrayList<>());
-        for(int i=0;i<listDetcalculopagarTotal.size();i++){
-            Detcalculopagar obj = listDetcalculopagarTotal.get(i);
+        for(int i=0;i<listDetcalculopagar.size();i++){
+            Detcalculopagar obj = listDetcalculopagar.get(i);
             validacion ="";
             if(obj.getIdclieprov()==null){
                 validacion+="\n\t<Personal> no asignado";
@@ -654,6 +666,24 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                 validacion+="\n\t<Centro Costo> no asignado";
             }else if(obj.getIdccosto().trim().equals("")){
                 validacion+="\n\t<Centro Costo> no asignado";  
+            }
+            if(obj.getIdtipomov()==null){
+                validacion+="\n\t<Operación> no asignada";
+            }else if(obj.getIdtipomov().trim().equals("")){
+                validacion+="\n\t<Operación> no asignada";  
+            }
+            /*VALIDACIÓN ADICIONAL OPERACIONES*/
+            if(!WebUtil.isnull(obj.getIdtipomov(), "").equals("")){
+                if(obj.getIdtipomov().equals("PPRH")){
+                    if(!obj.getIdregimen().equals("03") && obj.getTiene_suspension()==0 ){
+                        validacion+="\n\t<Operación> no corresponde con el régimen asignado: Actual ["+obj.getIdtipomov()+"] -> "+obj.getIdregimen()+" Correcto [PPRH] -> 03 Inafecto";
+                    }
+                }
+                if(obj.getIdtipomov().equals("PPDV")){ 
+                    if(!obj.getIdregimen().equals("01")){
+                        validacion+="\n\t<Operación> no corresponde con el régimen asignado: Actual ["+obj.getIdtipomov()+"] -> "+obj.getIdregimen()+" Correcto [PPDV] -> 01 Afecto";
+                    }
+                }
             }
             if(!validacion.equals("")){
                 flag = false;
@@ -768,168 +798,176 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
     }
     public void getFindetalleCalculo(){
         try {
-            SimpleDateFormat  f = new SimpleDateFormat("yyyy-MM-dd");
-            String f_ini = f.format(getDatoEdicion().getFinicio());
-            String f_fin = f.format(getDatoEdicion().getFfin());
-            f_ini = f_ini.replace("-", "");
-            f_fin = f_fin.replace("-", "");
-            listDetcalculopagarTotal = getDetcalculopagarDao().listar_facturacion_detalladoFiltroFecha(user.getIDEMPRESA(),f_ini,f_fin,getDatoEdicion().getTipo());
-            if(listDetcalculopagarTotal.isEmpty()){
-                setMensaje("No se muestran registros");
+            if(getDatoEdicion().getIdcabcalculopagar()!=null){
+                setMensaje("Registro tiene un código asignado");
                 WebUtil.info(getMensaje());
                 //setLvalidate(true);
                 RequestContext.getCurrentInstance().update("datos:growl");
-           } else{
-                listDetcalculopagar = new ArrayList<>();
-                /***************************************CÁLCULO DE SUMATORIA *******************************************/
-                Map<String, Data> group_calcultate = listDetcalculopagarTotal.stream().collect(
-                    groupingBy(Detcalculopagar::getIdclieprov, 
-                        collectingAndThen(summarizingDouble(Detcalculopagar::getTcosto), 
-                            dss -> new Data((float)dss.getAverage(),(float)dss.getSum()))
-                    )
-                );
-                /********************************************************************************/
-                group_calcultate.forEach((idclieprov,dato)->{
-                    Detcalculopagar result1 = listDetcalculopagarTotal.stream()                          
-                    .filter(x -> idclieprov.trim().equals(x.getIdclieprov()))                            
-                    .findAny()                                                          
-                    .orElse(null);
-                    /**/
-                    Detcalculopagar newObj = new Detcalculopagar();
-    //                newObj.setItem(listDetcalculopagar.size()+1);
-                    newObj.setIdclieprov(result1.getIdclieprov());
-                    newObj.setRazon_social(result1.getRazon_social());
-                    newObj.setIddocumento(result1.getIddocumento());
-                    newObj.setSerie(result1.getSerie());
-                    newObj.setNumero(result1.getNumero());
-                    newObj.setFecha(result1.getFecha());
-                    newObj.setFechaoperacion(result1.getFechaoperacion());
-                    newObj.setVencimiento(result1.getVencimiento());
-                    newObj.setIdmoneda(result1.getIdmoneda());
-                    newObj.setIdcuenta(result1.getIdcuenta());
-                    newObj.setCuenta(result1.getCuenta());
-                    newObj.setIdccosto(result1.getIdccosto());
-                    newObj.setConcepto(result1.getConcepto());
-                    newObj.setIdcliente(result1.getIdcliente());
-                    newObj.setIdregimen(result1.getIdregimen());
-                    newObj.setTcosto(dato.sum);
-                    newObj.setIdimpuesto(result1.getIdimpuesto());
-                    newObj.setEsdetraccion(result1.getEsdetraccion());
-                    newObj.setIdtipodetra(result1.getIdtipodetra());
-                    newObj.setTipodetraccion_descripcion(result1.getTipodetraccion_descripcion());
-                    newObj.setTasa(result1.getTasa());
-                    newObj.setEsplanilla(result1.getEsplanilla());
-                    newObj.setTiene_suspension(result1.getTiene_suspension());
-                    newObj.setUsuario_sol(result1.getUsuario_sol());
-                    newObj.setClave_sol(result1.getClave_sol());
-                    newObj.setIdtipomov(result1.getIdtipomov());
-                    /**** Calcular ****/
-                    if(newObj.getIdregimen().toString().trim().equals("01")){
-                        newObj.setAfecto(newObj.getTcosto());
-                        newObj.setInafecto(0.0f);
-                    }else if(newObj.getIdregimen().toString().trim().equals("02")){
+            }else{
+                SimpleDateFormat  f = new SimpleDateFormat("yyyy-MM-dd");
+                String f_ini = f.format(getDatoEdicion().getFinicio());
+                String f_fin = f.format(getDatoEdicion().getFfin());
+                f_ini = f_ini.replace("-", "");
+                f_fin = f_fin.replace("-", "");
+                listDetcalculopagarTotal = getDetcalculopagarDao().listar_facturacion_detalladoFiltroFecha(user.getIDEMPRESA(),f_ini,f_fin,getDatoEdicion().getTipo());
+                if(listDetcalculopagarTotal.isEmpty()){
+                    setMensaje("No se muestran registros");
+                    WebUtil.info(getMensaje());
+                    //setLvalidate(true);
+                    RequestContext.getCurrentInstance().update("datos:growl");
+               } else{
+                    listDetcalculopagar = new ArrayList<>();
+                    /***************************************CÁLCULO DE SUMATORIA *******************************************/
+                    Map<String, Data> group_calcultate = listDetcalculopagarTotal.stream().collect(
+                        groupingBy(Detcalculopagar::getIdclieprov, 
+                            collectingAndThen(summarizingDouble(Detcalculopagar::getTcosto), 
+                                dss -> new Data((float)dss.getAverage(),(float)dss.getSum()))
+                        )
+                    );
+                    /********************************************************************************/
+                    group_calcultate.forEach((idclieprov,dato)->{
+                        Detcalculopagar result1 = listDetcalculopagarTotal.stream()                          
+                        .filter(x -> idclieprov.trim().equals(x.getIdclieprov()))                            
+                        .findAny()                                                          
+                        .orElse(null);
+                        /**/
+                        Detcalculopagar newObj = new Detcalculopagar();
+        //                newObj.setItem(listDetcalculopagar.size()+1);
+                        newObj.setIdclieprov(result1.getIdclieprov());
+                        newObj.setRazon_social(result1.getRazon_social());
+                        newObj.setIddocumento(result1.getIddocumento());
+                        newObj.setSerie(result1.getSerie());
+                        newObj.setNumero(result1.getNumero());
+                        newObj.setFecha(result1.getFecha());
+                        newObj.setFechaoperacion(result1.getFechaoperacion());
+                        newObj.setVencimiento(result1.getVencimiento());
+                        newObj.setIdmoneda(result1.getIdmoneda());
+                        newObj.setIdcuenta(result1.getIdcuenta());
+                        newObj.setCuenta(result1.getCuenta());
+                        newObj.setIdccosto(result1.getIdccosto());
+                        newObj.setConcepto(result1.getConcepto());
+                        newObj.setIdcliente(result1.getIdcliente());
+                        newObj.setIdregimen(result1.getIdregimen());
+                        newObj.setTcosto(dato.sum);
+                        newObj.setIdimpuesto(result1.getIdimpuesto());
+                        newObj.setEsdetraccion(result1.getEsdetraccion());
+                        newObj.setIdtipodetra(result1.getIdtipodetra());
+                        newObj.setTipodetraccion_descripcion(result1.getTipodetraccion_descripcion());
+                        newObj.setTasa(result1.getTasa());
+                        newObj.setEsplanilla(result1.getEsplanilla());
+                        newObj.setTiene_suspension(result1.getTiene_suspension());
+                        newObj.setUsuario_sol(result1.getUsuario_sol());
+                        newObj.setClave_sol(result1.getClave_sol());
+                        newObj.setIdtipomov(result1.getIdtipomov());
+                        /**** Calcular ****/
+                        if(newObj.getIdregimen().toString().trim().equals("01")){
+                            newObj.setAfecto(newObj.getTcosto());
+                            newObj.setInafecto(0.0f);
+                        }else if(newObj.getIdregimen().toString().trim().equals("02")){
 
-                    }else if(newObj.getIdregimen().toString().trim().equals("03")){
-                        newObj.setAfecto(0.0f);
-                        newObj.setInafecto(newObj.getTcosto());
-                    }
-                    if(newObj.getIdimpuesto()==null){
-                        newObj.setIdimpuesto("000");
-                        newObj.setImpuesto(0.0f);
-                    }else{
-                        Dimpuesto dimpuesto = buscarImpuesto(newObj.getIdimpuesto().toString());
-                        //Float[] object = impuestoDao.getImpuesto(user.getIDEMPRESA(), newObj.getIdimpuesto().toString()); 
-                        newObj.setResta_base(dimpuesto.getResta_base());
-                        Float imp = dimpuesto.getValor();
-                        Float imp_dec =  imp/100;
-                        newObj.setPimpuesto(imp_dec);
-                        newObj.setIdimpuesto(newObj.getIdimpuesto().toString());
-                        if(newObj.getIdregimen().trim().equals("01")){
-                            newObj.setImpuesto(newObj.getAfecto()*newObj.getPimpuesto());
-                        }else if(newObj.getIdregimen().trim().equals("03")){
-                            newObj.setImpuesto(newObj.getInafecto()*newObj.getPimpuesto());
+                        }else if(newObj.getIdregimen().toString().trim().equals("03")){
+                            newObj.setAfecto(0.0f);
+                            newObj.setInafecto(newObj.getTcosto());
                         }
-                    }
-                    newObj.setTotal(newObj.getAfecto()+newObj.getInafecto()+(newObj.getImpuesto()*(newObj.getResta_base()==1?-1:1)));
-                    listDetcalculopagar.add(newObj);
-                });
-                /*ORDER BY*/
-                Collections.sort(listDetcalculopagar, new Comparator<Detcalculopagar>(){
-                    public int compare(Detcalculopagar p1, Detcalculopagar p2){
-                      return p1.getRazon_social().compareTo(p2.getRazon_social());
-                    }
-                });
-                int cnum =0;
-                for(int i=1;i<=listDetcalculopagar.size();i++){
-                    listDetcalculopagar.get(cnum).setItem(i);
-                    cnum++;
-                }
-                /*Evaluar Total >1500.00 , aplicar renta de 4ta*/
-                Detcalculopagar dt;
-                for(int i=0;i<listDetcalculopagar.size();i++){
-                    dt = listDetcalculopagar.get(i);
-                    if(dt.getTotal().floatValue()>1500.0f && dt.getTiene_suspension()==0){
-                        dt.setIdimpuesto(renta4);
-                        Dimpuesto dimpuesto = buscarImpuesto(dt.getIdimpuesto().toString());
-                        //Float[] object = impuestoDao.getImpuesto(user.getIDEMPRESA(), dt.getIdimpuesto().toString()); 
-                        dt.setResta_base(dimpuesto.getResta_base());
-                        Float imp = dimpuesto.getValor();
-                        Float imp_dec =  imp/100;
-                        dt.setPimpuesto(imp_dec);
-                        dt.setIdimpuesto(dt.getIdimpuesto().toString());
-                        if(dt.getIdregimen().trim().equals("01")){
-                            dt.setImpuesto(dt.getAfecto()*dt.getPimpuesto());
-                        }else if(dt.getIdregimen().trim().equals("03")){
-                            dt.setImpuesto(dt.getInafecto()*dt.getPimpuesto());
+                        if(newObj.getIdimpuesto()==null){
+                            newObj.setIdimpuesto("000");
+                            newObj.setImpuesto(0.0f);
+                        }else{
+                            Dimpuesto dimpuesto = buscarImpuesto(newObj.getIdimpuesto().toString());
+                            //Float[] object = impuestoDao.getImpuesto(user.getIDEMPRESA(), newObj.getIdimpuesto().toString()); 
+                            newObj.setResta_base(dimpuesto.getResta_base());
+                            Float imp = dimpuesto.getValor();
+                            Float imp_dec =  imp/100;
+                            newObj.setPimpuesto(imp_dec);
+                            newObj.setIdimpuesto(newObj.getIdimpuesto().toString());
+                            if(newObj.getIdregimen().trim().equals("01")){
+                                newObj.setImpuesto(newObj.getAfecto()*newObj.getPimpuesto());
+                            }else if(newObj.getIdregimen().trim().equals("03")){
+                                newObj.setImpuesto(newObj.getInafecto()*newObj.getPimpuesto());
+                            }
                         }
-                        dt.setTotal(dt.getAfecto()+dt.getInafecto()+(dt.getImpuesto()*(dt.getResta_base()==1?-1:1)));
-                        listDetcalculopagar.set(i, dt);
-                        /************** Recalcular *************/
-                        for(int j=0;j<listDetcalculopagarTotal.size();j++){
-                            if(listDetcalculopagarTotal.get(j).getIdclieprov().trim().equals(dt.getIdclieprov().trim())){
-                                listDetcalculopagarTotal.get(j).setIddocumento(dt.getIddocumento());
-                                listDetcalculopagarTotal.get(j).setSerie(dt.getSerie());
-                                listDetcalculopagarTotal.get(j).setIdmoneda(dt.getIdmoneda());
-                                listDetcalculopagarTotal.get(j).setIdcuenta(dt.getIdcuenta());
-                                listDetcalculopagarTotal.get(j).setCuenta(dt.getCuenta());
-                                listDetcalculopagarTotal.get(j).setIdccosto(dt.getIdccosto());
-                                listDetcalculopagarTotal.get(j).setConcepto(dt.getConcepto());
-                                listDetcalculopagarTotal.get(j).setIdregimen(dt.getIdregimen());
-                                listDetcalculopagarTotal.get(j).setIdimpuesto(dt.getIdimpuesto());
-                                listDetcalculopagarTotal.get(j).setIdtipodetra(dt.getIdtipodetra());
-                                listDetcalculopagarTotal.get(j).setTipodetraccion_descripcion(dt.getTipodetraccion_descripcion());
-                                listDetcalculopagarTotal.get(j).setTasa(dt.getTasa());
-                                /**** Calcular ****/
-                                if(listDetcalculopagarTotal.get(j).getIdregimen().toString().trim().equals("01")){
-                                    listDetcalculopagarTotal.get(j).setAfecto(listDetcalculopagarTotal.get(i).getTcosto());
-                                    listDetcalculopagarTotal.get(j).setInafecto(0.0f);
-                                }else if(listDetcalculopagarTotal.get(j).getIdregimen().toString().trim().equals("02")){
+                        newObj.setTotal(newObj.getAfecto()+newObj.getInafecto()+(newObj.getImpuesto()*(newObj.getResta_base()==1?-1:1)));
+                        listDetcalculopagar.add(newObj);
+                    });
+                    /*ORDER BY*/
+                    Collections.sort(listDetcalculopagar, new Comparator<Detcalculopagar>(){
+                        public int compare(Detcalculopagar p1, Detcalculopagar p2){
+                          return p1.getRazon_social().compareTo(p2.getRazon_social());
+                        }
+                    });
+                    int cnum =0;
+                    for(int i=1;i<=listDetcalculopagar.size();i++){
+                        listDetcalculopagar.get(cnum).setItem(i);
+                        cnum++;
+                    }
+                    /*Evaluar Total >1500.00 , aplicar renta de 4ta*/
+                    Detcalculopagar dt;
+                    for(int i=0;i<listDetcalculopagar.size();i++){
+                        dt = listDetcalculopagar.get(i);
+                        if(dt.getTotal().floatValue()>1500.0f && dt.getTiene_suspension()==0){
+                            dt.setIdimpuesto(renta4);
+                            Dimpuesto dimpuesto = buscarImpuesto(dt.getIdimpuesto().toString());
+                            //Float[] object = impuestoDao.getImpuesto(user.getIDEMPRESA(), dt.getIdimpuesto().toString()); 
+                            dt.setResta_base(dimpuesto.getResta_base());
+                            Float imp = dimpuesto.getValor();
+                            Float imp_dec =  imp/100;
+                            dt.setPimpuesto(imp_dec);
+                            dt.setIdimpuesto(dt.getIdimpuesto().toString());
+                            if(dt.getIdregimen().trim().equals("01")){
+                                dt.setImpuesto(dt.getAfecto()*dt.getPimpuesto());
+                            }else if(dt.getIdregimen().trim().equals("03")){
+                                dt.setImpuesto(dt.getInafecto()*dt.getPimpuesto());
+                            }
+                            dt.setTotal(dt.getAfecto()+dt.getInafecto()+(dt.getImpuesto()*(dt.getResta_base()==1?-1:1)));
+                            listDetcalculopagar.set(i, dt);
+                            /************** Recalcular *************/
+                            for(int j=0;j<listDetcalculopagarTotal.size();j++){
+                                if(listDetcalculopagarTotal.get(j).getIdclieprov().trim().equals(dt.getIdclieprov().trim())){
+                                    listDetcalculopagarTotal.get(j).setIddocumento(dt.getIddocumento());
+                                    listDetcalculopagarTotal.get(j).setSerie(dt.getSerie());
+                                    listDetcalculopagarTotal.get(j).setIdmoneda(dt.getIdmoneda());
+                                    listDetcalculopagarTotal.get(j).setIdcuenta(dt.getIdcuenta());
+                                    listDetcalculopagarTotal.get(j).setCuenta(dt.getCuenta());
+                                    listDetcalculopagarTotal.get(j).setIdccosto(dt.getIdccosto());
+                                    listDetcalculopagarTotal.get(j).setConcepto(dt.getConcepto());
+                                    listDetcalculopagarTotal.get(j).setIdregimen(dt.getIdregimen());
+                                    listDetcalculopagarTotal.get(j).setIdimpuesto(dt.getIdimpuesto());
+                                    listDetcalculopagarTotal.get(j).setIdtipodetra(dt.getIdtipodetra());
+                                    listDetcalculopagarTotal.get(j).setTipodetraccion_descripcion(dt.getTipodetraccion_descripcion());
+                                    listDetcalculopagarTotal.get(j).setTasa(dt.getTasa());
+                                    /**** Calcular ****/
+                                    if(listDetcalculopagarTotal.get(j).getIdregimen().toString().trim().equals("01")){
+                                        listDetcalculopagarTotal.get(j).setAfecto(listDetcalculopagarTotal.get(i).getTcosto());
+                                        listDetcalculopagarTotal.get(j).setInafecto(0.0f);
+                                    }else if(listDetcalculopagarTotal.get(j).getIdregimen().toString().trim().equals("02")){
 
-                                }else if(listDetcalculopagarTotal.get(j).getIdregimen().toString().trim().equals("03")){
-                                    listDetcalculopagarTotal.get(j).setAfecto(0.0f);
-                                    listDetcalculopagarTotal.get(j).setInafecto(listDetcalculopagarTotal.get(j).getTcosto());
-                                }
-                                if(listDetcalculopagarTotal.get(j).getIdimpuesto()==null){
-                                    listDetcalculopagarTotal.get(j).setIdimpuesto("000");
-                                    listDetcalculopagarTotal.get(j).setImpuesto(0.0f);
-                                }else{
-                                    listDetcalculopagarTotal.get(j).setResta_base(dt.getResta_base());
-                                    listDetcalculopagarTotal.get(j).setIdimpuesto(listDetcalculopagarTotal.get(j).getIdimpuesto().toString());
-                                    if(listDetcalculopagarTotal.get(j).getIdregimen().trim().equals("01")){
-                                        listDetcalculopagarTotal.get(j).setImpuesto(listDetcalculopagarTotal.get(j).getAfecto()*dt.getPimpuesto());
-                                    }else if(listDetcalculopagarTotal.get(j).getIdregimen().trim().equals("03")){
-                                        listDetcalculopagarTotal.get(j).setImpuesto(listDetcalculopagarTotal.get(j).getInafecto()*dt.getPimpuesto());
+                                    }else if(listDetcalculopagarTotal.get(j).getIdregimen().toString().trim().equals("03")){
+                                        listDetcalculopagarTotal.get(j).setAfecto(0.0f);
+                                        listDetcalculopagarTotal.get(j).setInafecto(listDetcalculopagarTotal.get(j).getTcosto());
                                     }
+                                    if(listDetcalculopagarTotal.get(j).getIdimpuesto()==null){
+                                        listDetcalculopagarTotal.get(j).setIdimpuesto("000");
+                                        listDetcalculopagarTotal.get(j).setImpuesto(0.0f);
+                                    }else{
+                                        listDetcalculopagarTotal.get(j).setResta_base(dt.getResta_base());
+                                        listDetcalculopagarTotal.get(j).setIdimpuesto(listDetcalculopagarTotal.get(j).getIdimpuesto().toString());
+                                        if(listDetcalculopagarTotal.get(j).getIdregimen().trim().equals("01")){
+                                            listDetcalculopagarTotal.get(j).setImpuesto(listDetcalculopagarTotal.get(j).getAfecto()*dt.getPimpuesto());
+                                        }else if(listDetcalculopagarTotal.get(j).getIdregimen().trim().equals("03")){
+                                            listDetcalculopagarTotal.get(j).setImpuesto(listDetcalculopagarTotal.get(j).getInafecto()*dt.getPimpuesto());
+                                        }
+                                    }
+                                    listDetcalculopagarTotal.get(j).setTotal(listDetcalculopagarTotal.get(j).getAfecto()+listDetcalculopagarTotal.get(j).getInafecto()+
+                                            (listDetcalculopagarTotal.get(j).getImpuesto()*(listDetcalculopagarTotal.get(j).getResta_base()==1?-1:1)));
                                 }
-                                listDetcalculopagarTotal.get(j).setTotal(listDetcalculopagarTotal.get(j).getAfecto()+listDetcalculopagarTotal.get(j).getInafecto()+
-                                        (listDetcalculopagarTotal.get(j).getImpuesto()*(listDetcalculopagarTotal.get(j).getResta_base()==1?-1:1)));
                             }
                         }
                     }
                 }
+                cargarCuentasDetraccionDocumentos();
+                RequestContext.getCurrentInstance().update("datos:tbl");
             }
-            cargarCuentasDetraccionDocumentos();
-            RequestContext.getCurrentInstance().update("datos:tbl");
+            
         } catch (Exception ex) {
             setMensaje(WebUtil.mensajeError());
             WebUtil.error(getMensaje());
@@ -942,6 +980,7 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
             if(getLadd()==1){/*NUEVO*/
                 getFindetalleCalculo();
             }else if(getLadd()==2){/*EDITAR*/
+                listDetcalculopagar = new ArrayList<>();
                 listDetcalculopagarTotal = detcalculopagarDao.listar_detallado(user.getIDEMPRESA(), getDatoEdicion().getIdcabcalculopagar());
                 /***************************************CÁLCULO DE SUMATORIA *******************************************/
                 Map<String, Data> group_calcultate = listDetcalculopagarTotal.stream().collect(
@@ -1167,16 +1206,22 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                     dtw.setSerie(selectDetcalculopagar.getSerie());
                 }
                 if(dtw.getFecha()==null){
-                    fecha = new Date(selectDetcalculopagar.getFecha().getTime());
-                    dtw.setFecha(fecha);
+                    if(selectDetcalculopagar.getFecha()!=null){
+                        fecha = new Date(selectDetcalculopagar.getFecha().getTime());
+                        dtw.setFecha(fecha);
+                    }
                 }
                 if(dtw.getFechaoperacion()==null){
-                    fecha = new Date(selectDetcalculopagar.getFechaoperacion().getTime());
-                    dtw.setFechaoperacion(fecha);
+                    if(selectDetcalculopagar.getFechaoperacion()!=null){
+                        fecha = new Date(selectDetcalculopagar.getFechaoperacion().getTime());
+                        dtw.setFechaoperacion(fecha);
+                    }
                 }
                 if(dtw.getVencimiento()==null){
-                    fecha = new Date(selectDetcalculopagar.getVencimiento().getTime());
-                    dtw.setVencimiento(fecha);
+                    if(selectDetcalculopagar.getVencimiento()!=null){
+                        fecha = new Date(selectDetcalculopagar.getVencimiento().getTime());
+                        dtw.setVencimiento(fecha);
+                    }
                 }
                 dtw.setIdmoneda(selectDetcalculopagar.getIdmoneda());
                 if(WebUtil.isnull(dtw.getIdcuenta(), "").trim().equals("")){
@@ -1198,7 +1243,9 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                 dtw.setTipodetraccion_descripcion(selectDetcalculopagar.getTipodetraccion_descripcion());
                 dtw.setSelectTipodetraccion(selectDetcalculopagar.getSelectTipodetraccion());
                 dtw.setTasa(selectDetcalculopagar.getTasa());
-                dtw.setIdtipomov(selectDetcalculopagar.getIdtipomov());
+                if(WebUtil.isnull(dtw.getIdtipomov(), "").trim().equals("")){
+                    dtw.setIdtipomov(selectDetcalculopagar.getIdtipomov());
+                }
                 /*CALCULAR IMPORTES*/
                 Dimpuesto dimpuesto = buscarImpuesto(dtw.getIdimpuesto());
                 //Float[] array = impuestoDao.getImpuesto(user.getIDEMPRESA(), dtw.getIdimpuesto());
@@ -1217,14 +1264,24 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                 dtw.setTotal(dtw.getAfecto()+dtw.getInafecto()+(dtw.getImpuesto()*(dtw.getResta_base()==1?-1:1)));
                 listDetcalculopagar.set(i, dtw);
                 /************************ REPLICAR DETALLADOS *************************/
+                Date fecha_local;
                 for(int j = 0;j<listDetcalculopagarTotal.size();j++){
                     Detcalculopagar dtw_detallado=listDetcalculopagarTotal.get(j);
                     if(dtw.getIdclieprov().trim().equals(dtw_detallado.getIdclieprov())){
                         dtw_detallado.setIddocumento(dtw.getIddocumento());
                         dtw_detallado.setSerie(dtw.getSerie());
-                        dtw_detallado.setFecha(dtw.getFecha());
-                        dtw_detallado.setFechaoperacion(dtw.getFechaoperacion());
-                        dtw_detallado.setVencimiento(dtw.getVencimiento());
+                        if(dtw.getFecha()!=null){
+                            fecha_local = new Date(dtw.getFecha().getTime());
+                            dtw_detallado.setFecha(fecha_local);
+                        }
+                        if(dtw.getFechaoperacion()!=null){
+                            fecha_local = new Date(dtw.getFechaoperacion().getTime());
+                            dtw_detallado.setFechaoperacion(fecha_local);
+                        }
+                        if(dtw.getVencimiento()!=null){
+                            fecha_local = new Date(dtw.getVencimiento().getTime());
+                            dtw_detallado.setVencimiento(fecha_local);
+                        }
                         dtw_detallado.setIdmoneda(dtw.getIdmoneda());
                         dtw_detallado.setIdcuenta(dtw.getIdcuenta());
                         dtw_detallado.setCuenta(dtw.getCuenta());
