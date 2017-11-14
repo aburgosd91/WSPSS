@@ -168,11 +168,12 @@
                                         <p:outputLabel value="#Horas:" />
                                         <p:inputNumber value="#{estructuracostosrecursoAction.estructura_costos_producto.nhoras}" decimalPlaces="2"/>
                                         <p:outputLabel value="Ruta/Zona:" />
-                                        <h:panelGrid id="cntRutas" cellpadding="0" cellspacing="0" columns="3">
+                                        <h:panelGrid id="cntRutas" cellpadding="0" cellspacing="0" columns="4">
                                             <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{estructuracostosrecursoAction.verCntRuta}" 
                                                             disabled="#{!estructuracostosrecursoAction.edicion}"  icon="ui-icon-search">
                                                 <p:ajax event="dialogReturn" listener="#{estructuracostosrecursoAction.valorRuta}" update="cntRutas"/>
                                             </p:commandButton>
+                                            <p:commandButton id="btnclearcliente" ajax="true" actionListener="#{estructuracostosrecursoAction.verCntclearRuta}" icon="ui-icon-clear" update="cntRutas"/>
                                             <p:inputText  size="10" readonly="true"  value="#{estructuracostosrecursoAction.estructura_costos_producto.idruta}" />
                                             <p:inputText  size="50" readonly="true"  value="#{estructuracostosrecursoAction.estructura_costos_producto.descripcion_ruta}" />
                                         </h:panelGrid>
@@ -506,6 +507,14 @@
                         <p:commandButton value="Cancelar" process="@this"  image="ui-icon-cancelar" onclick="PF('dlgEstructura_costos_producto_diasrango').hide()" />
                     </f:facet>
                 </p:toolbar> 
+            </p:dialog>
+            <p:dialog id="dlg_text" header="..:: Estructura Costos N° #{estructuracostosrecursoAction.datoEdicion.codigo} -
+                      #{estructuracostosrecursoAction.datoEdicion.descripcion} ::.." 
+                      widgetVar="dlg_text" modal="true" showEffect="popup" maximizable="true" closable="true" height="410px" width="600px">
+                <textarea style="width:99%;height:95%;" readonly="true">
+                    #{estructuracostosrecursoAction.log_consola}
+                </textarea>    
+                <br/>                        
             </p:dialog>
             <p:growl id="growl" life="4000" showDetail="false"  />
             <cmp:mDialogElimina_lst id="cmpDialog" bean="#{estructuracostosrecursoAction}" ventana="MNT" />

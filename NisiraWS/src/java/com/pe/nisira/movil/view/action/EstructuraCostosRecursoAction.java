@@ -153,6 +153,7 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
     private Float total_ecosto;
     private int indexTab;
     private TabView tabView; 
+    private String log_consola;
     public EstructuraCostosRecursoAction() {
         /*CONTROLES*/
         lstTipoRecurso = new ArrayList<>();
@@ -214,6 +215,7 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
         total_ecosto = 0.0f;
         ajuste_ecosto = 0.0f;
         costo_mano_obra = 0.0f;
+        log_consola ="";
         actualiza_ventana("wMnt_EstructuraCostosRecurso");
     }
 
@@ -1545,6 +1547,10 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
         this.estructura_costos_producto.setIdruta(selectRutas.getIdruta());
         this.estructura_costos_producto.setDescripcion_ruta(selectRutas.getDescripcion());
     }
+    public void verCntclearRuta(){
+        this.estructura_costos_producto.setIdruta("");
+        this.estructura_costos_producto.setDescripcion_ruta("");
+    }
     /***************** RECALCULAR INDICES*********************/ 
     public void resetIndices_DestructuraCostosRecurso(){
         List<Destructura_costos_recursos> temp = new ArrayList<>();
@@ -2399,6 +2405,20 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
      */
     public void setListProductos(List<Productos> listProductos) {
         this.listProductos = listProductos;
+    }
+
+    /**
+     * @return the log_consola
+     */
+    public String getLog_consola() {
+        return log_consola;
+    }
+
+    /**
+     * @param log_consola the log_consola to set
+     */
+    public void setLog_consola(String log_consola) {
+        this.log_consola = log_consola;
     }
     
     public class Es_PorcentajeCombo{

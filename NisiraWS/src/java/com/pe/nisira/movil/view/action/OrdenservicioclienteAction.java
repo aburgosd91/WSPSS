@@ -58,6 +58,7 @@ import com.nisira.core.entity.Numemisor;
 import com.nisira.core.entity.Personal_servicio;
 import com.nisira.core.entity.Privilegio_global_pss;
 import com.nisira.core.entity.Producto;
+import com.nisira.core.entity.Programacion;
 import com.nisira.core.entity.Ruta;
 import com.nisira.core.entity.Ruta_servicios;
 import com.nisira.core.entity.Rutas;
@@ -708,268 +709,89 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
     }
     @Override   
     public void downFormatExcelEspecial(Object document) {
-        HSSFWorkbook objWB = (HSSFWorkbook) document;
-        /***** ESTILO ****/
-        HSSFFont fuenteName = objWB.createFont();
-        fuenteName.setFontHeightInPoints((short) 9);
-        fuenteName.setFontName("Calibre LIght");
-        fuenteName.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
-        
-        HSSFFont fuenteDatos = objWB.createFont();
-        fuenteDatos.setFontHeightInPoints((short) 8);
-        fuenteDatos.setFontName("Calibre LIght");
-        
-        HSSFCellStyle estiloVacio = objWB.createCellStyle();
-        estiloVacio.setWrapText(true);
-        estiloVacio.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-        estiloVacio.setFont(fuenteDatos);
-        
-        HSSFCellStyle estiloName = objWB.createCellStyle();
-        estiloName.setWrapText(true);
-        estiloName.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-        estiloName.setBorderBottom(HSSFCellStyle.BORDER_MEDIUM);
-        estiloName.setBorderTop(HSSFCellStyle.BORDER_MEDIUM);
-        estiloName.setBorderRight(HSSFCellStyle.BORDER_MEDIUM);
-        estiloName.setBorderLeft(HSSFCellStyle.BORDER_MEDIUM);
-        estiloName.setFont(fuenteName);
-        estiloName.setWrapText(true);
-        estiloName.setFillForegroundColor((short)22);
-        estiloName.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
-        
-        HSSFCellStyle estiloDato = objWB.createCellStyle();
-        estiloDato.setWrapText(true);
-        estiloDato.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-        estiloDato.setBorderBottom(HSSFCellStyle.BORDER_MEDIUM);
-        estiloDato.setBorderTop(HSSFCellStyle.BORDER_MEDIUM);
-        estiloDato.setBorderRight(HSSFCellStyle.BORDER_MEDIUM);
-        estiloDato.setBorderLeft(HSSFCellStyle.BORDER_MEDIUM);
-        estiloDato.setWrapText(true);
-        estiloDato.setFont(fuenteDatos);
-        estiloName.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
-        
-        DataFormat format = objWB.createDataFormat();
-        HSSFCellStyle estiloDato_numeric = objWB.createCellStyle();
-        estiloDato_numeric.setWrapText(true);
-        estiloDato_numeric.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-        estiloDato_numeric.setBorderBottom(HSSFCellStyle.BORDER_MEDIUM);
-        estiloDato_numeric.setBorderTop(HSSFCellStyle.BORDER_MEDIUM);
-        estiloDato_numeric.setBorderRight(HSSFCellStyle.BORDER_MEDIUM);
-        estiloDato_numeric.setBorderLeft(HSSFCellStyle.BORDER_MEDIUM);
-        estiloDato_numeric.setFont(fuenteDatos);
-        estiloDato_numeric.setDataFormat(format.getFormat("0.00"));
-        
-        HSSFCellStyle estiloDato_date = objWB.createCellStyle();
-        estiloDato_date.setWrapText(true);
-        estiloDato_date.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-        estiloDato_date.setBorderBottom(HSSFCellStyle.BORDER_MEDIUM);
-        estiloDato_date.setBorderTop(HSSFCellStyle.BORDER_MEDIUM);
-        estiloDato_date.setBorderRight(HSSFCellStyle.BORDER_MEDIUM);
-        estiloDato_date.setBorderLeft(HSSFCellStyle.BORDER_MEDIUM);
-        estiloDato_date.setFont(fuenteDatos);
-        estiloDato_date.setDataFormat(format.getFormat("dd/mm/yyyy"));
-        
-        int number_sheet = 0;
-        int fila_id=0;
-        HSSFRow fila; 
-        HSSFCell columna;
-        HSSFSheet sheet;
-        //HSSFRow fila_cabecera = objWB.getSheetAt(0).getRow(0);
-        for( Dordenserviciocliente ds : lstdordenserviciocliente){
-            if(number_sheet ==0 ){
-                /*TITULO : REPORTE DEL SERVICIO*/
-                objWB.setSheetName(number_sheet,"CODIGO "+ds.getCodoperaciones()+"("+number_sheet+")");
-                fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
-                columna = fila.createCell((short)1);
-                columna.setCellStyle(estiloVacio);
-                columna.setCellValue("");
-                columna = fila.createCell((short)2);
-                columna.setCellStyle(estiloVacio);
-                columna.setCellValue("");
-                objWB.getSheetAt(number_sheet).addMergedRegion(new CellRangeAddress(
-                        fila_id-1, //first row (0-based)
-                        fila_id-1, //last row  (0-based)
-                        1, //first column (0-based)
-                        2  //last column  (0-based)
-                ));
-                fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
-                columna = fila.createCell((short)1);
-                columna.setCellStyle(estiloName);
-                columna.setCellValue("REPORTE DEL SERVICIO");
-                objWB.getSheetAt(number_sheet).addMergedRegion(new CellRangeAddress(
-                        fila_id-1, //first row (0-based)
-                        fila_id-1, //last row  (0-based)
-                        1, //first column (0-based)
-                        2  //last column  (0-based)
-                ));
-                /*FILA CLIENTE*/
-                fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
-                /*label*/
-                columna = fila.createCell((short)1);
-                columna.setCellStyle(estiloName);
-                columna.setCellValue("CLIENTE");
-                /*value*/
-                columna = fila.createCell((short)2);
-                columna.setCellStyle(estiloDato);
-                columna.setCellValue(getDatoEdicion().getIdclieprov().trim()+" - "+getDatoEdicion().getRazonsocial());
-                /*FILA TIPO DE SERVICIO*/
-                fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
-                /*label*/
-                columna = fila.createCell((short)1);
-                columna.setCellStyle(estiloName);
-                columna.setCellValue("TIPO DE SERVICIO");
-                /*value*/
-                columna = fila.createCell((short)2);
-                columna.setCellStyle(estiloDato);
-                columna.setCellValue(getDatoEdicion().getTipo_servicio().trim().equals("E")?"ESPECIAL":
-                        getDatoEdicion().getTipo_servicio().trim().equals("F")?"FIJO":"");
-                /*FILA FECHA DE SERVICIO*/
-                fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
-                /*label*/
-                columna = fila.createCell((short)1);
-                columna.setCellStyle(estiloName);
-                columna.setCellValue("FECHA DE SERVICIO");
-                /*value*/
-                columna = fila.createCell((short)2);
-                columna.setCellStyle(estiloDato_date);
-                columna.setCellValue(WebUtil.fechaDMY(getDatoEdicion().getFecha(),1));
-                /*FILA TRAMO*/
-                fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
-                /*label*/
-                columna = fila.createCell((short)1);
-                columna.setCellStyle(estiloName);
-                columna.setCellValue("TRAMO");
-                /*value*/
-                columna = fila.createCell((short)2);
-                columna.setCellStyle(estiloDato);
-                columna.setCellValue(ds.getRuta_viaje());
-                /*FILA HORA DE INICIO DE SERVICIO*/
-                fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
-                /*label*/
-                columna = fila.createCell((short)1);
-                columna.setCellStyle(estiloName);
-                columna.setCellValue("HORA DE INICIO DE SERVICIO");
-                /*value*/
-                columna = fila.createCell((short)2);
-                columna.setCellStyle(estiloDato_numeric);
-                columna.setCellValue(ds.getHora_req());
-                /*TITULO : NOMBRES Y APELLIDOS*/
-                fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
-                columna = fila.createCell((short)1);
-                columna.setCellStyle(estiloName);
-                columna.setCellValue("NOMBRES Y APELLIDOS");
-                objWB.getSheetAt(number_sheet).addMergedRegion(new CellRangeAddress(
-                        fila_id-1, //first row (0-based)
-                        fila_id-1, //last row  (0-based)
-                        1, //first column (0-based)
-                        2  //last column  (0-based)
-                ));
-                for(Personal_servicio ps : listPersonalservicio_total){
-                    if(ps.getIdempresa().trim().equalsIgnoreCase(ds.getIdempresa().trim()) &&
-                        ps.getItem().trim().equals(ds.getItem().trim())){
-                            /*FILA CARGO*/
+        try {
+            HSSFWorkbook objWB = (HSSFWorkbook) document;
+            /***** ESTILO ****/
+            HSSFFont fuenteName = objWB.createFont();
+            fuenteName.setFontHeightInPoints((short) 9);
+            fuenteName.setFontName("Calibre LIght");
+            fuenteName.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+
+            HSSFFont fuenteDatos = objWB.createFont();
+            fuenteDatos.setFontHeightInPoints((short) 8);
+            fuenteDatos.setFontName("Calibre LIght");
+
+            HSSFCellStyle estiloVacio = objWB.createCellStyle();
+            estiloVacio.setWrapText(true);
+            estiloVacio.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+            estiloVacio.setFont(fuenteDatos);
+
+            HSSFCellStyle estiloName = objWB.createCellStyle();
+            estiloName.setWrapText(true);
+            estiloName.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+            estiloName.setBorderBottom(HSSFCellStyle.BORDER_MEDIUM);
+            estiloName.setBorderTop(HSSFCellStyle.BORDER_MEDIUM);
+            estiloName.setBorderRight(HSSFCellStyle.BORDER_MEDIUM);
+            estiloName.setBorderLeft(HSSFCellStyle.BORDER_MEDIUM);
+            estiloName.setFont(fuenteName);
+            estiloName.setWrapText(true);
+            estiloName.setFillForegroundColor((short)22);
+            estiloName.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+
+            HSSFCellStyle estiloDato = objWB.createCellStyle();
+            estiloDato.setWrapText(true);
+            estiloDato.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+            estiloDato.setBorderBottom(HSSFCellStyle.BORDER_MEDIUM);
+            estiloDato.setBorderTop(HSSFCellStyle.BORDER_MEDIUM);
+            estiloDato.setBorderRight(HSSFCellStyle.BORDER_MEDIUM);
+            estiloDato.setBorderLeft(HSSFCellStyle.BORDER_MEDIUM);
+            estiloDato.setWrapText(true);
+            estiloDato.setFont(fuenteDatos);
+            estiloName.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+
+            DataFormat format = objWB.createDataFormat();
+            HSSFCellStyle estiloDato_numeric = objWB.createCellStyle();
+            estiloDato_numeric.setWrapText(true);
+            estiloDato_numeric.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+            estiloDato_numeric.setBorderBottom(HSSFCellStyle.BORDER_MEDIUM);
+            estiloDato_numeric.setBorderTop(HSSFCellStyle.BORDER_MEDIUM);
+            estiloDato_numeric.setBorderRight(HSSFCellStyle.BORDER_MEDIUM);
+            estiloDato_numeric.setBorderLeft(HSSFCellStyle.BORDER_MEDIUM);
+            estiloDato_numeric.setFont(fuenteDatos);
+            estiloDato_numeric.setDataFormat(format.getFormat("0.00"));
+
+            HSSFCellStyle estiloDato_date = objWB.createCellStyle();
+            estiloDato_date.setWrapText(true);
+            estiloDato_date.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+            estiloDato_date.setBorderBottom(HSSFCellStyle.BORDER_MEDIUM);
+            estiloDato_date.setBorderTop(HSSFCellStyle.BORDER_MEDIUM);
+            estiloDato_date.setBorderRight(HSSFCellStyle.BORDER_MEDIUM);
+            estiloDato_date.setBorderLeft(HSSFCellStyle.BORDER_MEDIUM);
+            estiloDato_date.setFont(fuenteDatos);
+            estiloDato_date.setDataFormat(format.getFormat("dd/mm/yyyy"));
+
+            int number_sheet = 0;
+            int fila_id=0;
+            HSSFRow fila; 
+            HSSFCell columna;
+            HSSFSheet sheet;
+            if(getDatoEdicion().getAmbito_servicio().equals("003")){ /*PROVINCIAL*/
+                listDet_tareo_verificacion = det_tareoweb_verificationDao.getVisualizar_tareo_ordenservicio(user.getIDEMPRESA(), getDatoEdicion().getIdordenservicio());
+                if(listDet_tareo_verificacion.isEmpty()){
+                    this.mensaje="No existe tareo vinculado";
+                    WebUtil.MensajeError(mensaje);
+                    RequestContext.getCurrentInstance().update("datos:growl");
+                }else{
+                    for( Dordenserviciocliente ds : lstdordenserviciocliente){
+                        if(number_sheet ==0 ){
+                            /*TITULO : REPORTE DEL SERVICIO*/
+                            objWB.setSheetName(number_sheet,"CODIGO "+ds.getCodoperaciones()+"("+number_sheet+")");
                             fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
-                            /*label*/
                             columna = fila.createCell((short)1);
-                            columna.setCellStyle(estiloName);
-                            columna.setCellValue(ps.getCargo().trim());
-                            /*value*/
-                            columna = fila.createCell((short)2);
-                            columna.setCellStyle(estiloDato);
-                            columna.setCellValue(ps.getNombres());
-                            /*FILA DNI*/
-                            fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
-                            /*label*/
-                            columna = fila.createCell((short)1);
-                            columna.setCellStyle(estiloName);
-                            columna.setCellValue("DNI");
-                            /*value*/
-                            columna = fila.createCell((short)2);
-                            columna.setCellStyle(estiloDato);
-                            columna.setCellValue(ps.getDni());
-                            /*FILA TELÉFONO*/
-                            fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
-                            /*label*/
-                            columna = fila.createCell((short)1);
-                            columna.setCellStyle(estiloName);
-                            columna.setCellValue("TELÉFONO");
-                            /*value*/
-                            columna = fila.createCell((short)2);
-                            columna.setCellStyle(estiloDato);
+                            columna.setCellStyle(estiloVacio);
                             columna.setCellValue("");
-                            /*FILA PLACA*/
-                            fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
-                            /*label*/
-                            columna = fila.createCell((short)1);
-                            columna.setCellStyle(estiloName);
-                            columna.setCellValue("PLACA");
-                            /*value*/
                             columna = fila.createCell((short)2);
-                            columna.setCellStyle(estiloDato);
-                            columna.setCellValue(ps.getIdvehiculo());
-                            /*FILA CONDUCTOR*/
-                            fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
-                            /*label*/
-                            columna = fila.createCell((short)1);
-                            columna.setCellStyle(estiloName);
-                            columna.setCellValue("CONDUCTOR");
-                            /*value*/
-                            columna = fila.createCell((short)2);
-                            columna.setCellStyle(estiloDato);
-                            columna.setCellValue(ps.getConductor_cliente());
-                            /*FILA BREVETE*/
-                            fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
-                            /*label*/
-                            columna = fila.createCell((short)1);
-                            columna.setCellStyle(estiloName);
-                            columna.setCellValue("BREVETE");
-                            /*value*/
-                            columna = fila.createCell((short)2);
-                            columna.setCellStyle(estiloDato);
-                            columna.setCellValue(ps.getBrevete_cliente());
-                            /*FILA PLACA CLIENTE*/
-                            fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
-                            /*label*/
-                            columna = fila.createCell((short)1);
-                            columna.setCellStyle(estiloName);
-                            columna.setCellValue("PLACA CLIENTE");
-                            /*value*/
-                            columna = fila.createCell((short)2);
-                            columna.setCellStyle(estiloDato);
-                            columna.setCellValue(ps.getPlaca_cliente());
-                            /*FILA PRECINTO*/
-                            fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
-                            /*label*/
-                            columna = fila.createCell((short)1);
-                            columna.setCellStyle(estiloName);
-                            columna.setCellValue("PRECINTO");
-                            /*value*/
-                            columna = fila.createCell((short)2);
-                            columna.setCellStyle(estiloDato);
-                            columna.setCellValue(ps.getNroprecinto());
-                            /*FILA CONTENEDOR*/
-                            fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
-                            /*label*/
-                            columna = fila.createCell((short)1);
-                            columna.setCellStyle(estiloName);
-                            columna.setCellValue("CONTENEDOR");
-                            /*value*/
-                            columna = fila.createCell((short)2);
-                            columna.setCellStyle(estiloDato);
-                            columna.setCellValue(ps.getNrocontenedor());
-                            /*FILA N° SERVICIO*/
-                            fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
-                            /*label*/
-                            columna = fila.createCell((short)1);
-                            columna.setCellStyle(estiloName);
-                            columna.setCellValue("N° SERVICIO");
-                            /*value*/
-                            columna = fila.createCell((short)2);
-                            columna.setCellStyle(estiloDato);
-                            columna.setCellValue(ps.getNro_oservicio());
-                            /*** SEPARADOR *****/
-                            fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
-                            columna = fila.createCell((short)1);
-                            columna.setCellStyle(estiloName);
+                            columna.setCellStyle(estiloVacio);
                             columna.setCellValue("");
                             objWB.getSheetAt(number_sheet).addMergedRegion(new CellRangeAddress(
                                     fila_id-1, //first row (0-based)
@@ -977,238 +799,291 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                                     1, //first column (0-based)
                                     2  //last column  (0-based)
                             ));
-                    }
-                }
-                /*FILA CONTENEDOR*/
-                fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
-                /*label*/
-                columna = fila.createCell((short)1);
-                columna.setCellStyle(estiloName);
-                columna.setCellValue("UBICACIÓN");
-                /*value*/
-                columna = fila.createCell((short)2);
-                columna.setCellStyle(estiloDato);
-                columna.setCellValue("");
-                /*FILA HORA DE REPORTE*/
-                fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
-                /*label*/
-                columna = fila.createCell((short)1);
-                columna.setCellStyle(estiloName);
-                columna.setCellValue("HORA DE REPORTE");
-                /*value*/
-                columna = fila.createCell((short)2);
-                columna.setCellStyle(estiloDato);
-                columna.setCellValue(WebUtil.fechaDMY(new Date(), 4));
-                /*FILA NOVEDADES*/
-                fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
-                /*label*/
-                columna = fila.createCell((short)1);
-                columna.setCellStyle(estiloName);
-                columna.setCellValue("NOVEDADES");
-                /*value*/
-                columna = fila.createCell((short)2);
-                columna.setCellStyle(estiloDato);
-                columna.setCellValue("");
-                /*AUTOAJUSTE EN LA HOJA*/
-                for (int as = 0; as < 10; as++) {
-                    objWB.getSheetAt(number_sheet).autoSizeColumn((short) as);
-                }
-            }else{
-                fila_id=0;
-                sheet = objWB.createSheet("CODIGO "+ds.getCodoperaciones()+"("+number_sheet+")");
-                fila = sheet.createRow(fila_id++);
-                columna = fila.createCell((short)1);
-                columna.setCellStyle(estiloVacio);
-                columna.setCellValue("");
-                columna = fila.createCell((short)2);
-                columna.setCellStyle(estiloVacio);
-                columna.setCellValue("");
-                objWB.getSheetAt(number_sheet).addMergedRegion(new CellRangeAddress(
-                        fila_id-1, //first row (0-based)
-                        fila_id-1, //last row  (0-based)
-                        1, //first column (0-based)
-                        2  //last column  (0-based)
-                ));
-                
-                fila = sheet.createRow(fila_id++);
-                columna = fila.createCell((short)1);
-                columna.setCellStyle(estiloName);
-                columna.setCellValue("REPORTE DEL SERVICIO");
-                objWB.getSheetAt(number_sheet).addMergedRegion(new CellRangeAddress(
-                        fila_id-1, //first row (0-based)
-                        fila_id-1, //last row  (0-based)
-                        1, //first column (0-based)
-                        2  //last column  (0-based)
-                ));
-                /*FILA CLIENTE*/
-                fila = sheet.createRow(fila_id++);
-                /*label*/
-                columna = fila.createCell((short)1);
-                columna.setCellStyle(estiloName);
-                columna.setCellValue("CLIENTE");
-                /*value*/
-                columna = fila.createCell((short)2);
-                columna.setCellStyle(estiloDato);
-                columna.setCellValue(getDatoEdicion().getIdclieprov().trim()+" - "+getDatoEdicion().getRazonsocial());
-                /*FILA TIPO DE SERVICIO*/
-                fila = sheet.createRow(fila_id++);
-                /*label*/
-                columna = fila.createCell((short)1);
-                columna.setCellStyle(estiloName);
-                columna.setCellValue("TIPO DE SERVICIO");
-                /*value*/
-                columna = fila.createCell((short)2);
-                columna.setCellStyle(estiloDato);
-                columna.setCellValue(getDatoEdicion().getTipo_servicio().trim().equals("E")?"ESPECIAL":
-                        getDatoEdicion().getTipo_servicio().trim().equals("F")?"FIJO":"");
-                /*FILA FECHA DE SERVICIO*/
-                fila = sheet.createRow(fila_id++);
-                /*label*/
-                columna = fila.createCell((short)1);
-                columna.setCellStyle(estiloName);
-                columna.setCellValue("FECHA DE SERVICIO");
-                /*value*/
-                columna = fila.createCell((short)2);
-                columna.setCellStyle(estiloDato_date);
-                columna.setCellValue(WebUtil.fechaDMY(getDatoEdicion().getFecha(),1));
-                /*FILA TRAMO*/
-                fila = sheet.createRow(fila_id++);
-                /*label*/
-                columna = fila.createCell((short)1);
-                columna.setCellStyle(estiloName);
-                columna.setCellValue("TRAMO");
-                /*value*/
-                columna = fila.createCell((short)2);
-                columna.setCellStyle(estiloDato);
-                columna.setCellValue(ds.getRuta_viaje());
-                /*FILA HORA DE INICIO DE SERVICIO*/
-                fila = sheet.createRow(fila_id++);
-                /*label*/
-                columna = fila.createCell((short)1);
-                columna.setCellStyle(estiloName);
-                columna.setCellValue("HORA DE INICIO DE SERVICIO");
-                /*value*/
-                columna = fila.createCell((short)2);
-                columna.setCellStyle(estiloDato_numeric);
-                columna.setCellValue(ds.getHora_req());
-                /*TITULO : NOMBRES Y APELLIDOS*/
-                fila = sheet.createRow(fila_id++);
-                columna = fila.createCell((short)1);
-                columna.setCellStyle(estiloName);
-                columna.setCellValue("NOMBRES Y APELLIDOS");
-                objWB.getSheetAt(number_sheet).addMergedRegion(new CellRangeAddress(
-                        fila_id-1, //first row (0-based)
-                        fila_id-1, //last row  (0-based)
-                        1, //first column (0-based)
-                        2  //last column  (0-based)
-                ));
-                for(Personal_servicio ps : listPersonalservicio_total){
-                    if(ps.getIdempresa().trim().equalsIgnoreCase(ds.getIdempresa().trim()) &&
-                        ps.getItem().trim().equals(ds.getItem().trim())){
-                            /*FILA CARGO*/
-                            fila = sheet.createRow(fila_id++);
+                            fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                            columna = fila.createCell((short)1);
+                            columna.setCellStyle(estiloName);
+                            columna.setCellValue("REPORTE DEL SERVICIO");
+                            objWB.getSheetAt(number_sheet).addMergedRegion(new CellRangeAddress(
+                                    fila_id-1, //first row (0-based)
+                                    fila_id-1, //last row  (0-based)
+                                    1, //first column (0-based)
+                                    2  //last column  (0-based)
+                            ));
+                            /*FILA CLIENTE*/
+                            fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
                             /*label*/
                             columna = fila.createCell((short)1);
                             columna.setCellStyle(estiloName);
-                            columna.setCellValue(ps.getCargo().trim());
+                            columna.setCellValue("CLIENTE");
                             /*value*/
                             columna = fila.createCell((short)2);
                             columna.setCellStyle(estiloDato);
-                            columna.setCellValue(ps.getNombres());
-                            /*FILA DNI*/
-                            fila = sheet.createRow(fila_id++);
+                            columna.setCellValue(getDatoEdicion().getIdclieprov().trim()+" - "+getDatoEdicion().getRazonsocial());
+                            /*FILA TIPO DE SERVICIO*/
+                            fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
                             /*label*/
                             columna = fila.createCell((short)1);
                             columna.setCellStyle(estiloName);
-                            columna.setCellValue("DNI");
+                            columna.setCellValue("TIPO DE SERVICIO");
                             /*value*/
                             columna = fila.createCell((short)2);
                             columna.setCellStyle(estiloDato);
-                            columna.setCellValue(ps.getDni());
-                            /*FILA TELÉFONO*/
-                            fila = sheet.createRow(fila_id++);
+                            columna.setCellValue(getDatoEdicion().getTipo_servicio().trim().equals("E")?"ESPECIAL":
+                                    getDatoEdicion().getTipo_servicio().trim().equals("F")?"FIJO":"");
+                            /*FILA FECHA DE SERVICIO*/
+                            fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
                             /*label*/
                             columna = fila.createCell((short)1);
                             columna.setCellStyle(estiloName);
-                            columna.setCellValue("TELÉFONO");
+                            columna.setCellValue("FECHA DE SERVICIO");
+                            /*value*/
+                            columna = fila.createCell((short)2);
+                            columna.setCellStyle(estiloDato_date);
+                            columna.setCellValue(WebUtil.fechaDMY(getDatoEdicion().getFecha(),1));
+                            /*FILA TRAMO*/
+                            fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                            /*label*/
+                            columna = fila.createCell((short)1);
+                            columna.setCellStyle(estiloName);
+                            columna.setCellValue("TRAMO");
                             /*value*/
                             columna = fila.createCell((short)2);
                             columna.setCellStyle(estiloDato);
+                            columna.setCellValue(ds.getRuta_viaje());
+                            /*FILA HORA DE INICIO DE SERVICIO*/
+                            fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                            /*label*/
+                            columna = fila.createCell((short)1);
+                            columna.setCellStyle(estiloName);
+                            columna.setCellValue("HORA DE INICIO DE SERVICIO");
+                            /*value*/
+                            columna = fila.createCell((short)2);
+                            columna.setCellStyle(estiloDato_numeric);
+                            columna.setCellValue(ds.getHora_req());
+                            /*TITULO : NOMBRES Y APELLIDOS*/
+                            fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                            columna = fila.createCell((short)1);
+                            columna.setCellStyle(estiloName);
+                            columna.setCellValue("(NOMBRES Y APELLIDOS) - TAREO");
+                            objWB.getSheetAt(number_sheet).addMergedRegion(new CellRangeAddress(
+                                    fila_id-1, //first row (0-based)
+                                    fila_id-1, //last row  (0-based)
+                                    1, //first column (0-based)
+                                    2  //last column  (0-based)
+                            ));
+                            for(Personal_servicio ps : listPersonalservicio_total){
+                                if(ps.getIdempresa().trim().equalsIgnoreCase(ds.getIdempresa().trim()) &&
+                                    ps.getItem().trim().equals(ds.getItem().trim())){
+                                        /*FILA CARGO*/
+                                        fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                                        /*label*/
+                                        columna = fila.createCell((short)1);
+                                        columna.setCellStyle(estiloName);
+                                        columna.setCellValue(ps.getCargo().trim());
+                                        /*value*/
+                                        columna = fila.createCell((short)2);
+                                        columna.setCellStyle(estiloDato);
+                                        columna.setCellValue(ps.getNombres());
+                                        /*FILA DNI*/
+                                        fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                                        /*label*/
+                                        columna = fila.createCell((short)1);
+                                        columna.setCellStyle(estiloName);
+                                        columna.setCellValue("DNI");
+                                        /*value*/
+                                        columna = fila.createCell((short)2);
+                                        columna.setCellStyle(estiloDato);
+                                        columna.setCellValue(ps.getDni());
+                                        /*FILA TELÉFONO*/
+                                        fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                                        /*label*/
+                                        columna = fila.createCell((short)1);
+                                        columna.setCellStyle(estiloName);
+                                        columna.setCellValue("TELÉFONO");
+                                        /*value*/
+                                        columna = fila.createCell((short)2);
+                                        columna.setCellStyle(estiloDato);
+                                        columna.setCellValue("");
+                                        /*FILA PLACA*/
+                                        fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                                        /*label*/
+                                        columna = fila.createCell((short)1);
+                                        columna.setCellStyle(estiloName);
+                                        columna.setCellValue("PLACA");
+                                        /*value*/
+                                        columna = fila.createCell((short)2);
+                                        columna.setCellStyle(estiloDato);
+                                        columna.setCellValue(ps.getIdvehiculo());
+                                        /*FILA CONDUCTOR*/
+                                        fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                                        /*label*/
+                                        columna = fila.createCell((short)1);
+                                        columna.setCellStyle(estiloName);
+                                        columna.setCellValue("CONDUCTOR");
+                                        /*value*/
+                                        columna = fila.createCell((short)2);
+                                        columna.setCellStyle(estiloDato);
+                                        columna.setCellValue(ps.getConductor_cliente());
+                                        /*FILA BREVETE*/
+                                        fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                                        /*label*/
+                                        columna = fila.createCell((short)1);
+                                        columna.setCellStyle(estiloName);
+                                        columna.setCellValue("BREVETE");
+                                        /*value*/
+                                        columna = fila.createCell((short)2);
+                                        columna.setCellStyle(estiloDato);
+                                        columna.setCellValue(ps.getBrevete_cliente());
+                                        /*FILA PLACA CLIENTE*/
+                                        fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                                        /*label*/
+                                        columna = fila.createCell((short)1);
+                                        columna.setCellStyle(estiloName);
+                                        columna.setCellValue("PLACA CLIENTE");
+                                        /*value*/
+                                        columna = fila.createCell((short)2);
+                                        columna.setCellStyle(estiloDato);
+                                        columna.setCellValue(ps.getPlaca_cliente());
+                                        /*FILA PRECINTO*/
+                                        fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                                        /*label*/
+                                        columna = fila.createCell((short)1);
+                                        columna.setCellStyle(estiloName);
+                                        columna.setCellValue("PRECINTO");
+                                        /*value*/
+                                        columna = fila.createCell((short)2);
+                                        columna.setCellStyle(estiloDato);
+                                        columna.setCellValue(ps.getNroprecinto());
+                                        /*FILA CONTENEDOR*/
+                                        fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                                        /*label*/
+                                        columna = fila.createCell((short)1);
+                                        columna.setCellStyle(estiloName);
+                                        columna.setCellValue("CONTENEDOR");
+                                        /*value*/
+                                        columna = fila.createCell((short)2);
+                                        columna.setCellStyle(estiloDato);
+                                        columna.setCellValue(ps.getNrocontenedor());
+                                        /*FILA N° SERVICIO*/
+                                        fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                                        /*label*/
+                                        columna = fila.createCell((short)1);
+                                        columna.setCellStyle(estiloName);
+                                        columna.setCellValue("N° SERVICIO");
+                                        /*value*/
+                                        columna = fila.createCell((short)2);
+                                        columna.setCellStyle(estiloDato);
+                                        columna.setCellValue(ps.getNro_oservicio());
+                                        /*** SEPARADOR *****/
+                                        fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                                        columna = fila.createCell((short)1);
+                                        columna.setCellStyle(estiloName);
+                                        columna.setCellValue("");
+                                        objWB.getSheetAt(number_sheet).addMergedRegion(new CellRangeAddress(
+                                                fila_id-1, //first row (0-based)
+                                                fila_id-1, //last row  (0-based)
+                                                1, //first column (0-based)
+                                                2  //last column  (0-based)
+                                        ));
+                                        /*AGREGAR GRILLA DE TAREO*/
+                                        Det_tareoweb dt=null;String sxml="";
+                                        for(Det_tareoweb o:listDet_tareo_verificacion){
+                                            if(WebUtil.isnull(o.getIdpersonal(), "").equals(ps.getIdpersonal()) && 
+                                                    WebUtil.isnull(o.getItem_dordenservicio(), "").equals(ps.getItem()) &&
+                                                    WebUtil.isnull(o.getItem2_personalservicio(), "").equals(ps.getItem2())){
+                                                dt = o;
+                                                break;
+                                            }
+                                        }
+                                        if(dt!=null){
+                                            sxml = dt.getEncrypt_programacion();
+                                            if(!WebUtil.isnull(sxml, "").equals("")){
+                                                List<Programacion> lstPr = (List<Programacion>)WebUtil.stringObject("com.nisira.core.entity.Programacion", sxml);
+                                                if(!lstPr.isEmpty()){
+                                                    fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                                                    columna = fila.createCell((short)1);
+                                                    columna.setCellStyle(estiloName);
+                                                    columna.setCellValue("DETALLE");
+                                                    columna = fila.createCell((short)2);
+                                                    columna.setCellStyle(estiloName);
+                                                    columna.setCellValue("FECHA");
+                                                    columna = fila.createCell((short)3);
+                                                    columna.setCellStyle(estiloName);
+                                                    columna.setCellValue("HORA INICIO");
+                                                    columna = fila.createCell((short)4);
+                                                    columna.setCellStyle(estiloName);
+                                                    columna.setCellValue("RECORRIDO HRS");
+                                                    columna = fila.createCell((short)5);
+                                                    columna.setCellStyle(estiloName);
+                                                    columna.setCellValue("COSTO X HR");
+                                                    columna = fila.createCell((short)6);
+                                                    columna.setCellStyle(estiloName);
+                                                    columna.setCellValue("TOTAL S/.");
+                                                    columna = fila.createCell((short)7);
+                                                    columna.setCellStyle(estiloName);
+                                                    columna.setCellValue("TOTAL ACU S/.");
+                                                    /*** SEPARADOR *****/
+                                                    int cont=0,tpro = lstPr.size();
+                                                    Programacion pr=null;
+                                                    while(cont<tpro){
+                                                        fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                                                        pr = lstPr.get(cont++);
+                                                        /*DETALLE*/
+                                                        columna = fila.createCell((short)1);
+                                                        columna.setCellStyle(estiloDato);
+                                                        columna.setCellValue(pr.getHeader());
+                                                        /*HORA INICIO*/
+                                                        columna = fila.createCell((short)3);
+                                                        columna.setCellStyle(estiloDato);
+                                                        columna.setCellValue(pr.getValor());
+                                                        pr = lstPr.get(cont++);
+                                                        /*HORA INICIO*/
+                                                        columna = fila.createCell((short)2);
+                                                        columna.setCellStyle(estiloDato);
+                                                        columna.setCellValue(pr.getValor());
+                                                        /*********RELLENO********/
+                                                        columna = fila.createCell((short)4);
+                                                        columna.setCellStyle(estiloDato);
+                                                        columna.setCellValue("");
+                                                        columna = fila.createCell((short)5);
+                                                        columna.setCellStyle(estiloDato);
+                                                        columna.setCellValue("");
+                                                        columna = fila.createCell((short)6);
+                                                        columna.setCellStyle(estiloDato);
+                                                        columna.setCellValue("");
+                                                        columna = fila.createCell((short)7);
+                                                        columna.setCellStyle(estiloDato);
+                                                        columna.setCellValue("");
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        /*** SEPARADOR *****/
+                                        fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                                        columna = fila.createCell((short)1);
+                                        columna.setCellStyle(estiloName);
+                                        columna.setCellValue("");
+                                        objWB.getSheetAt(number_sheet).addMergedRegion(new CellRangeAddress(
+                                                fila_id-1, //first row (0-based)
+                                                fila_id-1, //last row  (0-based)
+                                                1, //first column (0-based)
+                                                2  //last column  (0-based)
+                                        ));
+                                }
+                            }
+                            /*AUTOAJUSTE EN LA HOJA*/
+                            for (int as = 0; as < 10; as++) {
+                                objWB.getSheetAt(number_sheet).autoSizeColumn((short) as);
+                            }
+                        }else{
+                            fila_id=0;
+                            sheet = objWB.createSheet("CODIGO "+ds.getCodoperaciones()+"("+number_sheet+")");
+                            fila = sheet.createRow(fila_id++);
+                            columna = fila.createCell((short)1);
+                            columna.setCellStyle(estiloVacio);
                             columna.setCellValue("");
-                            /*FILA PLACA*/
-                            fila = sheet.createRow(fila_id++);
-                            /*label*/
-                            columna = fila.createCell((short)1);
-                            columna.setCellStyle(estiloName);
-                            columna.setCellValue("PLACA");
-                            /*value*/
                             columna = fila.createCell((short)2);
-                            columna.setCellStyle(estiloDato);
-                            columna.setCellValue(ps.getIdvehiculo());
-                            /*FILA CONDUCTOR*/
-                            fila = sheet.createRow(fila_id++);
-                            /*label*/
-                            columna = fila.createCell((short)1);
-                            columna.setCellStyle(estiloName);
-                            columna.setCellValue("CONDUCTOR");
-                            /*value*/
-                            columna = fila.createCell((short)2);
-                            columna.setCellStyle(estiloDato);
-                            columna.setCellValue(ps.getConductor_cliente());
-                            /*FILA BREVETE*/
-                            fila = sheet.createRow(fila_id++);
-                            /*label*/
-                            columna = fila.createCell((short)1);
-                            columna.setCellStyle(estiloName);
-                            columna.setCellValue("BREVETE");
-                            /*value*/
-                            columna = fila.createCell((short)2);
-                            columna.setCellStyle(estiloDato);
-                            columna.setCellValue(ps.getBrevete_cliente());
-                            /*FILA PLACA CLIENTE*/
-                            fila = sheet.createRow(fila_id++);
-                            /*label*/
-                            columna = fila.createCell((short)1);
-                            columna.setCellStyle(estiloName);
-                            columna.setCellValue("PLACA CLIENTE");
-                            /*value*/
-                            columna = fila.createCell((short)2);
-                            columna.setCellStyle(estiloDato);
-                            columna.setCellValue(ps.getPlaca_cliente());
-                            /*FILA PRECINTO*/
-                            fila = sheet.createRow(fila_id++);
-                            /*label*/
-                            columna = fila.createCell((short)1);
-                            columna.setCellStyle(estiloName);
-                            columna.setCellValue("PRECINTO");
-                            /*value*/
-                            columna = fila.createCell((short)2);
-                            columna.setCellStyle(estiloDato);
-                            columna.setCellValue(ps.getNroprecinto());
-                            /*FILA CONTENEDOR*/
-                            fila = sheet.createRow(fila_id++);
-                            /*label*/
-                            columna = fila.createCell((short)1);
-                            columna.setCellStyle(estiloName);
-                            columna.setCellValue("CONTENEDOR");
-                            /*value*/
-                            columna = fila.createCell((short)2);
-                            columna.setCellStyle(estiloDato);
-                            columna.setCellValue(ps.getNrocontenedor());
-                            /*FILA N° SERVICIO*/
-                            fila = sheet.createRow(fila_id++);
-                            /*label*/
-                            columna = fila.createCell((short)1);
-                            columna.setCellStyle(estiloName);
-                            columna.setCellValue("N° SERVICIO");
-                            /*value*/
-                            columna = fila.createCell((short)2);
-                            columna.setCellStyle(estiloDato);
-                            columna.setCellValue(ps.getNro_oservicio());
-                            /*** SEPARADOR *****/
-                            fila = sheet.createRow(fila_id++);
-                            columna = fila.createCell((short)1);
-                            columna.setCellStyle(estiloName);
+                            columna.setCellStyle(estiloVacio);
                             columna.setCellValue("");
                             objWB.getSheetAt(number_sheet).addMergedRegion(new CellRangeAddress(
                                     fila_id-1, //first row (0-based)
@@ -1216,44 +1091,775 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                                     1, //first column (0-based)
                                     2  //last column  (0-based)
                             ));
+
+                            fila = sheet.createRow(fila_id++);
+                            columna = fila.createCell((short)1);
+                            columna.setCellStyle(estiloName);
+                            columna.setCellValue("REPORTE DEL SERVICIO");
+                            objWB.getSheetAt(number_sheet).addMergedRegion(new CellRangeAddress(
+                                    fila_id-1, //first row (0-based)
+                                    fila_id-1, //last row  (0-based)
+                                    1, //first column (0-based)
+                                    2  //last column  (0-based)
+                            ));
+                            /*FILA CLIENTE*/
+                            fila = sheet.createRow(fila_id++);
+                            /*label*/
+                            columna = fila.createCell((short)1);
+                            columna.setCellStyle(estiloName);
+                            columna.setCellValue("CLIENTE");
+                            /*value*/
+                            columna = fila.createCell((short)2);
+                            columna.setCellStyle(estiloDato);
+                            columna.setCellValue(getDatoEdicion().getIdclieprov().trim()+" - "+getDatoEdicion().getRazonsocial());
+                            /*FILA TIPO DE SERVICIO*/
+                            fila = sheet.createRow(fila_id++);
+                            /*label*/
+                            columna = fila.createCell((short)1);
+                            columna.setCellStyle(estiloName);
+                            columna.setCellValue("TIPO DE SERVICIO");
+                            /*value*/
+                            columna = fila.createCell((short)2);
+                            columna.setCellStyle(estiloDato);
+                            columna.setCellValue(getDatoEdicion().getTipo_servicio().trim().equals("E")?"ESPECIAL":
+                                    getDatoEdicion().getTipo_servicio().trim().equals("F")?"FIJO":"");
+                            /*FILA FECHA DE SERVICIO*/
+                            fila = sheet.createRow(fila_id++);
+                            /*label*/
+                            columna = fila.createCell((short)1);
+                            columna.setCellStyle(estiloName);
+                            columna.setCellValue("FECHA DE SERVICIO");
+                            /*value*/
+                            columna = fila.createCell((short)2);
+                            columna.setCellStyle(estiloDato_date);
+                            columna.setCellValue(WebUtil.fechaDMY(getDatoEdicion().getFecha(),1));
+                            /*FILA TRAMO*/
+                            fila = sheet.createRow(fila_id++);
+                            /*label*/
+                            columna = fila.createCell((short)1);
+                            columna.setCellStyle(estiloName);
+                            columna.setCellValue("TRAMO");
+                            /*value*/
+                            columna = fila.createCell((short)2);
+                            columna.setCellStyle(estiloDato);
+                            columna.setCellValue(ds.getRuta_viaje());
+                            /*FILA HORA DE INICIO DE SERVICIO*/
+                            fila = sheet.createRow(fila_id++);
+                            /*label*/
+                            columna = fila.createCell((short)1);
+                            columna.setCellStyle(estiloName);
+                            columna.setCellValue("HORA DE INICIO DE SERVICIO");
+                            /*value*/
+                            columna = fila.createCell((short)2);
+                            columna.setCellStyle(estiloDato_numeric);
+                            columna.setCellValue(ds.getHora_req());
+                            /*TITULO : NOMBRES Y APELLIDOS*/
+                            fila = sheet.createRow(fila_id++);
+                            columna = fila.createCell((short)1);
+                            columna.setCellStyle(estiloName);
+                            columna.setCellValue("(NOMBRES Y APELLIDOS) - TAREO");
+                            objWB.getSheetAt(number_sheet).addMergedRegion(new CellRangeAddress(
+                                    fila_id-1, //first row (0-based)
+                                    fila_id-1, //last row  (0-based)
+                                    1, //first column (0-based)
+                                    2  //last column  (0-based)
+                            ));
+                            for(Personal_servicio ps : listPersonalservicio_total){
+                                if(ps.getIdempresa().trim().equalsIgnoreCase(ds.getIdempresa().trim()) &&
+                                    ps.getItem().trim().equals(ds.getItem().trim())){
+                                        /*FILA CARGO*/
+                                        fila = sheet.createRow(fila_id++);
+                                        /*label*/
+                                        columna = fila.createCell((short)1);
+                                        columna.setCellStyle(estiloName);
+                                        columna.setCellValue(ps.getCargo().trim());
+                                        /*value*/
+                                        columna = fila.createCell((short)2);
+                                        columna.setCellStyle(estiloDato);
+                                        columna.setCellValue(ps.getNombres());
+                                        /*FILA DNI*/
+                                        fila = sheet.createRow(fila_id++);
+                                        /*label*/
+                                        columna = fila.createCell((short)1);
+                                        columna.setCellStyle(estiloName);
+                                        columna.setCellValue("DNI");
+                                        /*value*/
+                                        columna = fila.createCell((short)2);
+                                        columna.setCellStyle(estiloDato);
+                                        columna.setCellValue(ps.getDni());
+                                        /*FILA TELÉFONO*/
+                                        fila = sheet.createRow(fila_id++);
+                                        /*label*/
+                                        columna = fila.createCell((short)1);
+                                        columna.setCellStyle(estiloName);
+                                        columna.setCellValue("TELÉFONO");
+                                        /*value*/
+                                        columna = fila.createCell((short)2);
+                                        columna.setCellStyle(estiloDato);
+                                        columna.setCellValue("");
+                                        /*FILA PLACA*/
+                                        fila = sheet.createRow(fila_id++);
+                                        /*label*/
+                                        columna = fila.createCell((short)1);
+                                        columna.setCellStyle(estiloName);
+                                        columna.setCellValue("PLACA");
+                                        /*value*/
+                                        columna = fila.createCell((short)2);
+                                        columna.setCellStyle(estiloDato);
+                                        columna.setCellValue(ps.getIdvehiculo());
+                                        /*FILA CONDUCTOR*/
+                                        fila = sheet.createRow(fila_id++);
+                                        /*label*/
+                                        columna = fila.createCell((short)1);
+                                        columna.setCellStyle(estiloName);
+                                        columna.setCellValue("CONDUCTOR");
+                                        /*value*/
+                                        columna = fila.createCell((short)2);
+                                        columna.setCellStyle(estiloDato);
+                                        columna.setCellValue(ps.getConductor_cliente());
+                                        /*FILA BREVETE*/
+                                        fila = sheet.createRow(fila_id++);
+                                        /*label*/
+                                        columna = fila.createCell((short)1);
+                                        columna.setCellStyle(estiloName);
+                                        columna.setCellValue("BREVETE");
+                                        /*value*/
+                                        columna = fila.createCell((short)2);
+                                        columna.setCellStyle(estiloDato);
+                                        columna.setCellValue(ps.getBrevete_cliente());
+                                        /*FILA PLACA CLIENTE*/
+                                        fila = sheet.createRow(fila_id++);
+                                        /*label*/
+                                        columna = fila.createCell((short)1);
+                                        columna.setCellStyle(estiloName);
+                                        columna.setCellValue("PLACA CLIENTE");
+                                        /*value*/
+                                        columna = fila.createCell((short)2);
+                                        columna.setCellStyle(estiloDato);
+                                        columna.setCellValue(ps.getPlaca_cliente());
+                                        /*FILA PRECINTO*/
+                                        fila = sheet.createRow(fila_id++);
+                                        /*label*/
+                                        columna = fila.createCell((short)1);
+                                        columna.setCellStyle(estiloName);
+                                        columna.setCellValue("PRECINTO");
+                                        /*value*/
+                                        columna = fila.createCell((short)2);
+                                        columna.setCellStyle(estiloDato);
+                                        columna.setCellValue(ps.getNroprecinto());
+                                        /*FILA CONTENEDOR*/
+                                        fila = sheet.createRow(fila_id++);
+                                        /*label*/
+                                        columna = fila.createCell((short)1);
+                                        columna.setCellStyle(estiloName);
+                                        columna.setCellValue("CONTENEDOR");
+                                        /*value*/
+                                        columna = fila.createCell((short)2);
+                                        columna.setCellStyle(estiloDato);
+                                        columna.setCellValue(ps.getNrocontenedor());
+                                        /*FILA N° SERVICIO*/
+                                        fila = sheet.createRow(fila_id++);
+                                        /*label*/
+                                        columna = fila.createCell((short)1);
+                                        columna.setCellStyle(estiloName);
+                                        columna.setCellValue("N° SERVICIO");
+                                        /*value*/
+                                        columna = fila.createCell((short)2);
+                                        columna.setCellStyle(estiloDato);
+                                        columna.setCellValue(ps.getNro_oservicio());
+                                        /*** SEPARADOR *****/
+                                        fila = sheet.createRow(fila_id++);
+                                        columna = fila.createCell((short)1);
+                                        columna.setCellStyle(estiloName);
+                                        columna.setCellValue("");
+                                        objWB.getSheetAt(number_sheet).addMergedRegion(new CellRangeAddress(
+                                                fila_id-1, //first row (0-based)
+                                                fila_id-1, //last row  (0-based)
+                                                1, //first column (0-based)
+                                                2  //last column  (0-based)
+                                        ));
+                                        /*AGREGAR GRILLA DE TAREO*/
+                                        Det_tareoweb dt=null;String sxml="";
+                                        for(Det_tareoweb o:listDet_tareo_verificacion){
+                                            if(WebUtil.isnull(o.getIdpersonal(), "").equals(ps.getIdpersonal()) && 
+                                                    WebUtil.isnull(o.getItem_dordenservicio(), "").equals(ps.getItem()) &&
+                                                    WebUtil.isnull(o.getItem2_personalservicio(), "").equals(ps.getItem2())){
+                                                dt = o;
+                                                break;
+                                            }
+                                        }
+                                        if(dt!=null){
+                                            sxml = dt.getEncrypt_programacion();
+                                            List<Programacion> lstPr = (List<Programacion>)WebUtil.stringObject("com.nisira.core.entity.Programacion", sxml);
+                                            if(!lstPr.isEmpty()){
+                                                fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                                                columna = fila.createCell((short)1);
+                                                columna.setCellStyle(estiloName);
+                                                columna.setCellValue("DETALLE");
+                                                columna = fila.createCell((short)2);
+                                                columna.setCellStyle(estiloName);
+                                                columna.setCellValue("FECHA");
+                                                columna = fila.createCell((short)3);
+                                                columna.setCellStyle(estiloName);
+                                                columna.setCellValue("HORA INICIO");
+                                                columna = fila.createCell((short)4);
+                                                columna.setCellStyle(estiloName);
+                                                columna.setCellValue("RECORRIDO HRS");
+                                                columna = fila.createCell((short)5);
+                                                columna.setCellStyle(estiloName);
+                                                columna.setCellValue("COSTO X HR");
+                                                columna = fila.createCell((short)6);
+                                                columna.setCellStyle(estiloName);
+                                                columna.setCellValue("TOTAL S/.");
+                                                columna = fila.createCell((short)7);
+                                                columna.setCellStyle(estiloName);
+                                                columna.setCellValue("TOTAL ACU S/.");
+                                                /*** SEPARADOR *****/
+                                                int cont=0,tpro = lstPr.size();
+                                                Programacion pr=null;
+                                                while(cont<tpro){
+                                                    fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                                                    pr = lstPr.get(cont++);
+                                                    /*DETALLE*/
+                                                    columna = fila.createCell((short)1);
+                                                    columna.setCellStyle(estiloDato);
+                                                    columna.setCellValue(pr.getHeader());
+                                                    /*HORA INICIO*/
+                                                    columna = fila.createCell((short)3);
+                                                    columna.setCellStyle(estiloDato);
+                                                    columna.setCellValue(pr.getValor());
+                                                    pr = lstPr.get(cont++);
+                                                    /*HORA INICIO*/
+                                                    columna = fila.createCell((short)2);
+                                                    columna.setCellStyle(estiloDato);
+                                                    columna.setCellValue(pr.getValor());
+                                                    /*********RELLENO********/
+                                                    columna = fila.createCell((short)4);
+                                                    columna.setCellStyle(estiloDato);
+                                                    columna.setCellValue("");
+                                                    columna = fila.createCell((short)5);
+                                                    columna.setCellStyle(estiloDato);
+                                                    columna.setCellValue("");
+                                                    columna = fila.createCell((short)6);
+                                                    columna.setCellStyle(estiloDato);
+                                                    columna.setCellValue("");
+                                                    columna = fila.createCell((short)7);
+                                                    columna.setCellStyle(estiloDato);
+                                                    columna.setCellValue("");
+                                                }
+                                            }
+                                        }
+                                        /*** SEPARADOR *****/
+                                        fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                                        columna = fila.createCell((short)1);
+                                        columna.setCellStyle(estiloName);
+                                        columna.setCellValue("");
+                                        objWB.getSheetAt(number_sheet).addMergedRegion(new CellRangeAddress(
+                                                fila_id-1, //first row (0-based)
+                                                fila_id-1, //last row  (0-based)
+                                                1, //first column (0-based)
+                                                2  //last column  (0-based)
+                                        ));
+                                }
+                            }
+                            /*AUTOAJUSTE EN LA HOJA*/
+                            for (int as = 0; as < 10; as++) {
+                                objWB.getSheetAt(number_sheet).autoSizeColumn((short) as);
+                            }
+                        }
+                        number_sheet++;
                     }
                 }
-                /*FILA CONTENEDOR*/
-                fila = sheet.createRow(fila_id++);
-                /*label*/
-                columna = fila.createCell((short)1);
-                columna.setCellStyle(estiloName);
-                columna.setCellValue("UBICACIÓN");
-                /*value*/
-                columna = fila.createCell((short)2);
-                columna.setCellStyle(estiloDato);
-                columna.setCellValue("");
-                /*FILA HORA DE REPORTE*/
-                fila = sheet.createRow(fila_id++);
-                /*label*/
-                columna = fila.createCell((short)1);
-                columna.setCellStyle(estiloName);
-                columna.setCellValue("HORA DE REPORTE");
-                /*value*/
-                columna = fila.createCell((short)2);
-                columna.setCellStyle(estiloDato);
-                columna.setCellValue(WebUtil.fechaDMY(new Date(), 4));
-                /*FILA NOVEDADES*/
-                fila = sheet.createRow(fila_id++);
-                /*label*/
-                columna = fila.createCell((short)1);
-                columna.setCellStyle(estiloName);
-                columna.setCellValue("NOVEDADES");
-                /*value*/
-                columna = fila.createCell((short)2);
-                columna.setCellStyle(estiloDato);
-                columna.setCellValue("");
-                /*AUTOAJUSTE EN LA HOJA*/
-                for (int as = 0; as < 10; as++) {
-                    objWB.getSheetAt(number_sheet).autoSizeColumn((short) as);
+            }else{/*LOCAL / SUR-NORTE CHICO*/
+                //HSSFRow fila_cabecera = objWB.getSheetAt(0).getRow(0);
+                for( Dordenserviciocliente ds : lstdordenserviciocliente){
+                    if(number_sheet ==0 ){
+                        /*TITULO : REPORTE DEL SERVICIO*/
+                        objWB.setSheetName(number_sheet,"CODIGO "+ds.getCodoperaciones()+"("+number_sheet+")");
+                        fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                        columna = fila.createCell((short)1);
+                        columna.setCellStyle(estiloVacio);
+                        columna.setCellValue("");
+                        columna = fila.createCell((short)2);
+                        columna.setCellStyle(estiloVacio);
+                        columna.setCellValue("");
+                        objWB.getSheetAt(number_sheet).addMergedRegion(new CellRangeAddress(
+                                fila_id-1, //first row (0-based)
+                                fila_id-1, //last row  (0-based)
+                                1, //first column (0-based)
+                                2  //last column  (0-based)
+                        ));
+                        fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                        columna = fila.createCell((short)1);
+                        columna.setCellStyle(estiloName);
+                        columna.setCellValue("REPORTE DEL SERVICIO");
+                        objWB.getSheetAt(number_sheet).addMergedRegion(new CellRangeAddress(
+                                fila_id-1, //first row (0-based)
+                                fila_id-1, //last row  (0-based)
+                                1, //first column (0-based)
+                                2  //last column  (0-based)
+                        ));
+                        /*FILA CLIENTE*/
+                        fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                        /*label*/
+                        columna = fila.createCell((short)1);
+                        columna.setCellStyle(estiloName);
+                        columna.setCellValue("CLIENTE");
+                        /*value*/
+                        columna = fila.createCell((short)2);
+                        columna.setCellStyle(estiloDato);
+                        columna.setCellValue(getDatoEdicion().getIdclieprov().trim()+" - "+getDatoEdicion().getRazonsocial());
+                        /*FILA TIPO DE SERVICIO*/
+                        fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                        /*label*/
+                        columna = fila.createCell((short)1);
+                        columna.setCellStyle(estiloName);
+                        columna.setCellValue("TIPO DE SERVICIO");
+                        /*value*/
+                        columna = fila.createCell((short)2);
+                        columna.setCellStyle(estiloDato);
+                        columna.setCellValue(getDatoEdicion().getTipo_servicio().trim().equals("E")?"ESPECIAL":
+                                getDatoEdicion().getTipo_servicio().trim().equals("F")?"FIJO":"");
+                        /*FILA FECHA DE SERVICIO*/
+                        fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                        /*label*/
+                        columna = fila.createCell((short)1);
+                        columna.setCellStyle(estiloName);
+                        columna.setCellValue("FECHA DE SERVICIO");
+                        /*value*/
+                        columna = fila.createCell((short)2);
+                        columna.setCellStyle(estiloDato_date);
+                        columna.setCellValue(WebUtil.fechaDMY(getDatoEdicion().getFecha(),1));
+                        /*FILA TRAMO*/
+                        fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                        /*label*/
+                        columna = fila.createCell((short)1);
+                        columna.setCellStyle(estiloName);
+                        columna.setCellValue("TRAMO");
+                        /*value*/
+                        columna = fila.createCell((short)2);
+                        columna.setCellStyle(estiloDato);
+                        columna.setCellValue(ds.getRuta_viaje());
+                        /*FILA HORA DE INICIO DE SERVICIO*/
+                        fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                        /*label*/
+                        columna = fila.createCell((short)1);
+                        columna.setCellStyle(estiloName);
+                        columna.setCellValue("HORA DE INICIO DE SERVICIO");
+                        /*value*/
+                        columna = fila.createCell((short)2);
+                        columna.setCellStyle(estiloDato_numeric);
+                        columna.setCellValue(ds.getHora_req());
+                        /*TITULO : NOMBRES Y APELLIDOS*/
+                        fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                        columna = fila.createCell((short)1);
+                        columna.setCellStyle(estiloName);
+                        columna.setCellValue("NOMBRES Y APELLIDOS");
+                        objWB.getSheetAt(number_sheet).addMergedRegion(new CellRangeAddress(
+                                fila_id-1, //first row (0-based)
+                                fila_id-1, //last row  (0-based)
+                                1, //first column (0-based)
+                                2  //last column  (0-based)
+                        ));
+                        for(Personal_servicio ps : listPersonalservicio_total){
+                            if(ps.getIdempresa().trim().equalsIgnoreCase(ds.getIdempresa().trim()) &&
+                                ps.getItem().trim().equals(ds.getItem().trim())){
+                                    /*FILA CARGO*/
+                                    fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                                    /*label*/
+                                    columna = fila.createCell((short)1);
+                                    columna.setCellStyle(estiloName);
+                                    columna.setCellValue(ps.getCargo().trim());
+                                    /*value*/
+                                    columna = fila.createCell((short)2);
+                                    columna.setCellStyle(estiloDato);
+                                    columna.setCellValue(ps.getNombres());
+                                    /*FILA DNI*/
+                                    fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                                    /*label*/
+                                    columna = fila.createCell((short)1);
+                                    columna.setCellStyle(estiloName);
+                                    columna.setCellValue("DNI");
+                                    /*value*/
+                                    columna = fila.createCell((short)2);
+                                    columna.setCellStyle(estiloDato);
+                                    columna.setCellValue(ps.getDni());
+                                    /*FILA TELÉFONO*/
+                                    fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                                    /*label*/
+                                    columna = fila.createCell((short)1);
+                                    columna.setCellStyle(estiloName);
+                                    columna.setCellValue("TELÉFONO");
+                                    /*value*/
+                                    columna = fila.createCell((short)2);
+                                    columna.setCellStyle(estiloDato);
+                                    columna.setCellValue("");
+                                    /*FILA PLACA*/
+                                    fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                                    /*label*/
+                                    columna = fila.createCell((short)1);
+                                    columna.setCellStyle(estiloName);
+                                    columna.setCellValue("PLACA");
+                                    /*value*/
+                                    columna = fila.createCell((short)2);
+                                    columna.setCellStyle(estiloDato);
+                                    columna.setCellValue(ps.getIdvehiculo());
+                                    /*FILA CONDUCTOR*/
+                                    fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                                    /*label*/
+                                    columna = fila.createCell((short)1);
+                                    columna.setCellStyle(estiloName);
+                                    columna.setCellValue("CONDUCTOR");
+                                    /*value*/
+                                    columna = fila.createCell((short)2);
+                                    columna.setCellStyle(estiloDato);
+                                    columna.setCellValue(ps.getConductor_cliente());
+                                    /*FILA BREVETE*/
+                                    fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                                    /*label*/
+                                    columna = fila.createCell((short)1);
+                                    columna.setCellStyle(estiloName);
+                                    columna.setCellValue("BREVETE");
+                                    /*value*/
+                                    columna = fila.createCell((short)2);
+                                    columna.setCellStyle(estiloDato);
+                                    columna.setCellValue(ps.getBrevete_cliente());
+                                    /*FILA PLACA CLIENTE*/
+                                    fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                                    /*label*/
+                                    columna = fila.createCell((short)1);
+                                    columna.setCellStyle(estiloName);
+                                    columna.setCellValue("PLACA CLIENTE");
+                                    /*value*/
+                                    columna = fila.createCell((short)2);
+                                    columna.setCellStyle(estiloDato);
+                                    columna.setCellValue(ps.getPlaca_cliente());
+                                    /*FILA PRECINTO*/
+                                    fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                                    /*label*/
+                                    columna = fila.createCell((short)1);
+                                    columna.setCellStyle(estiloName);
+                                    columna.setCellValue("PRECINTO");
+                                    /*value*/
+                                    columna = fila.createCell((short)2);
+                                    columna.setCellStyle(estiloDato);
+                                    columna.setCellValue(ps.getNroprecinto());
+                                    /*FILA CONTENEDOR*/
+                                    fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                                    /*label*/
+                                    columna = fila.createCell((short)1);
+                                    columna.setCellStyle(estiloName);
+                                    columna.setCellValue("CONTENEDOR");
+                                    /*value*/
+                                    columna = fila.createCell((short)2);
+                                    columna.setCellStyle(estiloDato);
+                                    columna.setCellValue(ps.getNrocontenedor());
+                                    /*FILA N° SERVICIO*/
+                                    fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                                    /*label*/
+                                    columna = fila.createCell((short)1);
+                                    columna.setCellStyle(estiloName);
+                                    columna.setCellValue("N° SERVICIO");
+                                    /*value*/
+                                    columna = fila.createCell((short)2);
+                                    columna.setCellStyle(estiloDato);
+                                    columna.setCellValue(ps.getNro_oservicio());
+                                    /*** SEPARADOR *****/
+                                    fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                                    columna = fila.createCell((short)1);
+                                    columna.setCellStyle(estiloName);
+                                    columna.setCellValue("");
+                                    objWB.getSheetAt(number_sheet).addMergedRegion(new CellRangeAddress(
+                                            fila_id-1, //first row (0-based)
+                                            fila_id-1, //last row  (0-based)
+                                            1, //first column (0-based)
+                                            2  //last column  (0-based)
+                                    ));
+                            }
+                        }
+                        /*FILA CONTENEDOR*/
+                        fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                        /*label*/
+                        columna = fila.createCell((short)1);
+                        columna.setCellStyle(estiloName);
+                        columna.setCellValue("UBICACIÓN");
+                        /*value*/
+                        columna = fila.createCell((short)2);
+                        columna.setCellStyle(estiloDato);
+                        columna.setCellValue("");
+                        /*FILA HORA DE REPORTE*/
+                        fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                        /*label*/
+                        columna = fila.createCell((short)1);
+                        columna.setCellStyle(estiloName);
+                        columna.setCellValue("HORA DE REPORTE");
+                        /*value*/
+                        columna = fila.createCell((short)2);
+                        columna.setCellStyle(estiloDato);
+                        columna.setCellValue(WebUtil.fechaDMY(new Date(), 4));
+                        /*FILA NOVEDADES*/
+                        fila = objWB.getSheetAt(number_sheet).createRow(fila_id++);
+                        /*label*/
+                        columna = fila.createCell((short)1);
+                        columna.setCellStyle(estiloName);
+                        columna.setCellValue("NOVEDADES");
+                        /*value*/
+                        columna = fila.createCell((short)2);
+                        columna.setCellStyle(estiloDato);
+                        columna.setCellValue("");
+                        /*AUTOAJUSTE EN LA HOJA*/
+                        for (int as = 0; as < 10; as++) {
+                            objWB.getSheetAt(number_sheet).autoSizeColumn((short) as);
+                        }
+                    }else{
+                        fila_id=0;
+                        sheet = objWB.createSheet("CODIGO "+ds.getCodoperaciones()+"("+number_sheet+")");
+                        fila = sheet.createRow(fila_id++);
+                        columna = fila.createCell((short)1);
+                        columna.setCellStyle(estiloVacio);
+                        columna.setCellValue("");
+                        columna = fila.createCell((short)2);
+                        columna.setCellStyle(estiloVacio);
+                        columna.setCellValue("");
+                        objWB.getSheetAt(number_sheet).addMergedRegion(new CellRangeAddress(
+                                fila_id-1, //first row (0-based)
+                                fila_id-1, //last row  (0-based)
+                                1, //first column (0-based)
+                                2  //last column  (0-based)
+                        ));
+
+                        fila = sheet.createRow(fila_id++);
+                        columna = fila.createCell((short)1);
+                        columna.setCellStyle(estiloName);
+                        columna.setCellValue("REPORTE DEL SERVICIO");
+                        objWB.getSheetAt(number_sheet).addMergedRegion(new CellRangeAddress(
+                                fila_id-1, //first row (0-based)
+                                fila_id-1, //last row  (0-based)
+                                1, //first column (0-based)
+                                2  //last column  (0-based)
+                        ));
+                        /*FILA CLIENTE*/
+                        fila = sheet.createRow(fila_id++);
+                        /*label*/
+                        columna = fila.createCell((short)1);
+                        columna.setCellStyle(estiloName);
+                        columna.setCellValue("CLIENTE");
+                        /*value*/
+                        columna = fila.createCell((short)2);
+                        columna.setCellStyle(estiloDato);
+                        columna.setCellValue(getDatoEdicion().getIdclieprov().trim()+" - "+getDatoEdicion().getRazonsocial());
+                        /*FILA TIPO DE SERVICIO*/
+                        fila = sheet.createRow(fila_id++);
+                        /*label*/
+                        columna = fila.createCell((short)1);
+                        columna.setCellStyle(estiloName);
+                        columna.setCellValue("TIPO DE SERVICIO");
+                        /*value*/
+                        columna = fila.createCell((short)2);
+                        columna.setCellStyle(estiloDato);
+                        columna.setCellValue(getDatoEdicion().getTipo_servicio().trim().equals("E")?"ESPECIAL":
+                                getDatoEdicion().getTipo_servicio().trim().equals("F")?"FIJO":"");
+                        /*FILA FECHA DE SERVICIO*/
+                        fila = sheet.createRow(fila_id++);
+                        /*label*/
+                        columna = fila.createCell((short)1);
+                        columna.setCellStyle(estiloName);
+                        columna.setCellValue("FECHA DE SERVICIO");
+                        /*value*/
+                        columna = fila.createCell((short)2);
+                        columna.setCellStyle(estiloDato_date);
+                        columna.setCellValue(WebUtil.fechaDMY(getDatoEdicion().getFecha(),1));
+                        /*FILA TRAMO*/
+                        fila = sheet.createRow(fila_id++);
+                        /*label*/
+                        columna = fila.createCell((short)1);
+                        columna.setCellStyle(estiloName);
+                        columna.setCellValue("TRAMO");
+                        /*value*/
+                        columna = fila.createCell((short)2);
+                        columna.setCellStyle(estiloDato);
+                        columna.setCellValue(ds.getRuta_viaje());
+                        /*FILA HORA DE INICIO DE SERVICIO*/
+                        fila = sheet.createRow(fila_id++);
+                        /*label*/
+                        columna = fila.createCell((short)1);
+                        columna.setCellStyle(estiloName);
+                        columna.setCellValue("HORA DE INICIO DE SERVICIO");
+                        /*value*/
+                        columna = fila.createCell((short)2);
+                        columna.setCellStyle(estiloDato_numeric);
+                        columna.setCellValue(ds.getHora_req());
+                        /*TITULO : NOMBRES Y APELLIDOS*/
+                        fila = sheet.createRow(fila_id++);
+                        columna = fila.createCell((short)1);
+                        columna.setCellStyle(estiloName);
+                        columna.setCellValue("NOMBRES Y APELLIDOS");
+                        objWB.getSheetAt(number_sheet).addMergedRegion(new CellRangeAddress(
+                                fila_id-1, //first row (0-based)
+                                fila_id-1, //last row  (0-based)
+                                1, //first column (0-based)
+                                2  //last column  (0-based)
+                        ));
+                        for(Personal_servicio ps : listPersonalservicio_total){
+                            if(ps.getIdempresa().trim().equalsIgnoreCase(ds.getIdempresa().trim()) &&
+                                ps.getItem().trim().equals(ds.getItem().trim())){
+                                    /*FILA CARGO*/
+                                    fila = sheet.createRow(fila_id++);
+                                    /*label*/
+                                    columna = fila.createCell((short)1);
+                                    columna.setCellStyle(estiloName);
+                                    columna.setCellValue(ps.getCargo().trim());
+                                    /*value*/
+                                    columna = fila.createCell((short)2);
+                                    columna.setCellStyle(estiloDato);
+                                    columna.setCellValue(ps.getNombres());
+                                    /*FILA DNI*/
+                                    fila = sheet.createRow(fila_id++);
+                                    /*label*/
+                                    columna = fila.createCell((short)1);
+                                    columna.setCellStyle(estiloName);
+                                    columna.setCellValue("DNI");
+                                    /*value*/
+                                    columna = fila.createCell((short)2);
+                                    columna.setCellStyle(estiloDato);
+                                    columna.setCellValue(ps.getDni());
+                                    /*FILA TELÉFONO*/
+                                    fila = sheet.createRow(fila_id++);
+                                    /*label*/
+                                    columna = fila.createCell((short)1);
+                                    columna.setCellStyle(estiloName);
+                                    columna.setCellValue("TELÉFONO");
+                                    /*value*/
+                                    columna = fila.createCell((short)2);
+                                    columna.setCellStyle(estiloDato);
+                                    columna.setCellValue("");
+                                    /*FILA PLACA*/
+                                    fila = sheet.createRow(fila_id++);
+                                    /*label*/
+                                    columna = fila.createCell((short)1);
+                                    columna.setCellStyle(estiloName);
+                                    columna.setCellValue("PLACA");
+                                    /*value*/
+                                    columna = fila.createCell((short)2);
+                                    columna.setCellStyle(estiloDato);
+                                    columna.setCellValue(ps.getIdvehiculo());
+                                    /*FILA CONDUCTOR*/
+                                    fila = sheet.createRow(fila_id++);
+                                    /*label*/
+                                    columna = fila.createCell((short)1);
+                                    columna.setCellStyle(estiloName);
+                                    columna.setCellValue("CONDUCTOR");
+                                    /*value*/
+                                    columna = fila.createCell((short)2);
+                                    columna.setCellStyle(estiloDato);
+                                    columna.setCellValue(ps.getConductor_cliente());
+                                    /*FILA BREVETE*/
+                                    fila = sheet.createRow(fila_id++);
+                                    /*label*/
+                                    columna = fila.createCell((short)1);
+                                    columna.setCellStyle(estiloName);
+                                    columna.setCellValue("BREVETE");
+                                    /*value*/
+                                    columna = fila.createCell((short)2);
+                                    columna.setCellStyle(estiloDato);
+                                    columna.setCellValue(ps.getBrevete_cliente());
+                                    /*FILA PLACA CLIENTE*/
+                                    fila = sheet.createRow(fila_id++);
+                                    /*label*/
+                                    columna = fila.createCell((short)1);
+                                    columna.setCellStyle(estiloName);
+                                    columna.setCellValue("PLACA CLIENTE");
+                                    /*value*/
+                                    columna = fila.createCell((short)2);
+                                    columna.setCellStyle(estiloDato);
+                                    columna.setCellValue(ps.getPlaca_cliente());
+                                    /*FILA PRECINTO*/
+                                    fila = sheet.createRow(fila_id++);
+                                    /*label*/
+                                    columna = fila.createCell((short)1);
+                                    columna.setCellStyle(estiloName);
+                                    columna.setCellValue("PRECINTO");
+                                    /*value*/
+                                    columna = fila.createCell((short)2);
+                                    columna.setCellStyle(estiloDato);
+                                    columna.setCellValue(ps.getNroprecinto());
+                                    /*FILA CONTENEDOR*/
+                                    fila = sheet.createRow(fila_id++);
+                                    /*label*/
+                                    columna = fila.createCell((short)1);
+                                    columna.setCellStyle(estiloName);
+                                    columna.setCellValue("CONTENEDOR");
+                                    /*value*/
+                                    columna = fila.createCell((short)2);
+                                    columna.setCellStyle(estiloDato);
+                                    columna.setCellValue(ps.getNrocontenedor());
+                                    /*FILA N° SERVICIO*/
+                                    fila = sheet.createRow(fila_id++);
+                                    /*label*/
+                                    columna = fila.createCell((short)1);
+                                    columna.setCellStyle(estiloName);
+                                    columna.setCellValue("N° SERVICIO");
+                                    /*value*/
+                                    columna = fila.createCell((short)2);
+                                    columna.setCellStyle(estiloDato);
+                                    columna.setCellValue(ps.getNro_oservicio());
+                                    /*** SEPARADOR *****/
+                                    fila = sheet.createRow(fila_id++);
+                                    columna = fila.createCell((short)1);
+                                    columna.setCellStyle(estiloName);
+                                    columna.setCellValue("");
+                                    objWB.getSheetAt(number_sheet).addMergedRegion(new CellRangeAddress(
+                                            fila_id-1, //first row (0-based)
+                                            fila_id-1, //last row  (0-based)
+                                            1, //first column (0-based)
+                                            2  //last column  (0-based)
+                                    ));
+                            }
+                        }
+                        /*FILA CONTENEDOR*/
+                        fila = sheet.createRow(fila_id++);
+                        /*label*/
+                        columna = fila.createCell((short)1);
+                        columna.setCellStyle(estiloName);
+                        columna.setCellValue("UBICACIÓN");
+                        /*value*/
+                        columna = fila.createCell((short)2);
+                        columna.setCellStyle(estiloDato);
+                        columna.setCellValue("");
+                        /*FILA HORA DE REPORTE*/
+                        fila = sheet.createRow(fila_id++);
+                        /*label*/
+                        columna = fila.createCell((short)1);
+                        columna.setCellStyle(estiloName);
+                        columna.setCellValue("HORA DE REPORTE");
+                        /*value*/
+                        columna = fila.createCell((short)2);
+                        columna.setCellStyle(estiloDato);
+                        columna.setCellValue(WebUtil.fechaDMY(new Date(), 4));
+                        /*FILA NOVEDADES*/
+                        fila = sheet.createRow(fila_id++);
+                        /*label*/
+                        columna = fila.createCell((short)1);
+                        columna.setCellStyle(estiloName);
+                        columna.setCellValue("NOVEDADES");
+                        /*value*/
+                        columna = fila.createCell((short)2);
+                        columna.setCellStyle(estiloDato);
+                        columna.setCellValue("");
+                        /*AUTOAJUSTE EN LA HOJA*/
+                        for (int as = 0; as < 10; as++) {
+                            objWB.getSheetAt(number_sheet).autoSizeColumn((short) as);
+                        }
+                    }
+                    number_sheet++;
                 }
             }
-            number_sheet++;
+        } catch (NisiraORMException ex) {
+            Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     public String verificacionOrdenservicioDetalle_cerrado(List<Personal_servicio> lstpersonal){

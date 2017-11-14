@@ -897,6 +897,7 @@ public class Det_tareowebDao extends BaseDao<Det_tareoweb> {
                 tareoweb.setCusuario(rs.getString("CUSUARIO")!=null?rs.getString("CUSUARIO").trim():"");
                 tareoweb.setCidestado(rs.getString("CIDESTADO")!=null?rs.getString("CIDESTADO").trim():"");
                 tareoweb.setCestado(rs.getString("CESTADO")!=null?rs.getString("CESTADO").trim():"");
+                tareoweb.setEncrypt_programacion(rs.getString("ENCRYPT_PROGRAMACION")!=null?rs.getString("ENCRYPT_PROGRAMACION").trim():"");
                 lista.add(tareoweb); 
             }
 
