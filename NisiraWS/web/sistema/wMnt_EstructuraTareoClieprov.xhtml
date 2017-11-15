@@ -41,13 +41,14 @@
                                      selectionMode="single"
                                      selection="#{estructuraTareoClieprovAction.slctDesTar}"
                                      var="detEst" 
-                                     paginator="true" paginatorPosition="top"
-                                     paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                     paginator="true" paginatorPosition="top" rows="15" 
+                                     rowsPerPageTemplate="15,25,35,50,70,100" 
+                                     paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" 
                                      widgetVar="lstDetEstruClie"
                                      rowKey="#{detEst.item}">
                             <f:facet name="{Comandos}">
                                 <p:commandButton id="btnDgen" value="Nuevo" ajax="true" image="ui-icon-nuevo"  actionListener="#{estructuraTareoClieprovAction.openDialog()}"   disabled="#{!estructuraTareoClieprovAction.edicion}"/>
-                                <p:commandButton id="btnDedit" value="Editar" ajax="true" image="ui-icon-nuevo"  actionListener="#{estructuraTareoClieprovAction.ediitDetEstruc()}"   disabled="#{!estructuraTareoClieprovAction.edicion}"/>
+                                <p:commandButton id="btnDedit" value="Editar" ajax="true" image="ui-icon-edit"  actionListener="#{estructuraTareoClieprovAction.ediitDetEstruc()}"   disabled="#{!estructuraTareoClieprovAction.edicion}"/>
                                 <p:commandButton id="btDdel" value="Eliminar" ajax="true" image="ui-icon-eliminar"  actionListener="#{estructuraTareoClieprovAction.dellDetEstruc()}"  disabled="#{!estructuraTareoClieprovAction.edicion}"/>
                             </f:facet>
                             <p:column style="width:15%;" filterBy="#{detEst.item}" filterMatchMode="contains" sortBy="#{detEst.item}">

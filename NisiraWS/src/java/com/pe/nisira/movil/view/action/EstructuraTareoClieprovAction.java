@@ -213,7 +213,7 @@ public class EstructuraTareoClieprovAction extends AbstactListAction<Estructura_
             newtDesTar.setFinfactura(0.0f);
             RequestContext.getCurrentInstance().update("datos:detEstrDialog");
             RequestContext.getCurrentInstance().execute("PF('detEstrDialog').show()");
-
+            editDet = false;
         } else {
             this.mensaje = "Seleccionar Cliente";
             WebUtil.error(mensaje);
@@ -270,14 +270,11 @@ public class EstructuraTareoClieprovAction extends AbstactListAction<Estructura_
                 newtDesTar.setFinfactura(1.0f);
             }
             if (!editDet) {
-                newtDesTar.setItem(WebUtil.cerosIzquierda(lstDestTar.size() + 1, 3));
                 lstDestTar.add(newtDesTar);
-                editDet = false;
             }
             else
-            {
                 lstDestTar.set(pos, newtDesTar);
-            }
+            reestructurarIndex();
             RequestContext.getCurrentInstance().update("datos:lstDetEstruClie");
             RequestContext.getCurrentInstance().execute("PF('detEstrDialog').hide()");
         }
@@ -285,13 +282,9 @@ public class EstructuraTareoClieprovAction extends AbstactListAction<Estructura_
     }
 
     public void dellDetEstruc() {
-        if (lstDestTar != null) {
+        if (slctDesTar != null) {
             lstDestTar.remove(slctDesTar);
-            int i = 1;
-            for (Destructura_tareo_clieprov ap : lstDestTar) {
-                ap.setItem(WebUtil.cerosIzquierda(String.valueOf(i), 3));
-                i++;
-            }
+            reestructurarIndex();
             editDet = false;
             setMensaje("Registro se elimino correctamente!");
         } else {
@@ -301,7 +294,16 @@ public class EstructuraTareoClieprovAction extends AbstactListAction<Estructura_
         RequestContext.getCurrentInstance().update("datos:lstDetEstruClie");
         RequestContext.getCurrentInstance().update("datos:growl");
     }
-
+    
+    public void reestructurarIndex(){
+        Destructura_tareo_clieprov destr;
+        for(int i=0;i<lstDestTar.size();i++){
+            destr = lstDestTar.get(i);
+            destr.setItem(WebUtil.cerosIzquierda(i+1, 3));
+            lstDestTar.set(i, destr);
+        }
+    }
+            
     public void verCntClieprov() {
         RequestContext.getCurrentInstance().openDialog("cntClieprov", modalOptions, null);
     }
