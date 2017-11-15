@@ -159,6 +159,7 @@ public class AmbitoPagoAction extends AbstactListAction<Ambito_pago> implements 
             }else{
                 lstampagcost.set(pos, workampagcost);
             }
+            reestructurarItem();
             RequestContext.getCurrentInstance().execute("PF('costosdialog').hide()");
             RequestContext.getCurrentInstance().update("datos:lstAmbPagoCost");
         }
@@ -167,6 +168,12 @@ public class AmbitoPagoAction extends AbstactListAction<Ambito_pago> implements 
         int id =1;
         for(int i=0;i<lstampagcost.size();i++){
             lstampagcost.get(i).setItem(id++);
+        }
+    }
+    public void reestructurarItemRuta(){
+        int id =1;
+        for(int i=0;i<lstambpagRuta.size();i++){
+            lstambpagRuta.get(i).setItem(WebUtil.cerosIzquierda(id++, 3));
         }
     }
     public void newAmbitoPagoCosto() throws CloneNotSupportedException {
@@ -194,6 +201,10 @@ public class AmbitoPagoAction extends AbstactListAction<Ambito_pago> implements 
         if (slcampagcost != null) {
             lstampagcost.remove(slcampagcost);
             reestructurarItem();
+            setMensaje("Registro Bono Eliminada");
+            WebUtil.MensajeAdvertencia(mensaje);
+            reestructurarItem();
+            RequestContext.getCurrentInstance().update("datos:growl");
             RequestContext.getCurrentInstance().update("datos:lstAmbPagoCost");
         } else {
             setMensaje("Seleccione un detalle");
@@ -213,6 +224,7 @@ public class AmbitoPagoAction extends AbstactListAction<Ambito_pago> implements 
             amb.setDestino(slcRutas.getDestinodesc());
             amb.setItem(WebUtil.cerosIzquierda(String.valueOf(lstambpagRuta.size() + 1), 3));
             lstambpagRuta.add(amb);
+            reestructurarItemRuta();
         }
         RequestContext.getCurrentInstance().update("datos:lstAmbPagoRuta");
         RequestContext.getCurrentInstance().execute("PF('rutasdialog').hide()");
@@ -222,15 +234,14 @@ public class AmbitoPagoAction extends AbstactListAction<Ambito_pago> implements 
     public void dellAmbitoPagoRuta() {
         if (slcAmbPagRuta != null) {
             lstambpagRuta.remove(slcAmbPagRuta);
-            int i = 1;
-            for (Ambito_pago_rutas ap : lstambpagRuta) {
-                ap.setItem(WebUtil.cerosIzquierda(String.valueOf(i), 3));
-                i++;
-            }
+            reestructurarItemRuta();
+            setMensaje("Registro Ruta Eliminado");
+            WebUtil.MensajeAdvertencia(getMensaje());
         } else {
             setMensaje("Seleccione un detalle");
+            WebUtil.MensajeAdvertencia(getMensaje());
         }
-        WebUtil.MensajeAdvertencia(getMensaje());
+        
         RequestContext.getCurrentInstance().update("datos:lstAmbPagoRuta");
         RequestContext.getCurrentInstance().update("datos:growl");
     }

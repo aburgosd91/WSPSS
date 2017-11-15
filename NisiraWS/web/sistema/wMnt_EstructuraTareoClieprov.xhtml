@@ -47,6 +47,9 @@
                                      widgetVar="lstDetEstruClie"
                                      rowKey="#{detEst.item}">
                             <f:facet name="{Comandos}">
+                                <p:commandButton value="Excel" ajax="false" image="ui-icon-excel">
+                                    <p:dataExporter type="xls" target="lstDetEstruClie" fileName="#{estructuraTareoClieprovAction.datoEdicion.razon_social}" />
+                                </p:commandButton>
                                 <p:commandButton id="btnDgen" value="Nuevo" ajax="true" image="ui-icon-nuevo"  actionListener="#{estructuraTareoClieprovAction.openDialog()}"   disabled="#{!estructuraTareoClieprovAction.edicion}"/>
                                 <p:commandButton id="btnDedit" value="Editar" ajax="true" image="ui-icon-edit"  actionListener="#{estructuraTareoClieprovAction.ediitDetEstruc()}"   disabled="#{!estructuraTareoClieprovAction.edicion}"/>
                                 <p:commandButton id="btDdel" value="Eliminar" ajax="true" image="ui-icon-eliminar"  actionListener="#{estructuraTareoClieprovAction.dellDetEstruc()}"  disabled="#{!estructuraTareoClieprovAction.edicion}"/>

@@ -50,8 +50,9 @@
                                          selectionMode="single"
                                          selection="#{ambitoPagoAction.slcAmbPagRuta}"
                                          var="pagRuta" 
-                                         paginator="true" paginatorPosition="top"
-                                         paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                         paginator="true" paginatorPosition="top"  rows="15" 
+                                         rowsPerPageTemplate="15,25,35,50,70,100"  
+                                         paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}  {RowsPerPageDropdown}"
                                          widgetVar="lstAmbPagoRuta"
                                          rowKey="#{pagRuta.item}">
                                 <f:facet name="{Comandos}">
@@ -92,8 +93,9 @@
                                          selectionMode="single"
                                          selection="#{ambitoPagoAction.slcampagcost}"
                                          var="pagCost" 
-                                         paginator="true" paginatorPosition="top"
-                                         paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                         paginator="true" paginatorPosition="top"  rows="15" 
+                                         rowsPerPageTemplate="15,25,35,50,70,100"  
+                                         paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                          widgetVar="lstAmbPagoRuta"
                                          rowKey="#{pagCost.item}">
                                 <f:facet name="header">
