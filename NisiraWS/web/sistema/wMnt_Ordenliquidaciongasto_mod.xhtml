@@ -97,7 +97,7 @@
                         <p:fieldset legend="Detalle de Orden Servicio"  style="width: 100%">
                             <p:dataTable id="lstdordenliquidaciongasto" var="lstdordenliquidaciongasto" value="#{ordenliquidaciongasto_modAction.lstdordenliquidaciongasto}" widgetVar="lstdordenliquidaciongasto"
                                          paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" 
-                                         paginator="true" paginatorPosition="top"  style="margin-bottom:20px" selectionMode="single" 
+                                         paginator="true" paginatorPosition="top"  style="margin-bottom:20px" selectionMode="single" resizableColumns="true" 
                                          scrollable="true" scrollWidth="99%" rows="15" rowsPerPageTemplate="15,25,35,50,70,100,150,200" 
                                          editable="#{ordenliquidaciongasto_modAction.edicion}" editMode="cell" 
                                          selection="#{ordenliquidaciongasto_modAction.selectDordenliquidaciongasto}" rowKey="#{lstdordenliquidaciongasto.item}">
@@ -215,7 +215,7 @@
                                 </p:column>
                                 <p:column id="item_tcambio" headerText="T.Cambio" filterBy="#{lstdordenliquidaciongasto.tcambio}" filterMatchMode="contains" sortBy="#{lstdordenliquidaciongasto.tcambio}"  style="white-space: nowrap; width: 65px;padding: 3px;text-align: left">
                                     <h:outputText value="#{lstdordenliquidaciongasto.tcambio}">
-                                        <f:convertNumber pattern="#0.0000" />
+                                        <f:convertNumber pattern="#0.0000" locale="en-US"/>
                                     </h:outputText>
                                 </p:column>
                                 <p:column id="item_moneda" headerText="Moneda" filterBy="#{lstdordenliquidaciongasto.idmoneda}" filterMatchMode="contains" sortBy="#{lstdordenliquidaciongasto.idmoneda}"  style="white-space: nowrap; width: 25px;padding: 3px;text-align: left">
@@ -260,7 +260,7 @@
                                     <p:cellEditor>
                                         <f:facet name="output">
                                             <h:outputText value="#{lstdordenliquidaciongasto.afecto}">
-                                                <f:convertNumber pattern="#0.00" />
+                                                <f:convertNumber pattern="#0.00" locale="en-US"/>
                                             </h:outputText>
                                         </f:facet>
                                         <f:facet name="input">
@@ -273,7 +273,7 @@
                                     <p:cellEditor>
                                         <f:facet name="output">
                                             <h:outputText value="#{lstdordenliquidaciongasto.inafecto}">
-                                                <f:convertNumber pattern="#0.00" />
+                                                <f:convertNumber pattern="#0.00" locale="en-US"/>
                                             </h:outputText>
                                         </f:facet>
                                         <f:facet name="input">
@@ -284,17 +284,17 @@
                                 </p:column>
                                 <p:column id="item_pimpuesto" headerText="%Impto." filterBy="#{lstdordenliquidaciongasto.impuesto}" filterMatchMode="contains" sortBy="#{lstdordenliquidaciongasto.impuesto}"  style="white-space: nowrap; width: 60px;padding: 3px;text-align: left">
                                     <h:outputText value="#{lstdordenliquidaciongasto.impuesto}">
-                                        <f:convertNumber pattern="#0.000" />
+                                        <f:convertNumber pattern="#0.000" locale="en-US"/>
                                     </h:outputText>
                                 </p:column>
                                 <p:column id="item_impuesto" headerText="Impuesto" filterBy="#{lstdordenliquidaciongasto.pimpuesto}" filterMatchMode="contains" sortBy="#{lstdordenliquidaciongasto.pimpuesto}"  style="white-space: nowrap; width: 60px;padding: 3px;text-align: left">
                                     <h:outputText value="#{lstdordenliquidaciongasto.pimpuesto}">
-                                        <f:convertNumber pattern="#0.00" />
+                                        <f:convertNumber pattern="#0.00" locale="en-US"/>
                                     </h:outputText>
                                 </p:column>
                                 <p:column id="item_total" headerText="Total" filterBy="#{lstdordenliquidaciongasto.importe}" filterMatchMode="contains" sortBy="#{lstdordenliquidaciongasto.importe}"  style="white-space: nowrap; width: 60px;padding: 3px;text-align: left">
                                     <h:outputText value="#{lstdordenliquidaciongasto.importe}">
-                                        <f:convertNumber pattern="#0.00" />
+                                        <f:convertNumber pattern="#0.00" locale="en-US"/>
                                     </h:outputText>
                                 </p:column>
                                 <p:column id="item_destino" headerText="Destino" filterBy="#{lstdordenliquidaciongasto.iddestino}" filterMatchMode="contains" sortBy="#{lstdordenliquidaciongasto.iddestino}" style="white-space: nowrap; width: 80px;padding: 3px;text-align: left">
@@ -338,8 +338,8 @@
                 </div>
             </p:panelGrid>
             <p:contextMenu for="lstdordenliquidaciongasto">
-                <p:menuitem value="Proveedor No Registrado" icon="ui-icon-search" actionListener="#{ordenliquidaciongasto_modAction.openDialoClienteNuevo()}"/>
-                <p:menuitem value="Replicar" icon="ui-icon-copy" actionListener="#{ordenliquidaciongasto_modAction.replicarItem_dordenliquidaciongasto()}"/>
+                <p:menuitem value="Prov. No Registrado" icon="ui-icon-search" actionListener="#{ordenliquidaciongasto_modAction.openDialoClienteNuevo()}"/>
+                <p:menuitem value="Replicar" icon="ui-icon-copy" actionListener="#{ordenliquidaciongasto_modAction.replicarItem_dordenliquidaciongasto()}" rendered="false"/>
                 <p:menuitem value="Eliminar Tipo Gasto" update="lstdordenliquidaciongasto" icon="ui-icon-close" actionListener="#{ordenliquidaciongasto_modAction.deleteDordenliquidaciongasto_web_tipogasto()}">
                 </p:menuitem>
                 <p:menuitem value="Eliminar Proveedor" update="lstdordenliquidaciongasto" icon="ui-icon-close" actionListener="#{ordenliquidaciongasto_modAction.deleteDordenliquidaciongasto_web_proveedor()}">

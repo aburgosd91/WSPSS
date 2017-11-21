@@ -404,7 +404,7 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                             dtw_detallado.setInafecto(0.0f);
                             dtw_detallado.setImpuesto(dtw_detallado.getAfecto()*entity.getPimpuesto());
                         }else if(dtw_detallado.getIdregimen().trim().equals("03")){
-                            dtw_detallado.setInafecto(entity.getTcosto());
+                            dtw_detallado.setInafecto(dtw_detallado.getTcosto());
                             dtw_detallado.setAfecto(0.0f);
                             dtw_detallado.setImpuesto(entity.getInafecto()*entity.getPimpuesto());
                         }

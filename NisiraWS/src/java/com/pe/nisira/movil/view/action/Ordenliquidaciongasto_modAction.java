@@ -929,42 +929,70 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
         return true;
     }
     public void grabarDordenliquidaciongasto(){
-        try {
-            String glosa_autogenerada="";
-            if(validarDetalle()){
-                Dordenliquidaciongasto dol = null;
-                for(int i=0;i<num_repetir_detalle;i++){
-                    dol = (Dordenliquidaciongasto)dordenliquidaciongasto.clone();
-                    dol.setItem(WebUtil.cerosIzquierdaString(i+1, 3));
-                    dol.setNumero(WebUtil.cerosIzquierdaString(i+1,7));
-                    dol.setConcepto(searchConcepto_cuenta_local(dol.getIdconcepto()).getDescripcion());
-                    dol.setDestinoadquisicion(searchDestinoadquisicion_local(dol.getIddestino()).getDescripcion());
-                    /****************************** Select ********************************/
-                    dol.setSelectConcepto_cuenta(searchConcepto_cuenta_local(dol.getIdconcepto()));
-                    dol.setSelectConsumidor(searchConsumidor_local(dol.getIdconsumidor()));
-                    dol.setSelectProveedor(searchClieprov_local(dol.getIdclieprov()));
-                    dol.setSelectDocumentos(searchDocumentos_local(dol.getIddocumento()));
-                    dol.setSelectDestinoadquisicion(searchDestinoadquisicion_local(dol.getIddestino()));
-                    /********************************************************************************************/
-                    glosa_autogenerada = WebUtil.isnull(dol.getConcepto(), "").toUpperCase()+" / "+
-                                WebUtil.isnull(dol.getIdconsumidor(), "").toUpperCase()+" / "+WebUtil.isnull(dol.getGlosa(), "").toUpperCase();
-                    dol.setGlosa(glosa_autogenerada);
-                    lstdordenliquidaciongasto.add(dol); 
-                }
-                actualizarTotal();
+        String glosa_autogenerada="";
+        if(validarDetalle()){
+            Dordenliquidaciongasto dol = null;Date fecha = null;
+            for(int i=0;i<num_repetir_detalle;i++){
+                dol = new Dordenliquidaciongasto();
+                dol.setIdempresa(dordenliquidaciongasto.getIdempresa());
+                dol.setIdorden(dordenliquidaciongasto.getIdorden());
+                //dol.setGlosa(dordenliquidaciongasto.getGlosa());
+                //dol.setItem(agregarItemDordenliquidaciongasto());
+                dol.setNumero(WebUtil.cerosIzquierdaString(Integer.parseInt(dordenliquidaciongasto.getNumero())+i,7));
+                dol.setIdconcepto(dordenliquidaciongasto.getIdconcepto());
+                dol.setIdcuenta(dordenliquidaciongasto.getIdcuenta());
+                dol.setIdccosto(dordenliquidaciongasto.getIdccosto());
+                dol.setIdtipomov(dordenliquidaciongasto.getIdtipomov());
+                dol.setIdclieprov(dordenliquidaciongasto.getIdclieprov());
+                dol.setIddocumento(dordenliquidaciongasto.getIddocumento());
+                dol.setSerie(dordenliquidaciongasto.getSerie());
+                //dol.setNumero(dordenliquidaciongasto.getNumero());
+                fecha = new Date(dordenliquidaciongasto.getFecha().getTime());
+                dol.setFecha(fecha);
+                dol.setIddestino(dordenliquidaciongasto.getIddestino());
+                dol.setIdmoneda(dordenliquidaciongasto.getIdmoneda());
+                dol.setTcmoneda(dordenliquidaciongasto.getTcmoneda());
+                dol.setTcambio(dordenliquidaciongasto.getTcambio());
+                dol.setIdregimen(dordenliquidaciongasto.getIdregimen());
+                dol.setAfecto(dordenliquidaciongasto.getAfecto());
+                dol.setInafecto(dordenliquidaciongasto.getInafecto());
+                dol.setPimpuesto(dordenliquidaciongasto.getPimpuesto());
+                dol.setImpuesto(dordenliquidaciongasto.getImpuesto());
+                dol.setImporte(dordenliquidaciongasto.getImporte());
+                dol.setOtros(dordenliquidaciongasto.getOtros());
+                dol.setIdconsumidor(dordenliquidaciongasto.getIdconsumidor());
+                dol.setDocumento(dordenliquidaciongasto.getDocumento());
+                dol.setRazonsocial(dordenliquidaciongasto.getRazonsocial());
+                dol.setConceptocuenta(dordenliquidaciongasto.getConceptocuenta());
+                dol.setDestinoadquisicion(dordenliquidaciongasto.getDestinoadquisicion());
+                dol.setConcepto(dordenliquidaciongasto.getConcepto());
+                dol.setConsumidor(dordenliquidaciongasto.getConsumidor());
+                dol.setConcepto(searchConcepto_cuenta_local(dol.getIdconcepto()).getDescripcion());
+                dol.setDestinoadquisicion(searchDestinoadquisicion_local(dol.getIddestino()).getDescripcion());
+                /****************************** Select ********************************/
+                dol.setSelectConcepto_cuenta(searchConcepto_cuenta_local(dol.getIdconcepto()));
+                dol.setSelectConsumidor(searchConsumidor_local(dol.getIdconsumidor()));
+                dol.setSelectProveedor(searchClieprov_local(dol.getIdclieprov()));
+                dol.setSelectDocumentos(searchDocumentos_local(dol.getIddocumento()));
+                dol.setSelectDestinoadquisicion(searchDestinoadquisicion_local(dol.getIddestino()));
+                /********************************************************************************************/
+                glosa_autogenerada = WebUtil.isnull(dol.getConcepto(), "").toUpperCase()+" / "+
+                            WebUtil.isnull(dol.getIdconsumidor(), "").toUpperCase()+" / "+WebUtil.isnull(dol.getGlosa(), "").toUpperCase();
+                dol.setGlosa(glosa_autogenerada);
+                lstdordenliquidaciongasto.add(dol); 
+            }
+            actualizarTotal();
 //                lstdordenliquidaciongasto.forEach((ls) -> {
 //                    getDatoEdicion().setImporte(getDatoEdicion().getImporte()+ls.getImporte());
 //                });
-                RequestContext.getCurrentInstance().update("datos:lstdordenliquidaciongasto");
-                RequestContext.getCurrentInstance().update("datos:dlgnew_dordenliquidaciongasto");
-                RequestContext.getCurrentInstance().update("datos:timporte");
-                RequestContext.getCurrentInstance().execute("PF('dlgnew_dordenliquidaciongasto').hide()");
-            }else{
-                RequestContext.getCurrentInstance().update("datos:growl");
-            }  
-        } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(Ordenliquidaciongasto_modAction.class.getName()).log(Level.SEVERE, null, ex);
-        }     
+            RequestContext.getCurrentInstance().update("datos:lstdordenliquidaciongasto");
+            RequestContext.getCurrentInstance().update("datos:dlgnew_dordenliquidaciongasto");
+            RequestContext.getCurrentInstance().update("datos:timporte");
+            RequestContext.getCurrentInstance().execute("PF('dlgnew_dordenliquidaciongasto').hide()");
+        }else{
+            RequestContext.getCurrentInstance().update("datos:growl");
+        }  
+            
     }
     public void addDordenliquidaciongasto() {
         try {
@@ -1352,6 +1380,21 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
 //            RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
             RequestContext.getCurrentInstance().update("datos:lstdordenliquidaciongasto");
         }
+    }
+    public String agregarItemDordenliquidaciongasto(){
+        int dato = 1;
+        int may=-999999999;
+        for(Dordenliquidaciongasto obj:getLstdordenliquidaciongasto()){
+            dato = Integer.parseInt(obj.getItem());
+            if(dato>may)
+                may=dato;
+        }
+        if(may==-999999999)
+            may=1;
+        else
+            may++;
+        
+        return WebUtil.idGeneradoTres(may);
     }
     /***************** EVENTOS *********************/
     public void onRegimen(){
