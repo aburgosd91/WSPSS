@@ -107,8 +107,8 @@
                                         <p:dataExporter type="xls" target="lstdordenliquidaciongasto" fileName="#{ordenliquidaciongasto_modAction.datoEdicion.iddocumento}-#{ordenliquidaciongasto_modAction.datoEdicion.serie}-#{ordenliquidaciongasto_modAction.datoEdicion.numero}-#{ordenliquidaciongasto_modAction.datoEdicion.razonsocial}" />
                                     </p:commandButton>
                                     <p:commandButton value="Refrescar" ajax="true" image="ui-icon-reload" actionListener="#{ordenliquidaciongasto_modAction.onRefresh()}"/>
-                                    <p:commandButton value="Agregar Masivo" ajax="true" image="ui-icon-nuevo" actionListener="#{ordenliquidaciongasto_modAction.nuevoDordenliquidaciongasto()}" disabled="#{!ordenliquidaciongasto_modAction.edicion}"/>
-                                    <p:commandButton value="Agregar" ajax="true" image="ui-icon-nuevo" actionListener="#{ordenliquidaciongasto_modAction.addDordenliquidaciongasto()}" disabled="#{!ordenliquidaciongasto_modAction.edicion}"/>
+                                    <p:commandButton value="Agregar" ajax="true" image="ui-icon-nuevo" actionListener="#{ordenliquidaciongasto_modAction.nuevoDordenliquidaciongasto()}" disabled="#{!ordenliquidaciongasto_modAction.edicion}"/>
+                                    <p:commandButton value="Agregar" ajax="true" image="ui-icon-nuevo" actionListener="#{ordenliquidaciongasto_modAction.addDordenliquidaciongasto()}" disabled="#{!ordenliquidaciongasto_modAction.edicion}" rendered="false"/>
                                     <p:commandButton value="Eliminar" ajax="true" image="ui-icon-eliminar" actionListener="#{ordenliquidaciongasto_modAction.eliminarDordenliquidaciongasto()}" disabled="#{!ordenliquidaciongasto_modAction.edicion}"/>
                                 </f:facet>
                                 <p:column filterBy="#{lstdordenliquidaciongasto.item}" filterMatchMode="contains" sortBy="#{lstdordenliquidaciongasto.item}" style="white-space: nowrap; width: 30px;padding: 3px;text-align: left">
