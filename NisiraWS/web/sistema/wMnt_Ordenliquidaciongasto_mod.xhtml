@@ -282,13 +282,13 @@
                                         </f:facet>
                                     </p:cellEditor>
                                 </p:column>
-                                <p:column id="item_pimpuesto" headerText="%Impto." filterBy="#{lstdordenliquidaciongasto.impuesto}" filterMatchMode="contains" sortBy="#{lstdordenliquidaciongasto.impuesto}"  style="white-space: nowrap; width: 60px;padding: 3px;text-align: left">
-                                    <h:outputText value="#{lstdordenliquidaciongasto.impuesto}">
+                                <p:column id="item_pimpuesto" headerText="%Impto." filterBy="#{lstdordenliquidaciongasto.pimpuesto}" filterMatchMode="contains" sortBy="#{lstdordenliquidaciongasto.pimpuesto}"  style="white-space: nowrap; width: 60px;padding: 3px;text-align: left">
+                                    <h:outputText value="#{lstdordenliquidaciongasto.pimpuesto}">
                                         <f:convertNumber pattern="#0.000" locale="en-US"/>
                                     </h:outputText>
                                 </p:column>
-                                <p:column id="item_impuesto" headerText="Impuesto" filterBy="#{lstdordenliquidaciongasto.pimpuesto}" filterMatchMode="contains" sortBy="#{lstdordenliquidaciongasto.pimpuesto}"  style="white-space: nowrap; width: 60px;padding: 3px;text-align: left">
-                                    <h:outputText value="#{lstdordenliquidaciongasto.pimpuesto}">
+                                <p:column id="item_impuesto" headerText="Impuesto" filterBy="#{lstdordenliquidaciongasto.impuesto}" filterMatchMode="contains" sortBy="#{lstdordenliquidaciongasto.impuesto}"  style="white-space: nowrap; width: 60px;padding: 3px;text-align: left">
+                                    <h:outputText value="#{lstdordenliquidaciongasto.impuesto}">
                                         <f:convertNumber pattern="#0.00" locale="en-US"/>
                                     </h:outputText>
                                 </p:column>
@@ -457,10 +457,10 @@
                         </p:inputNumber>
 
                         <p:outputLabel for="impto" value="%Impto:" />
-                        <p:inputNumber id="impto" value="#{ordenliquidaciongasto_modAction.dordenliquidaciongasto.impuesto}" readonly="true"/>
+                        <p:inputNumber id="impto" value="#{ordenliquidaciongasto_modAction.dordenliquidaciongasto.pimpuesto}" readonly="true"/>
 
                         <p:outputLabel for="impuesto" value="Impuesto:" />
-                        <p:inputNumber id="impuesto" value="#{ordenliquidaciongasto_modAction.dordenliquidaciongasto.pimpuesto}" readonly="true"/>
+                        <p:inputNumber id="impuesto" value="#{ordenliquidaciongasto_modAction.dordenliquidaciongasto.impuesto}" readonly="true"/>
 
                         <p:outputLabel for="importe" value="Total:"/>
                         <p:inputNumber id="importe" value="#{ordenliquidaciongasto_modAction.dordenliquidaciongasto.importe}" readonly="true"/>

@@ -293,17 +293,17 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
                             if(newValue.toString().trim().equals("01")){
                                 entity.setInafecto(0.0f);
                                 Float imp_dec =  entity.getAfecto()/100;
-                                entity.setPimpuesto(entity.getAfecto()*imp_dec);
+                                entity.setImpuesto(entity.getAfecto()*imp_dec);
                                 entity.setHabilitar_baseimponible(false);
                                 entity.setHabilitar_inafecto(true);
                             }else if(newValue.toString().trim().equals("02")){
                                 Float imp_dec =  entity.getAfecto()/100;
-                                entity.setPimpuesto(entity.getAfecto()*imp_dec);
+                                entity.setImpuesto(entity.getAfecto()*imp_dec);
                                 entity.setHabilitar_baseimponible(false);
                                 entity.setHabilitar_inafecto(false);
                             }else if(newValue.toString().trim().equals("03")){
                                 entity.setAfecto(0.0f);
-                                entity.setPimpuesto(0.0f);
+                                entity.setImpuesto(0.0f);
                                 entity.setHabilitar_baseimponible(true);
                                 entity.setHabilitar_inafecto(false);
                             }
@@ -315,8 +315,8 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
                         }else{
                             Float fv = Float.valueOf(newValue.toString());
                             entity.setAfecto(fv);
-                            Float imp_dec =  (entity.getImpuesto()==null?0.0f:entity.getImpuesto())/100;
-                            entity.setPimpuesto(entity.getAfecto()*imp_dec);
+                            Float imp_dec =  (entity.getPimpuesto()==null?0.0f:entity.getPimpuesto())/100;
+                            entity.setImpuesto(entity.getAfecto()*imp_dec);
                         };break;
                     case "Inafecto":
                         if(newValue==null){
@@ -342,7 +342,7 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
                         };break;
                 }
                 /*CALCULO DE TOTAL*/
-                entity.setImporte(entity.getAfecto()+entity.getInafecto()+entity.getPimpuesto());
+                entity.setImporte(entity.getAfecto()+entity.getInafecto()+entity.getImpuesto());
                 replazarCampo(entity,pos);
                 actualizarTotal();
                 grabar_local();
@@ -373,7 +373,7 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
         int ipos = 1;
         for(Dordenliquidaciongasto dl : lstdordenliquidaciongasto){
             dl.setItem(WebUtil.cerosIzquierdaString(ipos++, 3));
-            igv_calculado = (new BigDecimal(dl.getPimpuesto())).setScale(2, RoundingMode.HALF_UP);
+            igv_calculado = (new BigDecimal(dl.getImpuesto())).setScale(2, RoundingMode.HALF_UP);
             afecto = (new BigDecimal(dl.getAfecto())).setScale(2, RoundingMode.HALF_UP);
             inafecto = (new BigDecimal(dl.getInafecto())).setScale(2, RoundingMode.HALF_UP);
             total = (total.add(igv_calculado).add(afecto).add(inafecto)).setScale(2, RoundingMode.HALF_UP);
@@ -865,7 +865,7 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
         getDordenliquidaciongasto().setDocumento(doc.getDescripcion());
         getDordenliquidaciongasto().setAfecto(0.f);
         getDordenliquidaciongasto().setInafecto(0.f);
-        getDordenliquidaciongasto().setPimpuesto(0.f);
+        getDordenliquidaciongasto().setImpuesto(0.f);
         getDordenliquidaciongasto().setImporte(0.f);        
     }
     public void valorClieprov(SelectEvent event) {
@@ -1014,13 +1014,11 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
             getDordenliquidaciongasto().setAfecto(0.0f);
             getDordenliquidaciongasto().setInafecto(0.0f);
             if(listDimpuesto.isEmpty()){
-                getDordenliquidaciongasto().setImpuesto(0.0f);
                 getDordenliquidaciongasto().setPimpuesto(0.0f);
             }else{
-                getDordenliquidaciongasto().setImpuesto(listDimpuesto.get(0).getValor());
-//                getDordenliquidaciongasto().setPimpuesto(0.0f);
+                getDordenliquidaciongasto().setPimpuesto(listDimpuesto.get(0).getValor());
             }
-            getDordenliquidaciongasto().setPimpuesto(0.0f);
+            getDordenliquidaciongasto().setImpuesto(0.0f);
             getDordenliquidaciongasto().setImporte(0.0f);
             getDordenliquidaciongasto().setIdmoneda(getDatoEdicion().getIdmoneda());
             lstdordenliquidaciongasto.add(getDordenliquidaciongasto());
@@ -1053,13 +1051,11 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
             getDordenliquidaciongasto().setAfecto(0.0f);
             getDordenliquidaciongasto().setInafecto(0.0f);
             if(listDimpuesto.isEmpty()){
-                getDordenliquidaciongasto().setImpuesto(0.0f);
                 getDordenliquidaciongasto().setPimpuesto(0.0f);
             }else{
-                getDordenliquidaciongasto().setImpuesto(listDimpuesto.get(0).getValor());
-//                getDordenliquidaciongasto().setPimpuesto(0.0f);
+                getDordenliquidaciongasto().setPimpuesto(listDimpuesto.get(0).getValor());
             }
-            getDordenliquidaciongasto().setPimpuesto(0.0f);
+            getDordenliquidaciongasto().setImpuesto(0.0f);
             getDordenliquidaciongasto().setImporte(0.0f);
             getDordenliquidaciongasto().setIdmoneda(getDatoEdicion().getIdmoneda());
             RequestContext.getCurrentInstance().update("datos:dlgnew_dordenliquidaciongasto");
@@ -1122,12 +1118,12 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
         }
     }
     public void afectoCalc(){
-        Float imp_dec =  (dordenliquidaciongasto.getImpuesto()==null?0.0f:dordenliquidaciongasto.getImpuesto())/100;
-        dordenliquidaciongasto.setPimpuesto(dordenliquidaciongasto.getAfecto()*imp_dec);
-        dordenliquidaciongasto.setImporte(dordenliquidaciongasto.getAfecto()+dordenliquidaciongasto.getInafecto()+dordenliquidaciongasto.getPimpuesto());
+        Float imp_dec =  (dordenliquidaciongasto.getPimpuesto()==null?0.0f:dordenliquidaciongasto.getPimpuesto())/100;
+        dordenliquidaciongasto.setImpuesto(dordenliquidaciongasto.getAfecto()*imp_dec);
+        dordenliquidaciongasto.setImporte(dordenliquidaciongasto.getAfecto()+dordenliquidaciongasto.getInafecto()+dordenliquidaciongasto.getImpuesto());
     }
     public void inafectoCalc(){
-        dordenliquidaciongasto.setImporte(dordenliquidaciongasto.getAfecto()+dordenliquidaciongasto.getInafecto()+dordenliquidaciongasto.getPimpuesto());
+        dordenliquidaciongasto.setImporte(dordenliquidaciongasto.getAfecto()+dordenliquidaciongasto.getInafecto()+dordenliquidaciongasto.getImpuesto());
     }
     public String agregarItemDordenservicio(){
         int dato = 1;
@@ -1402,17 +1398,17 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
             if(getDordenliquidaciongasto().getIdregimen().trim().equals("01")){
                 getDordenliquidaciongasto().setInafecto(0.0f);
                 Float imp_dec =  getDordenliquidaciongasto().getAfecto()/100;
-                getDordenliquidaciongasto().setPimpuesto(getDordenliquidaciongasto().getAfecto()*imp_dec);
+                getDordenliquidaciongasto().setImpuesto(getDordenliquidaciongasto().getAfecto()*imp_dec);
                 getDordenliquidaciongasto().setHabilitar_baseimponible(false);
                 getDordenliquidaciongasto().setHabilitar_inafecto(true);
             }else if(getDordenliquidaciongasto().getIdregimen().trim().equals("02")){
                 Float imp_dec =  getDordenliquidaciongasto().getAfecto()/100;
-                getDordenliquidaciongasto().setPimpuesto(getDordenliquidaciongasto().getAfecto()*imp_dec);
+                getDordenliquidaciongasto().setImpuesto(getDordenliquidaciongasto().getAfecto()*imp_dec);
                 getDordenliquidaciongasto().setHabilitar_baseimponible(false);
                 getDordenliquidaciongasto().setHabilitar_inafecto(false);
             }else if(getDordenliquidaciongasto().getIdregimen().trim().equals("03")){
                 getDordenliquidaciongasto().setAfecto(0.0f);
-                getDordenliquidaciongasto().setPimpuesto(0.0f);
+                getDordenliquidaciongasto().setImpuesto(0.0f);
                 getDordenliquidaciongasto().setHabilitar_baseimponible(true);
                 getDordenliquidaciongasto().setHabilitar_inafecto(false);
             }
