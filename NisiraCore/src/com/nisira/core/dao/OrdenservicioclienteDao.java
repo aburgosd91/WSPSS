@@ -428,6 +428,11 @@ public class OrdenservicioclienteDao extends BaseDao<Ordenserviciocliente> {
             rs = execProcedure("RPT_ORDENSERVICIOCLIENTE_FACTURACION_DETALLADO_TMPSS",idempresa,fechainicio,fechafin,idtiposervicio);
             return ReportConfig.getNSRResultSet(rs);
         }
+        public NSRResultSet getConsultaRepote_mano_obra_sinrango_horas(String idempresa) throws NisiraORMException{
+            ResultSet rs = null;
+            rs = execProcedure("GET_REPORTE_MANO_OBRA_SINRANGO_HORAS",idempresa);
+            return ReportConfig.getNSRResultSet(rs);
+        }
         public String anular(Ordenserviciocliente ob,String idusuario) throws Exception {
             String mensaje="";
             try {
