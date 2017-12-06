@@ -318,4 +318,41 @@ public class DetcalculopagarDao extends BaseDao<Detcalculopagar> {
             }
             return lista;
         }
+        public ArrayList<Detcalculopagar> listar_detallado_cobrarpagardoc(String idempresa,String idcabcalculopagar) throws NisiraORMException,Exception {
+            ArrayList<Detcalculopagar> lista = new ArrayList<Detcalculopagar>();
+            ResultSet rs = null;
+            rs = execProcedure("GETDETCALCULOPAGAR_COBRARPAGARDOC_TMPSS",idempresa,idcabcalculopagar);
+            while (rs.next()) {
+                Detcalculopagar detcalculopagar = new Detcalculopagar();
+                detcalculopagar.setIdempresa(rs.getString("IDEMPRESA")!=null?rs.getString("IDEMPRESA").trim():"");
+                detcalculopagar.setIdcabcalculopagar(rs.getString("IDCABCALCULOPAGAR")!=null?rs.getString("IDCABCALCULOPAGAR").trim():"");
+                detcalculopagar.setItem(rs.getInt("ITEM"));
+                detcalculopagar.setIdclieprov(rs.getString("IDCLIEPROV")!=null?rs.getString("IDCLIEPROV").trim():"");
+                detcalculopagar.setRazon_social(rs.getString("RAZON_SOCIAL")!=null?rs.getString("RAZON_SOCIAL").trim():"");
+                detcalculopagar.setIddocumento(rs.getString("IDDOCUMENTO")!=null?rs.getString("IDDOCUMENTO").trim():"");
+                detcalculopagar.setSerie(rs.getString("SERIE")!=null?rs.getString("SERIE").trim():"");
+                detcalculopagar.setNumero(rs.getString("NUMERO")!=null?rs.getString("NUMERO").trim():"");
+                detcalculopagar.setFecha(rs.getDate("FECHA"));
+                detcalculopagar.setFechaoperacion(rs.getDate("FECHAOPERACION"));
+                detcalculopagar.setVencimiento(rs.getDate("VENCIMIENTO"));
+                detcalculopagar.setIdmoneda(rs.getString("IDMONEDA")!=null?rs.getString("IDMONEDA").trim():"");
+                detcalculopagar.setIdcuenta(rs.getString("IDCUENTA")!=null?rs.getString("IDCUENTA").trim():"");
+                detcalculopagar.setIdccosto(rs.getString("IDCCOSTO")!=null?rs.getString("IDCCOSTO").trim():"");
+                detcalculopagar.setConcepto(rs.getString("CONCEPTO")!=null?rs.getString("CONCEPTO").trim():"");
+                detcalculopagar.setIdcliente(rs.getString("IDCLIENTE")!=null?rs.getString("IDCLIENTE").trim():"");
+                detcalculopagar.setIdregimen(rs.getString("IDREGIMEN")!=null?rs.getString("IDREGIMEN").trim():"");
+                detcalculopagar.setAfecto(rs.getFloat("AFECTO"));
+                detcalculopagar.setInafecto(rs.getFloat("INAFECTO"));
+                detcalculopagar.setIdimpuesto(rs.getString("IDIMPUESTO")!=null?rs.getString("IDIMPUESTO").trim():"");
+                detcalculopagar.setImpuesto(rs.getFloat("IMPUESTO"));
+                detcalculopagar.setTotal(rs.getFloat("TOTAL"));
+                detcalculopagar.setOrdenregistro(rs.getInt("ORDENREGISTRO"));
+                detcalculopagar.setEsdetraccion(rs.getInt("ESDETRACCION"));
+                detcalculopagar.setTipodetraccion_descripcion(rs.getString("TIPODETRACCION")!=null?rs.getString("TIPODETRACCION").trim():"");
+                detcalculopagar.setTasa(rs.getFloat("TASADETRACCION"));
+                detcalculopagar.setTcosto(rs.getFloat("TCOSTO"));
+                lista.add(detcalculopagar); 
+            }
+            return lista;
+        }
 }

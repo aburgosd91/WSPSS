@@ -442,7 +442,7 @@
                         
                         <p:outputLabel value="Régimen" escape="false" />
                         <h:selectOneMenu value="#{ordenliquidaciongasto_modAction.dordenliquidaciongasto.idregimen}" style="width:100%">
-                            <p:ajax listener="#{ordenliquidaciongasto_modAction.onRegimen()}" update="base,inafecto"/>
+                            <p:ajax listener="#{ordenliquidaciongasto_modAction.onRegimen()}" update="base,inafecto,impuesto,importe"/>
                             <f:selectItems value="#{ordenliquidaciongasto_modAction.listTiporegimen}" var="tr" itemLabel="#{tr.idregimen}-#{tr.descripcion}" itemValue="#{tr.idregimen}" />
                         </h:selectOneMenu>
                         

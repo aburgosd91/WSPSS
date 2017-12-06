@@ -587,13 +587,18 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
         }
         
     }
-    public boolean esVistaValida() {
+    public boolean esVistaValida() throws NisiraORMException {
         if (getDatoEdicion().getIdclieprov().isEmpty() & getDatoEdicion().getRazonsocial().isEmpty()) {
             WebUtil.MensajeAdvertencia("Seleccione Cliente");
             return false;
         }
         if (getLstdordenliquidaciongasto().size() == 0) {
             WebUtil.MensajeAdvertencia("Ingrese Detalle de servicio");
+            return false;
+        }
+        if(!estadosDao.validar_modificacion_documento(user.getIDEMPRESA(),"", getDatoEdicion().getIdestado())){
+            WebUtil.MensajeAdvertencia("El documento no tiene el Estado Indicado para ralizar el proceso");
+            RequestContext.getCurrentInstance().update("datos:growl");
             return false;
         }
         return true;
@@ -1412,6 +1417,7 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
                 getDordenliquidaciongasto().setHabilitar_baseimponible(true);
                 getDordenliquidaciongasto().setHabilitar_inafecto(false);
             }
+            getDordenliquidaciongasto().setImporte(getDordenliquidaciongasto().getAfecto()+getDordenliquidaciongasto().getInafecto()+getDordenliquidaciongasto().getImpuesto());
             RequestContext.getCurrentInstance().update("datos:dlgnew_dordenliquidaciongasto:base");
             RequestContext.getCurrentInstance().update("datos:dlgnew_dordenliquidaciongasto:inafecto");
             RequestContext.getCurrentInstance().update("datos:dlgnew_dordenliquidaciongasto:impuesto");

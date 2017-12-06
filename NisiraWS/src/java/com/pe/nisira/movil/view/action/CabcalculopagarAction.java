@@ -575,14 +575,16 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
                 RequestContext.getCurrentInstance().update("datos:growl");
             }
             else if(verificar_aprobacion()){
-                mensaje=getCabcalculopagarDao().aprobarCalculoPagar(getDatoEdicion(),listDetcalculopagar_verification,user.getIDUSUARIO());
-                if(mensaje!=null)
-                    if(mensaje.trim().length()==15)
-                        getDatoEdicion().setIdcabcalculopagar(mensaje.trim());
-                WebUtil.info("Se aprobó el documento :"+getDatoEdicion().getIddocumento()+"-"+
-                        getDatoEdicion().getSerie()+"-"+getDatoEdicion().getNumero()+" ("+getMensaje()+")");
-                setLvalidate(true);
-                RequestContext.getCurrentInstance().update("datos");
+                if(listarRegistrados_cobrarpagardoc()){
+                    mensaje=getCabcalculopagarDao().aprobarCalculoPagar(getDatoEdicion(),listDetcalculopagar_verification,user.getIDUSUARIO());
+                    if(mensaje!=null)
+                        if(mensaje.trim().length()==15)
+                            getDatoEdicion().setIdcabcalculopagar(mensaje.trim());
+                    WebUtil.info("Se aprobó el documento :"+getDatoEdicion().getIddocumento()+"-"+
+                            getDatoEdicion().getSerie()+"-"+getDatoEdicion().getNumero()+" ("+getMensaje()+")");
+                    setLvalidate(true);
+                    RequestContext.getCurrentInstance().update("datos");
+                }   
             }
         } catch (Exception ex) {
             Logger.getLogger(TareowebAction.class.getName()).log(Level.SEVERE, null, ex);
@@ -697,6 +699,33 @@ public class CabcalculopagarAction extends AbstactListAction<Cabcalculopagar> {
         if(!httpcontenido.trim().equals("")){
             httpcontenido="*****************DETALLE OBSERVADO*******************"+httpcontenido;
             mostrarLog_txt(httpcontenido);
+        }
+        return flag;
+    }
+    public boolean listarRegistrados_cobrarpagardoc(){
+        boolean flag = true;
+        String validacion ="";
+        String httpcontenido="";
+        try {
+            List<Detcalculopagar> listRegistrados = detcalculopagarDao.listar_detallado_cobrarpagardoc(user.getIDEMPRESA(), getDatoEdicion().getIdcabcalculopagar());
+            if(!listRegistrados.isEmpty()){
+                for(int i=0;i<listRegistrados.size();i++){
+                    Detcalculopagar obj = listRegistrados.get(i);
+                    validacion ="";
+                    this.mensaje="\nDocumento N°:"+obj.getItem()+" - "+obj.getIdclieprov()+"-"+obj.getRazon_social()+" "+obj.getIddocumento()+"-"+obj.getSerie()+"-"+obj.getNumero()+" ("+obj.getFecha()+")" + validacion;
+                    httpcontenido+="\n"+this.mensaje;
+                    flag = false;
+                }
+                if(!httpcontenido.trim().equals("")){
+                    httpcontenido="*****************LISTA DE DOCUMENTOS YA PROVISIONADOS *******************"+httpcontenido;
+                    mostrarLog_txt(httpcontenido);
+                }
+            }
+        }catch (Exception ex) {
+            Logger.getLogger(TareowebAction.class.getName()).log(Level.SEVERE, null, ex);
+            setMensaje(ex.getMessage());
+            WebUtil.error(getMensaje());
+            RequestContext.getCurrentInstance().update("datos:growl");
         }
         return flag;
     }

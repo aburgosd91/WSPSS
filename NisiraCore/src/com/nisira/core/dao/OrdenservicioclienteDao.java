@@ -304,6 +304,7 @@ public class OrdenservicioclienteDao extends BaseDao<Ordenserviciocliente> {
                 reporte_facturacion.setDfecha_osc(rs.getDate("DFECHA_OSC"));
                 reporte_facturacion.setDfecharegistro(rs.getDate("DFECHAREGISTRO"));
                 reporte_facturacion.setDfechafinregistro(rs.getDate("DFECHAFINREGISTRO"));
+                reporte_facturacion.setDni(rs.getString("DNI")!=null?rs.getString("DNI").trim():"");
                 /*HORAS*/
                 if(rs.getObject("DHI")!=null){
                     reporte_facturacion.setDhi(((BigDecimal)rs.getObject("DHI")).floatValue());

@@ -215,6 +215,9 @@ public class Reporte_facturacion  implements Serializable {
     @XStreamAlias("NSERVICIOS_DIA")
     @Columna
     private Integer nservicios_dia;
+    @XStreamAlias("DNI")
+    @Columna
+    private String  dni;
     private Integer item;
     private String cuenta;
     private String tipodetraccion_descripcion;
@@ -1449,5 +1452,19 @@ public class Reporte_facturacion  implements Serializable {
      */
     public void setNservicios_dia(Integer nservicios_dia) {
         this.nservicios_dia = nservicios_dia;
+    }
+
+    /**
+     * @return the dni
+     */
+    public String getDni() {
+        return dni;
+    }
+
+    /**
+     * @param dni the dni to set
+     */
+    public void setDni(String dni) {
+        this.dni = dni;
     }
 }

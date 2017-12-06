@@ -47,4 +47,18 @@ public class EstadosDao extends BaseDao<Estados> {
         }
         return lista;
         }
+        public boolean validar_modificacion_documento (String idempresa,String formulario,String idestado) throws NisiraORMException {
+            boolean tv= false;
+            try
+            {
+                ResultSet rs = null;
+                rs = execProcedure("GETESTADO_DOCUMENTO_MODIFICAR_TMPSS",idempresa,formulario,idestado);
+                while (rs.next()) {
+                    tv = rs.getBoolean("EDITABLE");  
+                }
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
+            return tv;
+        }
 }
