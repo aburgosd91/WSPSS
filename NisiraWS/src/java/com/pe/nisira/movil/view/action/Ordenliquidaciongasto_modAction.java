@@ -151,6 +151,7 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
     private boolean habilitar_proovedor;
     private String log_consola;
     private int num_repetir_detalle;
+    private String glosa_detalle_local;
     public Ordenliquidaciongasto_modAction() {
         try {
             /*********************************ENTITY*******************************************/
@@ -981,9 +982,9 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
                 dol.setSelectDocumentos(searchDocumentos_local(dol.getIddocumento()));
                 dol.setSelectDestinoadquisicion(searchDestinoadquisicion_local(dol.getIddestino()));
                 /********************************************************************************************/
-                glosa_autogenerada = WebUtil.isnull(dol.getConcepto(), "").toUpperCase()+" / "+
-                            WebUtil.isnull(dol.getIdconsumidor(), "").toUpperCase()+" / "+WebUtil.isnull(dol.getGlosa(), "").toUpperCase();
-                dol.setGlosa(glosa_autogenerada);
+                glosa_autogenerada = WebUtil.isnull(dol.getConcepto(), "").toUpperCase().trim()+" / "+
+                            WebUtil.isnull(dol.getIdconsumidor(), "").toUpperCase().trim()+" / "+WebUtil.isnull(getGlosa_detalle_local(), "").toUpperCase().trim();
+                dol.setGlosa(glosa_autogenerada.trim());
                 lstdordenliquidaciongasto.add(dol); 
             }
             actualizarTotal();
@@ -1038,6 +1039,7 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
     public void nuevoDordenliquidaciongasto() {
         try {
             num_repetir_detalle = 1;
+            setGlosa_detalle_local("");
             setDordenliquidaciongasto(new Dordenliquidaciongasto());
             getDordenliquidaciongasto().setIdempresa(user.getIDEMPRESA());
             getDordenliquidaciongasto().setIdorden(getDatoEdicion().getIdorden());
@@ -2104,6 +2106,20 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
      */
     public void setNum_repetir_detalle(int num_repetir_detalle) {
         this.num_repetir_detalle = num_repetir_detalle;
+    }
+
+    /**
+     * @return the glosa_detalle_local
+     */
+    public String getGlosa_detalle_local() {
+        return glosa_detalle_local;
+    }
+
+    /**
+     * @param glosa_detalle_local the glosa_detalle_local to set
+     */
+    public void setGlosa_detalle_local(String glosa_detalle_local) {
+        this.glosa_detalle_local = glosa_detalle_local;
     }
 
 }
