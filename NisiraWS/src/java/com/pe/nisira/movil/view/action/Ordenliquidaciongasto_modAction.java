@@ -847,7 +847,7 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
 
     /*** responsable ***/
     public void verCntClieprov() {
-        RequestContext.getCurrentInstance().openDialog("cntClieprovPersonal", modalOptions, null);
+        RequestContext.getCurrentInstance().openDialog("cntClieprovProveedor", modalOptions, null);
     }
     public void verCntArea() {
         RequestContext.getCurrentInstance().openDialog("cntAreas", modalOptions, null);
