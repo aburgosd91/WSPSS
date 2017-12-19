@@ -152,16 +152,25 @@ public class AmbitoPagoAction extends AbstactListAction<Ambito_pago> implements 
             WebUtil.MensajeAdvertencia(getMensaje());
             RequestContext.getCurrentInstance().update("datos:growl");
         }else{
-            int pos = lstampagcost.indexOf(slcampagcost);
-            if(pos==-1){
-                lstampagcost.add(workampagcost);
-                slcampagcost = new Ambito_pago_costomo();
+            boolean idExists = lstampagcost.stream()
+            .anyMatch(t -> (t.getIdcargo().equals(workampagcost.getIdcargo()) & 
+                    t.getIdruta().equals(workampagcost.getIdruta())));
+            if(idExists){
+                setMensaje("Código Op: "+workampagcost.getCargo()+" - Ruta: "+workampagcost.getRuta());
+                WebUtil.MensajeAdvertencia(getMensaje());            
+                RequestContext.getCurrentInstance().update("datos:growl");
             }else{
-                lstampagcost.set(pos, workampagcost);
+                int pos = lstampagcost.indexOf(slcampagcost);
+                if(pos==-1){
+                    lstampagcost.add(workampagcost);
+                    slcampagcost = new Ambito_pago_costomo();
+                }else{
+                    lstampagcost.set(pos, workampagcost);
+                }
+                reestructurarItem();
+                RequestContext.getCurrentInstance().execute("PF('costosdialog').hide()");
+                RequestContext.getCurrentInstance().update("datos:lstAmbPagoCost");
             }
-            reestructurarItem();
-            RequestContext.getCurrentInstance().execute("PF('costosdialog').hide()");
-            RequestContext.getCurrentInstance().update("datos:lstAmbPagoCost");
         }
     }
     public void reestructurarItem(){
