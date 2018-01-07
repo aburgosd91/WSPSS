@@ -1,0 +1,98 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">        
+    </ui:define>
+    <ui:define name="body">
+        #{areasAction.findDetaller()}
+        <h:form id="datos" >
+            <cmp:barra_mnt bean="#{areasAction}"/>
+            <p:panelGrid columns="1" style="width:100%; text-align: left" id="pnl_reprogramar" columnClasses="no-border">
+                <f:facet name="header">
+                    #{areasAction.tituloHead}
+                </f:facet>
+                <div class="ui-grid">
+                    <div class="ui-grid-row">
+                        <p:fieldset legend="Datos" style="width: 100%" >
+                            <p:panelGrid  columns="2" columnClasses="no-border, no-border" style="width: 60%">
+                                <p:outputLabel value="Descripcion: "/>
+                                <p:inputText value="#{areasAction.datoEdicion.descripcion}" size="60"/>
+                                <p:outputLabel value="Estado: " />
+                                <p:selectBooleanCheckbox value="#{areasAction.idestado}" disabled="#{!areasAction.edicion}"/>
+                            </p:panelGrid>
+                        </p:fieldset>
+                    </div>
+                    <div class="ui-grid-row">
+                        <p:dataTable id="lstDetEstruClie" 
+                                     value="#{areasAction.lstDestTar}" 
+                                     selectionMode="single"
+                                     selection="#{areasAction.slctDesTar}"
+                                     var="detEst" 
+                                     paginator="true" paginatorPosition="top" rows="15" 
+                                     rowsPerPageTemplate="15,25,35,50,70,100" 
+                                     paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" 
+                                     widgetVar="lstDetEstruClie"
+                                     rowKey="#{detEst.item}">
+                            <f:facet name="{Comandos}">
+                                <p:commandButton value="Excel" ajax="false" image="ui-icon-excel">
+                                    <p:dataExporter type="xls" target="lstDetEstruClie" fileName="#{areasAction.datoEdicion.descripcion}" />
+                                </p:commandButton>
+                                <p:commandButton id="btnDgen" value="Nuevo" ajax="true" image="ui-icon-nuevo"  actionListener="#{areasAction.openDialog()}"   disabled="#{!areasAction.edicion}"/>
+                                <p:commandButton id="btnDedit" value="Editar" ajax="true" image="ui-icon-edit"  actionListener="#{areasAction.ediitDetEstruc()}"   disabled="#{!areasAction.edicion}"/>
+                                <p:commandButton id="btDdel" value="Eliminar" ajax="true" image="ui-icon-eliminar"  actionListener="#{areasAction.dellDetEstruc()}"  disabled="#{!areasAction.edicion}"/>
+                            </f:facet>
+                            <p:column style="width:8%;" filterBy="#{detEst.item}" filterMatchMode="contains" sortBy="#{detEst.item}">
+                                <f:facet name="header">
+                                    <h:outputText value="Item" />
+                                </f:facet>
+                                <h:outputText value="#{detEst.item}"/>
+                            </p:column>
+                            <p:column style="width:15%;" filterBy="#{detEst.descripcion}" filterMatchMode="contains" sortBy="#{detEst.descripcion}">
+                                <f:facet name="header">
+                                    <h:outputText value="Descripcion" />
+                                </f:facet>
+                                <h:outputText value="#{detEst.descripcion}"/>
+                            </p:column>
+                            <p:column style="width:15%;"  filterBy="#{detEst.concepto}" filterMatchMode="contains" sortBy="#{detEst.concepto}">
+                                <f:facet name="header">
+                                    <h:outputText value="Concepto" />
+                                </f:facet>
+                                <h:outputText value="#{detEst.concepto}"/>
+                            </p:column>
+                            <p:column style="width:5%;" filterBy="#{detEst.idcuenta}" filterMatchMode="contains" sortBy="#{detEst.idcuenta}">
+                                <f:facet name="header">
+                                    <h:outputText value="Cuenta" />
+                                </f:facet>
+                                <h:outputText value="#{detEst.idcuenta}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </div>
+                </div>
+            </p:panelGrid>
+            <p:dialog id="detEstrDialog" widgetVar="detEstrDialog" header="Nuevo Detalle de Estructura" style="width: 300px; height: 300px" modal="true" closable="true">
+                <p:panelGrid  columns="2" columnClasses="no-border, no-border">
+                    <p:outputLabel value="Descripcion"/>
+                    <p:inputText id="newtDesTar_descripcion" value="#{areasAction.newtDesTar.descripcion}" size="60"/>
+                    <p:outputLabel value="Concepto"/>
+                    <p:panelGrid columns="4" columnClasses="no-border, no-border, no-border, no-border">                        
+                        <p:commandButton  ajax="true" actionListener="#{areasAction.verCntclearConcepto_cuenta()}" icon="ui-icon-clear" update="cntConcepto,cntIdCuenta,newtDesTar_descripcion" disabled="#{areasAction.editDet}"/>
+                        <p:commandButton  styleClass="boton_buscar" ajax="true" actionListener="#{areasAction.verCntConcepto_cuenta()}" icon="ui-icon-search"  disabled="#{areasAction.editDet}">
+                            <p:ajax event="dialogReturn" listener="#{areasAction.valorConcepto_cuenta}" update="cntConcepto,cntIdCuenta,newtDesTar_descripcion"/>
+                        </p:commandButton>
+                        <p:inputText id="cntIdCuenta" size="10" value="#{areasAction.newtDesTar.idcuenta}" readonly="true"/>
+                        <p:inputText id="cntConcepto" size="40" value="#{areasAction.newtDesTar.concepto}" readonly="true"/>
+                    </p:panelGrid> 
+                    <br/>
+                    <p:commandButton value="GRABAR" actionListener="#{areasAction.addDetEstruc()}"/>
+                </p:panelGrid>
+            </p:dialog>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{areasAction}" ventana="MNT" />
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,53 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">          
+        <h:form id="datos">
+            #{areasAction.buscarTodo()}  
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
+                <cmp:barra_lst bean="#{areasAction}" mostrar_opciones="false"/>
+                <p:dataTable id="tbl" var="listEstruc" value="#{areasAction.listaDatos}" filteredValue="#{areasAction.filtroDatos}" widgetVar="listEstruc" 
+                             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                             paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{areasAction.datoSeleccionado}" rowKey="#{listEstruc.idarea}" resizableColumns="true">
+                    <f:facet name="header">
+                        <h:outputText value="#{areasAction.tituloHead}" />
+                    </f:facet>
+                    <p:column style="width:10%;" filterBy="#{listEstruc.idarea}" filterMatchMode="contains" sortBy="#{listEstruc.idarea}">
+                        <f:facet name="header">
+                            <h:outputText value="Código" />
+                        </f:facet>
+                        <h:outputText value="#{listEstruc.idarea}"/>
+                    </p:column>
+                    <p:column style="width:60%;" filterBy="#{listEstruc.descripcion}" filterMatchMode="contains" sortBy="#{listEstruc.descripcion}">
+                        <f:facet name="header">
+                            <h:outputText value="Descripcion" />
+                        </f:facet>
+                        <h:outputText value="#{listEstruc.descripcion}"/>
+                    </p:column>
+                    <p:column style="width:10%;" filterBy="#{listEstruc.estado}">
+                        <f:facet name="header">
+                            <h:outputText value="ESTADO"/>
+                        </f:facet>
+                        <f:facet name="filter">
+                            <p:selectOneButton onchange="PF('listEstruc').filter()">
+                                <f:converter converterId="javax.faces.Boolean" />
+                                <f:selectItem  itemLabel="Activo" itemValue="true"/>
+                                <f:selectItem itemLabel="Inactivo" itemValue="false"/>
+                            </p:selectOneButton>
+                        </f:facet>
+                        <h:graphicImage value="../images/img/#{listEstruc.estado==1?'activo':'inactivo'}.png"/>
+                        <h:outputText value="#{listEstruc.estado==1?'Activo':'Inactivo'}" />
+                    </p:column>
+                </p:dataTable>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{areasAction}" ventana="LST" />
+        </h:form>
+    </ui:define>
+</ui:composition>

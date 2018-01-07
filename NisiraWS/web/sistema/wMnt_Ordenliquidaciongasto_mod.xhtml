@@ -64,6 +64,12 @@
                                         <p:inputText  style="text-align: left" size="15" readonly="true"  value="#{ordenliquidaciongasto_modAction.datoEdicion.idarea}" disabled="#{!ordenliquidaciongasto_modAction.edicion}"/>
                                         <p:inputText size="50" readonly="true" value="#{ordenliquidaciongasto_modAction.datoEdicion.area}" disabled="#{!ordenliquidaciongasto_modAction.edicion}"/>
                                     </h:panelGrid>
+                                    <p:outputLabel value="Entregado:" />
+                                    <p:inputNumber id="tentregado" value="#{ordenliquidaciongasto_modAction.datoEdicion.entregado}" decimalPlaces="2">
+                                        <p:ajax event="blur" listener="#{ordenliquidaciongasto_modAction.actualizarTotal()}" update="trendido,tdevolver,treembolsar"/>
+                                    </p:inputNumber>    
+                                    <p:outputLabel value="Rendido:" />
+                                    <p:inputNumber id="trendido" value="#{ordenliquidaciongasto_modAction.datoEdicion.rendido}" readonly="true"/>
                                 </p:panelGrid>
                             </div>
                             <div class="ui-grid-col-6">
@@ -89,6 +95,10 @@
                                     </p:panelGrid>
                                     <p:outputLabel value="Glosa" escape="false"/>
                                     <p:inputTextarea rows="2" cols="76" value="#{ordenliquidaciongasto_modAction.datoEdicion.glosa}" disabled="#{!ordenliquidaciongasto_modAction.edicion}"/>
+                                    <p:outputLabel value="Devolver:" />
+                                    <p:inputNumber id="tdevolver" value="#{ordenliquidaciongasto_modAction.datoEdicion.devolver}" readonly="true"/>
+                                    <p:outputLabel value="Reembolsar:" />
+                                    <p:inputNumber id="treembolsar" value="#{ordenliquidaciongasto_modAction.datoEdicion.reembolsar}" readonly="true"/>
                                 </p:panelGrid>
                             </div> 
                         </p:fieldset> 

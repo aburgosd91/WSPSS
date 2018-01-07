@@ -97,4 +97,28 @@ public class Concepto_cuentaDao extends BaseDao<Concepto_cuenta> {
         }
         return lista;
         }
+        public ArrayList<Concepto_cuenta> listarPorEmpresaWeb_Area(String idempresa,String idarea) throws NisiraORMException {
+            ArrayList<Concepto_cuenta> lista = new ArrayList<Concepto_cuenta>();
+        try
+        {
+            ResultSet rs = null;
+            rs = execProcedure("GETCONCEPTO_CUENTA_AREA_TMPSS",idempresa,idarea);
+            while (rs.next()) {
+                Concepto_cuenta concepto_cuenta = new Concepto_cuenta();
+                concepto_cuenta.setIdbasedatos(rs.getString("IDBASEDATOS").trim());
+                concepto_cuenta.setIdempresa(rs.getString("IDEMPRESA").trim());
+                concepto_cuenta.setIdconcepto(rs.getString("IDCONCEPTO")!=null?rs.getString("IDCONCEPTO").trim():"");
+                concepto_cuenta.setIdcuenta(rs.getString("IDCUENTA")!=null?rs.getString("IDCUENTA").trim():"");
+                concepto_cuenta.setDescripcion(rs.getString("DESCRIPCION")!=null?rs.getString("DESCRIPCION").trim():"");
+                concepto_cuenta.setRegistrar_en(rs.getString("REGISTRAR_EN")!=null?rs.getString("REGISTRAR_EN").trim():"");
+                concepto_cuenta.setEstado(rs.getFloat("ESTADO"));
+                concepto_cuenta.setSincroniza(rs.getString("SINCRONIZA")!=null?rs.getString("SINCRONIZA").trim():"");
+                concepto_cuenta.setFechacreacion(rs.getDate("FECHACREACION"));
+                lista.add(concepto_cuenta); 
+            }
+        } catch(Exception ex) {
+            ex.printStackTrace();
+        }
+        return lista;
+        }
 }

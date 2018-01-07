@@ -258,13 +258,13 @@ public class OrdenliquidaciongastoAction extends AbstactListAction<Ordenliquidac
                 /*DATOS INICIALES*/
                 getDatoEdicion().setNumero(numero);
                 if(getLadd()==1){
-                    mensaje=getOrdenliquidaciongastoDao().grabar(1, getDatoEdicion(), getLstdordenliquidaciongasto());
+                    mensaje=getOrdenliquidaciongastoDao().grabar(1, getDatoEdicion(), getLstdordenliquidaciongasto(),user.getIDUSUARIO());
                     if(mensaje!=null)
                         if(mensaje.trim().length()==15)
                             getDatoEdicion().setIdorden(mensaje.trim());
                 }
                 else
-                    mensaje=getOrdenliquidaciongastoDao().grabar(2, getDatoEdicion(), getLstdordenliquidaciongasto());
+                    mensaje=getOrdenliquidaciongastoDao().grabar(2, getDatoEdicion(), getLstdordenliquidaciongasto(),user.getIDUSUARIO());
                 setMensaje(WebUtil.exitoRegistrar("Orden Liquidación Gasto ", mensaje));
                 setLvalidate(true);
                 WebUtil.info(getMensaje());

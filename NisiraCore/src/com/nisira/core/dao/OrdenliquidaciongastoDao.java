@@ -217,6 +217,10 @@ public class OrdenliquidaciongastoDao extends BaseDao<Ordenliquidaciongasto> {
                 ordenliquidaciongasto.setSucursal(rs.getString("SUCURSAL")!=null?rs.getString("SUCURSAL").trim():"");
                 ordenliquidaciongasto.setEstado(rs.getString("ESTADO")!=null?rs.getString("ESTADO").trim():"");
                 ordenliquidaciongasto.setArea(rs.getString("AREA")!=null?rs.getString("AREA").trim():"");
+                ordenliquidaciongasto.setEntregado(rs.getFloat("ENTREGADO"));
+                ordenliquidaciongasto.setRendido(rs.getFloat("RENDIDO"));
+                ordenliquidaciongasto.setDevolver(rs.getFloat("DEVOLVER"));
+                ordenliquidaciongasto.setReembolsar(rs.getFloat("REEMBOLSAR"));
                 lista.add(ordenliquidaciongasto); 
             }
         } catch(Exception ex) {
@@ -225,7 +229,7 @@ public class OrdenliquidaciongastoDao extends BaseDao<Ordenliquidaciongasto> {
         return lista;
         }
         
-        public String grabar(int tipo,Ordenliquidaciongasto ob,List<Dordenliquidaciongasto> listDorden) throws Exception {
+        public String grabar(int tipo,Ordenliquidaciongasto ob,List<Dordenliquidaciongasto> listDorden,String usuario) throws Exception {
             String mensaje="";
             String xmlNot = "";
             String xml = "<?xml version='1.0' encoding='ISO-8859-1' ?>";
@@ -246,7 +250,8 @@ public class OrdenliquidaciongastoDao extends BaseDao<Ordenliquidaciongasto> {
                         ob.getIdempresa(),ob.getIdorden(),
                         ob.getIddocumento(),ob.getSerie(),ob.getNumero(),
                         xmlNot,
-                        xmlDOrdenliquidaciongasto
+                        xmlDOrdenliquidaciongasto,
+                        usuario
                 );
                 while (rs.next()) {
                     mensaje = rs.getString("mensaje");

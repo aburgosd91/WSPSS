@@ -3,25 +3,33 @@ package com.nisira.core.entity;
 import com.nisira.annotation.ClavePrimaria;
 import com.nisira.annotation.Columna;
 import com.nisira.annotation.Tabla;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 import java.io.Serializable;
 import java.util.Date;
-
+@XStreamAlias("AREAS")
 @Tabla(nombre = "AREAS")
 public class Areas implements Serializable{
+        @XStreamAlias("IDEMPRESA")
 	@ClavePrimaria
 	@Columna
 	private String idempresa;
+        @XStreamAlias("IDAREA")
 	@ClavePrimaria
 	@Columna
 	private String idarea;
+        @XStreamAlias("DESCRIPCION")
 	@Columna
 	private String descripcion;
+        @XStreamAlias("ESTADO")
 	@Columna
 	private Float estado;
+        @XStreamAlias("SINCRONIZA")
 	@Columna
 	private String sincroniza;
+        @XStreamAlias("FECHACREACION")
 	@Columna
 	private Date fechacreacion;
+        @XStreamAlias("IDCONSUMIDOR")
 	@Columna
 	private String idconsumidor;
 

@@ -380,7 +380,21 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
             total = (total.add(igv_calculado).add(afecto).add(inafecto)).setScale(2, RoundingMode.HALF_UP);
         }
         getDatoEdicion().setImporte(total.floatValue());
+        getDatoEdicion().setRendido(total.floatValue());
+        if(getDatoEdicion().getRendido().floatValue()==getDatoEdicion().getEntregado().floatValue()){
+            getDatoEdicion().setDevolver(0.0f);
+            getDatoEdicion().setReembolsar(0.0f);
+        }else if(getDatoEdicion().getRendido()>getDatoEdicion().getEntregado()){
+            getDatoEdicion().setDevolver(0.0f);
+            getDatoEdicion().setReembolsar(getDatoEdicion().getRendido()-getDatoEdicion().getEntregado());
+        }else if(getDatoEdicion().getRendido()<getDatoEdicion().getEntregado()){
+            getDatoEdicion().setDevolver(getDatoEdicion().getEntregado()-getDatoEdicion().getRendido());
+            getDatoEdicion().setReembolsar(0.0f);
+        }
         RequestContext.getCurrentInstance().update("datos:timporte");
+        RequestContext.getCurrentInstance().update("datos:trendido");
+        RequestContext.getCurrentInstance().update("datos:tdevolver");
+        RequestContext.getCurrentInstance().update("datos:treembolsar");
         RequestContext.getCurrentInstance().update("datos:lstdordenliquidaciongasto");
     }
     public void cargarDocumentosDestinoConsumidor(){
@@ -560,6 +574,10 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
         getDatoEdicion().setImpuesto(0.0f);
         getDatoEdicion().setImporte(0.0f);
         getDatoEdicion().setNumero(numero);
+        getDatoEdicion().setEntregado(0.0f);
+        getDatoEdicion().setRendido(0.0f);
+        getDatoEdicion().setDevolver(0.0f);
+        getDatoEdicion().setReembolsar(0.0f);
         if(!WebUtil.isnull(user.getIdcodigogeneral(), "").equals(""))
             getDatoEdicion().setIdclieprov(WebUtil.cerosIzquierda(user.getIdcodigogeneral(),11));
         else
@@ -610,13 +628,13 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
             if (esVistaValida()) {
                 /*DATOS INICIALES*/
                 if(getDatoEdicion().getIdorden()==null){
-                    mensaje=getOrdenliquidaciongastoDao().grabar(1, getDatoEdicion(), getLstdordenliquidaciongasto());
+                    mensaje=getOrdenliquidaciongastoDao().grabar(1, getDatoEdicion(), getLstdordenliquidaciongasto(),user.getIDUSUARIO());
                     if(mensaje!=null)
                         if(mensaje.trim().length()==15)
                             getDatoEdicion().setIdorden(mensaje.trim());
                 }
                 else
-                    mensaje=getOrdenliquidaciongastoDao().grabar(2, getDatoEdicion(), getLstdordenliquidaciongasto());
+                    mensaje=getOrdenliquidaciongastoDao().grabar(2, getDatoEdicion(), getLstdordenliquidaciongasto(),user.getIDUSUARIO());
                 setMensaje(WebUtil.exitoRegistrar("Orden Liquidación Gasto ", mensaje));
                 setLvalidate(true);
                 WebUtil.info(getMensaje());
@@ -634,13 +652,13 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
             if (esVistaValida()) {
                 /*DATOS INICIALES*/
                 if(getDatoEdicion().getIdorden()==null){
-                    mensaje=getOrdenliquidaciongastoDao().grabar(1, getDatoEdicion(), getLstdordenliquidaciongasto());
+                    mensaje=getOrdenliquidaciongastoDao().grabar(1, getDatoEdicion(), getLstdordenliquidaciongasto(),user.getIDUSUARIO());
                     if(mensaje!=null)
                         if(mensaje.trim().length()==15)
                             getDatoEdicion().setIdorden(mensaje.trim());
                 }
                 else
-                    mensaje=getOrdenliquidaciongastoDao().grabar(2, getDatoEdicion(), getLstdordenliquidaciongasto());
+                    mensaje=getOrdenliquidaciongastoDao().grabar(2, getDatoEdicion(), getLstdordenliquidaciongasto(),user.getIDUSUARIO());
 //                setMensaje(WebUtil.exitoRegistrar("Tareo Web", mensaje));
 //                WebUtil.info(getMensaje());
                 setLvalidate(false);
@@ -835,6 +853,7 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
                 periodoDisenio=getDatoEdicion().getPeriodo().substring(0, 4);
                 mesNumeroDisenio=getDatoEdicion().getPeriodo().substring(4);
                 mesNombreDisenio=WebUtil.strMonths[Integer.parseInt(getDatoEdicion().getPeriodo().substring(4))-1];
+                listConcepto_cuenta = conceptoCuentaDao.listarPorEmpresaWeb_Area(user.getIDEMPRESA(),getDatoEdicion().getIdarea());
             }
             cargarDocumentosDestinoConsumidor();
             RequestContext.getCurrentInstance().update("datos");
@@ -879,10 +898,11 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
         getDatoEdicion().setIdclieprov(selectClieprov.getIdclieprov());
         getDatoEdicion().setRazonsocial(selectClieprov.getRazonsocial());
     }
-    public void valorArea(SelectEvent event) {
+    public void valorArea(SelectEvent event) throws NisiraORMException {
         this.selectArea = (Areas) event.getObject();
         getDatoEdicion().setIdarea(selectArea.getIdarea());
         getDatoEdicion().setArea(selectArea.getDescripcion());
+        listConcepto_cuenta = conceptoCuentaDao.listarPorEmpresaWeb_Area(user.getIDEMPRESA(),getDatoEdicion().getIdarea());
     }
     public void valorClieprovDetalle(SelectEvent event) {
         this.selectClieprov = (Clieprov) event.getObject();

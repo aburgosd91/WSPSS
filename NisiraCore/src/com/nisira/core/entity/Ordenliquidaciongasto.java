@@ -186,6 +186,18 @@ public class Ordenliquidaciongasto  implements Serializable{
         @XStreamAlias("ESTADOSUNAT")
 	@Columna
 	private String estadosunat;
+        @XStreamAlias("ENTREGADO")
+	@Columna
+	private Float entregado;
+        @XStreamAlias("RENDIDO")
+	@Columna
+	private Float rendido;
+        @XStreamAlias("DEVOLVER")
+	@Columna
+	private Float devolver;
+        @XStreamAlias("REEMBOLSAR")
+	@Columna
+	private Float reembolsar;
         private String estado;
         private String moneda;
         private String sucursal;
@@ -757,6 +769,62 @@ public class Ordenliquidaciongasto  implements Serializable{
      */
     public void setArea(String area) {
         this.area = area;
+    }
+
+    /**
+     * @return the entregado
+     */
+    public Float getEntregado() {
+        return entregado;
+    }
+
+    /**
+     * @param entregado the entregado to set
+     */
+    public void setEntregado(Float entregado) {
+        this.entregado = entregado;
+    }
+
+    /**
+     * @return the rendido
+     */
+    public Float getRendido() {
+        return rendido;
+    }
+
+    /**
+     * @param rendido the rendido to set
+     */
+    public void setRendido(Float rendido) {
+        this.rendido = rendido;
+    }
+
+    /**
+     * @return the devolver
+     */
+    public Float getDevolver() {
+        return devolver;
+    }
+
+    /**
+     * @param devolver the devolver to set
+     */
+    public void setDevolver(Float devolver) {
+        this.devolver = devolver;
+    }
+
+    /**
+     * @return the reembolsar
+     */
+    public Float getReembolsar() {
+        return reembolsar;
+    }
+
+    /**
+     * @param reembolsar the reembolsar to set
+     */
+    public void setReembolsar(Float reembolsar) {
+        this.reembolsar = reembolsar;
     }
 
 }
