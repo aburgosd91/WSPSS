@@ -1,0 +1,335 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">
+            <cmp:barra_lst bean="#{rpt_servicios_cruzadosAction}" mostrar_opciones="false" cfgfiltro="true"/>
+            <p:panelGrid columns="4" style="border: 0px solid ;font-size: 11px !important;padding: 0px !important" id="panelHeader" rendered="false">
+                <p:outputLabel for="tiposervicio"  value="Tipo Servicio:" />
+                <p:selectOneMenu id="tiposervicio" value="#{rpt_servicios_cruzadosAction.idtiposervicio}">    
+                    <f:selectItem itemLabel="ESPECIAL" itemValue="ESPECIAL" />
+                    <f:selectItem itemLabel="FIJO" itemValue="FIJO" />
+                </p:selectOneMenu>
+            </p:panelGrid>
+            <br/>
+            <p:toolbar id="tb" style="font-size: 12px;">
+                <f:facet name="left">
+                    <h:panelGrid  id="comandos" cellpadding="0" cellspacing="0"  columns="4">
+                        <p:commandButton value="Refrescar" ajax="true" image="ui-icon-reload" actionListener="#{rpt_servicios_cruzadosAction.onRefresh()}" rendered="false"/>
+                       <p:commandButton value="Información" ajax="true" image="ui-icon-search" onclick="PF('dlg_leyenda').show()"/>
+                    </h:panelGrid>
+                </f:facet>
+            </p:toolbar>
+            <p:dataTable style="font-size: 11px;" var="lst_rpt" value="#{rpt_servicios_cruzadosAction.listReporte_facturacionTotal}"
+                    widgetVar="lst_rpt"  id="tbl" 
+                    scrollable="true" scrollWidth="99%"
+                   selection="#{rpt_servicios_cruzadosAction.selectReporte_facturacion}" 
+                   selectionMode="single" rowKey="#{lst_rpt.item}"  
+                   resizableColumns="true" editable="true" editMode="cell" 
+                   rows="25"
+                   paginator="true"
+                   paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                   rowsPerPageTemplate="10,25,35,50,70,100">
+                <p:ajax event="cellEdit" listener="#{rpt_servicios_cruzadosAction.onCellEdit}" update="tbl"/>
+                 <f:facet name="header">
+                     Servicios Cruzados x Personal (#{rpt_servicios_cruzadosAction.listReporte_facturacionTotal.size()}) - #{rpt_servicios_cruzadosAction.fechaDMY(rpt_servicios_cruzadosAction.desde)} - #{rpt_servicios_cruzadosAction.fechaDMY(rpt_servicios_cruzadosAction.hasta)} (ESPECIAL)
+                 </f:facet>
+                
+                <p:column headerText="N°" sortBy="#{lst_rpt.item}" style="white-space: nowrap; width: 20px;padding: 3px;text-align: center">
+                    <h:outputText value="#{lst_rpt.item}"/>
+                </p:column>
+                <p:column headerText="Ident." filterBy="#{lst_rpt.idclieprov}" filterMatchMode="contains" sortBy="#{lst_rpt.idclieprov}" style="white-space: nowrap; width: 70px;padding: 3px;text-align: center">
+                    <h:outputText value="#{lst_rpt.idclieprov}"/>
+                </p:column>
+                <p:column headerText="Dni" filterBy="#{lst_rpt.dni}" filterMatchMode="contains" sortBy="#{lst_rpt.dni}" style="white-space: nowrap; width: 70px;padding: 3px;text-align: center">
+                    <h:outputText value="#{lst_rpt.dni}"/>
+                </p:column>
+                <p:column headerText="Datos" filterBy="#{lst_rpt.razon_social}" filterMatchMode="contains" sortBy="#{lst_rpt.razon_social}" style="white-space: nowrap; width: 200px;padding: 3px;text-align: left">
+                    <h:outputText value="#{lst_rpt.razon_social}"/>
+                </p:column>
+                 <p:column headerText="Doc." filterBy="#{lst_rpt.diddocumento}" filterMatchMode="contains" sortBy="#{lst_rpt.diddocumento}"  style="white-space: nowrap; width: 30px;padding: 3px;text-align: center">
+                    <h:outputText value="#{lst_rpt.diddocumento}"/>
+                 </p:column>
+                 <p:column headerText="Serie" filterBy="#{lst_rpt.dserie}" filterMatchMode="contains" sortBy="#{lst_rpt.dserie}" style="white-space: nowrap; width: 38px;padding: 3px;text-align: center">
+                    <h:outputText value="#{lst_rpt.dserie}"/>
+                 </p:column>
+                 <p:column headerText="Número" filterBy="#{lst_rpt.dnumero}" filterMatchMode="contains" sortBy="#{lst_rpt.dnumero}" 
+                            style="white-space: nowrap; width: 48px;padding: 3px;text-align: center">
+                    <h:outputText value="#{lst_rpt.dnumero}"/> 
+                </p:column>
+                <p:column id="fecha" headerText="Fecha" filterBy="#{tareowebAction.fechaDMY(lst_rpt.dfecha_osc)}" filterMatchMode="contains" sortBy="#{lst_rpt.dfecha_osc}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
+                    <h:outputText value="#{lst_rpt.dfecha_osc}">
+                        <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="Vnroruc" filterBy="#{lst_rpt.idcliente}" filterMatchMode="contains" sortBy="#{lst_rpt.idcliente}" 
+                            style="white-space: nowrap; width: 90px;padding: 3px;text-align: center">
+                    <h:outputText value="#{lst_rpt.idcliente}"/> 
+                </p:column>
+                <p:column headerText="Vrazsoc" filterBy="#{lst_rpt.dcliente}" filterMatchMode="contains" sortBy="#{lst_rpt.dcliente}" 
+                            style="white-space: nowrap; width: 150px;padding: 3px;text-align: center">
+                    <h:outputText value="#{lst_rpt.dcliente}"/> 
+                </p:column>
+                <p:column headerText="Ámbito" filterBy="#{lst_rpt.dambito_servicio}" filterMatchMode="contains" sortBy="#{lst_rpt.dambito_servicio}" 
+                            style="white-space: nowrap; width: 90px;padding: 3px;text-align: center">
+                    <h:outputText value="#{lst_rpt.dambito_servicio}"/> 
+                </p:column>
+                <p:column headerText="Ruta" filterBy="#{lst_rpt.rutaservicio}" filterMatchMode="contains" sortBy="#{lst_rpt.rutaservicio}" 
+                            style="white-space: nowrap; width: 150px;padding: 3px;text-align: center">
+                    <h:outputText value="#{lst_rpt.rutaservicio}"/> 
+                </p:column>
+                <p:column headerText="Ident." filterBy="#{lst_rpt.idclieprov}" filterMatchMode="contains" sortBy="#{lst_rpt.idclieprov}" 
+                            style="white-space: nowrap; width: 90px;padding: 3px;text-align: center">
+                    <h:outputText value="#{lst_rpt.idclieprov}"/> 
+                </p:column>
+                <p:column headerText="Datos" filterBy="#{lst_rpt.razon_social}" filterMatchMode="contains" sortBy="#{lst_rpt.razon_social}" 
+                            style="white-space: nowrap; width: 150px;padding: 3px;text-align: center">
+                    <h:outputText value="#{lst_rpt.razon_social}"/> 
+                </p:column>
+                <p:column headerText="Cargo" filterBy="#{lst_rpt.cargo}" filterMatchMode="contains" sortBy="#{lst_rpt.cargo}" 
+                            style="white-space: nowrap; width: 110px;padding: 3px;text-align: center">
+                    <h:outputText value="#{lst_rpt.cargo}"/> 
+                </p:column>
+                <p:column headerText="Vehpol" filterBy="#{lst_rpt.didvehiculo}" filterMatchMode="contains" sortBy="#{lst_rpt.didvehiculo}" 
+                            style="white-space: nowrap; width: 70px;padding: 3px;text-align: center">
+                    <h:outputText value="#{lst_rpt.didvehiculo}"/> 
+                </p:column>
+                <p:column id="fechainicio" headerText="Iniasi" filterBy="#{tareowebAction.fechaDMY(lst_rpt.dfecharegistro)}" filterMatchMode="contains" sortBy="#{lst_rpt.dfecharegistro}" style="white-space: nowrap; width: 80px;padding: 3px;text-align: center">
+                    <h:outputText value="#{lst_rpt.dfecharegistro}">
+                        <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                    </h:outputText>
+                </p:column>
+                <p:column id="fechafin" headerText="Finasi" filterBy="#{tareowebAction.fechaDMY(lst_rpt.dfechafinregistro)}" filterMatchMode="contains" sortBy="#{lst_rpt.dfechafinregistro}" style="white-space: nowrap; width: 80px;padding: 3px;text-align: center">
+                    <h:outputText value="#{lst_rpt.dfechafinregistro}">
+                        <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="HoraAsi." filterBy="#{lst_rpt.dhs_s}" filterMatchMode="contains" sortBy="#{lst_rpt.dhs_s}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: center">
+                    <h:outputText value="#{lst_rpt.dhs_s}">
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="Hora E.C." filterBy="#{lst_rpt.dhbase}" filterMatchMode="contains" sortBy="#{lst_rpt.dhbase}"  style="white-space: nowrap; width: 60px;padding: 3px;text-align: left" rendered="false">
+                    <h:outputText value="#{lst_rpt.dhbase}">
+                        <f:convertNumber pattern="#0.00" />
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="H.Adicional" filterBy="#{lst_rpt.dhadicional_s}" filterMatchMode="contains" sortBy="#{lst_rpt.dhadicional_s}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: center" rendered="false">
+                    <h:outputText value="#{lst_rpt.dhadicional_s}">
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="Costo R.H." filterBy="#{lst_rpt.dcosto_rh}" filterMatchMode="contains" sortBy="#{lst_rpt.dcosto_rh}"  style="white-space: nowrap; width: 60px;padding: 3px;text-align: left" rendered="false">
+                    <h:outputText value="#{lst_rpt.dcosto_rh}">
+                        <f:convertNumber pattern="#0.00" />
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="Costo H.Adic." filterBy="#{lst_rpt.dhcosto_adicional}" filterMatchMode="contains" sortBy="#{lst_rpt.dhcosto_adicional}"  style="white-space: nowrap; width: 60px;padding: 3px;text-align: left"  rendered="false">
+                    <h:outputText value="#{lst_rpt.dhcosto_adicional}">
+                        <f:convertNumber pattern="#0.00" />
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="Costo Bono" filterBy="#{lst_rpt.dcosto_bono}" filterMatchMode="contains" sortBy="#{lst_rpt.dcosto_bono}"  style="white-space: nowrap; width: 60px;padding: 3px;text-align: left" rendered="false">
+                    <h:outputText value="#{lst_rpt.dcosto_bono}">
+                        <f:convertNumber pattern="#0.00" />
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="Total" filterBy="#{lst_rpt.tcosto}" filterMatchMode="contains" sortBy="#{lst_rpt.tcosto}"  style="white-space: nowrap; width: 60px;padding: 3px;text-align: left" rendered="false">
+                    <h:outputText value="#{lst_rpt.tcosto}">
+                        <f:convertNumber pattern="#0.00" />
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="Planilla?" filterBy="#{lst_rpt.esplanilla}" sortBy="#{lst_rpt.esplanilla}" style="white-space: nowrap; width: 30px;padding: 3px;text-align: center"  rendered="false">
+                    <h:outputText value="#{lst_rpt.esplanilla}"/>
+                </p:column>
+             </p:dataTable> 
+            <p:contextMenu for="tbl">
+                <p:menuitem value="Replicar" icon="ui-icon-copy" actionListener="#{rpt_servicios_cruzadosAction.replicarItem()}" rendered="false"/>
+                <p:menuitem value="Ver Detalle" update="detalleTareoDialog" icon="ui-icon-ver" actionListener="#{rpt_servicios_cruzadosAction.visualizar_calculo()}"/>
+                <p:menuitem value="Ver Cálculo" update="detalleCalculoDialog" icon="ui-icon-search" oncomplete="PF('detalleCalculoDialog').show()" rendered="false"/>
+            </p:contextMenu>
+            <p:dialog header="#{rpt_servicios_cruzadosAction.selectReporte_facturacion.idclieprov} - #{rpt_servicios_cruzadosAction.selectReporte_facturacion.razon_social}" id="detalleTareoDialog" widgetVar="detalleTareoDialog" modal="true"  maximizable="true" showEffect="fade" hideEffect="fade" closable="true" resizable="false">
+                <p:commandButton value="Excel" ajax="false" image="ui-icon-excel">
+                    <p:dataExporter type="xls" target="listReporte_facturacionPersonal" fileName="#{rpt_servicios_cruzadosAction.selectReporte_facturacion.idclieprov} #{rpt_servicios_cruzadosAction.selectReporte_facturacion.razon_social}" />
+                </p:commandButton>
+                <p:dataTable id="listReporte_facturacionPersonal" var="listReporte_facturacionPersonal" 
+                             value="#{rpt_servicios_cruzadosAction.listReporte_facturacionPersonal}" 
+                    widgetVar="listReporte_facturacionPersonal" scrollable="true" scrollWidth="660"
+                    style="margin-bottom:20px;font-size: 11px;width:100%;" 
+                    selectionMode="single" 
+                    frozenColumns="6" 
+                    selection="#{rpt_servicios_cruzadosAction.selectReporte_facturacion_detalle}"
+                    rowKey="#{listReporte_facturacionPersonal.item}">
+                    <f:facet name="header">
+                        ..:: Detalle Tareo ::..  (Total:#{rpt_servicios_cruzadosAction.listReporte_facturacionPersonal.size()})
+                    </f:facet>
+                    <p:column filterBy="#{listReporte_facturacionPersonal.diddocumento}" filterMatchMode="contains" sortBy="#{listReporte_facturacionPersonal.diddocumento}" style="white-space: nowrap; width: 8px;padding: 3px;text-align: center">
+                       <f:facet name="header">
+                           <h:outputText value="Doc."/>
+                       </f:facet>
+                       <h:outputText value="#{listReporte_facturacionPersonal.diddocumento}"/>
+                    </p:column>
+                    <p:column filterBy="#{listReporte_facturacionPersonal.dserie}" filterMatchMode="contains" sortBy="#{listReporte_facturacionPersonal.dserie}" style="white-space: nowrap; width: 10px;padding: 3px;text-align: center">
+                       <f:facet name="header">
+                           <h:outputText value="Serie"/>
+                       </f:facet>
+                       <h:outputText value="#{listReporte_facturacionPersonal.dserie}"/>
+                    </p:column>
+                    <p:column filterBy="#{listReporte_facturacionPersonal.dnumero}" filterMatchMode="contains" sortBy="#{listReporte_facturacionPersonal.dnumero}" style="white-space: nowrap; width: 13px;padding: 3px;text-align: center">
+                       <f:facet name="header">
+                           <h:outputText value="Número"/>
+                       </f:facet>
+                       <h:outputText value="#{listReporte_facturacionPersonal.dnumero}"/>
+                    </p:column>
+                    <p:column style="white-space: nowrap; width: 10px;padding: 3px;" filterBy="#{rpt_servicios_cruzadosAction.fechaDMY(listReporte_facturacionPersonal.dfecha_osc)}" filterMatchMode="contains" sortBy="#{listReporte_facturacionPersonal.dfecha_osc}">
+                        <f:facet name="header">
+                            <h:outputText value="Fecha" />
+                        </f:facet>
+                        <h:outputText value="#{listReporte_facturacionPersonal.dfecha_osc}">
+                            <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column filterBy="#{listReporte_facturacionPersonal.idcliente} #{listReporte_facturacionPersonal.dcliente}" filterMatchMode="contains" sortBy="#{listReporte_facturacionPersonal.ruc} #{listReporte_facturacionPersonal.razon}" style="white-space: nowrap; width: 50px;padding: 3px;text-align: left">
+                       <f:facet name="header">
+                           <h:outputText value="Cliente"/>
+                       </f:facet>
+                       <h:outputText value="#{listReporte_facturacionPersonal.idcliente} - #{listReporte_facturacionPersonal.dcliente}"/>
+                    </p:column>
+                    <p:column filterBy="#{listReporte_facturacionPersonal.didcargo} #{listReporte_facturacionPersonal.cargo}" filterMatchMode="contains" sortBy="#{listReporte_facturacionPersonal.didcargo} #{listReporte_facturacionPersonal.cargo}" style="white-space: nowrap; width: 50px;padding: 3px;text-align: left">
+                       <f:facet name="header">
+                           <h:outputText value="Cargo"/>
+                       </f:facet>
+                       <h:outputText value="#{listReporte_facturacionPersonal.didcargo} #{listReporte_facturacionPersonal.cargo}"/>
+                    </p:column>
+                    <p:column filterBy="#{listReporte_facturacionPersonal.dcodoperaciones_ec}" filterMatchMode="contains" sortBy="#{listReporte_facturacionPersonal.dcodoperaciones_ec}" style="white-space: nowrap; width: 40px;padding: 3px;text-align: left">
+                       <f:facet name="header">
+                           <h:outputText value="Cod.Ope."/>
+                       </f:facet>
+                       <h:outputText value="#{listReporte_facturacionPersonal.dcodoperaciones_ec}"/>
+                    </p:column>
+                    <p:column filterBy="#{listReporte_facturacionPersonal.rutaservicio}" filterMatchMode="contains" sortBy="#{listReporte_facturacionPersonal.rutaservicio}" style="white-space: nowrap; width: 250px;padding: 3px;text-align: left">
+                       <f:facet name="header">
+                           <h:outputText value="Ruta Ser."/>
+                       </f:facet>
+                       <h:outputText value="#{listReporte_facturacionPersonal.rutaservicio}"/>
+                    </p:column>
+                    <p:column id="fecharegistro" headerText="Fecha Registro" filterBy="#{rpt_servicios_cruzadosAction.fechaDMY(listReporte_facturacionPersonal.dfecharegistro)}" filterMatchMode="contains" sortBy="#{listReporte_facturacionPersonal.dfecharegistro}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
+                        <h:outputText value="#{listReporte_facturacionPersonal.dfecharegistro}">
+                            <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                         </h:outputText>
+                    </p:column>
+                    <p:column headerText="Hora Inicio" filterBy="#{listReporte_facturacionPersonal.dhi_s}" filterMatchMode="contains" sortBy="#{listReporte_facturacionPersonal.dhi_s}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
+                        <h:outputText value="#{listReporte_facturacionPersonal.dhi_s}">
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Hora Fin" filterBy="#{listReporte_facturacionPersonal.dhf_s}" filterMatchMode="contains" sortBy="#{listReporte_facturacionPersonal.dhf_s}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
+                        <h:outputText value="#{listReporte_facturacionPersonal.dhf_s}">
+                        </h:outputText>
+                    </p:column>
+                    <p:column id="fechafinregistro" headerText="Fecha Fin" filterBy="#{rpt_servicios_cruzadosAction.fechaDMY(listReporte_facturacionPersonal.dfechafinregistro)}" filterMatchMode="contains" sortBy="#{listReporte_facturacionPersonal.dfechafinregistro}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
+                        <h:outputText value="#{listReporte_facturacionPersonal.dfechafinregistro}">
+                            <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                         </h:outputText>
+                    </p:column>
+                    <p:column headerText="Horas Servicio" filterBy="#{listReporte_facturacionPersonal.dhs_s}" filterMatchMode="contains" sortBy="#{listReporte_facturacionPersonal.dhs_s}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
+                        <h:outputText value="#{listReporte_facturacionPersonal.dhs_s}">
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Horas E.C." filterBy="#{listReporte_facturacionPersonal.dhbase}" filterMatchMode="contains" sortBy="#{listReporte_facturacionPersonal.dhbase}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center" rendered="false">
+                        <h:outputText value="#{listReporte_facturacionPersonal.dhbase}">
+                            <f:convertNumber pattern="#0.00" locale="en-US"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="H.Adicional" filterBy="#{listReporte_facturacionPersonal.dhadicional}" filterMatchMode="contains" sortBy="#{listReporte_facturacionPersonal.dhadicional}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center" rendered="false">
+                        <h:outputText value="#{listReporte_facturacionPersonal.dhadicional}">
+                            <f:convertNumber pattern="#0.00" locale="en-US"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Costo R.H." filterBy="#{listReporte_facturacionPersonal.dcosto_rh}" filterMatchMode="contains" sortBy="#{listReporte_facturacionPersonal.dcosto_rh}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center"  rendered="false">
+                        <h:outputText value="#{listReporte_facturacionPersonal.dcosto_rh}">
+                            <f:convertNumber pattern="#0.00" locale="en-US"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Costo H.Adic." filterBy="#{listReporte_facturacionPersonal.dhcosto_adicional}" filterMatchMode="contains" sortBy="#{listReporte_facturacionPersonal.dhcosto_adicional}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center"  rendered="false">
+                        <h:outputText value="#{listReporte_facturacionPersonal.dhcosto_adicional}">
+                            <f:convertNumber pattern="#0.00" locale="en-US"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Costo Bono" filterBy="#{listReporte_facturacionPersonal.dcosto_bono}" filterMatchMode="contains" sortBy="#{listReporte_facturacionPersonal.dcosto_bono}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center"  rendered="false">
+                        <h:outputText value="#{listReporte_facturacionPersonal.dcosto_bono}">
+                            <f:convertNumber pattern="#0.00" locale="en-US"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Costo Total" filterBy="#{listReporte_facturacionPersonal.tcosto}" filterMatchMode="contains" sortBy="#{listReporte_facturacionPersonal.tcosto}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center"  rendered="false">
+                        <h:outputText value="#{listReporte_facturacionPersonal.tcosto}">
+                            <f:convertNumber pattern="#0.00" locale="en-US"/>
+                        </h:outputText>
+                    </p:column>
+               </p:dataTable>
+                <p:toolbar rendered="false">
+                    <f:facet name="right">
+                        <p:outputLabel value="Total:" />
+                        <p:inputNumber id="tsubtotal" value="#{rpt_servicios_cruzadosAction.scosto}" decimalPlaces="2" readonly="true" style="text-align: right;" symbol="S/." />
+                    </f:facet>
+                </p:toolbar>
+                <p:contextMenu for="listReporte_facturacionPersonal">
+                    <p:menuitem value="Ver Detalle" update="detalleTareoCalculoDialog" icon="ui-icon-ver" actionListener="#{rpt_servicios_cruzadosAction.detalleTareoCalculo()}"/>
+                </p:contextMenu>
+            </p:dialog>
+            <p:dialog header="#{rpt_servicios_cruzadosAction.selectReporte_facturacion_detalle.didordenservicio} - 
+                      #{rpt_servicios_cruzadosAction.selectReporte_facturacion_detalle.dserie} - #{rpt_servicios_cruzadosAction.selectReporte_facturacion_detalle.dnumero}
+                      / #{rpt_servicios_cruzadosAction.selectReporte_facturacion_detalle.idcliente} #{rpt_servicios_cruzadosAction.selectReporte_facturacion_detalle.dcliente}" 
+                      id="detalleTareoCalculoDialog" widgetVar="detalleTareoCalculoDialog" modal="true"  maximizable="true" showEffect="fade" hideEffect="fade" closable="true" resizable="false">
+                <p:outputPanel>
+                    <p:panelGrid  columns="2" columnClasses="label,value">
+                        <h:outputText style="text-align: left;font-weight: bold" value="HORA REQ:" />
+                        <h:outputText value="#{rpt_servicios_cruzadosAction.selectReporte_facturacion_detalle.shora_req} | 
+                                      #{rpt_servicios_cruzadosAction.selectReporte_facturacion_detalle.dhora_req}">
+                        </h:outputText> 
+                        <h:outputText style="text-align: left;font-weight: bold" value="HORA LLEGADA:" />
+                        <h:outputText value="#{rpt_servicios_cruzadosAction.selectReporte_facturacion_detalle.shora_llegada} | 
+                                      #{rpt_servicios_cruzadosAction.selectReporte_facturacion_detalle.dhora_llegada}">
+                        </h:outputText> 
+                        <h:outputText style="text-align: left;font-weight: bold" value="HORA INICIO" />
+                        <h:outputText value="#{rpt_servicios_cruzadosAction.selectReporte_facturacion_detalle.shora_inicio_serv} | 
+                                      #{rpt_servicios_cruzadosAction.selectReporte_facturacion_detalle.dhora_inicio_serv}">
+                        </h:outputText> 
+                        <h:outputText style="text-align: left;font-weight: bold" value="HORA FIN" />
+                        <h:outputText value="#{rpt_servicios_cruzadosAction.selectReporte_facturacion_detalle.shora_fin_serv} | 
+                                      #{rpt_servicios_cruzadosAction.selectReporte_facturacion_detalle.dhora_fin_serv}">
+                        </h:outputText> 
+                        <h:outputText style="text-align: left;font-weight: bold" value="HORA LIBERACIÓN" />
+                        <h:outputText value="#{rpt_servicios_cruzadosAction.selectReporte_facturacion_detalle.shora_liberacion} | 
+                                      #{rpt_servicios_cruzadosAction.selectReporte_facturacion_detalle.dhora_liberacion}">
+                        </h:outputText> 
+                        <h:outputText style="text-align: left;font-weight: bold" value="Fecha - Orden Servicio:"/>
+                        <h:outputText value="#{rpt_servicios_cruzadosAction.fechaDMY(rpt_servicios_cruzadosAction.selectReporte_facturacion_detalle.dfecha_osc)}" />
+                    </p:panelGrid>
+                </p:outputPanel>
+            </p:dialog>
+            <p:dialog header="" id="dlg_leyenda" widgetVar="dlg_leyenda" modal="true" showEffect="fade" closable="true">
+                <p:outputPanel>
+                    <p:panelGrid  columns="2" columnClasses="label,value">
+                        <h:outputText style="text-align: left;font-weight: bold" value="HORA INICIO SERVICIO" />
+                        <h:outputText value="HI">
+                        </h:outputText> 
+                        <h:outputText style="text-align: left;font-weight: bold" value="HORA FIN SERVICIO" />
+                        <h:outputText value="HF">
+                        </h:outputText>
+                        <h:outputText style="text-align: left;font-weight: bold" value="HORA BASE/FUNCIÓN" />
+                        <h:outputText value="HBASE">
+                        </h:outputText>
+                    </p:panelGrid>
+                </p:outputPanel>
+            </p:dialog>
+            <br/>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{rpt_servicios_cruzadosAction}" ventana="LST" />
+        </h:form>
+    </ui:define>    
+</ui:composition>
