@@ -203,6 +203,47 @@ public class CabtareowebDao extends BaseDao<Cabtareoweb> {
 
         return mensaje;
     }
+    public String grabar_fijo_connections(int tipo,Cabtareoweb ob,List<Det_tareoweb> listDet_tareoweb,List<Det_tareoweb> listDet_tareoweb_sing,String idusuario,List<LogTablas> lstLog,String fechat) throws Exception {
+            String mensaje="";
+            String xmlNot = "";
+            String xml = "<?xml version='1.0' encoding='ISO-8859-1' ?>";
+            XStream xStream = new XStream();
+            xStream.processAnnotations(Cabtareoweb.class);
+            xmlNot = xml + xStream.toXML(ob);
+            /******************* DETALLES DORDENSERVICIOCLIENTE **********************/
+            String xmlDet_tareoweb = "";
+            xStream = new XStream();
+            xStream.processAnnotations(Det_tareoweb.class);
+            xmlDet_tareoweb = xml + xStream.toXML(listDet_tareoweb);
+            /******************* DETALLES DORDENSERVICIOCLIENTE **********************/
+            String xmlDet_tareoweb_sin = "";
+            xStream = new XStream();
+            xStream.processAnnotations(Det_tareoweb.class);
+            xmlDet_tareoweb_sin = xml + xStream.toXML(listDet_tareoweb_sing);
+            /******************* DETALLES LOGTABLAS **********************/
+            String xmlLogTablas = "";
+            xStream = new XStream();
+            xStream.processAnnotations(LogTablas.class);
+            xmlLogTablas = xml + xStream.toXML(lstLog);
+            ResultSet rs = null;
+            rs = execProcedure("SP_TAREOWEB_FIJO_CONCURRENCIA_GRABAR",
+                    tipo,
+                    ob.getIdempresa(),ob.getIdcabtareoweb(),
+                    ob.getIddocumento(),ob.getSerie(),ob.getNumero(),
+                    xmlNot,
+                    xmlDet_tareoweb,
+                    xmlDet_tareoweb_sin,
+                    idusuario,
+                    xmlLogTablas,
+                    fechat
+            );
+            while (rs.next()) {
+                mensaje = rs.getString("mensaje");
+                break;
+            }
+
+        return mensaje;
+    }
     public String recalcularProcesos(String idempresa,String finicio,String ffin,String idusuario) throws Exception {
             String mensaje="";
             ResultSet rs = null;

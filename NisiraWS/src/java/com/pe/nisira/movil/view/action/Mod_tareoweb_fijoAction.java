@@ -181,6 +181,7 @@ public class Mod_tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
     private String mensaje;
     private Det_tareoweb cabercerDet_tareoweb;
     private Det_tareoweb selectDet_tareoweb;
+    private Det_tareoweb localDet_tareoweb;
     private String iddocumento_local;
     private String serie_local;
     private String numero_local;
@@ -198,6 +199,7 @@ public class Mod_tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
     private String glosa_local;
     private int posSelect_det_tareoweb;
     private String log_consola;
+    private int iconta;
     /************************************* CONTROLES *****************************************/
     private String type_formato_rpt;
     private Float scosto;
@@ -206,18 +208,23 @@ public class Mod_tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
     private Date ffin;
     private Date restricDate;
     private String numdia;
+    private String httpcontenido;
     private LogTablas log;
+    private boolean btnLog_Aceptar;
     public Mod_tareoweb_fijoAction() {
         try {
             /*********************************ENTITY*******************************************/
             user = (UsuarioBean) WebUtil.getObjetoSesion(Constantes.SESION_USUARIO);
             mensaje = "";
+            httpcontenido = "";
             filtroFecha = new Date();
             finicio=WebUtil.getDateIni();
             ffin=new Date();
             numdia = generarDiaid(filtroFecha);
             btn_asignar_personal = true;
             num_repetir = 1;
+            btnLog_Aceptar = false;
+            iconta =1;
             /********************************* LISTAS *******************************************/
             listDocumentos =  new ArrayList<>();
             lista_solution  = new ArrayList<>();
@@ -256,7 +263,7 @@ public class Mod_tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
             periodoDisenio = dateFormat.format(new Date());
             mesNumeroDisenio = WebUtil.idGeneradoDos((new Date()).getMonth()+1);
             mesNombreDisenio = WebUtil.strMonths[(new Date()).getMonth()];
-            
+            localDet_tareoweb = new Det_tareoweb();
             /********************************** CONFIGURACIÓN - SERVIDOR ***********************/
             
             listDocumentos=docDao.getCabtareoweb(user.getIDEMPRESA());
@@ -274,6 +281,59 @@ public class Mod_tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
         actualiza_ventana("wMnt_Tareoweb");
     }
     public void actionBotonFiltro(){
+        try {
+            iconta =1;
+            if(filtroFecha!=null){
+                localDet_tareoweb = new Det_tareoweb();
+//                setDatoEdicion(new Cabtareoweb());
+                numdia = generarDiaid(filtroFecha);
+                SimpleDateFormat  f = new SimpleDateFormat("yyyy-MM-dd");
+                String f_filtro = f.format(filtroFecha);
+                f_filtro = f_filtro.replace("-", "");
+                List<Cabtareoweb> ls =cabtareowebDao.listarPorEmpresaWebFiltroFecha_Fijo(user.getIDEMPRESA(),f_filtro,f_filtro,user.getIDUSUARIO());
+                if(ls.isEmpty()){
+                    /*CREAR EL DETALLE TAREO*/
+                    listDet_tareoweb = new ArrayList<>();
+                    List<Det_tareoweb> lsql =  tareoWebDao.listarPorEmpresaWeb_new_fijo_actualizado(user.getIDEMPRESA(), WebUtil.fechaDMY(filtroFecha,5), WebUtil.fechaDMY(filtroFecha,5),user.getIDUSUARIO(),user.getIDUSUARIO());
+                    if(!lsql.isEmpty())
+                        listDet_tareoweb.addAll(lsql);
+//                    RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
+                }else if(ls.size()>1){
+                    setMensaje("Existe mas de un documento");
+                    WebUtil.error(getMensaje());
+                    RequestContext.getCurrentInstance().update("datos:growl");
+                    listDet_tareoweb = new ArrayList<>();
+                }else{
+                    /*ACTUALIZAR DOCUMENTO DE TAREO*/
+                    setDatoEdicion(ls.get(0));
+                    listDet_tareoweb = new ArrayList<>();
+                    List<Det_tareoweb> lsql = tareoWebDao.listarPorEmpresaWeb_update_fijo_actualizado(getDatoEdicion().getIdempresa(),getDatoEdicion().getIdcabtareoweb(),WebUtil.fechaDMY(getDatoEdicion().getFecha(),5), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5),getDatoEdicion().getIdresponsable(),user.getIDUSUARIO());  
+                    if(!lsql.isEmpty()){
+                        listDet_tareoweb.addAll(lsql);
+                        cargarPersonalVehiculo();
+                    }else{
+                        setMensaje("No se pudo cargar documentos");
+                        listDet_tareoweb = new ArrayList<>();
+                        WebUtil.error(getMensaje());
+                        RequestContext.getCurrentInstance().update("datos:growl");
+                    }
+                }
+            }else{
+                setMensaje("Ingresar Fecha");
+                listDet_tareoweb = new ArrayList<>();
+                WebUtil.error(getMensaje());
+                RequestContext.getCurrentInstance().update("datos:growl");
+            }
+        } catch (Exception ex) {
+            setMensaje(ex.getMessage());
+            WebUtil.error(getMensaje());
+            listDet_tareoweb = new ArrayList<>();
+            RequestContext.getCurrentInstance().update("datos:growl");
+            Logger.getLogger(Mod_tareoweb_fijoAction.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        lista_accion_filtro("wLst_Mod_tareoweb_fijo");
+    }
+    public void actionRegistroCabecera(){
         try {
             if(filtroFecha!=null){
                 /* VERIFICAR CABECERA TAREO CREADO */
@@ -313,49 +373,24 @@ public class Mod_tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
                         getDatoEdicion().setIddocumento(listNumemisor.get(0).getIddocumento());
                         getDatoEdicion().setSerie(listNumemisor.get(0).getSerie());
                     }
-                    /*CREAR EL DETALLE TAREO*/
                     getDatoEdicion().setIdtipoasistencia("ASN");
-                    listDet_tareoweb = new ArrayList<>();
-                    List<Det_tareoweb> lsql =  tareoWebDao.listarPorEmpresaWeb_new_fijo_actualizado(user.getIDEMPRESA(), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5),getDatoEdicion().getIdresponsable(),user.getIDUSUARIO());
-                    if(!lsql.isEmpty())
-                        listDet_tareoweb.addAll(lsql);
-//                    RequestContext.getCurrentInstance().update("datos:listDet_tareoweb");
+                }else if(ls.size()>1){
+                    setMensaje("Existe mas de un documento");
+                    WebUtil.error(getMensaje());
+                    RequestContext.getCurrentInstance().update("datos:growl");
                 }else{
-                    if(ls.size()>1){
-                        setMensaje("Existe mas de un documento");
-                        WebUtil.error(getMensaje());
-                        RequestContext.getCurrentInstance().update("datos:growl");
-                        listDet_tareoweb = new ArrayList<>();
-                    }else{
-                        /*ACTUALIZAR DOCUMENTO DE TAREO*/
-                        setDatoEdicion(ls.get(0));
-                        listDet_tareoweb = new ArrayList<>();
-                        List<Det_tareoweb> lsql = tareoWebDao.listarPorEmpresaWeb_update_fijo_actualizado(getDatoEdicion().getIdempresa(),getDatoEdicion().getIdcabtareoweb(),WebUtil.fechaDMY(getDatoEdicion().getFecha(),5), WebUtil.fechaDMY(getDatoEdicion().getFecha(),5),getDatoEdicion().getIdresponsable(),user.getIDUSUARIO());  
-                        if(!lsql.isEmpty()){
-                            listDet_tareoweb.addAll(lsql);
-                            cargarPersonalVehiculo();
-                        }else{
-                            setMensaje("No se pudo cargar documentos");
-                            listDet_tareoweb = new ArrayList<>();
-                            WebUtil.error(getMensaje());
-                            RequestContext.getCurrentInstance().update("datos:growl");
-                        }
-                    }
+                    /*ACTUALIZAR DOCUMENTO DE TAREO*/
+                    setDatoEdicion(ls.get(0));
                 }
-            }else{
-                setMensaje("Ingresar Fecha");
-                listDet_tareoweb = new ArrayList<>();
-                WebUtil.error(getMensaje());
-                RequestContext.getCurrentInstance().update("datos:growl");
             }
-        } catch (Exception ex) {
+        }catch (Exception ex) {
             setMensaje(ex.getMessage());
             WebUtil.error(getMensaje());
             listDet_tareoweb = new ArrayList<>();
             RequestContext.getCurrentInstance().update("datos:growl");
             Logger.getLogger(Mod_tareoweb_fijoAction.class.getName()).log(Level.SEVERE, null, ex);
         }
-        lista_accion_filtro("wLst_Mod_tareoweb_fijo");
+        
     }
     public void cargarPersonalVehiculo(){
         try{
@@ -407,6 +442,8 @@ public class Mod_tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
             log = null;
             Object newValue = event.getNewValue();
             Object oldValue = event.getOldValue();
+            String newValue_compare ="";
+            String oldValue_compare ="";
             Det_tareoweb entity =(Det_tareoweb)((DataTable)event.getComponent()).getRowData();
             int pos = entity.getItem();
 //                int pos = listDet_tareoweb.indexOf(entity);
@@ -415,6 +452,8 @@ public class Mod_tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
                 String colHead = event.getColumn().getHeaderText().trim();
                 switch(colHead){
                     case "Personal":
+                    newValue_compare = newValue==null?"": ((Clieprov)newValue ).getIdclieprov();
+                    oldValue_compare = oldValue==null?"": ((Clieprov)oldValue ).getIdclieprov();
                     if(newValue==null){
                         entity.setIdpersonal("");
                         entity.setDni("");
@@ -449,6 +488,8 @@ public class Mod_tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
                     }
                     break;
                 case "Placa PSS":
+                    newValue_compare = newValue==null?"": ((Consumidor)newValue ).getIdconsumidor();
+                    oldValue_compare = oldValue==null?"": ((Consumidor)oldValue ).getIdconsumidor();
                     if(newValue==null){
                         entity.setIdvehiculo("");
                         entity.setVehiculo("");
@@ -482,6 +523,8 @@ public class Mod_tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
                     break;
                 case "Hora Llegada":
                     /*VALIDAR FORMATO DE TIME*/
+                    newValue_compare = newValue.toString();
+                    oldValue_compare = oldValue.toString();
                     if(WebUtil.validateTime(newValue.toString())){
                         entity.setHora_llegada(WebUtil.convertStringTimeFloat(newValue.toString()));
                         log = new LogTablas();
@@ -512,6 +555,8 @@ public class Mod_tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
                     break;
                 case "Hora Inicio":
                     /*VALIDAR FORMATO DE TIME*/
+                    newValue_compare = newValue.toString();
+                    oldValue_compare = oldValue.toString();
                     if(WebUtil.validateTime(newValue.toString())){
                         /*ASIGNARLE VALOR*/
                         entity.setHora_inicio_serv(WebUtil.convertStringTimeFloat(newValue.toString()));
@@ -543,6 +588,8 @@ public class Mod_tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
                     break;
                 case "Hora Fin":
                     /*VALIDAR FORMATO DE TIME*/
+                    newValue_compare = newValue.toString();
+                    oldValue_compare = oldValue.toString();
                     if(WebUtil.validateTime(newValue.toString())){
                         entity.setHora_fin_serv(WebUtil.convertStringTimeFloat(newValue.toString()));
                         entity.setShora_fin(newValue.toString());
@@ -573,6 +620,8 @@ public class Mod_tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
                     break;
                 case "Hora Liberación":
                     /*VALIDAR FORMATO DE TIME*/
+                    newValue_compare = newValue.toString();
+                    oldValue_compare = oldValue.toString();
                     if(WebUtil.validateTime(newValue.toString())){
                         entity.setHora_liberacion(WebUtil.convertStringTimeFloat(newValue.toString()));
                         entity.setShora_liberacion(newValue.toString());
@@ -621,13 +670,62 @@ public class Mod_tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
                     break;
                 }
             }
-            if(replazarCampo(entity,pos)){
-               if(log!=null)
-                   listLogtablas.add(log);
-               grabar_local(); 
-            }              
+            if(!newValue_compare.trim().equals(oldValue_compare.trim())){
+                if(replazarCampo(entity,pos)){
+                    localDet_tareoweb = entity;
+                    if(log!=null)
+                        listLogtablas.add(log);
+                    /*VERIFICAR SI OTRO USUARIO HIZO CAMBIOS*/
+                    actionRegistroCabecera();
+                    List<Det_tareoweb> lsql = tareoWebDao.getPorEmpresaWeb_update_fijo_traza(getDatoEdicion().getIdempresa(),getDatoEdicion().getIdcabtareoweb(),
+                            entity.getIdordenservicio(),entity.getItem_dordenservicio(),entity.getItem2_personalservicio(),
+                            entity.getItem_dpersonalservicio()); 
+                    if(!lsql.isEmpty()){
+                        if(WebUtil.isnull(lsql.get(0).getIdpersonal(),"").trim().equals("") || 
+                           WebUtil.isnull(lsql.get(0).getCidusuario(),"").trim().equals(user.getIDUSUARIO().trim())){
+                            grabar_local_singular(entity);
+                            actionBotonFiltro();
+                        }else{
+                            httpcontenido="\n(*)REGISTRO EXISTENTE";
+                            httpcontenido+="\n\t- Personal: ("+lsql.get(0).getIdpersonal()+") "+lsql.get(0).getPersonal();
+                            httpcontenido+="\n\t- Usuario - Fecha: ("+WebUtil.isnull(lsql.get(0).getCidusuario(),"-")+") "+WebUtil.fechaDMY(lsql.get(0).getCfecha()==null?new Date():lsql.get(0).getCfecha(),4) ;
+                            httpcontenido+="\n(*)REGISTRO NUEVO";
+                            httpcontenido+="\n\t- Personal: ("+entity.getIdpersonal()+") "+entity.getPersonal();
+                            httpcontenido+="\n\t- Usuario - Fecha: ("+user.getIDUSUARIO()+") "+WebUtil.fechaDMY((new Date()),4) ;
+                            httpcontenido+="\n\n¿Desea reemplazar registro?(Click <<Guardar>>)";
+                            httpcontenido+="\n\nActualizar Registro(Click <<Cancelar>>)";
+                            httpcontenido="***************** Trazabilidad - Documento *******************"+httpcontenido;
+                            btnLog_Aceptar=true;
+                            mostrarLog_txt(httpcontenido);
+
+                        }
+                    }else{
+                        grabar_local_singular(localDet_tareoweb);
+                        actionBotonFiltro();
+                    }
+                 }  
+            }
         } catch (Exception ex) {
             Logger.getLogger(TareowebAction.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public void reemplazarRegistroTareo(){
+        RequestContext.getCurrentInstance().execute("PF('dlg_text').hide()");
+        grabar_local_singular(localDet_tareoweb);
+        actionBotonFiltro();
+    }
+    public void cancelar_reemplazarRegistroTareo(){
+        RequestContext.getCurrentInstance().execute("PF('dlg_text').hide()");
+        actionBotonFiltro(); 
+    }
+    @Override
+    public void mostrarLog_txt(String contenido){
+        if(contenido!=null){
+            if(!contenido.trim().equals("")){
+                log_consola = contenido;
+                RequestContext.getCurrentInstance().update("datos:dlg_text");
+                RequestContext.getCurrentInstance().execute("PF('dlg_text').show()");
+            }
         }
     }
     public boolean replazarCampo(Det_tareoweb ob,int item){
@@ -652,23 +750,21 @@ public class Mod_tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
         }
         return rsp;
     }
-    public void grabar_local(){
+    public void grabar_local_singular(Det_tareoweb obj_tareo){
         try {
             if (esVistaValida()) {
                 /*DATOS INICIALES*/
-//                groupProgramation();
-                if(getDatoEdicion().getIdcabtareoweb()==null){
-                    mensaje=cabtareowebDao.grabar_fijo(1, getDatoEdicion(), getListDet_tareoweb(),user.getIDUSUARIO(),listLogtablas);
-                    if(mensaje!=null)
-                        if(mensaje.trim().length()==15){
-                            getDatoEdicion().setIdcabtareoweb(mensaje.trim());
-                            setLadd(2);
-                        }else{
-                           WebUtil.fatal(mensaje);
-                           RequestContext.getCurrentInstance().update("datos:growl"); 
-                        }
+                actionRegistroCabecera();
+                List lst_tmp = new ArrayList<Det_tareoweb>();
+                lst_tmp.add(obj_tareo);
+                mensaje=cabtareowebDao.grabar_fijo_connections(0, getDatoEdicion(),getListDet_tareoweb(),
+                        lst_tmp,user.getIDUSUARIO(),listLogtablas,WebUtil.fechaDMY(filtroFecha, 5));
+                if(mensaje.trim().length()==15){
+                    getDatoEdicion().setIdcabtareoweb(mensaje.trim());
+                    setLadd(2);
                 }else{
-                    mensaje=cabtareowebDao.grabar_fijo(2, getDatoEdicion(), getListDet_tareoweb(),user.getIDUSUARIO(),listLogtablas);
+                   WebUtil.fatal(mensaje);
+                   RequestContext.getCurrentInstance().update("datos:growl"); 
                 }
 //                setMensaje(WebUtil.exitoRegistrar("Tareo Web", mensaje));
 //                WebUtil.info(getMensaje());
@@ -1127,15 +1223,16 @@ public class Mod_tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
             if (esVistaValida()) {
                 /*DATOS INICIALES*/
 //                groupProgramation();
+                actionRegistroCabecera();
                 if(getDatoEdicion().getIdcabtareoweb()==null){
-                    mensaje=cabtareowebDao.grabar_fijo(1, getDatoEdicion(), 
-                            getListDet_tareoweb(),user.getIDUSUARIO(),listLogtablas);
+                    mensaje=cabtareowebDao.grabar_fijo_connections(1, getDatoEdicion(), 
+                            getListDet_tareoweb(),(new ArrayList<Det_tareoweb>()),user.getIDUSUARIO(),listLogtablas,WebUtil.fechaDMY(filtroFecha, 5));
                     if(mensaje!=null)
                         if(mensaje.trim().length()==15)
                             getDatoEdicion().setIdcabtareoweb(mensaje.trim());
                 }
                 else
-                    mensaje=cabtareowebDao.grabar_fijo(2, getDatoEdicion(),getListDet_tareoweb(),user.getIDUSUARIO(),listLogtablas);
+                    mensaje=cabtareowebDao.grabar_fijo_connections(2, getDatoEdicion(),getListDet_tareoweb(),(new ArrayList<Det_tareoweb>()),user.getIDUSUARIO(),listLogtablas,WebUtil.fechaDMY(filtroFecha, 5));
                 setMensaje(WebUtil.exitoRegistrar("Tareo Web Fijo", mensaje));
                 WebUtil.info(getMensaje());
                 setLvalidate(true);
@@ -1814,6 +1911,20 @@ public class Mod_tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
      */
     public void setListEstructura_costos_producto_diasrango(List<Estructura_costos_producto_diasrango> listEstructura_costos_producto_diasrango) {
         this.listEstructura_costos_producto_diasrango = listEstructura_costos_producto_diasrango;
+    }
+
+    /**
+     * @return the btnLog_Aceptar
+     */
+    public boolean isBtnLog_Aceptar() {
+        return btnLog_Aceptar;
+    }
+
+    /**
+     * @param btnLog_Aceptar the btnLog_Aceptar to set
+     */
+    public void setBtnLog_Aceptar(boolean btnLog_Aceptar) {
+        this.btnLog_Aceptar = btnLog_Aceptar;
     }
 
 }

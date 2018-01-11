@@ -24,7 +24,7 @@
                 </h:panelGrid>
                 <h:outputLabel value="Fecha:" />
                 <p:calendar id="fhoy" value="#{mod_tareoweb_fijoAction.filtroFecha}" pattern="dd/MM/yyyy" mask="true" maxdate="#{mod_tareoweb_fijoAction.restricted}"/>
-                <p:commandButton value="Buscar/Actualizar" ajax="true" image="ui-icon-ver" actionListener="#{mod_tareoweb_fijoAction.actionBotonFiltro()}"/>
+                <p:commandButton id="btnActualizar" value="Buscar/Actualizar" ajax="true" image="ui-icon-ver" actionListener="#{mod_tareoweb_fijoAction.actionBotonFiltro()}"/>
                 <p:outputLabel style="text-decoration: #000;font-weight: bold" value="#{mod_tareoweb_fijoAction.numdia}"/>
             </p:panelGrid>
             <br/>
@@ -412,9 +412,15 @@
                 <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
                 <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
             </p:confirmDialog>
-            <p:dialog id="dlg_text" header="..:: Aprobación N° #{mod_tareoweb_fijoAction.datoEdicion.serie} -
+            <p:dialog id="dlg_text" header="..:: Doc. Tareo Fijo N° #{mod_tareoweb_fijoAction.datoEdicion.serie} -
                       #{mod_tareoweb_fijoAction.datoEdicion.numero} ::.." 
-                      widgetVar="dlg_text" modal="true" showEffect="popup" maximizable="true" closable="true" height="410px" width="600px">
+                      widgetVar="dlg_text" modal="true" showEffect="popup" maximizable="true" closable="false" height="410px" width="600px">
+                <p:toolbar id="tb_dialog" style="font-size: 11px;" rendered="#{mod_tareoweb_fijoAction.btnLog_Aceptar}">
+                    <f:facet name="left">
+                        <p:commandButton value="Guardar" ajax="true" image="ui-icon-grabar" actionListener="#{mod_tareoweb_fijoAction.reemplazarRegistroTareo()}"/>
+                        <p:commandButton value="Cancelar" process="@this" image="ui-icon-cancelar" actionListener="#{mod_tareoweb_fijoAction.cancelar_reemplazarRegistroTareo()}" />
+                    </f:facet>
+                </p:toolbar>
                 <textarea style="width:99%;height:95%;" readonly="true">
                     #{mod_tareoweb_fijoAction.log_consola}
                 </textarea>    
