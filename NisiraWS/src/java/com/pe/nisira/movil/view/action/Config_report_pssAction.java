@@ -210,4 +210,9 @@ public class Config_report_pssAction extends AbstactListAction<Config_report_pss
         this.lstWtiposervicio = lstWtiposervicio;
     }
 
+    @Override
+    public void termino() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

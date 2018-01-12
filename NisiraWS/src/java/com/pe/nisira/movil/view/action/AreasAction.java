@@ -392,4 +392,9 @@ public class AreasAction extends AbstactListAction<Areas> implements Serializabl
         this.editDet = editDet;
     }
 
+    @Override
+    public void termino() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

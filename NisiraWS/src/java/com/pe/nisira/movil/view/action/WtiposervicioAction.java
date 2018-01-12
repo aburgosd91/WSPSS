@@ -170,4 +170,9 @@ public class WtiposervicioAction extends AbstactListAction<Wtiposervicio> implem
         this.estado = estado;
     }
 
+    @Override
+    public void termino() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

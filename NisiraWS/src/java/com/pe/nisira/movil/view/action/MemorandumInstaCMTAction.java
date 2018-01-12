@@ -738,4 +738,9 @@ public class MemorandumInstaCMTAction extends AbstactListAction<Memorandum_insta
         this.filename = filename;
     }
 
+    @Override
+    public void termino() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

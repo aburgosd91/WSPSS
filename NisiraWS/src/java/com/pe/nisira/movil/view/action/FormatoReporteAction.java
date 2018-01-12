@@ -273,4 +273,9 @@ public class FormatoReporteAction extends AbstactListAction<Formatoreporteweb> i
         this.index = index;
     }
 
+    @Override
+    public void termino() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

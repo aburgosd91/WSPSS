@@ -19,8 +19,13 @@ public class Configsmtp implements Serializable{
     private String idbasedatos;
     private static final long serialVersionUID = 1L;
     @ClavePrimaria
-    @Columna(nombre = "id")
-    private String id;
+    @Columna(nombre = "IDEMPRESA")
+    private String idempresa;
+    @ClavePrimaria
+    @Columna(nombre = "IDCONFIG")
+    private String idconfig;
+    @Columna(nombre = "TIPO")
+    private String tipo;
     @Columna(nombre = "MAIL_SMTP_HOST")
     private String mail_smtp_host;/*SERVIDOR: SMTP.com*/
     @Columna(nombre = "MAIL_SMTP_STARTTLS_ENABLE")
@@ -41,17 +46,25 @@ public class Configsmtp implements Serializable{
     private String mensaje;/*mensaje*/
     @Columna(nombre = "CC")
     private String CC;/*mensaje*/
-
-
+    @Columna(nombre = "DESCRIPCION")
+    private String descripcion;/*mensaje*/
+    @Columna(nombre = "ESTADO")
+    private Float estado;
     /* Sets & Gets */
-    public void setId(String id) {
-            this.id = id;
+    public void setIdempresa(String idempresa) {
+            this.idempresa = idempresa;
     }
 
-    public String getId() {
-            return this.id;
+    public String getIdempresa() {
+            return this.idempresa;
+    }
+    public void setIdconfig(String idconfig) {
+            this.idconfig = idconfig;
     }
 
+    public String getIdconfig() {
+            return this.idconfig;
+    }
     public void setMail_smtp_host(String mail_smtp_host) {
             this.mail_smtp_host = mail_smtp_host;
     }
@@ -157,5 +170,47 @@ public class Configsmtp implements Serializable{
      */
     public void setCC(String CC) {
         this.CC = CC;
+    }
+
+    /**
+     * @return the tipo
+     */
+    public String getTipo() {
+        return tipo;
+    }
+
+    /**
+     * @param tipo the tipo to set
+     */
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    /**
+     * @return the descripcion
+     */
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    /**
+     * @param descripcion the descripcion to set
+     */
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    /**
+     * @return the estado
+     */
+    public Float getEstado() {
+        return estado;
+    }
+
+    /**
+     * @param estado the estado to set
+     */
+    public void setEstado(Float estado) {
+        this.estado = estado;
     }
 }

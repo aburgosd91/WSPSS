@@ -181,4 +181,9 @@ public class Privilegio_global_pssAction extends AbstactListAction<Privilegio_gl
         this.selectUsuario = selectUsuario;
     }
 
+    @Override
+    public void termino() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

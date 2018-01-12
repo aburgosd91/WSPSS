@@ -212,4 +212,9 @@ public class mDocumento_movilAction extends AbstactListAction<Documento_movil> i
         this.selectDocumento = selectDocumento;
     }
 
+    @Override
+    public void termino() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

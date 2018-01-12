@@ -506,6 +506,11 @@ public class Rpt_servicios_cruzadosAction extends AbstactListAction<Ordenservici
        }
         
     }
+
+    @Override
+    public void termino() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     class Data {
         float average;
         float sum;

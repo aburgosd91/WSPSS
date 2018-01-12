@@ -39,7 +39,9 @@ public class ConfigsmtpDao extends BaseDao<Configsmtp> {
             while (rs.next()) {
                 Configsmtp configsmtp = new Configsmtp();
                 configsmtp.setIdbasedatos(rs.getString("IDBASEDATOS").trim());
-                configsmtp.setId(rs.getString("ID")!=null?rs.getString("ID").trim():"");
+                configsmtp.setIdempresa(rs.getString("IDEMPRESA")!=null?rs.getString("IDEMPRESA").trim():"");
+                configsmtp.setIdconfig(rs.getString("IDCONFIG")!=null?rs.getString("IDCONFIG").trim():"");
+                configsmtp.setDescripcion(rs.getString("DESCRIPCION")!=null?rs.getString("DESCRIPCION").trim():"");
                 configsmtp.setMail_smtp_host(rs.getString("MAIL_SMTP_HOST")!=null?rs.getString("MAIL_SMTP_HOST").trim():"");
                 configsmtp.setMail_smtp_starttls_enable(rs.getString("MAIL_SMTP_STARTTLS_ENABLE")!=null?rs.getString("MAIL_SMTP_STARTTLS_ENABLE").trim():"");
                 configsmtp.setMail_smtp_port(rs.getString("MAIL_SMTP_PORT")!=null?rs.getString("MAIL_SMTP_PORT").trim():"");
@@ -50,6 +52,7 @@ public class ConfigsmtpDao extends BaseDao<Configsmtp> {
                 configsmtp.setAsunto(rs.getString("ASUNTO")!=null?rs.getString("ASUNTO").trim():"");
                 configsmtp.setMensaje(rs.getString("MENSAJE")!=null?rs.getString("MENSAJE").trim():"");
                 configsmtp.setCC(rs.getString("CC")!=null?rs.getString("CC").trim():"");
+                configsmtp.setEstado(rs.getFloat("ESTADO"));
                 lista.add(configsmtp);                             
                 
             }

@@ -217,4 +217,9 @@ public class Codoperaciones_pssAction extends AbstactListAction<Codoperaciones_p
         this.flag_pk = flag_pk;
     }
 
+    @Override
+    public void termino() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

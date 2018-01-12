@@ -70,6 +70,7 @@ public abstract class AbstactListAction<T> {
     private int aaprobar;
     private int avisualizar;
     private int aactivar;
+    private int atermino;
     /*FILTRO*/
     private Date desde;
     private Date hasta;
@@ -150,6 +151,7 @@ public abstract class AbstactListAction<T> {
                     this.setAcerrar(Integer.parseInt(a[6]));
                     this.aaprobar=Integer.parseInt(a[7]);
                     this.avisualizar=Integer.parseInt(a[8]);
+                    this.atermino=Integer.parseInt(a[9]);
                 }
             }
         }
@@ -180,6 +182,7 @@ public abstract class AbstactListAction<T> {
                     this.aeliminar=0;
                     this.acerrar=0;
                     this.aaprobar=0;
+                    this.atermino=1;
                 }
             }
         }
@@ -209,6 +212,7 @@ public abstract class AbstactListAction<T> {
                     this.acerrar=Integer.parseInt(a[6]);
                     this.aaprobar=Integer.parseInt(a[7]);
                     this.avisualizar=Integer.parseInt(a[8]);
+                    this.atermino=Integer.parseInt(a[9]);
                 }
             }
         }
@@ -301,6 +305,10 @@ public abstract class AbstactListAction<T> {
         aprobar();
         this.ladd = 0;
     }
+    public void doTermino(){
+        termino();
+        this.ladd = 0;
+    }
     public void downFormatExcelEspecial(Object document){
         HSSFWorkbook objWB = (HSSFWorkbook) document;
         
@@ -324,6 +332,8 @@ public abstract class AbstactListAction<T> {
     public abstract void cerrar();
     
     public abstract void aprobar();
+    
+    public abstract void termino();
     
     public boolean verificar_edicion(){return false;}
     
@@ -830,5 +840,19 @@ public abstract class AbstactListAction<T> {
      */
     public void setAactivar(int aactivar) {
         this.aactivar = aactivar;
+    }
+
+    /**
+     * @return the atermino
+     */
+    public int getAtermino() {
+        return atermino;
+    }
+
+    /**
+     * @param atermino the atermino to set
+     */
+    public void setAtermino(int atermino) {
+        this.atermino = atermino;
     }
 }

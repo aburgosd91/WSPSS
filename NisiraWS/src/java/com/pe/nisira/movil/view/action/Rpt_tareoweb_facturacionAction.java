@@ -522,4 +522,9 @@ public class Rpt_tareoweb_facturacionAction extends AbstactListAction<Ordenservi
         this.lst_type_rpt = lst_type_rpt;
     }
 
+    @Override
+    public void termino() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

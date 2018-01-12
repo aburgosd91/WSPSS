@@ -510,4 +510,9 @@ public class Rpt_tareoweb_fijoAction extends AbstactListAction<Ordenservicioclie
     public void setDataTableColumns(List<DataTableColumn> dataTableColumns) {
         this.dataTableColumns = dataTableColumns;
     }
+
+    @Override
+    public void termino() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

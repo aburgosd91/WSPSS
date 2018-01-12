@@ -235,6 +235,8 @@ public class OrdenservicioclienteDao extends BaseDao<Ordenserviciocliente> {
                 ordenserviciocliente.setIdtareo(rs.getString("IDTAREO")!=null?rs.getString("IDTAREO").trim():"");
                 ordenserviciocliente.setSerietareo(rs.getString("SERIETAREO")!=null?rs.getString("SERIETAREO").trim():"");
                 ordenserviciocliente.setFechacierre(rs.getDate("FECHACIERRE"));
+                ordenserviciocliente.setContacto_email("");
+                ordenserviciocliente.setBodyHtml("");
                 lista.add(ordenserviciocliente); 
             }
             return lista;

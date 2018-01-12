@@ -639,4 +639,9 @@ public class Rpt_dlogtablas_operacionesAction extends AbstactListAction<Dlogtabl
     public void setDetalles(List<String[]> detalles) {
         this.detalles = detalles;
     }
+
+    @Override
+    public void termino() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

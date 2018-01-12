@@ -22,6 +22,7 @@ public class auxPrivilegioMenu {
     private int aprobar;
     private int visualizar;
     private int activar;
+    private int termino;
     public auxPrivilegioMenu() {
     }
 
@@ -143,6 +144,20 @@ public class auxPrivilegioMenu {
      */
     public void setActivar(int activar) {
         this.activar = activar;
+    }
+
+    /**
+     * @return the termino
+     */
+    public int getTermino() {
+        return termino;
+    }
+
+    /**
+     * @param termino the termino to set
+     */
+    public void setTermino(int termino) {
+        this.termino = termino;
     }
     
 }

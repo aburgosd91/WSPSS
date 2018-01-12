@@ -2420,6 +2420,11 @@ public class EstructuraCostosRecursoAction extends AbstactListAction<Estructura_
     public void setLog_consola(String log_consola) {
         this.log_consola = log_consola;
     }
+
+    @Override
+    public void termino() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
     public class Es_PorcentajeCombo{
         private int id;

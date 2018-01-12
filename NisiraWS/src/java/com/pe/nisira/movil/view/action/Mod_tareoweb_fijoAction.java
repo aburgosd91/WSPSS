@@ -684,7 +684,7 @@ public class Mod_tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
                         if(WebUtil.isnull(lsql.get(0).getIdpersonal(),"").trim().equals("") || 
                            WebUtil.isnull(lsql.get(0).getCidusuario(),"").trim().equals(user.getIDUSUARIO().trim())){
                             grabar_local_singular(entity);
-                            actionBotonFiltro();
+                            //actionBotonFiltro();
                         }else{
                             httpcontenido="\n(*)REGISTRO EXISTENTE";
                             httpcontenido+="\n\t- Personal: ("+lsql.get(0).getIdpersonal()+") "+lsql.get(0).getPersonal();
@@ -700,8 +700,8 @@ public class Mod_tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
 
                         }
                     }else{
-                        grabar_local_singular(localDet_tareoweb);
-                        actionBotonFiltro();
+                        grabar_local_singular(entity);
+                        //actionBotonFiltro();
                     }
                  }  
             }
@@ -732,11 +732,21 @@ public class Mod_tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
         boolean flag = false;
         for(int i=0;i<getListDet_tareoweb().size();i++){
             Det_tareoweb dw = getListDet_tareoweb().get(i);
-            if(dw.getItem() == item){
+            if(dw.getIdordenservicio().trim().equals(ob.getIdordenservicio().trim()) && 
+                dw.getItem_dordenservicio().trim().equals(ob.getItem_dordenservicio().trim()) &&
+                dw.getItem2_personalservicio().trim().equals(ob.getItem2_personalservicio().trim()) &&
+                dw.getItem_dpersonalservicio().trim().equals(ob.getItem_dpersonalservicio().trim())
+            ){
                 getListDet_tareoweb().set(i, dw);
                 flag = true;
                 break;
             }
+            /*Versión cuando no recargue la página*/
+//            if(dw.getItem() == item){
+//                getListDet_tareoweb().set(i, dw);
+//                flag = true;
+//                break;
+//            }
         }
         return flag;
     }
@@ -1925,6 +1935,11 @@ public class Mod_tareoweb_fijoAction extends AbstactListAction<Cabtareoweb> {
      */
     public void setBtnLog_Aceptar(boolean btnLog_Aceptar) {
         this.btnLog_Aceptar = btnLog_Aceptar;
+    }
+
+    @Override
+    public void termino() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

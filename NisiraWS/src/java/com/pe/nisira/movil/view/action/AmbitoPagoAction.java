@@ -428,4 +428,9 @@ public class AmbitoPagoAction extends AbstactListAction<Ambito_pago> implements 
         this.workampagcost = workampagcost;
     }
 
+    @Override
+    public void termino() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

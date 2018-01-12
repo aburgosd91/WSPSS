@@ -84,6 +84,8 @@ public class Ordenserviciocliente implements Serializable{
         private String estado;
         private String idtareo;
         private String serietareo;
+        private String contacto_email;
+        private String bodyHtml;
 	/* Sets & Gets */
 	public void setIdempresa(String idempresa) {
 		this.idempresa = idempresa;
@@ -410,5 +412,33 @@ public class Ordenserviciocliente implements Serializable{
      */
     public void setFechacierre(Date fechacierre) {
         this.fechacierre = fechacierre;
+    }
+
+    /**
+     * @return the contacto_email
+     */
+    public String getContacto_email() {
+        return contacto_email;
+    }
+
+    /**
+     * @param contacto_email the contacto_email to set
+     */
+    public void setContacto_email(String contacto_email) {
+        this.contacto_email = contacto_email;
+    }
+
+    /**
+     * @return the bodyHtml
+     */
+    public String getBodyHtml() {
+        return bodyHtml;
+    }
+
+    /**
+     * @param bodyHtml the bodyHtml to set
+     */
+    public void setBodyHtml(String bodyHtml) {
+        this.bodyHtml = bodyHtml;
     }
 }

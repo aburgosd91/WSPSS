@@ -1030,7 +1030,7 @@ public class menuDao extends Conexion {
             cl.setString(3, idemprsa);
             rs = cl.executeQuery();
             while (rs.next()) {
-                Object[] s = new Object[12];
+                Object[] s = new Object[13];
                 s[0] = (boolean) (rs.getString("elegido")).equalsIgnoreCase("1") ? true : false;
                 s[1] = (rs.getInt("idcontenido"));
                 s[2] = (rs.getString("idempresa"));
@@ -1043,6 +1043,7 @@ public class menuDao extends Conexion {
                 s[9] = (boolean) (rs.getString("Aprobar")).equalsIgnoreCase("1") ? true : false;
                 s[10] = (boolean) (rs.getString("Visualizar")).equalsIgnoreCase("1") ? true : false;
                 s[11] = (boolean) (rs.getString("Activar")).equalsIgnoreCase("1") ? true : false;
+                s[12] = (boolean) (rs.getString("Termino")).equalsIgnoreCase("1") ? true : false;
                 l.add(s);
             }
         } finally {
@@ -1592,6 +1593,7 @@ public class menuDao extends Conexion {
                 ax.setAprobar(ls[9].toString().equalsIgnoreCase("true") ? 1 : 0);
                 ax.setVisualizar(ls[10].toString().equalsIgnoreCase("true") ? 1 : 0);
                 ax.setActivar(ls[11].toString().equalsIgnoreCase("true") ? 1 : 0);
+                ax.setTermino(ls[12].toString().equalsIgnoreCase("true") ? 1 : 0);
                 l.add(ax);
             }
         }

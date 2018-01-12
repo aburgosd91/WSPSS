@@ -2838,6 +2838,11 @@ public class CotizacionesAction extends AbstactListAction<Cotizacionventas> {
         this.filename = filename;
     }
 
+    @Override
+    public void termino() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     public class Es_PorcentajeCombo{
         private int id;
         private String descripcion;

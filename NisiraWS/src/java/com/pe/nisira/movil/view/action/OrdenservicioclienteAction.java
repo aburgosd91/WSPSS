@@ -9,6 +9,7 @@ import com.nisira.core.NisiraORMException;
 import com.nisira.core.dao.Ambito_pagoDao;
 import com.nisira.core.dao.Cargos_personalDao;
 import com.nisira.core.dao.ClieprovDao;
+import com.nisira.core.dao.ConfigsmtpDao;
 import com.nisira.core.dao.CotizacionventasDao;
 import com.nisira.core.dao.DcotizacionventasDao;
 import com.nisira.core.dao.Dcotizacionventas_actividadesDao;
@@ -35,6 +36,7 @@ import com.nisira.core.entity.Ambito_pago;
 import com.nisira.core.entity.Cargos_personal;
 import com.nisira.core.entity.Clieprov;
 import com.nisira.core.entity.Codoperaciones_pss;
+import com.nisira.core.entity.Configsmtp;
 import com.nisira.core.entity.Consumidor;
 import com.nisira.core.entity.Cotizacionventas;
 import com.nisira.core.entity.Dcotizacionventas;
@@ -67,9 +69,13 @@ import static com.pe.nisira.movil.view.action.AbstactListAction.modalGoogleMapOp
 import static com.pe.nisira.movil.view.action.AbstactListAction.modalOptions;
 import com.pe.nisira.movil.view.bean.UsuarioBean;
 import com.pe.nisira.movil.view.util.Constantes;
+import com.pe.nisira.movil.view.util.EnviarDocumentos;
 import com.pe.nisira.movil.view.util.WebUtil;
 import com.pe.nisira.movil.view.util.menuDao;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -224,6 +230,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
     private List<Rutas> lstComboRutas;
     private String log_consola;
     private Rutas newRutas;
+    private Ordenserviciocliente selectOrdenservicio_local;
     /************************************* DATOS *****************************************/
     private int num_repetir;
     private int num_repetir_detalle;
@@ -243,6 +250,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
             dpersonal_servicio = new Dpersonal_servicio();
             cabercerDet_tareoweb = new Det_tareoweb();
             newRutas = new Rutas();
+            selectOrdenservicio_local= new Ordenserviciocliente();
             /*********************************LISTAS*******************************************/
             lstdordenserviciocliente = new ArrayList<Dordenserviciocliente>();
             listDocumentos = new ArrayList<Documentos>();
@@ -769,7 +777,6 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
             estiloDato_date.setBorderLeft(HSSFCellStyle.BORDER_MEDIUM);
             estiloDato_date.setFont(fuenteDatos);
             estiloDato_date.setDataFormat(format.getFormat("dd/mm/yyyy"));
-
             int number_sheet = 0;
             int fila_id=0;
             HSSFRow fila; 
@@ -1861,6 +1868,292 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    @Override
+    public void termino() {
+        try {
+            if(getDatoSeleccionado() != null){
+                if(getDatoSeleccionado().getIdestado().trim().equals("AN")){
+                    this.mensaje = "Orden se encuentra ANULADA";
+                    WebUtil.error(getMensaje());
+                    RequestContext.getCurrentInstance().update("datos:growl");
+                }else if(getDatoSeleccionado().getIdestado().trim().equals("CR")){
+                    selectOrdenservicio_local = new Ordenserviciocliente();
+                    selectOrdenservicio_local.setIdempresa(getDatoSeleccionado().getIdempresa());
+                    selectOrdenservicio_local.setIdordenservicio(getDatoSeleccionado().getIdordenservicio());
+                    selectOrdenservicio_local.setIddocumento(getDatoSeleccionado().getIddocumento());
+                    selectOrdenservicio_local.setSerie(getDatoSeleccionado().getSerie());
+                    selectOrdenservicio_local.setNumero(getDatoSeleccionado().getNumero());
+                    selectOrdenservicio_local.setContacto_email("");
+                    selectOrdenservicio_local.setIdclieprov(getDatoSeleccionado().getIdclieprov());
+                    selectOrdenservicio_local.setRazonsocial(getDatoSeleccionado().getRazonsocial());
+                    selectOrdenservicio_local.setTipo_servicio(getDatoSeleccionado().getTipo_servicio());
+                    selectOrdenservicio_local.setFecha(getDatoSeleccionado().getFecha());
+                    List<Configsmtp> lstConfigsmtp=(new ConfigsmtpDao()).listarPorEmpresaWeb();
+                    if(!lstConfigsmtp.isEmpty()){
+                        Constantes.configsmtp=lstConfigsmtp.get(0);
+                        selectOrdenservicio_local.setBodyHtml(Constantes.configsmtp.getMensaje());
+                        List<String[]> params = new ArrayList<>();
+                        String[] obj= new String[2];
+                        obj[0]="$$CLIENTE$$";obj[1]=selectOrdenservicio_local.getRazonsocial();params.add(obj);obj= new String[2];
+                        obj[0]="$$DOCCLIENTE$$";obj[1]=selectOrdenservicio_local.getIdclieprov();params.add(obj);obj= new String[2];
+                        obj[0]="$$DOCUMENTO$$";obj[1]=selectOrdenservicio_local.getIddocumento()+"-"+
+                                selectOrdenservicio_local.getSerie()+"-"+selectOrdenservicio_local.getNumero();params.add(obj);
+                        obj[0]="$$HTML$$";obj[1]=generarParrafoDatoHtml(generarCuerpoHtml(selectOrdenservicio_local));params.add(obj);
+                        /***************************************Construir***********************************/
+                        generarVisorHtml(selectOrdenservicio_local.getBodyHtml(),params);  
+                    }
+                    RequestContext.getCurrentInstance().update("datos:dlg_envio");
+                    RequestContext.getCurrentInstance().execute("PF('dlg_envio').show()");
+                }else{
+                    this.mensaje = "Orden debe estar CERRADA";
+                    WebUtil.error(getMensaje());
+                    RequestContext.getCurrentInstance().update("datos:growl");
+                }
+            }else if(getDatoEdicion()!= null){
+                if(getDatoEdicion().getIdestado().trim().equals("AN")){
+                    this.mensaje = "Orden se encuentra ANULADA";
+                    WebUtil.error(getMensaje());
+                    RequestContext.getCurrentInstance().update("datos:growl");
+                }else if(getDatoEdicion().getIdestado().trim().equals("CR")){
+                    selectOrdenservicio_local = new Ordenserviciocliente();
+                    selectOrdenservicio_local.setIdempresa(getDatoEdicion().getIdempresa());
+                    selectOrdenservicio_local.setIdordenservicio(getDatoEdicion().getIdordenservicio());
+                    selectOrdenservicio_local.setIddocumento(getDatoEdicion().getIddocumento());
+                    selectOrdenservicio_local.setSerie(getDatoEdicion().getSerie());
+                    selectOrdenservicio_local.setNumero(getDatoEdicion().getNumero());
+                    selectOrdenservicio_local.setIdclieprov(getDatoEdicion().getIdclieprov());
+                    selectOrdenservicio_local.setRazonsocial(getDatoEdicion().getRazonsocial());                   
+                    selectOrdenservicio_local.setTipo_servicio(getDatoEdicion().getTipo_servicio());
+                    selectOrdenservicio_local.setFecha(getDatoEdicion().getFecha());
+                    selectOrdenservicio_local.setContacto_email("");
+                    List<Configsmtp> lstConfigsmtp=(new ConfigsmtpDao()).listarPorEmpresaWeb();
+                    if(!lstConfigsmtp.isEmpty()){
+                        Constantes.configsmtp=lstConfigsmtp.get(0);
+                        selectOrdenservicio_local.setBodyHtml(Constantes.configsmtp.getMensaje());
+                        List<String[]> params = new ArrayList<>();
+                        String[] obj= new String[2];
+                        obj[0]="$$CLIENTE$$";obj[1]=selectOrdenservicio_local.getRazonsocial();params.add(obj);obj= new String[2];
+                        obj[0]="$$DOCCLIENTE$$";obj[1]=selectOrdenservicio_local.getIdclieprov();params.add(obj);obj= new String[2];
+                        obj[0]="$$DOCUMENTO$$";obj[1]=selectOrdenservicio_local.getIddocumento()+"-"+
+                                selectOrdenservicio_local.getSerie()+"-"+selectOrdenservicio_local.getNumero();params.add(obj);obj= new String[2];
+                        obj[0]="$$HTML$$";obj[1]=generarParrafoDatoHtml(generarCuerpoHtml(selectOrdenservicio_local));params.add(obj);
+                        generarVisorHtml(selectOrdenservicio_local.getBodyHtml(),params);        
+                    }
+                    RequestContext.getCurrentInstance().update("datos:dlg_envio");
+                    RequestContext.getCurrentInstance().execute("PF('dlg_envio').show()");
+                }else if(getDatoEdicion().getTipo_servicio().trim().equals("F")){
+                    this.mensaje = "Orden debe estar CERRADA";
+                    WebUtil.error(getMensaje());
+                    RequestContext.getCurrentInstance().update("datos:growl");
+                }
+                
+            }else{
+                this.mensaje = "Seleccionar Documento";
+                WebUtil.MensajeError(this.mensaje);
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(Ordenserviciocliente_cierreAction.class.getName()).log(Level.SEVERE, null, ex);
+            WebUtil.MensajeError(ex.getMessage());
+        }
+    }
+    public void generarVisorHtml(String cxhtml,List<String[]> parametros){
+        try{ 
+            /***************************************************************************/
+            if(!parametros.isEmpty()){
+                for(String[] obj:parametros){
+                    cxhtml = cxhtml.replace(obj[0],obj[1]);
+                }
+            }
+            /***************************************************************************/
+            String rutaHtml=Constantes.ARCHIVO_REPORTE + File.separator +"visor.html";
+            File archivo = new File(rutaHtml);
+            if(archivo.exists())
+                archivo.delete();
+            FileWriter archivo_ = new FileWriter(rutaHtml); 
+            PrintWriter escritura = new PrintWriter(archivo_);
+            //escribimos un archivo de texto con la estructura de html
+            escritura.println(cxhtml);
+            //nos aseguramos de cerrar el archivo
+            archivo_.close();
+        } catch(Exception e){
+        e.printStackTrace();
+        }
+    }
+    public List<String[]> generarCuerpoHtml(Ordenserviciocliente ors){
+        List<String[]> lstContenido = new  ArrayList<>();
+        try {
+            String filadato="<table id=\"background-table\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #f5f5f5; border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt\">\n" +
+                    "            <tr>\n" +
+                    "                <td id=\"email-content-container\" style=\"padding: 0px; border-collapse: collapse; padding: 0 20px\">\n" +
+                    "                    <table id=\"email-content-table\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"100%\" style=\"border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-spacing: 0; border-collapse: separate; font-size=11px\">\n" +
+                    "                        $$BLOQUE$$\n" +
+                    "                    </table>\n" +
+                    "                </td>\n" +
+                    "            </tr>\n" +
+                    "        </table>";
+            String chtml="";String[] ccuerpo= new String[3];String chtm_personal="";
+            List<Dordenserviciocliente> lstdordenserviciocliente = dordenservicioclienteDao.listarPorEmpresaWeb(user.getIDEMPRESA(),ors.getIdordenservicio());
+            if(lstdordenserviciocliente.size()>0){
+                List<Personal_servicio> listPersonalservicio_total_=personal_servicioDao.listarPorOrdenServicioClienteWeb_Total(user.getIDEMPRESA(), lstdordenserviciocliente.get(0).getIdordenservicio());
+                List<Ruta_servicios> listRutasTotales_=ruta_serviciosDao.listarPorOrdenServicioClienteWeb_Total(user.getIDEMPRESA(), lstdordenserviciocliente.get(0).getIdordenservicio());
+                List<Dpersonal_servicio> listDpersonalservicio_total_=dpersonal_servicioDao.listarPorOrdenServicio_PersonalDetalleWeb_Total(user.getIDEMPRESA(),lstdordenserviciocliente.get(0).getIdordenservicio());
+                for(Dordenserviciocliente dos:lstdordenserviciocliente){
+                    chtml="";ccuerpo= new String[3];
+                    chtml+=generarFilaDatoHtml("TIPO DE SERVICIO",ors.getTipo_servicio().trim().equals("E")?"ESPECIAL":"FIJO");
+                    chtml+=generarFilaDatoHtml("CODIGO",dos.getCodoperaciones().trim());
+                    chtml+=generarFilaDatoHtml("FECHA DE SERVICIO",WebUtil.fechaDMY(ors.getFecha(),1));
+                    chtml+=generarFilaDatoHtml("TRAMO",dos.getRuta_viaje());
+                    chtml+=generarFilaDatoHtml("HORA DE INICIO DE SERVICIO",dos.getHora_req().toString());
+                    chtml = filadato.replace("$$BLOQUE$$", chtml);
+                    ccuerpo[0]=chtml;
+                    chtm_personal="";
+                    for(Personal_servicio pr : listPersonalservicio_total_){
+                        if(dos.getItem().trim().equals(pr.getItem())){
+                            chtml="";
+                            chtml+=generarFilaDatoHtml(pr.getCargo(),pr.getNombres());
+                            chtml+=generarFilaDatoHtml("DNI",pr.getDni());
+                            chtml+=generarFilaDatoHtml("TELEFONO","");
+                            chtml+=generarFilaDatoHtml("PLACA",pr.getIdvehiculo());
+                            chtml+=generarFilaDatoHtml("CONDUCTOR",pr.getConductor_cliente());
+                            chtml+=generarFilaDatoHtml("BREVETE",pr.getBrevete_cliente());
+                            chtml+=generarFilaDatoHtml("PLACA CLIENTE",pr.getPlaca_cliente());
+                            chtml+=generarFilaDatoHtml("PRECINTO",pr.getNroprecinto());
+                            chtml+=generarFilaDatoHtml("CONTENEDOR",pr.getNrocontenedor());
+                            chtml+=generarFilaDatoHtml("NRO SERVICIO",pr.getNro_oservicio());
+                            chtml = filadato.replace("$$BLOQUE$$", chtml);
+                            chtm_personal+=chtml;
+                        }
+                    }
+                    ccuerpo[1]=chtm_personal;
+                    for(Dpersonal_servicio dps:listDpersonalservicio_total_){
+                        if(dos.getItem().trim().equals(dps.getItem())){
+                            chtml="";
+                            chtml+=generarFilaDatoHtml("UBICACION FINAL DE SERVICIO",dos.getRuta_viaje());
+                            chtml+=generarFilaDatoHtml("HORA DE FIN DE SERVICIO",WebUtil.fechaDMY(dps.getFhora_fin_serv(), 4));
+                            chtml = filadato.replace("$$BLOQUE$$", chtml);
+                            ccuerpo[2]=chtml;
+                            break;
+                        }
+                    }
+                    lstContenido.add(ccuerpo);
+                }
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(Ordenserviciocliente_cierreAction.class.getName()).log(Level.SEVERE, null, ex);
+            WebUtil.MensajeError(ex.getMessage());
+        }
+        
+        return lstContenido;
+    }
+    public String generarFilaDatoHtml(String id,String value){
+        String estructura="<tr>\n" +
+            "                            <td class=\"email-content-main mobile-expand \" style=\"padding: 0px; border-collapse: collapse; border-left: 1px solid #ccc; border-right: 1px solid #ccc; border-top: 0; border-bottom: 0; padding: 0 15px 0 16px; background-color: #fff\">\n" +
+            "                                <b>$$ID$$</b> <br/>\n" +
+            "                            </td>\n" +
+            "                            <td class=\"email-content-main mobile-expand \" style=\"padding: 0px; border-collapse: collapse; border-left: 1px solid #ccc; border-right: 1px solid #ccc; border-top: 0; border-bottom: 0; padding: 0 15px 0 16px; background-color: #fff\">\n" +
+            "                                <i>$$VALUE$$</i> <br/>\n" +
+            "                            </td>\n" +
+            "                        </tr>";
+        estructura = estructura.replace("$$ID$$", id);
+        estructura = estructura.replace("$$VALUE$$",value);
+        return estructura;
+    }
+    public String generarParrafoDatoHtml(List<String[]> parametros){
+        String estructura="<table id=\"background-table\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #c4c4c4 -webkit-gradient(linear,left top,left bottom,from(rgba(255,255,255,0.8)),to(rgba(255,255,255,0))); border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt\">\n" +
+                    "            <tr>\n" +
+                    "                <td id=\"email-content-container\" style=\"padding: 0px; border-collapse: collapse; padding: 0 20px\">\n" +
+                    "                    <table id=\"email-content-table\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"100%\" style=\"border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-spacing: 0; border-collapse: separate; font-size=11px; background-color: #c4c4c4 -webkit-gradient(linear,left top,left bottom,from(rgba(255,255,255,0.8)),to(rgba(255,255,255,0)));\">\n" +
+                    "                        <tr>\n" +
+                    "                            <!-- there needs to be content in the cell for it to render in some clients -->\n" +
+                    "                            <td class=\"email-content-rounded-top mobile-expand\" style=\"padding: 0px; border-collapse: collapse; color: #fff; padding: 0 15px 0 16px; height: 15px; background-color: #fff; border-left: 1px solid #ccc; border-top: 1px solid #ccc; border-right: 1px solid #ccc; border-bottom: 0; border-top-right-radius: 5px; border-top-left-radius: 5px; height: 10px; line-height: 10px; padding: 0 15px 0 16px; mso-line-height-rule: exactly\">\n" +
+                    "                                &nbsp;\n" +
+                    "                            </td>\n" +
+                    "                        </tr>\n" +
+                    "                        <tr>\n" +
+                    "                            <td class=\"email-content-main mobile-expand \" style=\"padding: 0px; border-collapse: collapse; border-left: 1px solid #ccc; border-right: 1px solid #ccc; border-top: 0; border-bottom: 0; padding: 0 15px 0 16px; background-color: #fff;text-align: center;\">\n" +
+                    "                                <b>REPORTE DEL SERVICIO</b> <br/>\n" +
+                    "                            </td>\n" +
+                    "                        </tr>\n" +
+                    "                        <!-- there needs to be content in the cell for it to render in some clients -->\n" +
+                    "                        <tr>\n" +
+                    "                            <td class=\"email-content-rounded-bottom mobile-expand\" style=\"padding: 0px; border-collapse: collapse; color: #fff; padding: 0 15px 0 16px; height: 5px; line-height: 5px; background-color: #fff; border-top: 0; border-left: 1px solid #ccc; border-bottom: 1px solid #ccc; border-right: 1px solid #ccc; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; mso-line-height-rule: exactly\">\n" +
+                    "                                &nbsp;\n" +
+                    "                            </td>\n" +
+                    "                        </tr>\n" +
+                    "                    </table>\n" +
+                    "                </td>\n" +
+                    "            </tr>\n" +
+                    "        </table>\n" +
+                    "        $$CABECERA$$\n" +
+                    "        <table id=\"background-table\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #c4c4c4 -webkit-gradient(linear,left top,left bottom,from(rgba(255,255,255,0.8)),to(rgba(255,255,255,0))); border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt\">\n" +
+                    "            <tr>\n" +
+                    "                <td id=\"email-content-container\" style=\"padding: 0px; border-collapse: collapse; padding: 0 20px\">\n" +
+                    "                    <table id=\"email-content-table\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"100%\" style=\"border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-spacing: 0; border-collapse: separate; font-size=11px; background-color: #c4c4c4 -webkit-gradient(linear,left top,left bottom,from(rgba(255,255,255,0.8)),to(rgba(255,255,255,0)));\">\n" +
+                    "                        <tr>\n" +
+                    "                            <!-- there needs to be content in the cell for it to render in some clients -->\n" +
+                    "                            <td class=\"email-content-rounded-top mobile-expand\" style=\"padding: 0px; border-collapse: collapse; color: #fff; padding: 0 15px 0 16px; height: 15px; background-color: #fff; border-left: 1px solid #ccc; border-top: 1px solid #ccc; border-right: 1px solid #ccc; border-bottom: 0; border-top-right-radius: 5px; border-top-left-radius: 5px; height: 10px; line-height: 10px; padding: 0 15px 0 16px; mso-line-height-rule: exactly\">\n" +
+                    "                                &nbsp;\n" +
+                    "                            </td>\n" +
+                    "                        </tr>\n" +
+                    "                        <tr>\n" +
+                    "                            <td class=\"email-content-main mobile-expand \" style=\"padding: 0px; border-collapse: collapse; border-left: 1px solid #ccc; border-right: 1px solid #ccc; border-top: 0; border-bottom: 0; padding: 0 15px 0 16px; background-color: #fff;text-align: center\">\n" +
+                    "                                <b>NOMBRES Y APELLIDOS</b> <br/>\n" +
+                    "                            </td>\n" +
+                    "                        </tr>\n" +
+                    "                        <!-- there needs to be content in the cell for it to render in some clients -->\n" +
+                    "                        <tr>\n" +
+                    "                            <td class=\"email-content-rounded-bottom mobile-expand\" style=\"padding: 0px; border-collapse: collapse; color: #fff; padding: 0 15px 0 16px; height: 5px; line-height: 5px; background-color: #fff; border-top: 0; border-left: 1px solid #ccc; border-bottom: 1px solid #ccc; border-right: 1px solid #ccc; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; mso-line-height-rule: exactly\">\n" +
+                    "                                &nbsp;\n" +
+                    "                            </td>\n" +
+                    "                        </tr>\n" +
+                    "                    </table>\n" +
+                    "                </td>\n" +
+                    "            </tr>\n" +
+                    "        </table>\n" +
+                    "        $$TABLA$$\n" +
+                    "        &nbsp;\n" +
+                    "        $$PIE$$";
+        String html="",testructura="";
+        for(String[]parrafo :parametros){
+            testructura = estructura;
+            testructura = testructura.replace("$$CABECERA$$", parrafo[0]);
+            testructura = testructura.replace("$$TABLA$$",parrafo[1]);
+            testructura = testructura.replace("$$PIE$$",parrafo[2]);
+            html+=testructura;
+        }
+        return html;
+    }
+    public void envioCorreo_listado(){
+        try {
+            if(getDatoSeleccionado()!=null){
+                if(getDatoSeleccionado().getIdordenservicio()!=null){
+                    List<Configsmtp> lstConfigsmtp=(new ConfigsmtpDao()).listarPorEmpresaWeb();
+                    if(!lstConfigsmtp.isEmpty()){
+                        Constantes.configsmtp=lstConfigsmtp.get(0);
+                        /* *********    ENVIAR CORREO  ********* */
+                        EnviarDocumentos enviarDocumentos = new EnviarDocumentos();
+                        enviarDocumentos.enviarcorreo(getDatoSeleccionado().getContacto_email(), null, 
+                                getDatoSeleccionado().getIddocumento()+getDatoSeleccionado().getSerie()+"-"+getDatoSeleccionado().getNumero(), 
+                                getDatoSeleccionado().getRazonsocial(),"");
+                        mensaje = "Envio de mensaje exitoso";
+                        WebUtil.info(mensaje);
+                    }else{
+                        mensaje = "Envio de mensaje no configurado";
+                        WebUtil.error(mensaje);
+                    }
+                }
+            }else{
+                mensaje = "Documento no creado";
+                WebUtil.MensajeAdvertencia(mensaje);
+            }
+            
+        }catch (Exception ex) {
+            setMensaje(ex.getMessage() + "\n" + ex.getLocalizedMessage());
+            Logger.getLogger(CotizacionesAction.class.getName()).log(Level.SEVERE, null, ex);
+            WebUtil.fatal(mensaje);
+        }
+        RequestContext.getCurrentInstance().update("datos");
     }
     public String verificacionOrdenservicioDetalle_cerrado(List<Personal_servicio> lstpersonal){
         String msj = "";
@@ -4930,5 +5223,21 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
     public void setNewRutas(Rutas newRutas) {
         this.newRutas = newRutas;
     }
+
+    /**
+     * @return the selectOrdenservicio_local
+     */
+    public Ordenserviciocliente getSelectOrdenservicio_local() {
+        return selectOrdenservicio_local;
+    }
+
+    /**
+     * @param selectOrdenservicio_local the selectOrdenservicio_local to set
+     */
+    public void setSelectOrdenservicio_local(Ordenserviciocliente selectOrdenservicio_local) {
+        this.selectOrdenservicio_local = selectOrdenservicio_local;
+    }
+
+    
 
 }

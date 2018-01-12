@@ -94,6 +94,20 @@
                 <p:commandButton value="No" styleClass="ui-confirmdialog-no" icon="ui-icon-close" 
                                  onclick="PF('dialogCerrar').hide()" />
             </p:confirmDialog>
+            <p:dialog id="dlg_envio" header="..:: Orden Servicio Cliente N° #{ordenservicioclienteAction.selectOrdenservicio_local.serie} -
+                      #{ordenservicioclienteAction.selectOrdenservicio_local.numero} ::.." 
+                      widgetVar="dlg_envio" modal="true" showEffect="popup" maximizable="true" closable="true" height="410px" width="600px">
+                <p:panelGrid columns="3" columnClasses="no-border, no-border, no-border">
+                    <p:outputLabel value="Email:"/>
+                    <p:inputTextarea id="contacto_email" cols="50" rows="2" value="#{ordenservicioclienteAction.selectOrdenservicio_local.contacto_email}"/>
+                    <p:commandButton id="btnEnvio" value="Envio" ajax="true" image="ui-icon-envio" actionListener="#{ordenservicioclienteAction.envioCorreo_listado()}" />
+                </p:panelGrid>
+                <object type="application/html" data="../ARCHIVO_NISIRA_WEB/visor.html" height="82%" width="99%">
+                    Navegador no puede mostrar, favor descargue <a href="../ARCHIVO_NISIRA_WEB/visor.html">click</a> to download pdf instead.
+                </object>
+                <br/> 
+                <br/>                        
+            </p:dialog>
             <p:growl id="growl" life="4000" showDetail="false"  />
             <cmp:mDialogElimina_lst id="cmpDialog" bean="#{ordenservicioclienteAction}" ventana="LST" />
         </h:form>
