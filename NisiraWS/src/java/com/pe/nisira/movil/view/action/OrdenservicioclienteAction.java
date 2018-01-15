@@ -711,7 +711,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
     public void terminadoDocumento() {
         try {
             List lst = new ArrayList<>();
-            lst.add(getDatoSeleccionado());
+            lst.add(selectOrdenservicio_local);
             this.mensaje = getOrdenservicioclienteDao().cierreMasivo(5,lst,user.getIDUSUARIO());
             setMensaje(WebUtil.exitoRegistrar("Orden Servicio ", mensaje));
             WebUtil.info(getMensaje());

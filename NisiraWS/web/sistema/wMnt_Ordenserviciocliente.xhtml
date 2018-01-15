@@ -926,6 +926,19 @@
                     <p:commandButton value="Grabar" ajax="true" actionListener="#{ordenservicioclienteAction.grabarRutaNew()}"/>
                 </p:panelGrid>
             </p:dialog>
+            <p:dialog id="dlg_envio" header="..:: Orden Servicio Cliente N° #{ordenservicioclienteAction.selectOrdenservicio_local.serie} -
+                      #{ordenservicioclienteAction.selectOrdenservicio_local.numero} ::.." 
+                      widgetVar="dlg_envio" modal="true" showEffect="popup" maximizable="true" closable="true" height="150px" width="700px">
+                <p:panelGrid columns="4" columnClasses="no-border, no-border, no-border, no-border">
+                    <p:outputLabel value="Email:"/>
+                    <p:inputTextarea id="contacto_email" cols="50" rows="5" value="#{ordenservicioclienteAction.selectOrdenservicio_local.contacto_email}"/>
+                    <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{ordenservicioclienteAction.verCntContactosClieprov()}" 
+                                icon="ui-icon-search">
+                        <p:ajax event="dialogReturn" listener="#{ordenservicioclienteAction.valorContactosClieprov}" update="contacto_email"/>
+                    </p:commandButton>
+                    <p:commandButton id="btnEnvio" value="Envio" ajax="true" image="ui-icon-envio" actionListener="#{ordenservicioclienteAction.envioCorreo_listado()}" />
+                </p:panelGrid>               
+            </p:dialog>
             <cmp:mDialogElimina_lst id="cmpDialog" bean="#{ordenservicioclienteAction}" ventana="MNT" />
         </h:form>
     </ui:define>
