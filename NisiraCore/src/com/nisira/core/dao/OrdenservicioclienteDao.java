@@ -237,6 +237,7 @@ public class OrdenservicioclienteDao extends BaseDao<Ordenserviciocliente> {
                 ordenserviciocliente.setFechacierre(rs.getDate("FECHACIERRE"));
                 ordenserviciocliente.setContacto_email("");
                 ordenserviciocliente.setBodyHtml("");
+                ordenserviciocliente.setEs_enviado(rs.getFloat("ES_ENVIADO"));
                 lista.add(ordenserviciocliente); 
             }
             return lista;

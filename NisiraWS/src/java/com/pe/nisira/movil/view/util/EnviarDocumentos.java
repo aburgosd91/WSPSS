@@ -76,6 +76,36 @@ public class EnviarDocumentos {
             System.out.println("Done");
 
     }
+    public static void enviarcorreo_ordenservicio(String correo, 
+//            File file, 
+//            String nombre, 
+//            String url,
+            String serie_numero,String razon_social)
+                    throws Exception {
+
+        Configsmtp cfg = Constantes.configsmtp;
+
+        if (cfg == null) {
+                throw new Exception("No existe configuración de correo electrónico");
+        }
+
+            String serienum = serie_numero;
+            String doc = "Documento Orden Servicio: " + serienum;
+            String html = isNull(Constantes.configsmtp.getMensaje(), "").trim();
+
+//            html = html.replace("$$CLIENTE$$", razon_social);
+//            html = html.replace("$$DOCCLIENTE$$", serienum);
+//            html = html.replace("$$DOCUMENTO$$", serienum);
+//            html = html.replace("$$EMPRESA$$", nombre);
+//            html = html.replace("$$URL$$", url);
+
+            EmailSenderService senderService = new EmailSenderService();
+
+            senderService.sendEmail(correo, doc, html);
+
+            System.out.println("Done");
+
+    }
     public static void enviarcorreoMemo(String correo, File file,String serie_numero,String razon_social,String name_document)
                     throws Exception {
 

@@ -38,6 +38,7 @@ import com.nisira.core.entity.Clieprov;
 import com.nisira.core.entity.Codoperaciones_pss;
 import com.nisira.core.entity.Configsmtp;
 import com.nisira.core.entity.Consumidor;
+import com.nisira.core.entity.Contactosclieprov;
 import com.nisira.core.entity.Cotizacionventas;
 import com.nisira.core.entity.Dcotizacionventas;
 import com.nisira.core.entity.Dcotizacionventas_actividades;
@@ -65,8 +66,10 @@ import com.nisira.core.entity.Ruta;
 import com.nisira.core.entity.Ruta_servicios;
 import com.nisira.core.entity.Rutas;
 import com.nisira.core.entity.Ubigeo;
+import com.nisira.core.util.CoreUtil;
 import static com.pe.nisira.movil.view.action.AbstactListAction.modalGoogleMapOptions;
 import static com.pe.nisira.movil.view.action.AbstactListAction.modalOptions;
+import static com.pe.nisira.movil.view.action.AbstactListAction.modalParamsOptions;
 import com.pe.nisira.movil.view.bean.UsuarioBean;
 import com.pe.nisira.movil.view.util.Constantes;
 import com.pe.nisira.movil.view.util.EnviarDocumentos;
@@ -696,6 +699,20 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
             List lst = new ArrayList<>();
             lst.add(getDatoSeleccionado());
             this.mensaje = getOrdenservicioclienteDao().cierreMasivo(4,lst,user.getIDUSUARIO());
+            setMensaje(WebUtil.exitoRegistrar("Orden Servicio ", mensaje));
+            WebUtil.info(getMensaje());
+            setSelectListOrdenserviciocliente(new ArrayList<>());
+            buscarFiltro(2);
+        } catch (Exception ex) {
+            Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, null, ex);
+            WebUtil.MensajeError(ex.getMessage());
+        }
+    }
+    public void terminadoDocumento() {
+        try {
+            List lst = new ArrayList<>();
+            lst.add(getDatoSeleccionado());
+            this.mensaje = getOrdenservicioclienteDao().cierreMasivo(5,lst,user.getIDUSUARIO());
             setMensaje(WebUtil.exitoRegistrar("Orden Servicio ", mensaje));
             WebUtil.info(getMensaje());
             setSelectListOrdenserviciocliente(new ArrayList<>());
@@ -1889,22 +1906,27 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                     selectOrdenservicio_local.setRazonsocial(getDatoSeleccionado().getRazonsocial());
                     selectOrdenservicio_local.setTipo_servicio(getDatoSeleccionado().getTipo_servicio());
                     selectOrdenservicio_local.setFecha(getDatoSeleccionado().getFecha());
-                    List<Configsmtp> lstConfigsmtp=(new ConfigsmtpDao()).listarPorEmpresaWeb();
+                    List<Configsmtp> lstConfigsmtp=(new ConfigsmtpDao()).listarPorEmpresaWeb_Operaciones();
                     if(!lstConfigsmtp.isEmpty()){
                         Constantes.configsmtp=lstConfigsmtp.get(0);
                         selectOrdenservicio_local.setBodyHtml(Constantes.configsmtp.getMensaje());
                         List<String[]> params = new ArrayList<>();
                         String[] obj= new String[2];
-                        obj[0]="$$CLIENTE$$";obj[1]=selectOrdenservicio_local.getRazonsocial();params.add(obj);obj= new String[2];
-                        obj[0]="$$DOCCLIENTE$$";obj[1]=selectOrdenservicio_local.getIdclieprov();params.add(obj);obj= new String[2];
+                        obj[0]="$$CLIENTE$$";obj[1]=selectOrdenservicio_local.getRazonsocial();
+                        params.add(obj);obj= new String[2];
+                        obj[0]="$$DOCCLIENTE$$";obj[1]=selectOrdenservicio_local.getIdclieprov();
+                        params.add(obj);obj= new String[2];
                         obj[0]="$$DOCUMENTO$$";obj[1]=selectOrdenservicio_local.getIddocumento()+"-"+
-                                selectOrdenservicio_local.getSerie()+"-"+selectOrdenservicio_local.getNumero();params.add(obj);
-                        obj[0]="$$HTML$$";obj[1]=generarParrafoDatoHtml(generarCuerpoHtml(selectOrdenservicio_local));params.add(obj);
+                                selectOrdenservicio_local.getSerie()+"-"+selectOrdenservicio_local.getNumero();
+                        params.add(obj);obj= new String[2];
+                        obj[0]="$$HTML$$";obj[1]=generarParrafoDatoHtml(generarCuerpoHtml(selectOrdenservicio_local));
+                        params.add(obj);
                         /***************************************Construir***********************************/
-                        generarVisorHtml(selectOrdenservicio_local.getBodyHtml(),params);  
+                        Constantes.configsmtp.setMensaje(generarVisorHtml(selectOrdenservicio_local.getBodyHtml(),params));
+                        RequestContext.getCurrentInstance().update("datos:dlg_envio");
+                        RequestContext.getCurrentInstance().update("datos:dlg_envio:iframehtml");
+                        RequestContext.getCurrentInstance().execute("PF('dlg_envio').show()");
                     }
-                    RequestContext.getCurrentInstance().update("datos:dlg_envio");
-                    RequestContext.getCurrentInstance().execute("PF('dlg_envio').show()");
                 }else{
                     this.mensaje = "Orden debe estar CERRADA";
                     WebUtil.error(getMensaje());
@@ -1927,21 +1949,25 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                     selectOrdenservicio_local.setTipo_servicio(getDatoEdicion().getTipo_servicio());
                     selectOrdenservicio_local.setFecha(getDatoEdicion().getFecha());
                     selectOrdenservicio_local.setContacto_email("");
-                    List<Configsmtp> lstConfigsmtp=(new ConfigsmtpDao()).listarPorEmpresaWeb();
+                    List<Configsmtp> lstConfigsmtp=(new ConfigsmtpDao()).listarPorEmpresaWeb_Operaciones();
                     if(!lstConfigsmtp.isEmpty()){
                         Constantes.configsmtp=lstConfigsmtp.get(0);
                         selectOrdenservicio_local.setBodyHtml(Constantes.configsmtp.getMensaje());
                         List<String[]> params = new ArrayList<>();
                         String[] obj= new String[2];
-                        obj[0]="$$CLIENTE$$";obj[1]=selectOrdenservicio_local.getRazonsocial();params.add(obj);obj= new String[2];
-                        obj[0]="$$DOCCLIENTE$$";obj[1]=selectOrdenservicio_local.getIdclieprov();params.add(obj);obj= new String[2];
+                        obj[0]="$$CLIENTE$$";obj[1]=selectOrdenservicio_local.getRazonsocial();
+                        params.add(obj);obj= new String[2];
+                        obj[0]="$$DOCCLIENTE$$";obj[1]=selectOrdenservicio_local.getIdclieprov();
+                        params.add(obj);obj= new String[2];
                         obj[0]="$$DOCUMENTO$$";obj[1]=selectOrdenservicio_local.getIddocumento()+"-"+
-                                selectOrdenservicio_local.getSerie()+"-"+selectOrdenservicio_local.getNumero();params.add(obj);obj= new String[2];
-                        obj[0]="$$HTML$$";obj[1]=generarParrafoDatoHtml(generarCuerpoHtml(selectOrdenservicio_local));params.add(obj);
-                        generarVisorHtml(selectOrdenservicio_local.getBodyHtml(),params);        
+                                selectOrdenservicio_local.getSerie()+"-"+selectOrdenservicio_local.getNumero();
+                        params.add(obj);obj= new String[2];
+                        obj[0]="$$HTML$$";obj[1]=generarParrafoDatoHtml(generarCuerpoHtml(selectOrdenservicio_local));
+                        params.add(obj);
+                        Constantes.configsmtp.setMensaje(generarVisorHtml(selectOrdenservicio_local.getBodyHtml(),params));
+                        RequestContext.getCurrentInstance().update("datos:dlg_envio");
+                        RequestContext.getCurrentInstance().execute("PF('dlg_envio').show()");
                     }
-                    RequestContext.getCurrentInstance().update("datos:dlg_envio");
-                    RequestContext.getCurrentInstance().execute("PF('dlg_envio').show()");
                 }else if(getDatoEdicion().getTipo_servicio().trim().equals("F")){
                     this.mensaje = "Orden debe estar CERRADA";
                     WebUtil.error(getMensaje());
@@ -1957,28 +1983,33 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
             WebUtil.MensajeError(ex.getMessage());
         }
     }
-    public void generarVisorHtml(String cxhtml,List<String[]> parametros){
+    public String generarVisorHtml(String cxhtml,List<String[]> parametros){
+        String cuerpoHtml="";
         try{ 
             /***************************************************************************/
             if(!parametros.isEmpty()){
                 for(String[] obj:parametros){
-                    cxhtml = cxhtml.replace(obj[0],obj[1]);
+                    cxhtml = cxhtml.replace(obj[0].trim(),obj[1].trim());
                 }
             }
             /***************************************************************************/
             String rutaHtml=Constantes.ARCHIVO_REPORTE + File.separator +"visor.html";
             File archivo = new File(rutaHtml);
-            if(archivo.exists())
+            if(archivo.exists()){
                 archivo.delete();
+                System.out.println("("+rutaHtml+")Eliminado");
+            }
             FileWriter archivo_ = new FileWriter(rutaHtml); 
             PrintWriter escritura = new PrintWriter(archivo_);
             //escribimos un archivo de texto con la estructura de html
             escritura.println(cxhtml);
+            cuerpoHtml+= cxhtml;
             //nos aseguramos de cerrar el archivo
             archivo_.close();
         } catch(Exception e){
         e.printStackTrace();
         }
+        return cuerpoHtml;
     }
     public List<String[]> generarCuerpoHtml(Ordenserviciocliente ors){
         List<String[]> lstContenido = new  ArrayList<>();
@@ -2004,7 +2035,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                     chtml+=generarFilaDatoHtml("CODIGO",dos.getCodoperaciones().trim());
                     chtml+=generarFilaDatoHtml("FECHA DE SERVICIO",WebUtil.fechaDMY(ors.getFecha(),1));
                     chtml+=generarFilaDatoHtml("TRAMO",dos.getRuta_viaje());
-                    chtml+=generarFilaDatoHtml("HORA DE INICIO DE SERVICIO",dos.getHora_req().toString());
+                    chtml+=generarFilaDatoHtml("HORA DE REQUERIMIENTO DE SERVICIO",CoreUtil.convertTimeFloatString(dos.getHora_req()));
                     chtml = filadato.replace("$$BLOQUE$$", chtml);
                     ccuerpo[0]=chtml;
                     chtm_personal="";
@@ -2030,6 +2061,7 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                         if(dos.getItem().trim().equals(dps.getItem())){
                             chtml="";
                             chtml+=generarFilaDatoHtml("UBICACION FINAL DE SERVICIO",dos.getRuta_viaje());
+                            chtml+=generarFilaDatoHtml("HORA DE  INICIO SERVICIO",WebUtil.fechaDMY(dps.getFhora_inicio_serv(), 4));
                             chtml+=generarFilaDatoHtml("HORA DE FIN DE SERVICIO",WebUtil.fechaDMY(dps.getFhora_fin_serv(), 4));
                             chtml = filadato.replace("$$BLOQUE$$", chtml);
                             ccuerpo[2]=chtml;
@@ -2126,18 +2158,17 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
     }
     public void envioCorreo_listado(){
         try {
-            if(getDatoSeleccionado()!=null){
-                if(getDatoSeleccionado().getIdordenservicio()!=null){
-                    List<Configsmtp> lstConfigsmtp=(new ConfigsmtpDao()).listarPorEmpresaWeb();
-                    if(!lstConfigsmtp.isEmpty()){
-                        Constantes.configsmtp=lstConfigsmtp.get(0);
+            if(selectOrdenservicio_local!=null){
+                if(selectOrdenservicio_local.getIdordenservicio()!=null){
+                    if(Constantes.configsmtp!=null){
                         /* *********    ENVIAR CORREO  ********* */
                         EnviarDocumentos enviarDocumentos = new EnviarDocumentos();
-                        enviarDocumentos.enviarcorreo(getDatoSeleccionado().getContacto_email(), null, 
-                                getDatoSeleccionado().getIddocumento()+getDatoSeleccionado().getSerie()+"-"+getDatoSeleccionado().getNumero(), 
-                                getDatoSeleccionado().getRazonsocial(),"");
+                        enviarDocumentos.enviarcorreo_ordenservicio(selectOrdenservicio_local.getContacto_email(), 
+                                selectOrdenservicio_local.getIddocumento()+selectOrdenservicio_local.getSerie()+"-"+selectOrdenservicio_local.getNumero(), 
+                                selectOrdenservicio_local.getRazonsocial());
                         mensaje = "Envio de mensaje exitoso";
                         WebUtil.info(mensaje);
+                        terminadoDocumento();
                     }else{
                         mensaje = "Envio de mensaje no configurado";
                         WebUtil.error(mensaje);
@@ -2147,11 +2178,11 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
                 mensaje = "Documento no creado";
                 WebUtil.MensajeAdvertencia(mensaje);
             }
-            
         }catch (Exception ex) {
             setMensaje(ex.getMessage() + "\n" + ex.getLocalizedMessage());
             Logger.getLogger(CotizacionesAction.class.getName()).log(Level.SEVERE, null, ex);
             WebUtil.fatal(mensaje);
+            buscarFiltro(2);
         }
         RequestContext.getCurrentInstance().update("datos");
     }
@@ -2166,6 +2197,22 @@ public class OrdenservicioclienteAction extends AbstactListAction<Ordenservicioc
             }   
         }
         return msj;
+    }
+    public void verCntContactosClieprov() {
+        Map<String, List<String>> params = new HashMap<String, List<String>>();
+        List<String> values = new ArrayList<String>();
+        values.add(selectOrdenservicio_local.getIdclieprov());
+        params.put("idcliente",values);
+        RequestContext.getCurrentInstance().openDialog("cntContactosClieprov", modalParamsOptions, params);
+    }
+    public void valorContactosClieprov(SelectEvent event) {
+        Contactosclieprov obj = (Contactosclieprov) event.getObject();
+        selectOrdenservicio_local.setContacto_email(
+                (selectOrdenservicio_local.getContacto_email().trim().equals("")?selectOrdenservicio_local.getContacto_email().trim():
+                        selectOrdenservicio_local.getContacto_email().trim()+";")
+                        +obj.getEmail()
+        );
+        RequestContext.getCurrentInstance().update("datos:dlg_envio:contacto_email");
     }
     /************** CONFIGURACIÓN *******************/
     public void eliminarTareoOrdenservicio(){

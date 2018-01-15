@@ -98,7 +98,47 @@ public class EmailSenderService {
         t.close();
 
     }
+    public void sendEmail(String destinatario, String asunto,
+                    String htmlmensaje) throws Exception{
+        init();
+        String sender = Constantes.configsmtp.getMail_smtp_mail_sender();/*remitente */
+        String user = Constantes.configsmtp.getMail_smtp_user();/*remitente */
+        String copy = Constantes.configsmtp.getCC();
+        String password = Constantes.configsmtp.getMail_smtp_password();/*remitente clave */
+        
+        BodyPart texto = new MimeBodyPart();
+        texto.setContent(htmlmensaje, "text/html; charset=utf-8");
+        
+        MimeMultipart multiParte = new MimeMultipart();
+        multiParte.addBodyPart(texto);
 
+        MimeMessage message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(sender));
+
+        String[] correos = destinatario.split(";");
+        String[] correos_copy = copy.split(";");
+
+        Address[] addresses = new Address[correos.length+correos_copy.length];
+        int tc =0;
+        for (int i = 0;i < correos.length; i++) {
+            String correo = correos[i];
+            addresses[i] = new InternetAddress(correo);
+            tc++;
+        }
+        for(int j=0;j<correos_copy.length;j++){
+            String correo_copy = correos_copy[j];
+            addresses[tc] = new InternetAddress(correo_copy);
+            tc++;
+        }        
+        message.addRecipients(Message.RecipientType.TO, addresses);
+        message.setSubject(asunto);
+        message.setContent(multiParte);
+        Transport t = session.getTransport("smtp");
+        t.connect(user, password);
+
+        t.sendMessage(message, message.getAllRecipients());
+        t.close();
+    }
     public void sendEmailHTML(String destinatario, String asunto, String htmlmensaje) throws Exception {
             init();
 

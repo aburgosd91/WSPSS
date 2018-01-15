@@ -77,6 +77,9 @@ public class Ordenserviciocliente implements Serializable{
         @Columna
         @XStreamAlias("FECHACIERRE")
 	private Date fechacierre;
+        @Columna
+        @XStreamAlias("ES_ENVIADO")
+	private Float es_enviado;
         private String operario;
         private String operario2;
         private String idcotizacionv;
@@ -440,5 +443,19 @@ public class Ordenserviciocliente implements Serializable{
      */
     public void setBodyHtml(String bodyHtml) {
         this.bodyHtml = bodyHtml;
+    }
+
+    /**
+     * @return the es_enviado
+     */
+    public Float getEs_enviado() {
+        return es_enviado;
+    }
+
+    /**
+     * @param es_enviado the es_enviado to set
+     */
+    public void setEs_enviado(Float es_enviado) {
+        this.es_enviado = es_enviado;
     }
 }

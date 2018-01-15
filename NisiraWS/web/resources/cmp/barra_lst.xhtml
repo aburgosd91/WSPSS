@@ -33,7 +33,7 @@
                     <p:commandButton rendered="#{cc.attrs.bean.aanular==1?true:false}" update="botones,:datos:growl,:datos:cmpDialog:lbl_opcion" value="Anular" actionListener="#{cc.attrs.bean.opcionEliminarDocumento('ANULAR','LST')}" icon="ui-icon-closethick" /> 
                     <p:commandButton rendered="#{cc.attrs.bean.aeliminar==1?true:false}" update="botones,:datos:growl,:datos:cmpDialog:lbl_opcion" value="Eliminar" actionListener="#{cc.attrs.bean.opcionEliminarDocumento('ELIMINAR','LST')}" icon="ui-icon-eliminar" /> 
                     <p:commandButton rendered="#{cc.attrs.bean.acerrar==1?true:false}" update="botones,:datos:growl,:datos:cmpDialog:lbl_opcion" value="Cerrar" actionListener="#{cc.attrs.bean.doCerrar()}" icon="ui-icon-cerrar" /> 
-                    <p:commandButton rendered="#{cc.attrs.bean.atermino==1?true:false}" update="botones,:datos:growl,:datos:cmpDialog:lbl_opcion" value="Termino" actionListener="#{cc.attrs.bean.doTermino()}" icon="ui-icon-envio" />
+                    <p:commandButton rendered="#{cc.attrs.bean.atermino==1?true:false}" update="botones,:datos:growl,:datos:cmpDialog:lbl_opcion,:datos:dlg_envio" value="Termino" actionListener="#{cc.attrs.bean.doTermino()}" icon="ui-icon-envio" />
                     <p:commandButton value="Exportar" ajax="false" image="ui-icon-excel">
                         <p:dataExporter type="xls" target="datos:tbl" fileName="Reporte" postProcessor="#{cc.attrs.bean.downFormatExcelEspecial}"/>
                     </p:commandButton>
