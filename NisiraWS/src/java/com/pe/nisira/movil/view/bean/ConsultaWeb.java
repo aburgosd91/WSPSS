@@ -181,8 +181,27 @@ public class ConsultaWeb {
 		}
 		return datos;
 	}
+        public static String[] Consultar_Sbs(String dni,String scapcha) throws Exception{
+            String[] datos = new String[16];
+            String captcha = "";
+            Connection.Response res = Jsoup.connect("http://www.sunat.gob.pe/cl-ti-itmrconsruc/captcha")
+				.data("accion", "random").method(Method.GET).execute();
+
+            Map<String, String> cookie = res.cookies();
+
+            captcha = res.parse().select("body").text();
+
+            Document dRuc = Jsoup.connect("http://www.sbs.gob.pe/app/spp/Reporte_Sit_Prev/afil_datos_documento.asp?p=1")
+                            .data("tip_doc", "00").data("num_doc", dni).data("strCAPTCHA", scapcha)
+                            .data("cmdEnviar", "Buscar")
+                            .cookies(cookie).get();
+            System.out.println(dRuc.data());
+//            Element table = dRuc.select("TABLE[class = form-table]").first();
+//            Elements rows = table.select("tr");
+            return datos;
+        }
 	public static void main(String[] args) throws Exception {
-            for (String c : ConsultaRUC_FOX("20100025915")) {
+            for (String c : Consultar_Sbs("47095709","9280")) {
                     System.out.println(c);
             }
 	}
