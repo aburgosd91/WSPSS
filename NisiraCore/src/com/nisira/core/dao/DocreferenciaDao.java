@@ -64,4 +64,29 @@ public class DocreferenciaDao extends BaseDao<Docreferencia> {
             }
             return lista;
         }
+        public ArrayList<Docreferencia> getDoreferencia_tabla_origenWeb(String idempresa,String idorigen,String tabla) throws NisiraORMException {
+            ArrayList<Docreferencia> lista = new ArrayList<Docreferencia>();
+            try
+            {
+                ResultSet rs = null;
+                rs = execProcedure("GETDOCREFERENCIA_TABLA_TMPSS",idempresa,idorigen,tabla);
+                while (rs.next()) {
+                    Docreferencia docreferencia = new Docreferencia();
+                    docreferencia.setIdbasedatos(rs.getString("IDBASEDATOS").trim());
+                    docreferencia.setIdempresa(rs.getString("IDEMPRESA").trim());
+                    docreferencia.setIdorigen(rs.getString("IDORIGEN").trim());
+                    docreferencia.setTabla(rs.getString("TABLA")!=null?rs.getString("TABLA").trim():"");
+                    docreferencia.setIdreferencia(rs.getString("IDREFERENCIA")!=null?rs.getString("IDREFERENCIA").trim():"");
+                    docreferencia.setIddocumento(rs.getString("IDDOCUMENTO")!=null?rs.getString("IDDOCUMENTO").trim():"");
+                    docreferencia.setSerie(rs.getString("SERIE")!=null?rs.getString("SERIE").trim():"");
+                    docreferencia.setNumero(rs.getString("NUMERO")!=null?rs.getString("NUMERO").trim():"");
+                    docreferencia.setFecha(rs.getDate("FECHA"));
+                    lista.add(docreferencia);                             
+
+                }
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
+            return lista;
+        }
 }

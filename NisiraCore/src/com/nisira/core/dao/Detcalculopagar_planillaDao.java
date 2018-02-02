@@ -7,6 +7,7 @@ import com.nisira.core.util.CoreUtil;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Detcalculopagar_planillaDao extends BaseDao<Detcalculopagar_planilla> {
@@ -30,7 +31,7 @@ public class Detcalculopagar_planillaDao extends BaseDao<Detcalculopagar_planill
             ArrayList<Detcalculopagar_planilla> lista = new ArrayList<Detcalculopagar_planilla>();
 
             ResultSet rs = null;
-            rs = execProcedure("RPT_ORDENSERVICIOCLIENTE_FACTURACION_TMPSS",idempresa,fechainicio,fechafin,idtiposervicio);
+            rs = execProcedure("RPT_ORDENSERVICIOCLIENTE_FACTURACION_PLANILLA_TMPSS",idempresa,fechainicio,fechafin,idtiposervicio);
             while (rs.next()) {
                 Detcalculopagar_planilla detcalculopagar = new Detcalculopagar_planilla();
                 detcalculopagar.setItem(rs.getInt("ITEM"));
@@ -38,8 +39,7 @@ public class Detcalculopagar_planillaDao extends BaseDao<Detcalculopagar_planill
                 detcalculopagar.setRazon_social(rs.getString("RAZON_SOCIAL")!=null?rs.getString("RAZON_SOCIAL").trim():"");
                 detcalculopagar.setIdcliente(rs.getString("IDCLIENTE")!=null?rs.getString("IDCLIENTE").trim():"");
                 detcalculopagar.setOrdenregistro(rs.getInt("ORDENREGISTRO"));
-                detcalculopagar.setTcosto(rs.getFloat("TCOSTO"));
-                detcalculopagar.setTotal(rs.getFloat("TCOSTO"));
+                detcalculopagar.setTcosto(rs.getFloat("TCOSTO"));;
                 detcalculopagar.setCostom(0.00f);
                 detcalculopagar.setDidordenservicio(rs.getString("DIDORDENSERVICIO")!=null?rs.getString("DIDORDENSERVICIO").trim():"");
                 detcalculopagar.setDcliente(rs.getString("DCLIENTE")!=null?rs.getString("DCLIENTE").trim():"");
@@ -150,6 +150,43 @@ public class Detcalculopagar_planillaDao extends BaseDao<Detcalculopagar_planill
                 detcalculopagar.setTiene_suspension(rs.getInt("TIENE_SUSPENSION"));
                 detcalculopagar.setUsuario_sol(rs.getString("USUARIO_SOL")!=null?rs.getString("USUARIO_SOL").trim():"");
                 detcalculopagar.setClave_sol(rs.getString("CLAVE_SOL")!=null?rs.getString("CLAVE_SOL").trim():"");
+                detcalculopagar.setEs_cruceservicio(rs.getInt("ES_CRUCESERVICIO"));
+                detcalculopagar.setFlag_cruceservicio(rs.getBoolean("ES_CRUCESERVICIO"));
+                if(detcalculopagar.isFlag_cruceservicio()){
+                    Date fechai = new Date(rs.getDate("DFECHAREGISTRO").getTime());
+                    Date fechaf = new Date(rs.getDate("DFECHAFINREGISTRO").getTime());
+                    detcalculopagar.setDfecharegistro_cs(fechai);
+                    detcalculopagar.setDfechafinregistro_cs(fechaf);
+                    
+                    detcalculopagar.setDhi_cs(((BigDecimal)rs.getObject("DHI")).floatValue());
+                    detcalculopagar.setDhi_s_cs(CoreUtil.convertTimeFloatString(detcalculopagar.getDhi()));
+                     
+                    detcalculopagar.setDhf_cs(((BigDecimal)rs.getObject("DHF")).floatValue());
+                    detcalculopagar.setDhf_s_cs(CoreUtil.convertTimeFloatString(detcalculopagar.getDhf()));
+                    
+                    detcalculopagar.setDhs_cs(rs.getFloat("DHS"));
+                    detcalculopagar.setDhs_s_cs(CoreUtil.convertTimeFloatString(detcalculopagar.getDhs()));
+                    
+                    detcalculopagar.setDcosto_rh_cs(rs.getFloat("DCOSTO_RH"));
+                    
+                }else{
+                    detcalculopagar.setDfecharegistro_cs(null);
+                    detcalculopagar.setDfechafinregistro_cs(null);
+                    
+                    detcalculopagar.setDhi_cs(null);
+                    detcalculopagar.setDhi_s_cs("");
+                    
+                    detcalculopagar.setDhf_cs(null);
+                    detcalculopagar.setDhf_s_cs("");
+                    
+                    detcalculopagar.setDhs_cs(null);
+                    detcalculopagar.setDhs_s_cs("");
+                    
+                    detcalculopagar.setDcosto_rh_cs(0.0f);
+                }
+                detcalculopagar.setDhadicional_cs(0.0f);
+                detcalculopagar.setTcosto_cs(0.0f);
+                detcalculopagar.setExcluir(rs.getInt("EXCLUIR"));
                 lista.add(detcalculopagar); 
             }
             return lista;
@@ -168,7 +205,6 @@ public class Detcalculopagar_planillaDao extends BaseDao<Detcalculopagar_planill
                 detcalculopagar.setIdcliente(rs.getString("IDCLIENTE")!=null?rs.getString("IDCLIENTE").trim():"");
                 detcalculopagar.setOrdenregistro(rs.getInt("ORDENREGISTRO"));
                 detcalculopagar.setTcosto(rs.getFloat("TCOSTO"));
-                detcalculopagar.setTotal(rs.getFloat("TOTAL"));
                 detcalculopagar.setCostom(rs.getFloat("COSTOM"));
                 detcalculopagar.setDidordenservicio(rs.getString("DIDORDENSERVICIO")!=null?rs.getString("DIDORDENSERVICIO").trim():"");
                 detcalculopagar.setDcliente(rs.getString("DCLIENTE")!=null?rs.getString("DCLIENTE").trim():"");
@@ -278,6 +314,48 @@ public class Detcalculopagar_planillaDao extends BaseDao<Detcalculopagar_planill
                 detcalculopagar.setUsuario_sol(rs.getString("USUARIO_SOL")!=null?rs.getString("USUARIO_SOL").trim():"");
                 detcalculopagar.setClave_sol(rs.getString("CLAVE_SOL")!=null?rs.getString("CLAVE_SOL").trim():"");
                 detcalculopagar.setGlosa(rs.getString("GLOSA")!=null?rs.getString("GLOSA").trim():"");
+                
+                if(rs.getObject("DHI_CS")!=null){
+                    detcalculopagar.setDhi_cs(((BigDecimal)rs.getObject("DHI_CS")).floatValue());
+                    detcalculopagar.setDhi_s_cs(CoreUtil.convertTimeFloatString(detcalculopagar.getDhi_cs()));
+                }else{
+                    detcalculopagar.setDhi_cs(null);
+                    detcalculopagar.setDhi_s_cs("");
+                }
+                if(rs.getObject("DHF_CS")!=null){
+                    detcalculopagar.setDhf_cs(((BigDecimal)rs.getObject("DHF_CS")).floatValue());
+                    detcalculopagar.setDhf_s_cs(CoreUtil.convertTimeFloatString(detcalculopagar.getDhf_cs()));
+                }else{
+                    detcalculopagar.setDhf_cs(null);
+                    detcalculopagar.setDhf_s_cs("");
+                }
+                if(rs.getObject("DHS_CS")!=null){
+                    detcalculopagar.setDhs_cs(((BigDecimal)rs.getObject("DHS_CS")).floatValue());
+                    detcalculopagar.setDhs_s_cs(CoreUtil.convertTimeFloatString(detcalculopagar.getDhs_cs()));
+                }else{
+                    detcalculopagar.setDhs_cs(null);
+                    detcalculopagar.setDhs_s_cs("");
+                }
+                if(rs.getObject("DHADICIONAL_CS")!=null){
+                    detcalculopagar.setDhadicional_cs(((BigDecimal)rs.getObject("DHADICIONAL_CS")).floatValue());
+                }else{
+                    detcalculopagar.setDhadicional_cs(null);
+                }
+                if(rs.getObject("TCOSTO_CS")!=null){
+                    detcalculopagar.setTcosto_cs(((BigDecimal)rs.getObject("TCOSTO_CS")).floatValue());
+                }else{
+                    detcalculopagar.setTcosto_cs(null);
+                }
+                detcalculopagar.setEs_cruceservicio(rs.getInt("ES_CRUCESERVICIO"));
+                detcalculopagar.setFlag_cruceservicio(rs.getBoolean("ES_CRUCESERVICIO"));
+                detcalculopagar.setDfecharegistro_cs(rs.getDate("DFECHAREGISTRO_CS"));
+                detcalculopagar.setDfechafinregistro_cs(rs.getDate("DFECHAFINREGISTRO_CS"));
+                detcalculopagar.setExcluir(rs.getInt("EXCLUIR"));
+                if(rs.getObject("DCOSTO_RH_CS")!=null){
+                    detcalculopagar.setDcosto_rh_cs(((BigDecimal)rs.getObject("DCOSTO_RH_CS")).floatValue());
+                }else{
+                    detcalculopagar.setDcosto_rh_cs(null);
+                }
                 lista.add(detcalculopagar); 
             }
             return lista;

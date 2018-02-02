@@ -66,6 +66,7 @@ import com.nisira.core.entity.Planctas;
 import com.nisira.core.entity.Producto;
 import com.nisira.core.entity.Detcalculopagar_planilla;
 import com.nisira.core.entity.Dimpuesto;
+import com.nisira.core.entity.LogTablas;
 import com.nisira.core.entity.Operaciones;
 import com.nisira.core.entity.Ruta;
 import com.nisira.core.entity.Ruta_servicios;
@@ -169,6 +170,7 @@ public class Cabcalculopagar_planillaAction extends AbstactListAction<Cabcalculo
     private Detcalculopagar_planilla selectDetcalculopagar; 
     private Detcalculopagar_planilla selectDetcalculopagar_detalle; 
     private Det_tareoweb cabercerDet_tareoweb;
+    private LogTablas log;
     /************************************* CONTROLES *****************************************/
     private static final String renta4="003";
     private boolean habilitar_numerico;
@@ -237,18 +239,199 @@ public class Cabcalculopagar_planillaAction extends AbstactListAction<Cabcalculo
         }
     }
     public void onCellEdit(CellEditEvent event) {
+        log = null;
         Object newValue = event.getNewValue();
+        Object oldValue = event.getOldValue();
         Detcalculopagar_planilla entity =(Detcalculopagar_planilla)((DataTable)event.getComponent()).getRowData();
+        //                int pos = listDet_tareoweb.indexOf(entity);
         int pos = entity.getItem();
+        //                int pos = event.getRowIndex();
         if(event.getColumn().getHeaderText()!=null){
             String colHead = event.getColumn().getHeaderText().trim();
             switch(colHead){
+                case "H.I.C.":
+                /*VALIDAR FORMATO DE TIME*/
+                if(WebUtil.validateTime(newValue.toString())){
+                    entity.setDhi_cs(WebUtil.convertStringTimeFloat(newValue.toString()));
+                    log = new LogTablas();
+                    log.setIddoc(entity.getIdcabcalculopagar_planilla());
+                    log.setItems(
+                            WebUtil.isnull(entity.getDidordenservicio(), "")+"+"+
+                            WebUtil.isnull(entity.getIdclieprov(), "")+"+"+
+                            WebUtil.isnull(entity.getDidcargo(), "")+"+"+
+                            WebUtil.isnull(WebUtil.fechaDMY(entity.getDfecharegistro(),1), "")+"+"+
+                            WebUtil.isnull(WebUtil.fechaDMY(entity.getDfechafinregistro(),1), "")+"+"+
+                            WebUtil.isnull(entity.getDhi().toString(), "")+"+"+
+                            WebUtil.isnull(entity.getDhf().toString(), "")
+                    );
+                    log.setCampo("H.I.C.");
+                    log.setValor_new(WebUtil.isnull(newValue==null?"":newValue.toString(),""));
+                    log.setValor_old(WebUtil.isnull(oldValue==null?"":oldValue.toString(),""));
+                }else{
+                    if(entity.getDhi()!= null){
+                        entity.setDhi_cs(entity.getDhi());
+                        entity.setDhi_s_cs(entity.getDhi_s());
+                    }else{
+                        entity.setDhi_s_cs("");
+                        entity.setDhi_cs(null);
+                    }
+                    /****************************************************************************/
+                    log = new LogTablas();
+                    log.setIddoc(entity.getIdcabcalculopagar_planilla());
+                    log.setItems(
+                            WebUtil.isnull(entity.getDidordenservicio(), "")+"+"+
+                            WebUtil.isnull(entity.getIdclieprov(), "")+"+"+
+                            WebUtil.isnull(entity.getDidcargo(), "")+"+"+
+                            WebUtil.isnull(WebUtil.fechaDMY(entity.getDfecharegistro(),1), "")+"+"+
+                            WebUtil.isnull(WebUtil.fechaDMY(entity.getDfechafinregistro(),1), "")+"+"+
+                            WebUtil.isnull(entity.getDhi().toString(), "")+"+"+
+                            WebUtil.isnull(entity.getDhf().toString(), "")
+                    );
+                    log.setCampo("H.I.C.");
+                    log.setValor_new("");
+                    log.setValor_old(WebUtil.isnull(oldValue==null?"":oldValue.toString(),""));
+                }
+                break;
+                case "H.F.C.":
+                /*VALIDAR FORMATO DE TIME*/
+                if(WebUtil.validateTime(newValue.toString())){
+                    entity.setDhf_cs(WebUtil.convertStringTimeFloat(newValue.toString()));
+                    log = new LogTablas();
+                    log.setIddoc(entity.getIdcabcalculopagar_planilla());
+                    log.setItems(
+                            WebUtil.isnull(entity.getDidordenservicio(), "")+"+"+
+                            WebUtil.isnull(entity.getIdclieprov(), "")+"+"+
+                            WebUtil.isnull(entity.getDidcargo(), "")+"+"+
+                            WebUtil.isnull(WebUtil.fechaDMY(entity.getDfecharegistro(),1), "")+"+"+
+                            WebUtil.isnull(WebUtil.fechaDMY(entity.getDfechafinregistro(),1), "")+"+"+
+                            WebUtil.isnull(entity.getDhi().toString(), "")+"+"+
+                            WebUtil.isnull(entity.getDhf().toString(), "")
+                    );
+                    log.setCampo("H.F.C.");
+                    log.setValor_new(WebUtil.isnull(newValue==null?"":newValue.toString(),""));
+                    log.setValor_old(WebUtil.isnull(oldValue==null?"":oldValue.toString(),""));
+                }else{
+                    if(entity.getDhf()!= null){
+                        entity.setDhf_cs(entity.getDhi());
+                        entity.setDhf_s_cs(entity.getDhi_s());
+                    }else{
+                        entity.setDhf_s_cs("");
+                        entity.setDhf_cs(null);
+                    }
+                    /****************************************************************************/
+                    log = new LogTablas();
+                    log.setIddoc(entity.getIdcabcalculopagar_planilla());
+                    log.setItems(
+                            WebUtil.isnull(entity.getDidordenservicio(), "")+"+"+
+                            WebUtil.isnull(entity.getIdclieprov(), "")+"+"+
+                            WebUtil.isnull(entity.getDidcargo(), "")+"+"+
+                            WebUtil.isnull(WebUtil.fechaDMY(entity.getDfecharegistro(),1), "")+"+"+
+                            WebUtil.isnull(WebUtil.fechaDMY(entity.getDfechafinregistro(),1), "")+"+"+
+                            WebUtil.isnull(entity.getDhi().toString(), "")+"+"+
+                            WebUtil.isnull(entity.getDhf().toString(), "")
+                    );
+                    log.setCampo("H.F.C.");
+                    log.setValor_new("");
+                    log.setValor_old(WebUtil.isnull(oldValue==null?"":oldValue.toString(),""));
+                }
+                break;
+                case "F.F.C":
+                if(newValue!=null){
+                    Date fecha = new Date(((Date)newValue).getTime());
+                    entity.setDfechafinregistro_cs(fecha);
+                    
+                    Date ob_old = (oldValue!=null?(Date)oldValue:null);
+                    log = new LogTablas();
+                    log.setIddoc(entity.getIdcabcalculopagar_planilla());
+                    log.setItems(
+                            WebUtil.isnull(entity.getDidordenservicio(), "")+"+"+
+                            WebUtil.isnull(entity.getIdclieprov(), "")+"+"+
+                            WebUtil.isnull(entity.getDidcargo(), "")+"+"+
+                            WebUtil.isnull(WebUtil.fechaDMY(entity.getDfecharegistro(),1), "")+"+"+
+                            WebUtil.isnull(WebUtil.fechaDMY(entity.getDfechafinregistro(),1), "")+"+"+
+                            WebUtil.isnull(entity.getDhi().toString(), "")+"+"+
+                            WebUtil.isnull(entity.getDhf().toString(), "")
+                    );
+                    log.setCampo("F.F.C");
+                    log.setValor_new(WebUtil.isnull(newValue==null?"":WebUtil.fechaDMY((Date)newValue, 2),""));
+                    log.setValor_old(WebUtil.isnull(ob_old==null?"":WebUtil.fechaDMY(ob_old, 2),""));
+                }else{
+                    if(entity.getDfechafinregistro()!=null){
+                        Date fecha = new Date(entity.getDfechafinregistro().getTime());
+                        entity.setDfechafinregistro_cs(fecha);
+                    }
+                    Date ob_old = (oldValue!=null?(Date)oldValue:null);
+                    log = new LogTablas();
+                    log.setIddoc(entity.getIdcabcalculopagar_planilla());
+                    log.setItems(
+                            WebUtil.isnull(entity.getDidordenservicio(), "")+"+"+
+                            WebUtil.isnull(entity.getIdclieprov(), "")+"+"+
+                            WebUtil.isnull(entity.getDidcargo(), "")+"+"+
+                            WebUtil.isnull(WebUtil.fechaDMY(entity.getDfecharegistro(),1), "")+"+"+
+                            WebUtil.isnull(WebUtil.fechaDMY(entity.getDfechafinregistro(),1), "")+"+"+
+                            WebUtil.isnull(entity.getDhi().toString(), "")+"+"+
+                            WebUtil.isnull(entity.getDhf().toString(), "")
+                    );
+                    log.setCampo("F.F.C");
+                    log.setValor_new("");
+                    log.setValor_old(WebUtil.isnull(ob_old==null?"":WebUtil.fechaDMY(ob_old, 2),""));
+                } 
+                break;
+            case "F.I.C":
+                if(newValue!=null){
+                    Date fecha = new Date(((Date)newValue).getTime());
+                    entity.setDfecharegistro_cs(fecha);
+                    
+                    Date ob_old = (oldValue!=null?(Date)oldValue:null);
+                    log = new LogTablas();
+                    log.setIddoc(entity.getIdcabcalculopagar_planilla());
+                    log.setItems(
+                            WebUtil.isnull(entity.getDidordenservicio(), "")+"+"+
+                            WebUtil.isnull(entity.getIdclieprov(), "")+"+"+
+                            WebUtil.isnull(entity.getDidcargo(), "")+"+"+
+                            WebUtil.isnull(WebUtil.fechaDMY(entity.getDfecharegistro(),1), "")+"+"+
+                            WebUtil.isnull(WebUtil.fechaDMY(entity.getDfechafinregistro(),1), "")+"+"+
+                            WebUtil.isnull(entity.getDhi().toString(), "")+"+"+
+                            WebUtil.isnull(entity.getDhf().toString(), "")
+                    );
+                    log.setCampo("F.I.C");
+                    log.setValor_new(WebUtil.isnull(newValue==null?"":WebUtil.fechaDMY((Date)newValue, 2),""));
+                    log.setValor_old(WebUtil.isnull(ob_old==null?"":WebUtil.fechaDMY(ob_old, 2),""));
+                }else{
+                    if(entity.getDfecharegistro()!=null){
+                        Date fecha = new Date(entity.getDfecharegistro().getTime());
+                        entity.setDfecharegistro_cs(fecha);
+                    }
+                    Date ob_old = (oldValue!=null?(Date)oldValue:null);
+                    log = new LogTablas();
+                    log.setIddoc(entity.getIdcabcalculopagar_planilla());
+                    log.setItems(
+                            WebUtil.isnull(entity.getDidordenservicio(), "")+"+"+
+                            WebUtil.isnull(entity.getIdclieprov(), "")+"+"+
+                            WebUtil.isnull(entity.getDidcargo(), "")+"+"+
+                            WebUtil.isnull(WebUtil.fechaDMY(entity.getDfecharegistro(),1), "")+"+"+
+                            WebUtil.isnull(WebUtil.fechaDMY(entity.getDfechafinregistro(),1), "")+"+"+
+                            WebUtil.isnull(entity.getDhi().toString(), "")+"+"+
+                            WebUtil.isnull(entity.getDhf().toString(), "")
+                    );
+                    log.setCampo("F.I.C");
+                    log.setValor_new("");
+                    log.setValor_old(WebUtil.isnull(ob_old==null?"":WebUtil.fechaDMY(ob_old, 2),""));
+                }
+                break;
                 case "Costo Manual":
                     if(newValue==null){
                         entity.setCostom(0.0f);
                     }else{
                         Float fv = Float.valueOf(newValue.toString());
                         entity.setCostom(fv);
+                    };break;
+                case "Costo RxH.C.":
+                    if(newValue==null){
+                        entity.setDcosto_rh_cs(entity.getDcosto_rh());
+                    }else{
+                        Float fv = Float.valueOf(newValue.toString());
+                        entity.setDcosto_rh_cs(fv);
                     };break;
             }
             /*CALCULO DE TOTAL*/
@@ -334,6 +517,7 @@ public class Cabcalculopagar_planillaAction extends AbstactListAction<Cabcalculo
         try {
             if (esVistaValida()) {
                 /*DATOS INICIALES*/
+                regenerarTotalesCruces();
                 if(getDatoEdicion().getIdcabcalculopagar_planilla()==null){
                     mensaje=getCabcalculopagarDao().grabar(1, getDatoEdicion(), 
                             getListDetcalculopagar(),user.getIDUSUARIO());
@@ -359,6 +543,7 @@ public class Cabcalculopagar_planillaAction extends AbstactListAction<Cabcalculo
     public void grabar_local() {
         try {
             if (esVistaValida()) {
+                regenerarTotalesCruces();
                 /*DATOS INICIALES*/
                 if(getDatoEdicion().getIdcabcalculopagar_planilla()==null){
                     mensaje=getCabcalculopagarDao().grabar(1, getDatoEdicion(), 
@@ -369,8 +554,6 @@ public class Cabcalculopagar_planillaAction extends AbstactListAction<Cabcalculo
                 }
                 else
                     mensaje=getCabcalculopagarDao().grabar(2, getDatoEdicion(),getListDetcalculopagar(),user.getIDUSUARIO());
-                setMensaje(WebUtil.exitoRegistrar("Generación Cálculo por pagar", mensaje));
-                WebUtil.info(getMensaje());
                 setLvalidate(false);
 //                setLvalidate(true);
 //                RequestContext.getCurrentInstance().update("datos");
@@ -422,7 +605,7 @@ public class Cabcalculopagar_planillaAction extends AbstactListAction<Cabcalculo
 //                RequestContext.getCurrentInstance().update("datos:growl");
 //            }
             else if(verificar_aprobacion()){
-                mensaje=getCabcalculopagarDao().aprobarCalculoPagar_Planilla(getDatoEdicion(),listDetcalculopagar_verification,user.getIDUSUARIO());
+                mensaje=getCabcalculopagarDao().aprobarCalculoPagar_Planilla(getDatoEdicion(),user.getIDUSUARIO());
                 if(mensaje!=null)
                     if(mensaje.trim().length()==15)
                         getDatoEdicion().setIdcabcalculopagar_planilla(mensaje.trim());
@@ -448,6 +631,50 @@ public class Cabcalculopagar_planillaAction extends AbstactListAction<Cabcalculo
             }
         }
     }
+    public void regenerarTotalesCruces(){
+        try{
+            for(int i=0;i<listDetcalculopagar.size();i++){
+                Detcalculopagar_planilla dtc = listDetcalculopagar.get(i);
+                if(dtc.isFlag_cruceservicio()){
+                    /*Validar Existencia de Horas - Fechas*/
+                    if(dtc.getDhi_cs()!=null && dtc.getDhf_cs()!=null && dtc.getDfecharegistro_cs()!=null && dtc.getDfechafinregistro_cs()!=null){
+                        if(WebUtil.fechaDMY(dtc.getDfecharegistro_cs(), 5).equalsIgnoreCase(WebUtil.fechaDMY(dtc.getDfechafinregistro_cs(), 5))){
+                            dtc.setDhs_cs(dtc.getDhf_cs() - dtc.getDhi_cs());
+                            dtc.setDhs_s_cs(CoreUtil.convertTimeFloatString(dtc.getDhs_cs()));
+                            if(dtc.getExcluir()==1){
+                                dtc.setDhadicional_cs(dtc.getDhs_cs());
+                                dtc.setDhadicional_s_cs(CoreUtil.convertTimeFloatString(dtc.getDhadicional_cs()));
+                                dtc.setTcosto_cs((dtc.getDcosto_rh_cs()*dtc.getDhs_cs()) + (dtc.getDhadicional_cs()*dtc.getDhcosto_adicional())+ dtc.getDcosto_bono());
+                            }else{
+                               dtc.setDhadicional_cs(dtc.getDhadicional());
+                               dtc.setDhadicional_s_cs(dtc.getDhadicional_s()); 
+                               dtc.setTcosto_cs((dtc.getDcosto_rh_cs()*dtc.getDhbase()) + (dtc.getDhadicional_cs()*dtc.getDhcosto_adicional())+ dtc.getDcosto_bono());
+                            }
+                        }else{
+                            int dias=(int)((dtc.getDfechafinregistro_cs().getTime()-dtc.getDfecharegistro_cs().getTime())/86400000);
+                            dtc.setDhs_cs(dtc.getDhf_cs()*dias*24 - dtc.getDhi_cs());
+                            dtc.setDhs_s_cs(CoreUtil.convertTimeFloatString(dtc.getDhs_cs()));
+                            if(dtc.getExcluir()==1){
+                                dtc.setDhadicional_cs(dtc.getDhs_cs());
+                                dtc.setDhadicional_s_cs(CoreUtil.convertTimeFloatString(dtc.getDhadicional_cs()));
+                                dtc.setTcosto_cs((dtc.getDcosto_rh_cs()*dtc.getDhs_cs()) + (dtc.getDhadicional_cs()*dtc.getDhcosto_adicional())+ dtc.getDcosto_bono());
+                            }else{
+                               dtc.setDhadicional_cs(dtc.getDhadicional());
+                               dtc.setDhadicional_s_cs(dtc.getDhadicional_s()); 
+                               dtc.setTcosto_cs((dtc.getDcosto_rh_cs()*dtc.getDhs_cs()) + (dtc.getDhadicional_cs()*dtc.getDhcosto_adicional())+ dtc.getDcosto_bono());
+                            } 
+                        }
+                    }
+                }
+            }
+            RequestContext.getCurrentInstance().update("datos:tbl");
+        }catch(Exception ex){
+            setMensaje(ex.getMessage() + "\n" + ex.getLocalizedMessage());
+            Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, null, ex);
+            WebUtil.fatal(mensaje);
+            RequestContext.getCurrentInstance().update("datos:growl");
+        }
+    }
     public Dimpuesto buscarImpuesto(String idimpuesto){
         Dimpuesto obj=null;
         if(!WebUtil.isnull(idimpuesto, "").trim().equals("")){
@@ -470,19 +697,24 @@ public class Cabcalculopagar_planillaAction extends AbstactListAction<Cabcalculo
         String validacion ="";
         String httpcontenido="";
         setListDetcalculopagar_verification(new ArrayList<>());
-        for(int i=0;i<listDetcalculopagarTotal.size();i++){
-            Detcalculopagar_planilla obj = listDetcalculopagarTotal.get(i);
+        for(int i=0;i<listDetcalculopagar.size();i++){
+            Detcalculopagar_planilla obj = listDetcalculopagar.get(i);
             validacion ="";
             if(obj.getIdclieprov()==null){
                 validacion+="\n\t<Personal> no asignado";
             }else if(obj.getIdclieprov().trim().equals("")){
                 validacion+="\n\t<Personal> no asignado";  
             }
-//            if(obj.getIdccosto()==null){
-//                validacion+="\n\t<Centro Costo> no asignado";
-//            }else if(obj.getIdccosto().trim().equals("")){
-//                validacion+="\n\t<Centro Costo> no asignado";  
-//            }
+            if(obj.isFlag_cruceservicio()){
+                if(obj.getDhi_cs()==null)
+                    validacion+="\n\tHora Inicio Cruce <vacio> no asignado";
+                if(obj.getDhf_cs()==null)
+                    validacion+="\n\tHora Fin Cruce <vacio> no asignado";
+                if(obj.getDfecharegistro_cs()==null)
+                    validacion+="\n\tFecha Registro Cruce <vacio> no asignado";
+                if(obj.getDfechafinregistro_cs()==null)
+                    validacion+="\n\tFecha Fin Cruce <vacio> no asignado";
+            }
             if(!validacion.equals("")){
                 flag = false;
                 this.mensaje="\nFila N°:"+obj.getItem()+" - "+obj.getIdclieprov()+"-"+obj.getRazon_social()+" "+ validacion;
@@ -553,6 +785,7 @@ public class Cabcalculopagar_planillaAction extends AbstactListAction<Cabcalculo
         return filteredConsumidor;
     }
     public void onRefresh(){
+        regenerarTotalesCruces();
         RequestContext.getCurrentInstance().update("datos:tbl");
     }
     public void getFindetalleCalculo(){
@@ -689,10 +922,9 @@ public class Cabcalculopagar_planillaAction extends AbstactListAction<Cabcalculo
     @Override   
     public void downFormatExcelEspecial(Object document) {
         /*Actulizar datos de resumen al detalle*/
-        
         HSSFWorkbook objWB = (HSSFWorkbook) document;
-        objWB.setSheetName(0,"RESUMEN "+this.idtiposervicio+" "+WebUtil.fechaDMY(getDesde(),8)+" "+WebUtil.fechaDMY(getHasta(),8));
-        HSSFRow fila_cabecera = objWB.getSheetAt(0).getRow(0);
+        objWB.setSheetName(0,this.idtiposervicio+" "+WebUtil.fechaDMY(getDesde(),8)+" "+WebUtil.fechaDMY(getHasta(),8));
+        HSSFRow fila_cabecera = objWB.getSheetAt(0).createRow(0);
 
         HSSFFont fuente = objWB.createFont();
         fuente.setFontHeightInPoints((short) 8);
@@ -751,34 +983,34 @@ public class Cabcalculopagar_planillaAction extends AbstactListAction<Cabcalculo
             celda = fila_cabecera.createCell((short)i);
             celda.setCellStyle(estiloCelda);
             switch(i){
-                case 0:celda.setCellValue("IDCLIEPROV");break;
-                case 1:celda.setCellValue("RAZON SOCIAL");break;
-                case 2:celda.setCellValue("IDDOCUMENTO");break;
-                case 3:celda.setCellValue("SERIE");break;
-                case 4:celda.setCellValue("NUMERO");break;
-                case 5:celda.setCellValue("FECHA");break;
-                case 6:celda.setCellValue("FECHA OPERACION");break;
-                case 7:celda.setCellValue("VENCIMIENTO");break;
-                case 8:celda.setCellValue("IDMONEDA");break;
-                case 9:celda.setCellValue("IDCUENTA");break;
-                case 10:celda.setCellValue("IDCCOSTO");break;
-                case 11:celda.setCellValue("CONCEPTO");break;
-                case 12:celda.setCellValue("IDCLIENTE");break;
-                case 13:celda.setCellValue("IDREGIMEN");break;
-                case 14:celda.setCellValue("AFECTO");break;
-                case 15:celda.setCellValue("INAFECTO");break;
-                case 16:celda.setCellValue("IDIMPUESTO");break;
-                case 17:celda.setCellValue("IMPUESTO");break;
-                case 18:celda.setCellValue("TOTAL");break;
-                case 19:celda.setCellValue("TIENE DETRACCION");break;
-                case 20:celda.setCellValue("TIPO DE DETRACCIÓN");break;
-                case 21:celda.setCellValue("TASA DE DETRACCIÓN");break;
-                case 22:celda.setCellValue("ESPLANILLA");break;
+                case 0:celda.setCellValue("DNI");break;
+                case 1:celda.setCellValue("DOC");break;
+                case 2:celda.setCellValue("SERIE");break;
+                case 3:celda.setCellValue("NUMERO");break;
+                case 4:celda.setCellValue("FECHA");break;
+                case 5:celda.setCellValue("VNRORUC");break;
+                case 6:celda.setCellValue("VRAZSOC");break;
+                case 7:celda.setCellValue("AMBITO");break;
+                case 8:celda.setCellValue("RUTA");break;
+                case 9:celda.setCellValue("IDENT.");break;
+                case 10:celda.setCellValue("DATOS");break;
+                case 11:celda.setCellValue("IDCARGO");break;
+                case 12:celda.setCellValue("CARGO");break;
+                case 13:celda.setCellValue("VEHPOL");break;
+                case 14:celda.setCellValue("INIASI");break;
+                case 15:celda.setCellValue("FINASI");break;
+                case 16:celda.setCellValue("HORASASI");break;
+                case 17:celda.setCellValue("HORA_EC");break;
+                case 18:celda.setCellValue("H.ADICIONAL");break;
+                case 19:celda.setCellValue("COSTO R.H");break;
+                case 20:celda.setCellValue("COSTO H.AD");break;
+                case 21:celda.setCellValue("COSTO BONO");break;
+                case 22:celda.setCellValue("COSTO_TOTAL");break;
             }
         }
         HSSFRow fila;
         for(int i=0;i<row;i++){
-            fila = objWB.getSheetAt(0).getRow(i+1);
+            fila = objWB.getSheetAt(0).createRow((short)i+1);
             
             celda = fila.createCell((short)0);
             celda.setCellStyle(estiloFila);
@@ -786,336 +1018,340 @@ public class Cabcalculopagar_planillaAction extends AbstactListAction<Cabcalculo
             
             celda = fila.createCell((short)1);
             celda.setCellStyle(estiloFila);
-            celda.setCellValue(listDetcalculopagar.get(i).getRazon_social());
-                       
-            celda = fila.createCell((short)12);
+            celda.setCellValue(listDetcalculopagar.get(i).getDiddocumento());
+            
+            celda = fila.createCell((short)2);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getDserie());
+            
+            celda = fila.createCell((short)3);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getDnumero());
+            
+            celda = fila.createCell((short)4);
+            celda.setCellStyle(estiloFila_date);
+            celda.setCellValue(WebUtil.fechaDMY(listDetcalculopagar.get(i).getDfecha_osc(), 7));
+            
+            celda = fila.createCell((short)5);
             celda.setCellStyle(estiloFila);
             celda.setCellValue(listDetcalculopagar.get(i).getIdcliente());
             
-            celda = fila.createCell((short)22);
+            celda = fila.createCell((short)6);
             celda.setCellStyle(estiloFila);
-            celda.setCellValue(listDetcalculopagar.get(i).getEsplanilla());
+            celda.setCellValue(listDetcalculopagar.get(i).getDcliente());
+            
+            celda = fila.createCell((short)7);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getAmbito_servicio());
+            
+            celda = fila.createCell((short)8);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getRutaservicio());
+            
+            celda = fila.createCell((short)9);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getIdclieprov());
+            
+            celda = fila.createCell((short)10);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getRazon_social());
+            
+            celda = fila.createCell((short)11);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getDidcargo());
+            
+            celda = fila.createCell((short)12);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getCargo());
+            
+            celda = fila.createCell((short)13);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getDidvehiculo());
+            
+            celda = fila.createCell((short)14);
+            celda.setCellStyle(estiloFila_date);
+            celda.setCellValue(WebUtil.fechaDMY(listDetcalculopagar.get(i).getDfecharegistro(), 7));
+            
+            celda = fila.createCell((short)15);
+            celda.setCellStyle(estiloFila_date);
+            celda.setCellValue(WebUtil.fechaDMY(listDetcalculopagar.get(i).getDfechafinregistro(), 7));
+            
+            celda = fila.createCell((short)16);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getDhs_s());
+            
+            celda = fila.createCell((short)17);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(listDetcalculopagar.get(i).getDhbase());
+            
+            celda = fila.createCell((short)18);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(listDetcalculopagar.get(i).getDhadicional());
+            
+            celda = fila.createCell((short)19);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(listDetcalculopagar.get(i).getDcosto_rh());
+            
+            celda = fila.createCell((short)20);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(listDetcalculopagar.get(i).getDhcosto_adicional());
+            
+            celda = fila.createCell((short)21);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(listDetcalculopagar.get(i).getDcosto_bono());
+            
+            celda = fila.createCell((short)22);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(listDetcalculopagar.get(i).getTcosto());
         }
         /*AUTOAJUSTE EN LA HOJA*/
         for (int as = 0; as < col; as++) {
             objWB.getSheetAt(0).autoSizeColumn((short) as);
         }
         /*CREAR OTRA HOJA DETALLADO NISIRA*/
-        HSSFSheet sheet1 = objWB.createSheet("NISIRA "+this.idtiposervicio+" "+WebUtil.fechaDMY(getDesde(),8)+" "+WebUtil.fechaDMY(getHasta(),8));
-        fila_cabecera = sheet1.createRow((short)0);
-        col = 24;
-        row = listDetcalculopagarTotal.size();
+        HSSFSheet sheet2 = objWB.createSheet("DETALLADO "+this.idtiposervicio+" "+WebUtil.fechaDMY(getDesde(),8)+" "+WebUtil.fechaDMY(getHasta(),8));
+        fila_cabecera = sheet2.createRow((short)0);
+        col = 42;
+        row = listDetcalculopagar.size();
         for(int i=0 ;i<col;i++){
             celda = fila_cabecera.createCell((short)i);
             celda.setCellStyle(estiloCelda);
             switch(i){
-                case 0:celda.setCellValue("IDCLIEPROV");break;
-                case 1:celda.setCellValue("RAZON SOCIAL");break;
-                case 2:celda.setCellValue("IDDOCUMENTO");break;
-                case 3:celda.setCellValue("SERIE");break;
-                case 4:celda.setCellValue("NUMERO");break;
-                case 5:celda.setCellValue("FECHA");break;
-                case 6:celda.setCellValue("FECHA OPERACION");break;
-                case 7:celda.setCellValue("VENCIMIENTO");break;
-                case 8:celda.setCellValue("IDMONEDA");break;
-                case 9:celda.setCellValue("IDCUENTA");break;
-                case 10:celda.setCellValue("IDCCOSTO");break;
-                case 11:celda.setCellValue("CONCEPTO");break;
-                case 12:celda.setCellValue("IDCLIENTE");break;
-                case 13:celda.setCellValue("IDREGIMEN");break;
-                case 14:celda.setCellValue("AFECTO");break;
-                case 15:celda.setCellValue("INAFECTO");break;
-                case 16:celda.setCellValue("IDIMPUESTO");break;
-                case 17:celda.setCellValue("IMPUESTO");break;
-                case 18:celda.setCellValue("TOTAL");break;
-                case 19:celda.setCellValue("ORDEN REGISTRO");break;
-                case 20:celda.setCellValue("TIENE DETRACCION");break;
-                case 21:celda.setCellValue("TIPO DE DETRACCIÓN");break;
-                case 22:celda.setCellValue("TASA DE DETRACCIÓN");break;
-                case 23:celda.setCellValue("ESPLANILLA");break;
+                case 0:celda.setCellValue("DNI");break;
+                case 1:celda.setCellValue("DOC.IDEN.");break;
+                case 2:celda.setCellValue("DATO");break;
+                case 3:celda.setCellValue("IDDOCUMENTO");break;
+                case 4:celda.setCellValue("SERIE");break;
+                case 5:celda.setCellValue("NUMERO");break;
+                case 6:celda.setCellValue("FECHA SER");break;
+                case 7:celda.setCellValue("AMBITO");break;
+                /*AGREGAR CAMPOS ADICIONALES*/
+                case 8:celda.setCellValue("RUC");break;
+                case 9:celda.setCellValue("CLIENTE");break;
+                case 10:celda.setCellValue("CARGO");break;
+                case 11:celda.setCellValue("CODOPERACION");break;
+                case 12:celda.setCellValue("RUTA SERV");break;
+                case 13:celda.setCellValue("FECHA INICIO");break;
+                case 14:celda.setCellValue("HORA INICIO");break;
+                case 15:celda.setCellValue("HORA FIN");break;
+                case 16:celda.setCellValue("FECHA FIN");break;
+                case 17:celda.setCellValue("HORAS SERVICIO");break;
+                case 18:celda.setCellValue("HORAS E.C");break;
+                case 19:celda.setCellValue("HORAS ADICIONAL");break;
+                case 20:celda.setCellValue("COSTO RxH");break;
+                case 21:celda.setCellValue("COSTO H.ADICIONAL");break;
+                case 22:celda.setCellValue("COSTO BONO");break;
+                case 23:celda.setCellValue("TOTAL");break;
+                case 24:celda.setCellValue("ESPLANILLA");break;
+                /*AGREGAR CAMPOS ADICIONALES - TAREO*/
+                case 25:celda.setCellValue("T.HORA REQ.");break;
+                case 26:celda.setCellValue("T.HORA LLEGADA");break;
+                case 27:celda.setCellValue("T.HORA INICIO");break;
+                case 28:celda.setCellValue("T.HORA FIN");break;
+                case 29:celda.setCellValue("T.HORA LIBERACION");break;
+                case 30:celda.setCellValue("IDAMBITO");break;
+                case 31:celda.setCellValue("AMBITO_SERVICIO");break;
+                case 32:celda.setCellValue("CHECKLIST");break;
+                case 33:celda.setCellValue("PLACA PSS");break;
+                case 34:celda.setCellValue("NROCONTENEDOR");break;
+                case 35:celda.setCellValue("NROPRECINTO");break;
+                case 36:celda.setCellValue("NRO_OSERVICIO");break;
+                case 37:celda.setCellValue("PLACA_CLIENTE");break;
+                case 38:celda.setCellValue("CONDUCTOR_CLIENTE");break;
+                case 39:celda.setCellValue("BREVETE_CLIENTE");break;
+                case 40:celda.setCellValue("#SERVICIOS_DIA");break;
+                case 41:celda.setCellValue("ORIGENCALLAO");break;
             }
         }
+        int id=0;
         for(int i=0;i<row;i++){
-            fila = sheet1.createRow(i+1);
-            
-            celda = fila.createCell((short)0);
+            fila = sheet2.createRow(i+1);
+            id=0;
+            celda = fila.createCell((short)id++);
             celda.setCellStyle(estiloFila);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getIdclieprov());
+            celda.setCellValue(listDetcalculopagar.get(i).getIdclieprov());
             
-            celda = fila.createCell((short)1);
+            celda = fila.createCell((short)id++);
             celda.setCellStyle(estiloFila);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getRazon_social());
+            celda.setCellValue(listDetcalculopagar.get(i).getIdclieprov());
             
-            celda = fila.createCell((short)12);
+            celda = fila.createCell((short)id++);
             celda.setCellStyle(estiloFila);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getIdcliente());
+            celda.setCellValue(listDetcalculopagar.get(i).getRazon_social());
             
-            celda = fila.createCell((short)19);
+            celda = fila.createCell((short)id++);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getDiddocumento());
+            
+            celda = fila.createCell((short)id++);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getDserie());
+            
+            celda = fila.createCell((short)id++);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getDnumero());
+            
+            celda = fila.createCell((short)id++);
+            celda.setCellStyle(estiloFila_date);
+            celda.setCellValue(WebUtil.fechaDMY(listDetcalculopagar.get(i).getDfecha_osc(), 7));
+            
+            celda = fila.createCell((short)id++);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getAmbito_servicio());
+             
+            celda = fila.createCell((short)id++);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getIdcliente());
+            
+            celda = fila.createCell((short)id++);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getDcliente());
+            
+            celda = fila.createCell((short)id++);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getDidcargo()+" "+listDetcalculopagar.get(i).getCargo());
+            
+            celda = fila.createCell((short)id++);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getDcodoperaciones_ec());
+            
+            /*AGREGAR CAMPOS ADICIONALES*/
+            celda = fila.createCell((short)id++);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getRutaservicio());
+            
+            celda = fila.createCell((short)id++);
+            celda.setCellStyle(estiloFila_date);
+            celda.setCellValue(WebUtil.fechaDMY(listDetcalculopagar.get(i).getDfecharegistro(), 7));
+            
+            celda = fila.createCell((short)id++);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getDhi_s());
+            
+            celda = fila.createCell((short)id++);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getDhf_s());
+            
+            celda = fila.createCell((short)id++);
+            celda.setCellStyle(estiloFila_date);
+            celda.setCellValue(WebUtil.fechaDMY(listDetcalculopagar.get(i).getDfechafinregistro(), 7));
+            
+            celda = fila.createCell((short)id++);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getDhs_s());
+            
+            celda = fila.createCell((short)id++);
             celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
-            celda.setCellStyle(estiloFila);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getOrdenregistro());
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(listDetcalculopagar.get(i).getDhbase());
             
-            celda = fila.createCell((short)23);
+            celda = fila.createCell((short)id++);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(listDetcalculopagar.get(i).getDhadicional());
+            
+            celda = fila.createCell((short)id++);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(listDetcalculopagar.get(i).getDcosto_rh());
+            
+            celda = fila.createCell((short)id++);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(listDetcalculopagar.get(i).getDhcosto_adicional());
+            
+            celda = fila.createCell((short)id++);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(listDetcalculopagar.get(i).getDcosto_bono());
+            
+            celda = fila.createCell((short)id++);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(listDetcalculopagar.get(i).getTotal());
+            
+            celda = fila.createCell((short)id++);
             celda.setCellStyle(estiloFila);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getEsplanilla());
+            celda.setCellValue(listDetcalculopagar.get(i).getEsplanilla());
+            /************************** HORAS TAREO ***************************/
+            celda = fila.createCell((short)id++);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getShora_req());
+            
+            celda = fila.createCell((short)id++);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getShora_llegada());
+            
+            celda = fila.createCell((short)id++);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getShora_inicio_serv());
+            
+            celda = fila.createCell((short)id++);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getShora_fin_serv());
+            
+            celda = fila.createCell((short)id++);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getShora_liberacion());
+            
+            celda = fila.createCell((short)id++);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getIdambito_servicio());
+            
+            celda = fila.createCell((short)id++);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getAmbito_servicio());
+            
+            celda = fila.createCell((short)id++);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getDchecklist());
+            
+            celda = fila.createCell((short)id++);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getDidvehiculo());
+            
+            celda = fila.createCell((short)id++);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getDnrocontenedor());
+            
+            celda = fila.createCell((short)id++);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getDnroprecinto());
+            
+            celda = fila.createCell((short)id++);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getDnro_oservicio());
+            
+            celda = fila.createCell((short)id++);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getDplaca_cliente());
+            
+            celda = fila.createCell((short)id++);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getDconductor_cliente());
+            
+            celda = fila.createCell((short)id++);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getDbrevete_cliente());
+            
+            celda = fila.createCell((short)id++);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getNservicios_dia()==null?0:listDetcalculopagar.get(i).getNservicios_dia());
+            
+            celda = fila.createCell((short)id++);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getOrigencallao());
+            
         }
         /*AUTOAJUSTE EN LA HOJA*/
         for (int as = 0; as < col; as++) {
             objWB.getSheetAt(1).autoSizeColumn((short) as);
-        }
-        
-        /*CREAR OTRA HOJA DETALLADO NISIRA*/
-        HSSFSheet sheet2 = objWB.createSheet("DETALLADO "+this.idtiposervicio+" "+WebUtil.fechaDMY(getDesde(),8)+" "+WebUtil.fechaDMY(getHasta(),8));
-        fila_cabecera = sheet2.createRow((short)0);
-        col = 60;
-        row = listDetcalculopagarTotal.size();
-        for(int i=0 ;i<col;i++){
-            celda = fila_cabecera.createCell((short)i);
-            celda.setCellStyle(estiloCelda);
-            switch(i){
-                case 0:celda.setCellValue("IDCLIEPROV");break;
-                case 1:celda.setCellValue("RAZON SOCIAL");break;
-                case 2:celda.setCellValue("IDDOCUMENTO");break;
-                case 3:celda.setCellValue("SERIE");break;
-                case 4:celda.setCellValue("NUMERO");break;
-                case 5:celda.setCellValue("FECHA");break;
-                case 6:celda.setCellValue("FECHA OPERACION");break;
-                case 7:celda.setCellValue("VENCIMIENTO");break;
-                case 8:celda.setCellValue("IDMONEDA");break;
-                case 9:celda.setCellValue("IDCUENTA");break;
-                case 10:celda.setCellValue("IDCCOSTO");break;
-                case 11:celda.setCellValue("CONCEPTO");break;
-                case 12:celda.setCellValue("IDCLIENTE");break;
-                case 13:celda.setCellValue("IDREGIMEN");break;
-                case 14:celda.setCellValue("AFECTO");break;
-                case 15:celda.setCellValue("INAFECTO");break;
-                case 16:celda.setCellValue("IDIMPUESTO");break;
-                case 17:celda.setCellValue("IMPUESTO");break;
-                case 18:celda.setCellValue("TOTAL");break;
-                case 19:celda.setCellValue("ORDEN REGISTRO");break;
-                case 20:celda.setCellValue("TIENE DETRACCION");break;
-                case 21:celda.setCellValue("TIPO DE DETRACCIÓN");break;
-                case 22:celda.setCellValue("TASA DE DETRACCIÓN");break;
-                case 23:celda.setCellValue("ESPLANILLA");break;
-                /*AGREGAR CAMPOS ADICIONALES*/
-                case 24:celda.setCellValue("DOC SER");break;
-                case 25:celda.setCellValue("SERIE SER");break;
-                case 26:celda.setCellValue("NUMERO SER");break;
-                case 27:celda.setCellValue("FECHA SER");break;
-                case 28:celda.setCellValue("RUC");break;
-                case 29:celda.setCellValue("CLIENTE");break;
-                case 30:celda.setCellValue("CARGO");break;
-                case 31:celda.setCellValue("CODOPERACION");break;
-                case 32:celda.setCellValue("RUTA SERV");break;
-                case 33:celda.setCellValue("FECHA INICIO");break;
-                case 34:celda.setCellValue("HORA INICIO");break;
-                case 35:celda.setCellValue("HORA FIN");break;
-                case 36:celda.setCellValue("FECHA FIN");break;
-                case 37:celda.setCellValue("HORAS SERVICIO");break;
-                case 38:celda.setCellValue("HORAS E.C");break;
-                case 39:celda.setCellValue("HORAS ADICIONAL");break;
-                case 40:celda.setCellValue("COSTO RxH");break;
-                case 41:celda.setCellValue("COSTO H.ADICIONAL");break;
-                case 42:celda.setCellValue("COSTO BONO");break;
-                /*AGREGAR CAMPOS ADICIONALES - TAREO*/
-                case 43:celda.setCellValue("T.HORA REQ.");break;
-                case 44:celda.setCellValue("T.HORA LLEGADA");break;
-                case 45:celda.setCellValue("T.HORA INICIO");break;
-                case 46:celda.setCellValue("T.HORA FIN");break;
-                case 47:celda.setCellValue("T.HORA LIBERACION");break;
-                
-                case 48:celda.setCellValue("IDAMBITO");break;
-                case 49:celda.setCellValue("AMBITO_SERVICIO");break;
-                case 50:celda.setCellValue("CHECKLIST");break;
-                case 51:celda.setCellValue("PLACA PSS");break;
-                case 52:celda.setCellValue("NROCONTENEDOR");break;
-                case 53:celda.setCellValue("NROPRECINTO");break;
-                case 54:celda.setCellValue("NRO_OSERVICIO");break;
-                case 55:celda.setCellValue("PLACA_CLIENTE");break;
-                case 56:celda.setCellValue("CONDUCTOR_CLIENTE");break;
-                case 57:celda.setCellValue("BREVETE_CLIENTE");break;
-                case 58:celda.setCellValue("#SERVICIOS_DIA");break;
-                case 59:celda.setCellValue("ORIGENCALLAO");break;
-            }
-        }
-        for(int i=0;i<row;i++){
-            fila = sheet2.createRow(i+1);
-            
-            celda = fila.createCell((short)0);
-            celda.setCellStyle(estiloFila);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getIdclieprov());
-            
-            celda = fila.createCell((short)1);
-            celda.setCellStyle(estiloFila);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getRazon_social());
-                        
-            celda = fila.createCell((short)12);
-            celda.setCellStyle(estiloFila);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getIdcliente());
-            
-            celda = fila.createCell((short)19);
-            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
-            celda.setCellStyle(estiloFila);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getOrdenregistro());
-            
-            celda = fila.createCell((short)23);
-            celda.setCellStyle(estiloFila);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getEsplanilla());
-            
-            /*AGREGAR CAMPOS ADICIONALES*/
-            celda = fila.createCell((short)24);
-            celda.setCellStyle(estiloFila);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getDiddocumento());
-            
-            celda = fila.createCell((short)25);
-            celda.setCellStyle(estiloFila);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getDserie());
-            
-            celda = fila.createCell((short)26);
-            celda.setCellStyle(estiloFila);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getDnumero());
-            
-            celda = fila.createCell((short)27);
-            celda.setCellStyle(estiloFila_date);
-            celda.setCellValue(WebUtil.fechaDMY(listDetcalculopagarTotal.get(i).getDfecha_osc(), 7));
-            
-            celda = fila.createCell((short)28);
-            celda.setCellStyle(estiloFila);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getIdcliente());
-            
-            celda = fila.createCell((short)29);
-            celda.setCellStyle(estiloFila);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getDcliente());
-            
-            celda = fila.createCell((short)30);
-            celda.setCellStyle(estiloFila);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getDidcargo()+" "+listDetcalculopagarTotal.get(i).getCargo());
-        
-            celda = fila.createCell((short)31);
-            celda.setCellStyle(estiloFila);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getDcodoperaciones_ec());
-            
-            celda = fila.createCell((short)32);
-            celda.setCellStyle(estiloFila);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getRutaservicio());
-            
-            celda = fila.createCell((short)33);
-            celda.setCellStyle(estiloFila_date);
-            celda.setCellValue(WebUtil.fechaDMY(listDetcalculopagarTotal.get(i).getDfecharegistro(), 7));
-            
-            celda = fila.createCell((short)34);
-            celda.setCellStyle(estiloFila);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getDhi_s());
-            
-            celda = fila.createCell((short)35);
-            celda.setCellStyle(estiloFila);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getDhf_s());
-            
-            celda = fila.createCell((short)36);
-            celda.setCellStyle(estiloFila_date);
-            celda.setCellValue(WebUtil.fechaDMY(listDetcalculopagarTotal.get(i).getDfechafinregistro(), 7));
-            
-            celda = fila.createCell((short)37);
-            celda.setCellStyle(estiloFila);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getDhs_s());
-            
-            celda = fila.createCell((short)38);
-            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
-            celda.setCellStyle(estiloFila_numeric);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getDhbase());
-            
-            celda = fila.createCell((short)39);
-            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
-            celda.setCellStyle(estiloFila_numeric);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getDhadicional());
-            
-            celda = fila.createCell((short)40);
-            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
-            celda.setCellStyle(estiloFila_numeric);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getDcosto_rh());
-            
-            celda = fila.createCell((short)41);
-            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
-            celda.setCellStyle(estiloFila_numeric);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getDhcosto_adicional());
-            
-            celda = fila.createCell((short)42);
-            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
-            celda.setCellStyle(estiloFila_numeric);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getDcosto_bono());
-            
-            /************************** HORAS TAREO ***************************/
-            celda = fila.createCell((short)43);
-            celda.setCellStyle(estiloFila);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getShora_req());
-            
-            celda = fila.createCell((short)44);
-            celda.setCellStyle(estiloFila);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getShora_llegada());
-            
-            celda = fila.createCell((short)45);
-            celda.setCellStyle(estiloFila);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getShora_inicio_serv());
-            
-            celda = fila.createCell((short)46);
-            celda.setCellStyle(estiloFila);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getShora_fin_serv());
-            
-            celda = fila.createCell((short)47);
-            celda.setCellStyle(estiloFila);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getShora_liberacion());
-            
-            celda = fila.createCell((short)48);
-            celda.setCellStyle(estiloFila);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getIdambito_servicio());
-            
-            celda = fila.createCell((short)49);
-            celda.setCellStyle(estiloFila);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getAmbito_servicio());
-            
-            celda = fila.createCell((short)50);
-            celda.setCellStyle(estiloFila);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getDchecklist());
-            
-            celda = fila.createCell((short)51);
-            celda.setCellStyle(estiloFila);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getDidvehiculo());
-            
-            celda = fila.createCell((short)52);
-            celda.setCellStyle(estiloFila);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getDnrocontenedor());
-            
-            celda = fila.createCell((short)53);
-            celda.setCellStyle(estiloFila);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getDnroprecinto());
-            
-            celda = fila.createCell((short)54);
-            celda.setCellStyle(estiloFila);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getDnro_oservicio());
-            
-            celda = fila.createCell((short)55);
-            celda.setCellStyle(estiloFila);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getDplaca_cliente());
-            
-            celda = fila.createCell((short)56);
-            celda.setCellStyle(estiloFila);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getDconductor_cliente());
-            
-            celda = fila.createCell((short)57);
-            celda.setCellStyle(estiloFila);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getDbrevete_cliente());
-            
-            celda = fila.createCell((short)58);
-            celda.setCellStyle(estiloFila);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getNservicios_dia()==null?0:listDetcalculopagarTotal.get(i).getNservicios_dia());
-            
-            celda = fila.createCell((short)59);
-            celda.setCellStyle(estiloFila);
-            celda.setCellValue(listDetcalculopagarTotal.get(i).getOrigencallao());
-        }
-        /*AUTOAJUSTE EN LA HOJA*/
-        for (int as = 0; as < col; as++) {
-            objWB.getSheetAt(2).autoSizeColumn((short) as);
         }
     }
     public String fechaDMY(Date fecha){
@@ -1154,7 +1390,7 @@ public class Cabcalculopagar_planillaAction extends AbstactListAction<Cabcalculo
             }else{
                 listDetcalculopagarPersonal = new ArrayList<>();
                 this.scosto = 0.0f;
-                for(Detcalculopagar_planilla obj:listDetcalculopagarTotal){
+                for(Detcalculopagar_planilla obj:listDetcalculopagar){
                     if(obj.getIdclieprov().trim().equals(selectDetcalculopagar.getIdclieprov())){
                         this.scosto+=obj.getTcosto();
                         listDetcalculopagarPersonal.add(obj);

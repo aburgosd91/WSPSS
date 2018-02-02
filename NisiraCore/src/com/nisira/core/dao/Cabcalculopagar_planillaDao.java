@@ -60,6 +60,40 @@ public class Cabcalculopagar_planillaDao extends BaseDao<Cabcalculopagar_planill
             }
             return lista;
         }
+        public ArrayList<Cabcalculopagar_planilla> listarPorEmpresaWebFiltroAprobado(String idempresa) throws NisiraORMException,Exception {
+            ArrayList<Cabcalculopagar_planilla> lista = new ArrayList<Cabcalculopagar_planilla>();
+            String periodo_="";    
+            ResultSet rs = null;
+            rs = execProcedure("GETCABCALCULOPAGAR_PLANILLA_APROBADO_TMPSS",idempresa);
+            while (rs.next()) {
+                Cabcalculopagar_planilla cabcalculopagar = new Cabcalculopagar_planilla();
+                cabcalculopagar.setIdempresa(rs.getString("IDEMPRESA").trim());
+                cabcalculopagar.setIdcabcalculopagar_planilla(rs.getString("IDCABCALCULOPAGAR_PLANILLA")!=null?rs.getString("IDCABCALCULOPAGAR_PLANILLA").trim():"");
+                cabcalculopagar.setIdemisor(rs.getString("IDEMISOR")!=null?rs.getString("IDEMISOR").trim():"");
+                cabcalculopagar.setIdsucursal(rs.getString("IDSUCURSAL")!=null?rs.getString("IDSUCURSAL").trim():"");
+                cabcalculopagar.setIdalmacen(rs.getString("IDALMACEN")!=null?rs.getString("IDALMACEN").trim():"");
+                cabcalculopagar.setIddocumento(rs.getString("IDDOCUMENTO")!=null?rs.getString("IDDOCUMENTO").trim():"");
+                cabcalculopagar.setSerie(rs.getString("SERIE")!=null?rs.getString("SERIE").trim():"");
+                cabcalculopagar.setNumero(rs.getString("NUMERO")!=null?rs.getString("NUMERO").trim():"");
+                cabcalculopagar.setPeriodo(rs.getString("PERIODO")!=null?rs.getString("PERIODO").trim():"");
+                periodo_ =cabcalculopagar.getPeriodo()==null?"":cabcalculopagar.getPeriodo();
+                if(periodo_.length()>0)
+                    cabcalculopagar.setMes(CoreUtil.strMonths[Integer.parseInt(periodo_.substring(4,5))]);
+                cabcalculopagar.setFecha(rs.getDate("FECHA"));
+                cabcalculopagar.setIdestado(rs.getString("IDESTADO")!=null?rs.getString("IDESTADO").trim():"");
+                cabcalculopagar.setSucursal(rs.getString("SUCURSAL")!=null?rs.getString("SUCURSAL").trim():"");
+                cabcalculopagar.setAlmacen(rs.getString("ALMACEN")!=null?rs.getString("ALMACEN").trim():"");
+                cabcalculopagar.setEstado(rs.getString("ESTADO")!=null?rs.getString("ESTADO").trim():"");
+                cabcalculopagar.setEmisor(rs.getString("EMISOR")!=null?rs.getString("EMISOR").trim():"");
+                cabcalculopagar.setIdusuario(rs.getString("IDUSUARIO")!=null?rs.getString("IDUSUARIO").trim():"");
+                cabcalculopagar.setUsuario(rs.getString("USUARIO")!=null?rs.getString("USUARIO").trim():"");
+                cabcalculopagar.setFinicio(rs.getDate("FINICIO"));
+                cabcalculopagar.setFfin(rs.getDate("FFIN"));
+                cabcalculopagar.setTipo(rs.getString("TIPO")!=null?rs.getString("TIPO").trim():"");
+                lista.add(cabcalculopagar); 
+            }
+            return lista;
+        }
         public String grabar(int tipo,Cabcalculopagar_planilla ob,List<Detcalculopagar_planilla> listDetcalculopagar,String idusuario) throws Exception {
             String mensaje="";
             String xmlNot = "";
@@ -89,26 +123,14 @@ public class Cabcalculopagar_planillaDao extends BaseDao<Cabcalculopagar_planill
 
         return mensaje;
     }
-        public String aprobarCalculoPagar_Planilla(Cabcalculopagar_planilla ob,List<Detcalculopagar_planilla> listDetcalculopagar,String idusuario) throws Exception {
+        public String aprobarCalculoPagar_Planilla(Cabcalculopagar_planilla ob,String idusuario) throws Exception {
             String mensaje="";
-            String xml = "<?xml version='1.0' encoding='ISO-8859-1' ?>";
-            String xmlDetcalculopagar = "";
-//            XStream xStream = new XStream();
-//            xStream.processAnnotations(Detcalculopagar_planilla.class);
-//            xmlDetcalculopagar = xml + xStream.toXML(listDetcalculopagar);
-            
             ResultSet rs = null;
-            rs = execProcedure("cobrarpagardoc_grabarprovision_importacion_web",
-                    ob.getIdempresa(),
-                    ob.getIdemisor(),
-                    CoreUtil.fechaDMY(ob.getFecha(),9),//periodo
-                    "",//idoperacion
-                    "",//idtipomov
-                    ob.getIdsucursal(),
-                    xmlDetcalculopagar,
-                    idusuario,
-                    "",//maquina
-                    ob.getIdcabcalculopagar_planilla()
+            rs = execProcedure("SP_CABCALCULOPAGAR_PLANILLO_UPDATE_ESTADO",
+                2,
+                ob.getIdempresa(),
+                ob.getIdcabcalculopagar_planilla(),
+                idusuario
             );
             while (rs.next()) {
                 mensaje = rs.getString("mensaje");

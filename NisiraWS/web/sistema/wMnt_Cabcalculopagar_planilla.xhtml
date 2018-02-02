@@ -8,6 +8,14 @@
     <ui:define name="metadata">
     </ui:define>
     <ui:define name="body">
+        <style>
+            .highlight {
+                background: #B6A6D3  !important ;
+            }
+            .heavyweight {
+                background: #D4C26A  !important ;
+            }
+        </style>
         <h:form id="datos">
             #{cabcalculopagar_planillaAction.findetalle()}
             <cmp:barra_mnt bean="#{cabcalculopagar_planillaAction}"/>
@@ -104,15 +112,16 @@
             </p:toolbar>
             <p:sticky target="tb" />
             <p:dataTable style="margin-bottom:20px;font-size: 12px;width:100%;" var="lst_rpt" value="#{cabcalculopagar_planillaAction.listDetcalculopagar}"
-                    widgetVar="lst_rpt"  id="tbl" 
-                    scrollable="true" scrollWidth="510"
+                   widgetVar="lst_rpt"  id="tbl" 
+                   scrollable="true" scrollWidth="510"
                    selection="#{cabcalculopagar_planillaAction.selectDetcalculopagar}" 
                    selectionMode="single" rowKey="#{lst_rpt.item}"  
                    resizableColumns="true" editable="#{cabcalculopagar_planillaAction.edicion}" editMode="cell" 
                    rows="15" frozenColumns="9" 
                    paginator="true"
                    paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                   rowsPerPageTemplate="15,25,35,50,70,100">
+                   rowsPerPageTemplate="15,25,35,50,70,100" 
+                   rowStyleClass="#{lst_rpt.flag_cruceservicio?'heavyweight':null}">
                 <p:ajax event="cellEdit" listener="#{cabcalculopagar_planillaAction.onCellEdit}" update="tbl"/>
                  <f:facet name="header">
                      Provisión Documentos x Pagar (#{cabcalculopagar_planillaAction.listDetcalculopagar.size()}) - #{cabcalculopagar_planillaAction.fechaDMY(cabcalculopagar_planillaAction.datoEdicion.finicio)} - #{cabcalculopagar_planillaAction.fechaDMY(cabcalculopagar_planillaAction.datoEdicion.ffin)}
@@ -220,7 +229,7 @@
                          <f:convertNumber pattern="#0.00" locale="en-US"/>
                      </h:outputText>
                  </p:column>
-                <p:column headerText="Costo Manual" filterBy="#{lst_rpt.costom}" filterMatchMode="contains" sortBy="#{lst_rpt.costom}"  style="white-space: nowrap; width: 60px;padding: 3px;text-align: left">
+                <p:column headerText="Costo Manual" filterBy="#{lst_rpt.costom}" filterMatchMode="contains" sortBy="#{lst_rpt.costom}"  style="white-space: nowrap; width: 60px;padding: 3px;text-align: left" rendered="false">
                     <p:cellEditor>
                         <f:facet name="output">
                             <h:outputText value="#{lst_rpt.costom}">
@@ -233,11 +242,89 @@
                         </f:facet>
                     </p:cellEditor>
                 </p:column>
-                <p:column headerText="Costo Total" filterBy="#{lst_rpt.total}" filterMatchMode="contains" sortBy="#{lst_rpt.total}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
+                <p:column headerText="Costo Total" filterBy="#{lst_rpt.total}" filterMatchMode="contains" sortBy="#{lst_rpt.total}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center" rendered="false">
                      <h:outputText value="#{lst_rpt.total}">
                          <f:convertNumber pattern="#0.00" locale="en-US"/>
                      </h:outputText>
+                </p:column>
+                <p:column headerText="Cruce?" filterBy="#{lst_rpt.es_cruceservicio}" sortBy="#{lst_rpt.es_cruceservicio}" style="white-space: nowrap; width: 30px;padding: 3px;text-align: center">
+                    <h:outputText value="#{lst_rpt.es_cruceservicio}"/>
+                </p:column>
+                <p:column headerText="H.I.C." filterBy="#{lst_rpt.dhi_s_cs}" filterMatchMode="contains" sortBy="#{lst_rpt.dhi_s_cs}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: center">
+                    <p:cellEditor >
+                       <f:facet name="output">
+                           <h:outputText value="#{lst_rpt.dhi_s_cs}">
+                           </h:outputText>
+                       </f:facet>
+                        <f:facet name="input" >
+                            <p:inputMask style="font-size:10px;" id="dhi_s_cs" mask="99:99" value="#{lst_rpt.dhi_s_cs}" disabled="#{!lst_rpt.flag_cruceservicio}">
+                           </p:inputMask>
+                       </f:facet>
+                   </p:cellEditor>
+                </p:column>
+                <p:column headerText="H.F.C." filterBy="#{lst_rpt.dhf_s_cs}" filterMatchMode="contains" sortBy="#{lst_rpt.dhf_s_cs}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: center">
+                    <p:cellEditor >
+                       <f:facet name="output">
+                           <h:outputText value="#{lst_rpt.dhf_s_cs}">
+                           </h:outputText>
+                       </f:facet>
+                       <f:facet name="input" >
+                           <p:inputMask style="font-size:10px;"  id="dhf_s_cs" mask="99:99" value="#{lst_rpt.dhf_s_cs}" disabled="#{!lst_rpt.flag_cruceservicio}">
+                           </p:inputMask>
+                       </f:facet>
+                   </p:cellEditor>
+                </p:column>
+                <p:column headerText="H.S.C." filterBy="#{lst_rpt.dhs_s_cs}" filterMatchMode="contains" sortBy="#{lst_rpt.dhs_s_cs}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
+                     <h:outputText value="#{lst_rpt.dhs_s_cs}">
+                     </h:outputText>
                  </p:column>
+                <p:column id="fecharegistro_cs" headerText="F.I.C" filterBy="#{cabcalculopagar_planillaAction.fechaDMY(lst_rpt.dfecharegistro_cs)}" filterMatchMode="contains" sortBy="#{lst_rpt.dfecharegistro_cs}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: center">
+                    <p:cellEditor >
+                       <f:facet name="output">
+                            <h:outputText value="#{lst_rpt.dfecharegistro_cs}">
+                               <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                            </h:outputText>
+                       </f:facet>
+                       <f:facet name="input">
+                           <p:calendar style="font-size:10px;" value="#{lst_rpt.dfecharegistro_cs}" pattern="dd-MM-yyyy" mask="true" disabled="#{!lst_rpt.flag_cruceservicio}"/>
+                       </f:facet>
+                   </p:cellEditor>
+                </p:column>
+                <p:column id="fechafinregistro_cs" headerText="F.F.C" filterBy="#{cabcalculopagar_planillaAction.fechaDMY(lst_rpt.dfechafinregistro_cs)}" filterMatchMode="contains" sortBy="#{lst_rpt.dfechafinregistro_cs}" style="white-space: nowrap; width: 130px;padding: 3px;text-align: center">
+                    <p:cellEditor >
+                       <f:facet name="output">
+                            <h:outputText value="#{lst_rpt.dfechafinregistro_cs}">
+                               <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                            </h:outputText>
+                       </f:facet>
+                       <f:facet name="input">
+                           <p:calendar style="font-size:10px;" value="#{lst_rpt.dfechafinregistro_cs}" pattern="dd-MM-yyyy" mask="true" disabled="#{!lst_rpt.flag_cruceservicio}"/>
+                       </f:facet>
+                   </p:cellEditor>
+                </p:column>
+                <p:column headerText="H.Adicional C." filterBy="#{lst_rpt.dhadicional_cs}" filterMatchMode="contains" sortBy="#{lst_rpt.dhadicional_cs}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
+                     <h:outputText value="#{lst_rpt.dhadicional_cs}">
+                         <f:convertNumber pattern="#0.00" locale="en-US"/>
+                     </h:outputText>
+                 </p:column>
+                <p:column headerText="Costo RxH.C." filterBy="#{lst_rpt.dcosto_rh_cs}" filterMatchMode="contains" sortBy="#{lst_rpt.dcosto_rh_cs}"  style="white-space: nowrap; width: 60px;padding: 3px;text-align: left">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{lst_rpt.dcosto_rh_cs}">
+                                <f:convertNumber pattern="#0.00" />
+                            </h:outputText>
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:inputNumber value="#{lst_rpt.dcosto_rh_cs}" decimalPlaces="2">
+                            </p:inputNumber>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="Costo Total C." filterBy="#{lst_rpt.tcosto_cs}" filterMatchMode="contains" sortBy="#{lst_rpt.tcosto_cs}" style="white-space: nowrap; width: 100px;padding: 3px;text-align: center">
+                     <h:outputText value="#{lst_rpt.tcosto_cs}">
+                         <f:convertNumber pattern="#0.00" locale="en-US"/>
+                     </h:outputText>
+                </p:column>
                 <p:column headerText="Glosa" filterBy="#{lst_rpt.glosa}" filterMatchMode="contains" sortBy="#{lst_rpt.glosa}"  style="white-space: nowrap; width: 150px;padding: 3px;text-align: left">
                     <p:cellEditor >
                         <f:facet name="output">
@@ -248,21 +335,21 @@
                         </f:facet>
                     </p:cellEditor>
                 </p:column>
-                <p:column headerText="Planilla?" filterBy="#{lst_rpt.esplanilla}" sortBy="#{lst_rpt.esplanilla}" style="white-space: nowrap; width: 30px;padding: 3px;text-align: center">
+                <p:column headerText="Planilla?" filterBy="#{lst_rpt.esplanilla}" sortBy="#{lst_rpt.esplanilla}" style="white-space: nowrap; width: 30px;padding: 3px;text-align: center" rendered="false">
                     <h:outputText value="#{lst_rpt.esplanilla}"/>
                 </p:column>
-                <p:column headerText="Suspensión?" filterBy="#{lst_rpt.tiene_suspension}" sortBy="#{lst_rpt.tiene_suspension}" style="white-space: nowrap; width: 30px;padding: 3px;text-align: center">
+                <p:column headerText="Suspensión?" filterBy="#{lst_rpt.tiene_suspension}" sortBy="#{lst_rpt.tiene_suspension}" style="white-space: nowrap; width: 30px;padding: 3px;text-align: center" rendered="false">
                     <h:outputText value="#{lst_rpt.tiene_suspension}"/>
                 </p:column>
-                <p:column headerText="Usuario_sol" filterBy="#{lst_rpt.usuario_sol}" filterMatchMode="contains" sortBy="#{lst_rpt.usuario_sol}" style="white-space: nowrap; width: 70px;padding: 3px;text-align: center">
+                <p:column headerText="Usuario_sol" filterBy="#{lst_rpt.usuario_sol}" filterMatchMode="contains" sortBy="#{lst_rpt.usuario_sol}" style="white-space: nowrap; width: 70px;padding: 3px;text-align: center" rendered="false">
                     <h:outputText value="#{lst_rpt.usuario_sol}"/>
                 </p:column>
-                <p:column headerText="Clave_sol" filterBy="#{lst_rpt.clave_sol}" filterMatchMode="contains" sortBy="#{lst_rpt.clave_sol}" style="white-space: nowrap; width: 70px;padding: 3px;text-align: center">
+                <p:column headerText="Clave_sol" filterBy="#{lst_rpt.clave_sol}" filterMatchMode="contains" sortBy="#{lst_rpt.clave_sol}" style="white-space: nowrap; width: 70px;padding: 3px;text-align: center" rendered="false">
                     <h:outputText value="#{lst_rpt.clave_sol}"/>
                 </p:column>
              </p:dataTable> 
             <p:contextMenu for="tbl">
-                <p:menuitem value="Replicar" icon="ui-icon-copy" actionListener="#{cabcalculopagar_planillaAction.replicarItem()}"/>
+                <p:menuitem value="Replicar" icon="ui-icon-copy" actionListener="#{cabcalculopagar_planillaAction.replicarItem()}" rendered="false" />
                 <p:menuitem value="Ver Detalle" update="detalleTareoDialog" icon="ui-icon-ver" actionListener="#{cabcalculopagar_planillaAction.visualizar_calculo()}"/>
                 <p:menuitem value="Ver Cálculo" update="detalleCalculoDialog" icon="ui-icon-search" oncomplete="PF('detalleCalculoDialog').show()" rendered="false"/>
             </p:contextMenu>
@@ -393,8 +480,7 @@
                 <p:contextMenu for="listDetcalculopagarPersonal">
                     <p:menuitem value="Ver Detalle" update="detalleTareoCalculoDialog" icon="ui-icon-ver" actionListener="#{cabcalculopagar_planillaAction.detalleTareoCalculo()}"/>
                 </p:contextMenu>
-            </p:dialog>
-            
+            </p:dialog>            
             <p:dialog header="#{cabcalculopagar_planillaAction.selectDetcalculopagar_detalle.didordenservicio} - 
                       #{cabcalculopagar_planillaAction.selectDetcalculopagar_detalle.dserie} - #{cabcalculopagar_planillaAction.selectDetcalculopagar_detalle.dnumero}
                       / #{cabcalculopagar_planillaAction.selectDetcalculopagar_detalle.idcliente} #{cabcalculopagar_planillaAction.selectDetcalculopagar_detalle.dcliente}" 

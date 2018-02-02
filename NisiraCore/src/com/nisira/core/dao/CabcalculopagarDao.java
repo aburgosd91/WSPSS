@@ -4,6 +4,7 @@ import com.nisira.core.BaseDao;
 import com.nisira.core.entity.Cabcalculopagar;
 import com.nisira.core.NisiraORMException;
 import com.nisira.core.entity.Detcalculopagar;
+import com.nisira.core.entity.Docreferencia;
 import com.nisira.core.util.CoreUtil;
 import com.nisira.utils.nisiracore.Constantes;
 import com.thoughtworks.xstream.XStream;
@@ -82,6 +83,41 @@ public class CabcalculopagarDao extends BaseDao<Cabcalculopagar> {
                     xmlNot,
                     xmlDet_tareoweb,
                     idusuario
+            );
+            while (rs.next()) {
+                mensaje = rs.getString("mensaje");
+                break;
+            }
+
+        return mensaje;
+    }
+        public String grabar_mod(int tipo,Cabcalculopagar ob,List<Detcalculopagar> listDetcalculopagar,String idusuario,
+                List<Docreferencia> listDocreferencia) throws Exception {
+            String mensaje="";
+            String xmlNot = "";
+            String xml = "<?xml version='1.0' encoding='ISO-8859-1' ?>";
+            XStream xStream = new XStream();
+            xStream.processAnnotations(Cabcalculopagar.class);
+            xmlNot = xml + xStream.toXML(ob);
+            /******************* DETALLES DORDENSERVICIOCLIENTE **********************/
+            String xmlDet_tareoweb = "";
+            xStream = new XStream();
+            xStream.processAnnotations(Detcalculopagar.class);
+            xmlDet_tareoweb = xml + xStream.toXML(listDetcalculopagar);
+            /******************* DETALLES DOCREFERENCIA **********************/
+            String xmlDocreferencia = "";
+            xStream = new XStream();
+            xStream.processAnnotations(Docreferencia.class);
+            xmlDocreferencia = xml + xStream.toXML(listDocreferencia);
+            ResultSet rs = null;
+            rs = execProcedure("SP_CABCALCULOPAGAR_MODIFICADO_GRABAR",
+                    tipo,
+                    ob.getIdempresa(),ob.getIdcabcalculopagar(),
+                    ob.getIddocumento(),ob.getSerie(),ob.getNumero(),
+                    xmlNot,
+                    xmlDet_tareoweb,
+                    idusuario,
+                    xmlDocreferencia
             );
             while (rs.next()) {
                 mensaje = rs.getString("mensaje");

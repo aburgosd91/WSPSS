@@ -8,10 +8,11 @@ import com.nisira.annotation.RelacionTabla;
 import com.nisira.annotation.CampoRelacionado;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
+import java.io.Serializable;
 import java.util.List;
 @XStreamAlias("DETCALCULOPAGAR_PLANILLA")
 @Tabla(nombre = "DETCALCULOPAGAR_PLANILLA")
-public class Detcalculopagar_planilla {
+public class Detcalculopagar_planilla implements Serializable{
         @XStreamAlias("IDEMPRESA")
 	@ClavePrimaria
 	@Columna
@@ -183,6 +184,36 @@ public class Detcalculopagar_planilla {
         @XStreamAlias("TOTAL")
 	@Columna
 	private Float total;
+        @XStreamAlias("DHI_CS")
+	@Columna
+	private Float dhi_cs;
+        @XStreamAlias("DHF_CS")
+	@Columna
+	private Float dhf_cs;
+        @XStreamAlias("DHS_CS")
+	@Columna
+	private Float dhs_cs;
+        @XStreamAlias("DHADICIONAL_CS")
+	@Columna
+	private Float dhadicional_cs;
+        @XStreamAlias("TCOSTO_CS")
+	@Columna
+	private Float tcosto_cs;
+        @XStreamAlias("ES_CRUCESERVICIO")
+	@Columna
+	private Integer es_cruceservicio;
+        @XStreamAlias("DFECHAREGISTRO_CS")
+	@Columna
+	private Date dfecharegistro_cs;
+        @XStreamAlias("DFECHAFINREGISTRO_CS")
+	@Columna
+	private Date dfechafinregistro_cs;
+        @XStreamAlias("EXCLUIR")
+	@Columna
+	private Integer excluir;
+        @XStreamAlias("DCOSTO_RH_CS")
+	@Columna
+	private Float dcosto_rh_cs;
         /*DATOS ADICIONALES - CALCULO*/
         @XStreamOmitField
         private String dhi_s;
@@ -194,6 +225,16 @@ public class Detcalculopagar_planilla {
         private String dhbase_s;
         @XStreamOmitField
         private String dhadicional_s;
+        @XStreamOmitField
+        private String dhi_s_cs;
+        @XStreamOmitField
+        private String dhf_s_cs;
+        @XStreamOmitField
+        private String dhs_s_cs;
+        @XStreamOmitField
+        private String dhadicional_s_cs;
+        @XStreamOmitField
+        private boolean flag_cruceservicio;
         @XStreamOmitField
         private String cargo;
         /*DATOS ADICIONALES - TAREO*/
@@ -848,6 +889,216 @@ public class Detcalculopagar_planilla {
      */
     public void setTotal(Float total) {
         this.total = total;
+    }
+
+    /**
+     * @return the dhi_cs
+     */
+    public Float getDhi_cs() {
+        return dhi_cs;
+    }
+
+    /**
+     * @param dhi_cs the dhi_cs to set
+     */
+    public void setDhi_cs(Float dhi_cs) {
+        this.dhi_cs = dhi_cs;
+    }
+
+    /**
+     * @return the dhf_cs
+     */
+    public Float getDhf_cs() {
+        return dhf_cs;
+    }
+
+    /**
+     * @param dhf_cs the dhf_cs to set
+     */
+    public void setDhf_cs(Float dhf_cs) {
+        this.dhf_cs = dhf_cs;
+    }
+
+    /**
+     * @return the dhs_cs
+     */
+    public Float getDhs_cs() {
+        return dhs_cs;
+    }
+
+    /**
+     * @param dhs_cs the dhs_cs to set
+     */
+    public void setDhs_cs(Float dhs_cs) {
+        this.dhs_cs = dhs_cs;
+    }
+
+    /**
+     * @return the dhadicional_cs
+     */
+    public Float getDhadicional_cs() {
+        return dhadicional_cs;
+    }
+
+    /**
+     * @param dhadicional_cs the dhadicional_cs to set
+     */
+    public void setDhadicional_cs(Float dhadicional_cs) {
+        this.dhadicional_cs = dhadicional_cs;
+    }
+
+    /**
+     * @return the tcosto_cs
+     */
+    public Float getTcosto_cs() {
+        return tcosto_cs;
+    }
+
+    /**
+     * @param tcosto_cs the tcosto_cs to set
+     */
+    public void setTcosto_cs(Float tcosto_cs) {
+        this.tcosto_cs = tcosto_cs;
+    }
+
+    /**
+     * @return the es_cruceservicio
+     */
+    public Integer getEs_cruceservicio() {
+        return es_cruceservicio;
+    }
+
+    /**
+     * @param es_cruceservicio the es_cruceservicio to set
+     */
+    public void setEs_cruceservicio(Integer es_cruceservicio) {
+        this.es_cruceservicio = es_cruceservicio;
+    }
+
+    /**
+     * @return the dhi_s_cs
+     */
+    public String getDhi_s_cs() {
+        return dhi_s_cs;
+    }
+
+    /**
+     * @param dhi_s_cs the dhi_s_cs to set
+     */
+    public void setDhi_s_cs(String dhi_s_cs) {
+        this.dhi_s_cs = dhi_s_cs;
+    }
+
+    /**
+     * @return the dhf_s_cs
+     */
+    public String getDhf_s_cs() {
+        return dhf_s_cs;
+    }
+
+    /**
+     * @param dhf_s_cs the dhf_s_cs to set
+     */
+    public void setDhf_s_cs(String dhf_s_cs) {
+        this.dhf_s_cs = dhf_s_cs;
+    }
+
+    /**
+     * @return the dhs_s_cs
+     */
+    public String getDhs_s_cs() {
+        return dhs_s_cs;
+    }
+
+    /**
+     * @param dhs_s_cs the dhs_s_cs to set
+     */
+    public void setDhs_s_cs(String dhs_s_cs) {
+        this.dhs_s_cs = dhs_s_cs;
+    }
+
+    /**
+     * @return the dhadicional_s_cs
+     */
+    public String getDhadicional_s_cs() {
+        return dhadicional_s_cs;
+    }
+
+    /**
+     * @param dhadicional_s_cs the dhadicional_s_cs to set
+     */
+    public void setDhadicional_s_cs(String dhadicional_s_cs) {
+        this.dhadicional_s_cs = dhadicional_s_cs;
+    }
+
+    /**
+     * @return the flag_cruceservicio
+     */
+    public boolean isFlag_cruceservicio() {
+        return flag_cruceservicio;
+    }
+
+    /**
+     * @param flag_cruceservicio the flag_cruceservicio to set
+     */
+    public void setFlag_cruceservicio(boolean flag_cruceservicio) {
+        this.flag_cruceservicio = flag_cruceservicio;
+    }
+
+    /**
+     * @return the dfecharegistro_cs
+     */
+    public Date getDfecharegistro_cs() {
+        return dfecharegistro_cs;
+    }
+
+    /**
+     * @param dfecharegistro_cs the dfecharegistro_cs to set
+     */
+    public void setDfecharegistro_cs(Date dfecharegistro_cs) {
+        this.dfecharegistro_cs = dfecharegistro_cs;
+    }
+
+    /**
+     * @return the dfechafinregistro_cs
+     */
+    public Date getDfechafinregistro_cs() {
+        return dfechafinregistro_cs;
+    }
+
+    /**
+     * @param dfechafinregistro_cs the dfechafinregistro_cs to set
+     */
+    public void setDfechafinregistro_cs(Date dfechafinregistro_cs) {
+        this.dfechafinregistro_cs = dfechafinregistro_cs;
+    }
+
+    /**
+     * @return the excluir
+     */
+    public Integer getExcluir() {
+        return excluir;
+    }
+
+    /**
+     * @param excluir the excluir to set
+     */
+    public void setExcluir(Integer excluir) {
+        this.excluir = excluir;
+    }
+
+    /**
+     * @return the dcosto_rh_cs
+     */
+    public Float getDcosto_rh_cs() {
+        return dcosto_rh_cs;
+    }
+
+    /**
+     * @param dcosto_rh_cs the dcosto_rh_cs to set
+     */
+    public void setDcosto_rh_cs(Float dcosto_rh_cs) {
+        this.dcosto_rh_cs = dcosto_rh_cs;
     }
 
 
