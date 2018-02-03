@@ -976,7 +976,7 @@ public class Cabcalculopagar_planillaAction extends AbstactListAction<Cabcalculo
         estiloFila_date.setBorderLeft(HSSFCellStyle.BORDER_MEDIUM);
         estiloFila_date.setFont(fuente);
         estiloFila_date.setDataFormat(format.getFormat("dd/mm/yyyy"));
-        int col = 23;
+        int col = 32;
         int row = listDetcalculopagar.size();
         HSSFCell celda;
         for(int i=0 ;i<col;i++){
@@ -1006,6 +1006,16 @@ public class Cabcalculopagar_planillaAction extends AbstactListAction<Cabcalculo
                 case 20:celda.setCellValue("COSTO H.AD");break;
                 case 21:celda.setCellValue("COSTO BONO");break;
                 case 22:celda.setCellValue("COSTO_TOTAL");break;
+                
+                case 23:celda.setCellValue("ES_CRUCE");break;
+                case 24:celda.setCellValue("H.I.C.");break;
+                case 25:celda.setCellValue("H.F.C.");break;
+                case 26:celda.setCellValue("H.S.");break;
+                case 27:celda.setCellValue("F.I.C.");break;
+                case 28:celda.setCellValue("F.F.C.");break;
+                case 29:celda.setCellValue("H.ADICIONAL");break;
+                case 30:celda.setCellValue("Costo RxH C.");break;
+                case 31:celda.setCellValue("Costo Total C.");break;
             }
         }
         HSSFRow fila;
@@ -1109,6 +1119,48 @@ public class Cabcalculopagar_planillaAction extends AbstactListAction<Cabcalculo
             celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
             celda.setCellStyle(estiloFila_numeric);
             celda.setCellValue(listDetcalculopagar.get(i).getTcosto());
+            
+            celda = fila.createCell((short)23);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getEs_cruceservicio());
+            celda = fila.createCell((short)24);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getDhi_s_cs());
+            celda = fila.createCell((short)25);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getDhf_s_cs());
+            celda = fila.createCell((short)26);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getDhs_s_cs());
+            
+            celda = fila.createCell((short)27);
+            celda.setCellStyle(estiloFila_date);
+            if(listDetcalculopagar.get(i).getDfecharegistro_cs()!=null)
+                celda.setCellValue(WebUtil.fechaDMY(listDetcalculopagar.get(i).getDfecharegistro_cs(), 7));
+            else
+                celda.setCellValue("");
+            
+            celda = fila.createCell((short)28);
+            celda.setCellStyle(estiloFila_date);
+            if(listDetcalculopagar.get(i).getDfechafinregistro_cs()!=null)
+                celda.setCellValue(WebUtil.fechaDMY(listDetcalculopagar.get(i).getDfechafinregistro_cs(), 7));
+            else 
+                celda.setCellValue("");
+            celda = fila.createCell((short)29);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(listDetcalculopagar.get(i).getDhadicional_cs());
+            
+            celda = fila.createCell((short)30);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(listDetcalculopagar.get(i).getDcosto_rh_cs());
+            
+            celda = fila.createCell((short)31);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(listDetcalculopagar.get(i).getTcosto_cs());
+            
         }
         /*AUTOAJUSTE EN LA HOJA*/
         for (int as = 0; as < col; as++) {
@@ -1117,7 +1169,7 @@ public class Cabcalculopagar_planillaAction extends AbstactListAction<Cabcalculo
         /*CREAR OTRA HOJA DETALLADO NISIRA*/
         HSSFSheet sheet2 = objWB.createSheet("DETALLADO "+this.idtiposervicio+" "+WebUtil.fechaDMY(getDesde(),8)+" "+WebUtil.fechaDMY(getHasta(),8));
         fila_cabecera = sheet2.createRow((short)0);
-        col = 42;
+        col = 51;
         row = listDetcalculopagar.size();
         for(int i=0 ;i<col;i++){
             celda = fila_cabecera.createCell((short)i);
@@ -1167,6 +1219,16 @@ public class Cabcalculopagar_planillaAction extends AbstactListAction<Cabcalculo
                 case 39:celda.setCellValue("BREVETE_CLIENTE");break;
                 case 40:celda.setCellValue("#SERVICIOS_DIA");break;
                 case 41:celda.setCellValue("ORIGENCALLAO");break;
+                
+                case 42:celda.setCellValue("ES_CRUCE");break;
+                case 43:celda.setCellValue("H.I.C.");break;
+                case 44:celda.setCellValue("H.F.C.");break;
+                case 45:celda.setCellValue("H.S.");break;
+                case 46:celda.setCellValue("F.I.C.");break;
+                case 47:celda.setCellValue("F.F.C.");break;
+                case 48:celda.setCellValue("H.ADICIONAL");break;
+                case 49:celda.setCellValue("Costo RxH C.");break;
+                case 50:celda.setCellValue("Costo Total C.");break;
             }
         }
         int id=0;
@@ -1274,7 +1336,7 @@ public class Cabcalculopagar_planillaAction extends AbstactListAction<Cabcalculo
             celda = fila.createCell((short)id++);
             celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
             celda.setCellStyle(estiloFila_numeric);
-            celda.setCellValue(listDetcalculopagar.get(i).getTotal());
+            celda.setCellValue(listDetcalculopagar.get(i).getTcosto());
             
             celda = fila.createCell((short)id++);
             celda.setCellStyle(estiloFila);
@@ -1347,6 +1409,47 @@ public class Cabcalculopagar_planillaAction extends AbstactListAction<Cabcalculo
             celda = fila.createCell((short)id++);
             celda.setCellStyle(estiloFila);
             celda.setCellValue(listDetcalculopagar.get(i).getOrigencallao());
+            
+            /***********************************************************************************/
+            celda = fila.createCell((short)id++);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getEs_cruceservicio());
+            celda = fila.createCell((short)id++);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getDhi_s_cs());
+            celda = fila.createCell((short)id++);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getDhf_s_cs());
+            celda = fila.createCell((short)id++);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(listDetcalculopagar.get(i).getDhs_s_cs());
+            celda = fila.createCell((short)id++);
+            celda.setCellStyle(estiloFila_date);
+            if(listDetcalculopagar.get(i).getDfecharegistro_cs() != null)
+                celda.setCellValue(WebUtil.fechaDMY(listDetcalculopagar.get(i).getDfecharegistro_cs(), 7));
+            else
+                celda.setCellValue("");
+            celda = fila.createCell((short)id++);
+            celda.setCellStyle(estiloFila_date);
+            if(listDetcalculopagar.get(i).getDfechafinregistro_cs() != null)
+                celda.setCellValue(WebUtil.fechaDMY(listDetcalculopagar.get(i).getDfechafinregistro_cs(), 7));
+            else
+                celda.setCellValue("");
+            
+            celda = fila.createCell((short)id++);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(listDetcalculopagar.get(i).getDhadicional_cs());
+            
+            celda = fila.createCell((short)id++);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(listDetcalculopagar.get(i).getDcosto_rh_cs());
+            
+            celda = fila.createCell((short)id++);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(listDetcalculopagar.get(i).getTcosto_cs());
             
         }
         /*AUTOAJUSTE EN LA HOJA*/

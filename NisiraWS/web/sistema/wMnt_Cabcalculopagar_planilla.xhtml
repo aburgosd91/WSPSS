@@ -104,7 +104,7 @@
                        <p:commandButton value="Información" ajax="true" image="ui-icon-search" onclick="PF('dlg_leyenda').show()"/>
                        <p:commandButton value="Generar" ajax="true" image="ui-icon-reload" actionListener="#{cabcalculopagar_planillaAction.getFindetalleCalculo()}"  disabled="#{!cabcalculopagar_planillaAction.edicion}"/>
                        <p:commandButton value="Exportar" ajax="false" image="ui-icon-excel">
-                           <p:dataExporter type="xls" target="datos:tbl" fileName="Tareo_Fijo_#{cabcalculopagar_planillaAction.datoEdicion.iddocumento}-#{cabcalculopagar_planillaAction.datoEdicion.serie}-#{cabcalculopagar_planillaAction.datoEdicion.numero}"
+                           <p:dataExporter type="xls" target="datos:tbl" fileName="Servicios_Pagar_Cruce_#{cabcalculopagar_planillaAction.datoEdicion.iddocumento}-#{cabcalculopagar_planillaAction.datoEdicion.serie}-#{cabcalculopagar_planillaAction.datoEdicion.numero}"
                                 postProcessor="#{cabcalculopagar_planillaAction.downFormatExcelEspecial}"/>
                         </p:commandButton>
                     </h:panelGrid>
