@@ -641,28 +641,36 @@ public class Cabcalculopagar_planillaAction extends AbstactListAction<Cabcalculo
                         if(WebUtil.fechaDMY(dtc.getDfecharegistro_cs(), 5).equalsIgnoreCase(WebUtil.fechaDMY(dtc.getDfechafinregistro_cs(), 5))){
                             dtc.setDhs_cs(dtc.getDhf_cs() - dtc.getDhi_cs());
                             dtc.setDhs_s_cs(CoreUtil.convertTimeFloatString(dtc.getDhs_cs()));
-                            if(dtc.getExcluir()==1){
-                                dtc.setDhadicional_cs(dtc.getDhs_cs());
-                                dtc.setDhadicional_s_cs(CoreUtil.convertTimeFloatString(dtc.getDhadicional_cs()));
-                                dtc.setTcosto_cs((dtc.getDcosto_rh_cs()*dtc.getDhs_cs()) + (dtc.getDhadicional_cs()*dtc.getDhcosto_adicional())+ dtc.getDcosto_bono());
-                            }else{
-                               dtc.setDhadicional_cs(dtc.getDhadicional());
-                               dtc.setDhadicional_s_cs(dtc.getDhadicional_s()); 
-                               dtc.setTcosto_cs((dtc.getDcosto_rh_cs()*dtc.getDhbase()) + (dtc.getDhadicional_cs()*dtc.getDhcosto_adicional())+ dtc.getDcosto_bono());
-                            }
+                            /*Para Todos los casos la hora base es la de H.S.C(servicio)*/
+                            dtc.setDhadicional_cs(0.0f);
+                            dtc.setDhadicional_s_cs(CoreUtil.convertTimeFloatString(dtc.getDhadicional_cs()));
+                            /*A partir del minuto '31 se considerará 01 hora adicional*/
+                            /*********Calcular decimal************/
+                            Float _hservicio = 0.0f,_chservicio=0.0f;int pentera =(int)(dtc.getDhs_cs().floatValue());
+                            _hservicio = dtc.getDhs_cs().floatValue() - pentera;
+                            if(_hservicio>=0.51f)
+                                _chservicio = new Float(pentera+1);
+                            else
+                                _chservicio = dtc.getDhs_cs().floatValue();
+                            /*************************************/
+                            dtc.setTcosto_cs((dtc.getDcosto_rh_cs()*_chservicio)+ dtc.getDcosto_bono());
                         }else{
                             int dias=(int)((dtc.getDfechafinregistro_cs().getTime()-dtc.getDfecharegistro_cs().getTime())/86400000);
                             dtc.setDhs_cs(dtc.getDhf_cs()*dias*24 - dtc.getDhi_cs());
                             dtc.setDhs_s_cs(CoreUtil.convertTimeFloatString(dtc.getDhs_cs()));
-                            if(dtc.getExcluir()==1){
-                                dtc.setDhadicional_cs(dtc.getDhs_cs());
-                                dtc.setDhadicional_s_cs(CoreUtil.convertTimeFloatString(dtc.getDhadicional_cs()));
-                                dtc.setTcosto_cs((dtc.getDcosto_rh_cs()*dtc.getDhs_cs()) + (dtc.getDhadicional_cs()*dtc.getDhcosto_adicional())+ dtc.getDcosto_bono());
-                            }else{
-                               dtc.setDhadicional_cs(dtc.getDhadicional());
-                               dtc.setDhadicional_s_cs(dtc.getDhadicional_s()); 
-                               dtc.setTcosto_cs((dtc.getDcosto_rh_cs()*dtc.getDhs_cs()) + (dtc.getDhadicional_cs()*dtc.getDhcosto_adicional())+ dtc.getDcosto_bono());
-                            } 
+                            /*Para Todos los casos la hora base es la de H.S.C(servicio)*/
+                            dtc.setDhadicional_cs(0.0f);
+                            dtc.setDhadicional_s_cs(CoreUtil.convertTimeFloatString(dtc.getDhadicional_cs()));
+                            /*A partir del minuto '31 se considerará 01 hora adicional*/
+                            /*********Calcular decimal************/
+                            Float _hservicio = 0.0f,_chservicio=0.0f;int pentera =(int)(dtc.getDhs_cs().floatValue());
+                            _hservicio = dtc.getDhs_cs().floatValue() - pentera;
+                            if(_hservicio>=0.51f)
+                                _chservicio = new Float(pentera+1);
+                            else
+                                _chservicio = dtc.getDhs_cs().floatValue();
+                            /*************************************/
+                            dtc.setTcosto_cs((dtc.getDcosto_rh_cs()*_chservicio)+ dtc.getDcosto_bono());
                         }
                     }
                 }
