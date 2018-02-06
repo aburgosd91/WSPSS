@@ -651,7 +651,7 @@ public class Cabcalculopagar_planillaAction extends AbstactListAction<Cabcalculo
                             if(_hservicio>=0.51f)
                                 _chservicio = new Float(pentera+1);
                             else
-                                _chservicio = dtc.getDhs_cs().floatValue();
+                                _chservicio = new Float(pentera);
                             /*************************************/
                             dtc.setTcosto_cs((dtc.getDcosto_rh_cs()*_chservicio)+ dtc.getDcosto_bono());
                         }else{
@@ -668,7 +668,7 @@ public class Cabcalculopagar_planillaAction extends AbstactListAction<Cabcalculo
                             if(_hservicio>=0.51f)
                                 _chservicio = new Float(pentera+1);
                             else
-                                _chservicio = dtc.getDhs_cs().floatValue();
+                                _chservicio = new Float(pentera);
                             /*************************************/
                             dtc.setTcosto_cs((dtc.getDcosto_rh_cs()*_chservicio)+ dtc.getDcosto_bono());
                         }
