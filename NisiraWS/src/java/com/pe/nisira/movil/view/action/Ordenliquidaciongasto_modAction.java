@@ -75,6 +75,15 @@ import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import net.sf.jasperreports.engine.JRDataSource;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.CellRangeAddress;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.DataFormat;
 import org.primefaces.component.datatable.DataTable;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.CellEditEvent;
@@ -452,6 +461,31 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
             Logger.getLogger(TareowebAction.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    public void postProcessXLS(Object document) {
+        String nameSheet = "TABLA" ;
+        HSSFWorkbook wb = (HSSFWorkbook) document;
+        wb.setSheetName(0,nameSheet);
+        HSSFSheet sheet = wb.getSheetAt(0);
+        HSSFRow header = sheet.getRow(0);
+        /*************************STYLE HEADER****************************/
+        HSSFCellStyle cellStyle = wb.createCellStyle();
+        HSSFFont font = wb.createFont();//Create font
+        font.setBold(true);
+        font.setColor(HSSFColor.WHITE.index);
+        cellStyle.setAlignment(cellStyle.ALIGN_CENTER);
+        cellStyle.setFont(font);
+        cellStyle.setBorderBottom(HSSFCellStyle.BORDER_MEDIUM);
+        cellStyle.setFillForegroundColor(HSSFColor.BLACK.index);
+        cellStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+//        cellStyle.setWrapText(true);
+        /*****************************************************/
+        for(int i=0; i < header.getPhysicalNumberOfCells();i++) {
+            HSSFCell cell = header.getCell(i);
+            cell.setCellStyle(cellStyle);
+            String celdaHeader = cell.getStringCellValue();
+            cell.setCellValue(celdaHeader.toUpperCase());
+        }
+    }
     public Concepto_cuenta searchConcepto_cuenta_local(String idconcepto){
         Concepto_cuenta tp = null;
         if(idconcepto!=null){
@@ -817,7 +851,441 @@ public class Ordenliquidaciongasto_modAction extends AbstactListAction<Ordenliqu
     public JRDataSource getDataSourceReport_lst() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+    @Override   
+    public void downFormatExcelEspecial(Object document) {
+        /*Actulizar datos de resumen al detalle*/
+
+        HSSFWorkbook objWB = (HSSFWorkbook) document;
+        objWB.setSheetName(0,"DETALLADO");
+        HSSFRow fila_cabecera = objWB.getSheetAt(0).getRow(0);
+        HSSFRow fila_cabecera_formato = objWB.getSheetAt(0).getRow(0);
+
+        HSSFFont fuente = objWB.createFont();
+        fuente.setFontHeightInPoints((short) 8);
+        fuente.setFontName("Calibre LIght");
+        fuente.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+        
+        HSSFCellStyle estiloCelda = objWB.createCellStyle();
+        estiloCelda.setWrapText(true);
+        estiloCelda.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+        estiloCelda.setBorderBottom(HSSFCellStyle.BORDER_MEDIUM);
+        estiloCelda.setBorderTop(HSSFCellStyle.BORDER_MEDIUM);
+        estiloCelda.setBorderRight(HSSFCellStyle.BORDER_MEDIUM);
+        estiloCelda.setBorderLeft(HSSFCellStyle.BORDER_MEDIUM);
+        estiloCelda.setFont(fuente);
+        estiloCelda.setWrapText(true);
+        estiloCelda.setFillForegroundColor((short) 22);
+        estiloCelda.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+//Filas           
+        HSSFFont fuenteFilas = objWB.createFont();
+        fuenteFilas.setFontHeightInPoints((short) 8);
+        fuenteFilas.setFontName("Calibre LIght");
+
+        HSSFCellStyle estiloFila = objWB.createCellStyle();
+        estiloFila.setWrapText(true);
+        estiloFila.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+        estiloFila.setBorderBottom(HSSFCellStyle.BORDER_MEDIUM);
+        estiloFila.setBorderTop(HSSFCellStyle.BORDER_MEDIUM);
+        estiloFila.setBorderRight(HSSFCellStyle.BORDER_MEDIUM);
+        estiloFila.setBorderLeft(HSSFCellStyle.BORDER_MEDIUM);
+        estiloFila.setFont(fuente);
+        
+        DataFormat format = objWB.createDataFormat();
+        HSSFCellStyle estiloFila_numeric = objWB.createCellStyle();
+        estiloFila_numeric.setWrapText(true);
+        estiloFila_numeric.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+        estiloFila_numeric.setBorderBottom(HSSFCellStyle.BORDER_MEDIUM);
+        estiloFila_numeric.setBorderTop(HSSFCellStyle.BORDER_MEDIUM);
+        estiloFila_numeric.setBorderRight(HSSFCellStyle.BORDER_MEDIUM);
+        estiloFila_numeric.setBorderLeft(HSSFCellStyle.BORDER_MEDIUM);
+        estiloFila_numeric.setFont(fuente);
+        estiloFila_numeric.setDataFormat(format.getFormat("0.00"));
+        
+        HSSFCellStyle estiloFila_date = objWB.createCellStyle();
+        estiloFila_date.setWrapText(true);
+        estiloFila_date.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+        estiloFila_date.setBorderBottom(HSSFCellStyle.BORDER_MEDIUM);
+        estiloFila_date.setBorderTop(HSSFCellStyle.BORDER_MEDIUM);
+        estiloFila_date.setBorderRight(HSSFCellStyle.BORDER_MEDIUM);
+        estiloFila_date.setBorderLeft(HSSFCellStyle.BORDER_MEDIUM);
+        estiloFila_date.setFont(fuente);
+        estiloFila_date.setDataFormat(format.getFormat("dd/mm/yyyy"));
+        
+        int col = 18;
+        int row = lstdordenliquidaciongasto.size();
+        HSSFCell celda;
+        for(int i=0 ;i<col;i++){
+            celda = fila_cabecera.createCell((short)i);
+            celda.setCellStyle(estiloCelda);
+            switch(i){
+                case 0:celda.setCellValue("N°");break;
+                case 1:celda.setCellValue("Tipo Gasto");break;
+                case 2:celda.setCellValue("Proveedor");break;
+                case 3:celda.setCellValue("TD");break;
+                case 4:celda.setCellValue("Serie");break;
+                case 5:celda.setCellValue("Número");break;
+                case 6:celda.setCellValue("Fecha");break;
+                case 7:celda.setCellValue("T.Cambio");break;
+                case 8:celda.setCellValue("Moneda");break;
+                case 9:celda.setCellValue("Consumidor");break;
+                case 10:celda.setCellValue("Régimen");break;
+                case 11:celda.setCellValue("Base Imponible");break;
+                case 12:celda.setCellValue("Inafecto");break;
+                case 13:celda.setCellValue("%Impto.");break;
+                case 14:celda.setCellValue("Impuesto");break;
+                case 15:celda.setCellValue("Total");break;
+                case 16:celda.setCellValue("Destino");break;
+                case 17:celda.setCellValue("Glosa");break;
+            }
+        }
+        HSSFRow fila;
+        for(int i=0;i<row;i++){
+            fila = objWB.getSheetAt(0).getRow(i+1);
+            
+            celda = fila.createCell((short)0);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(lstdordenliquidaciongasto.get(i).getItem());
+            
+            celda = fila.createCell((short)1);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(lstdordenliquidaciongasto.get(i).getIdconcepto()+" "+lstdordenliquidaciongasto.get(i).getConcepto());
+            
+            celda = fila.createCell((short)2);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(lstdordenliquidaciongasto.get(i).getIdclieprov()+" "+lstdordenliquidaciongasto.get(i).getRazonsocial());
+            
+            celda = fila.createCell((short)3);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(lstdordenliquidaciongasto.get(i).getIddocumento());
+            
+            celda = fila.createCell((short)4);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(lstdordenliquidaciongasto.get(i).getSerie());
+            
+            celda = fila.createCell((short)5);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(lstdordenliquidaciongasto.get(i).getNumero());
+            
+            celda = fila.createCell((short)6);
+            celda.setCellStyle(estiloFila_date);
+            celda.setCellValue(WebUtil.fechaDMY(lstdordenliquidaciongasto.get(i).getFecha(), 7));
+            
+            celda = fila.createCell((short)7);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(new BigDecimal(lstdordenliquidaciongasto.get(i).getTcambio()).doubleValue());
+            
+            celda = fila.createCell((short)8);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(lstdordenliquidaciongasto.get(i).getIdmoneda());
+            
+            celda = fila.createCell((short)9);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(lstdordenliquidaciongasto.get(i).getIdccosto());
+            
+            celda = fila.createCell((short)10);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(lstdordenliquidaciongasto.get(i).getIdregimen());
+            
+            celda = fila.createCell((short)11);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(new BigDecimal(lstdordenliquidaciongasto.get(i).getAfecto()).doubleValue());
+            
+            celda = fila.createCell((short)12);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(new BigDecimal(lstdordenliquidaciongasto.get(i).getInafecto()).doubleValue());
+            
+            celda = fila.createCell((short)13);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(new BigDecimal(lstdordenliquidaciongasto.get(i).getPimpuesto()).doubleValue());
+            
+            celda = fila.createCell((short)14);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(lstdordenliquidaciongasto.get(i).getImpuesto());
+            
+            celda = fila.createCell((short)15);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(lstdordenliquidaciongasto.get(i).getImporte());
+            
+            celda = fila.createCell((short)16);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(lstdordenliquidaciongasto.get(i).getIddestino());
+            
+            celda = fila.createCell((short)17);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(lstdordenliquidaciongasto.get(i).getGlosa());
+        }
+        /*AUTOAJUSTE EN LA HOJA*/
+        for (int as = 0; as < col; as++) {
+            objWB.getSheetAt(0).autoSizeColumn((short) as);
+        }
+        /*CREAR OTRA HOJA DETALLADO NISIRA*/
+        HSSFSheet sheet1 = objWB.createSheet("FORMATO");
+        int ROW_CABECERA = 8;String adicionales[]=getDatosAdicionales(getDatoEdicion().getGlosa());
+        fila_cabecera = sheet1.createRow((short)ROW_CABECERA);
+        col = 18;
+        row = lstdordenliquidaciongasto.size();
+        /**********************GENERAR CABECERA********************************************/
+        HSSFCell celda_cabecera;
+        /*Titulo*/
+        fila_cabecera_formato = sheet1.createRow((short)0);
+        celda_cabecera = fila_cabecera_formato.createCell((short)0);
+        celda_cabecera.setCellStyle(estiloFila);
+        celda_cabecera.setCellValue("RENDICIÓN DE CUENTAS  /  REEMBOLSO");
+        sheet1.addMergedRegion(new CellRangeAddress(0,0,0,6));
+        /*#Liquidacion*/
+        fila_cabecera_formato = sheet1.createRow((short)1);
+        celda_cabecera = fila_cabecera_formato.createCell((short)0);
+        celda_cabecera.setCellStyle(estiloFila);
+        celda_cabecera.setCellValue(adicionales[3]);
+        sheet1.addMergedRegion(new CellRangeAddress(1,1,0,6));
+        /*Fecha*/
+        fila_cabecera_formato = sheet1.createRow((short)2);
+        celda_cabecera = fila_cabecera_formato.createCell((short)2);
+        celda_cabecera.setCellStyle(estiloFila);
+        celda_cabecera.setCellValue("Fecha");
+        
+        celda_cabecera = fila_cabecera_formato.createCell((short)3);        
+        celda_cabecera.setCellStyle(estiloFila_date);
+        celda_cabecera.setCellValue(WebUtil.fechaDMY(getDatoEdicion().getFecha(), 7));
+        /*Usuario - Importe Entregado*/
+        fila_cabecera_formato = sheet1.createRow((short)3);
+        celda_cabecera = fila_cabecera_formato.createCell((short)0);
+        celda_cabecera.setCellStyle(estiloFila);
+        celda_cabecera.setCellValue("USUARIO:");
+        
+        celda_cabecera = fila_cabecera_formato.createCell((short)1);
+        celda_cabecera.setCellStyle(estiloFila);
+        celda_cabecera.setCellValue(getDatoEdicion().getIdclieprov()+" - "+getDatoEdicion().getRazonsocial());
+        
+        celda_cabecera = fila_cabecera_formato.createCell((short)2);
+        celda_cabecera.setCellStyle(estiloFila);
+        celda_cabecera.setCellValue("Importe Entregado:");
+        
+        celda_cabecera = fila_cabecera_formato.createCell((short)3);
+        celda_cabecera.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+        celda_cabecera.setCellStyle(estiloFila_numeric);
+        celda_cabecera.setCellValue(getDatoEdicion().getEntregado().floatValue());
+
+        /*LUGAR DEL SERVICIO*/
+        fila_cabecera_formato = sheet1.createRow((short)4);
+        celda_cabecera = fila_cabecera_formato.createCell((short)0);
+        celda_cabecera.setCellStyle(estiloFila);
+        celda_cabecera.setCellValue("LUGAR DEL SERVICIO:");
+        
+        celda_cabecera = fila_cabecera_formato.createCell((short)1);
+        celda_cabecera.setCellStyle(estiloFila);
+        celda_cabecera.setCellValue(adicionales[0]);
+        
+        celda_cabecera = fila_cabecera_formato.createCell((short)2);
+        celda_cabecera.setCellStyle(estiloFila);
+        celda_cabecera.setCellValue("Importe Rendido:");
+        
+        celda_cabecera = fila_cabecera_formato.createCell((short)3);
+        celda_cabecera.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+        celda_cabecera.setCellStyle(estiloFila_numeric);
+        celda_cabecera.setCellValue(getDatoEdicion().getImporte().floatValue());
+        
+        /*FECHA SALIDA - Saldo por Devolver a Caja*/
+        fila_cabecera_formato = sheet1.createRow((short)5);
+        celda_cabecera = fila_cabecera_formato.createCell((short)0);
+        celda_cabecera.setCellStyle(estiloFila);
+        celda_cabecera.setCellValue("FECHA SALIDA:");
+        
+        celda_cabecera = fila_cabecera_formato.createCell((short)1);
+        celda_cabecera.setCellStyle(estiloFila);
+        celda_cabecera.setCellValue(adicionales[1]);
+        
+        celda_cabecera = fila_cabecera_formato.createCell((short)2);
+        celda_cabecera.setCellStyle(estiloFila);
+        celda_cabecera.setCellValue("Saldo por Devolver a Caja:");
+        
+        celda_cabecera = fila_cabecera_formato.createCell((short)3);
+        celda_cabecera.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+        celda_cabecera.setCellStyle(estiloFila_numeric);
+        celda_cabecera.setCellValue(getDatoEdicion().getDevolver().floatValue());
+        
+        /*FECHA RETORNO - Saldo por Reembolsar al Usuario:*/
+        fila_cabecera_formato = sheet1.createRow((short)6);
+        celda_cabecera = fila_cabecera_formato.createCell((short)0);
+        celda_cabecera.setCellStyle(estiloFila);
+        celda_cabecera.setCellValue("FECHA RETORNO:");
+        
+        celda_cabecera = fila_cabecera_formato.createCell((short)1);
+        celda_cabecera.setCellStyle(estiloFila);
+        celda_cabecera.setCellValue(adicionales[2]);
+        
+        celda_cabecera = fila_cabecera_formato.createCell((short)2);
+        celda_cabecera.setCellStyle(estiloFila);
+        celda_cabecera.setCellValue("Saldo por Reembolsar al Usuario:");
+        
+        celda_cabecera = fila_cabecera_formato.createCell((short)3);
+        celda_cabecera.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+        celda_cabecera.setCellStyle(estiloFila_numeric);
+        celda_cabecera.setCellValue(getDatoEdicion().getReembolsar().floatValue());
+        
+        /*******************************************************************************/
+        for(int i=0 ;i<col;i++){
+            celda = fila_cabecera.createCell((short)i);
+            celda.setCellStyle(estiloCelda);
+            switch(i){
+                case 0:celda.setCellValue("N°");break;
+                case 1:celda.setCellValue("Tipo Gasto");break;
+                case 2:celda.setCellValue("Proveedor");break;
+                case 3:celda.setCellValue("TD");break;
+                case 4:celda.setCellValue("Serie");break;
+                case 5:celda.setCellValue("Número");break;
+                case 6:celda.setCellValue("Fecha");break;
+                case 7:celda.setCellValue("T.Cambio");break;
+                case 8:celda.setCellValue("Moneda");break;
+                case 9:celda.setCellValue("Consumidor");break;
+                case 10:celda.setCellValue("Régimen");break;
+                case 11:celda.setCellValue("Base Imponible");break;
+                case 12:celda.setCellValue("Inafecto");break;
+                case 13:celda.setCellValue("%Impto.");break;
+                case 14:celda.setCellValue("Impuesto");break;
+                case 15:celda.setCellValue("Total");break;
+                case 16:celda.setCellValue("Destino");break;
+                case 17:celda.setCellValue("Glosa");break;
+            }
+        }
+        for(int i=0;i<row;i++){
+            fila = sheet1.createRow((ROW_CABECERA)+i+1);
+            
+            celda = fila.createCell((short)0);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(lstdordenliquidaciongasto.get(i).getItem());
+            
+            celda = fila.createCell((short)1);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(lstdordenliquidaciongasto.get(i).getIdconcepto()+" "+lstdordenliquidaciongasto.get(i).getConcepto());
+            
+            celda = fila.createCell((short)2);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(lstdordenliquidaciongasto.get(i).getIdclieprov()+" "+lstdordenliquidaciongasto.get(i).getRazonsocial());
+            
+            celda = fila.createCell((short)3);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(lstdordenliquidaciongasto.get(i).getIddocumento());
+            
+            celda = fila.createCell((short)4);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(lstdordenliquidaciongasto.get(i).getSerie());
+            
+            celda = fila.createCell((short)5);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(lstdordenliquidaciongasto.get(i).getNumero());
+            
+            celda = fila.createCell((short)6);
+            celda.setCellStyle(estiloFila_date);
+            celda.setCellValue(WebUtil.fechaDMY(lstdordenliquidaciongasto.get(i).getFecha(), 7));
+            
+            celda = fila.createCell((short)7);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(new BigDecimal(lstdordenliquidaciongasto.get(i).getTcambio()).doubleValue());
+            
+            celda = fila.createCell((short)8);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(lstdordenliquidaciongasto.get(i).getIdmoneda());
+            
+            celda = fila.createCell((short)9);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(lstdordenliquidaciongasto.get(i).getIdccosto());
+            
+            celda = fila.createCell((short)10);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(lstdordenliquidaciongasto.get(i).getIdregimen());
+            
+            celda = fila.createCell((short)11);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(new BigDecimal(lstdordenliquidaciongasto.get(i).getAfecto()).doubleValue());
+            
+            celda = fila.createCell((short)12);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(new BigDecimal(lstdordenliquidaciongasto.get(i).getInafecto()).doubleValue());
+            
+            celda = fila.createCell((short)13);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(new BigDecimal(lstdordenliquidaciongasto.get(i).getPimpuesto()).doubleValue());
+            
+            celda = fila.createCell((short)14);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(lstdordenliquidaciongasto.get(i).getImpuesto());
+            
+            celda = fila.createCell((short)15);
+            celda.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+            celda.setCellStyle(estiloFila_numeric);
+            celda.setCellValue(lstdordenliquidaciongasto.get(i).getImporte());
+            
+            celda = fila.createCell((short)16);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(lstdordenliquidaciongasto.get(i).getIddestino());
+            
+            celda = fila.createCell((short)17);
+            celda.setCellStyle(estiloFila);
+            celda.setCellValue(lstdordenliquidaciongasto.get(i).getGlosa());
+        }
+        /*AUTOAJUSTE EN LA HOJA*/
+        for (int as = 0; as < col; as++) {
+            objWB.getSheetAt(1).autoSizeColumn((short) as);
+        }
+    }
+    public String[] getDatosAdicionales(String glosa){
+        String caracter="$$";
+        String datos[] = {"-","-","-","Nro de Rendición o Liquidación"};
+        /*
+            (1) LUGAR DE SERVICIO
+            (2) FECHA SALIDAD
+            (3) FECHA RETORNO
+            (4) N° MANUAL DE RENDICIÓN
+        */
+        if(!WebUtil.isnull(glosa, "").equals("")){
+            /*buscar si existe $$*/
+            int posicion, contador = 0;
+            //se busca la primera vez que aparece
+            posicion = glosa.indexOf(caracter);
+            while (posicion != -1) { //mientras se encuentre el caracter
+                contador++;           //se cuenta
+                //se sigue buscando a partir de la posición siguiente a la encontrada
+                posicion = glosa.indexOf(caracter, posicion + 1);
+            }
+            // debe existir dos aparciciones para realizar la busqueda
+            if(contador==2){
+                int ini = glosa.indexOf("$$");
+                int fin = glosa.lastIndexOf("$$");
+                String substring= glosa.substring(ini,fin);
+                if(!WebUtil.isnull(substring, "").equals("")){
+                    substring = substring.replace("$$","");
+                    String array[]=substring.split(",");
+                    if(array!=null){
+                        if(array.length>0){
+                            int parte=0;
+                            for(String porcion: array){
+                                switch(parte){
+                                    case 0:datos[0]=porcion;break;
+                                    case 1:datos[1]=porcion;break;
+                                    case 2:datos[2]=porcion;break;
+                                    case 3:datos[3]=porcion;break;
+                                }
+                                parte++;
+                            }
+                        }
+                    }
+                }
+            } 
+        }
+        return datos;        
+    }
     public void buscar_filtrofecha() {
         try {
             this.mensaje = "";

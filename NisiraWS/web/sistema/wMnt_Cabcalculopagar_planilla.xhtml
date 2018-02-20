@@ -351,6 +351,7 @@
             <p:contextMenu for="tbl">
                 <p:menuitem value="Replicar" icon="ui-icon-copy" actionListener="#{cabcalculopagar_planillaAction.replicarItem()}" rendered="false" />
                 <p:menuitem value="Ver Detalle" update="detalleTareoDialog" icon="ui-icon-ver" actionListener="#{cabcalculopagar_planillaAction.visualizar_calculo()}"/>
+                <p:menuitem value="Activar/Desactivar Cruce" icon="ui-icon-copy" actionListener="#{cabcalculopagar_planillaAction.activar_desactivar_cruceItem()}"/>
                 <p:menuitem value="Ver Cálculo" update="detalleCalculoDialog" icon="ui-icon-search" oncomplete="PF('detalleCalculoDialog').show()" rendered="false"/>
             </p:contextMenu>
             <p:dialog header="#{cabcalculopagar_planillaAction.selectDetcalculopagar.idclieprov} - #{cabcalculopagar_planillaAction.selectDetcalculopagar.razon_social}" id="detalleTareoDialog" widgetVar="detalleTareoDialog" modal="true"  maximizable="true" showEffect="fade" hideEffect="fade" closable="true" resizable="false">

@@ -1516,6 +1516,51 @@ public class Cabcalculopagar_planillaAction extends AbstactListAction<Cabcalculo
             Logger.getLogger(OrdenservicioclienteAction.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    public void activar_desactivar_cruceItem(){
+        if(selectDetcalculopagar!=null){
+            Detcalculopagar_planilla dt;
+            if(selectDetcalculopagar.getEs_cruceservicio()==0){/*Activar*/
+                int pos = listDetcalculopagar.indexOf(selectDetcalculopagar);
+                dt = listDetcalculopagar.get(pos);
+                dt.setEs_cruceservicio(1);
+                dt.setFlag_cruceservicio(true);
+                Date fechai = new Date(dt.getDfecharegistro().getTime());
+                Date fechaf = new Date(dt.getDfechafinregistro().getTime());
+                dt.setDfecharegistro_cs(fechai);
+                dt.setDfechafinregistro_cs(fechaf);
+
+                dt.setDhi_cs(dt.getDhi());
+                dt.setDhi_s_cs(CoreUtil.convertTimeFloatString(dt.getDhi()));
+
+                dt.setDhf_cs(dt.getDhf());
+                dt.setDhf_s_cs(CoreUtil.convertTimeFloatString(dt.getDhf()));
+
+                dt.setDhs_cs(dt.getDhs());
+                dt.setDhs_s_cs(CoreUtil.convertTimeFloatString(dt.getDhs()));
+
+                dt.setDcosto_rh_cs(dt.getDcosto_rh());     
+            }else{                          /*Desactivar*/
+                int pos = listDetcalculopagar.indexOf(selectDetcalculopagar);
+                dt = listDetcalculopagar.get(pos);
+                dt.setEs_cruceservicio(0);
+                dt.setFlag_cruceservicio(false);
+                dt.setDfecharegistro_cs(null);
+                dt.setDfechafinregistro_cs(null);
+
+                dt.setDhi_cs(null);
+                dt.setDhi_s_cs("");
+
+                dt.setDhf_cs(null);
+                dt.setDhf_s_cs("");
+
+                dt.setDhs_cs(null);
+                dt.setDhs_s_cs("");
+                dt.setDcosto_rh_cs(0.0f);
+            }
+            //RequestContext.getCurrentInstance().execute("synchronizeRowsHeight();");
+            RequestContext.getCurrentInstance().update("datos:tbl");
+        }
+    }
     public void detalleTareoCalculo() {
         try {
             if(selectDetcalculopagar_detalle==null){
